@@ -1,6 +1,6 @@
 {
-  "name": "willdurand/Hateoas",
-  "description": "A PHP5 library to support implementing representations for HATEOAS REST web services",
+  "name": "willdurand/hateoas",
+  "description": "A PHP 5.3 library to support implementing representations for HATEOAS REST web services",
   "authors": [
     {
       "name": "William DURAND",
