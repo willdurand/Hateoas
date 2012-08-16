@@ -1,0 +1,17 @@
+{
+  "name": "willdurand/Hateoas",
+  "description": "A PHP5 library to support implementing representations for HATEOAS REST web services",
+  "authors": [
+    {
+      "name": "William DURAND",
+      "email": "william.durand1@gmail.com"
+    }
+  ],
+  "require": {
+    "symfony/routing": "2.1.*"
+  },
+  "autoload": {
+    "psr-0": { "Hateoas": "src/" }
+  },
+  "minimum-stability": "dev"
+}
