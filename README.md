@@ -41,8 +41,8 @@ Then, you will have to add links to this resource:
 ``` php
 <?php
 
-$resource->addLink(new Link('http://example.com/users/1', Link::REL_SELF));
-$resource->addLink(new Link('http://example.com/users/1/friends', 'friends', 'application/vnd.acme.user+xml'));
+$resource->addLink(new Link('http://example.com/users/999', Link::REL_SELF));
+$resource->addLink(new Link('http://example.com/users/999/friends', 'friends', 'application/vnd.acme.user+xml'));
 ```
 
 This library also provides a `LinkBuilder` which relies on a `RouterInterface`
@@ -88,7 +88,7 @@ Hateoas\Resource:
             inline: true
 ```
 
-Now, it will generate the following output according to previous examples:
+Now, it will generate the following outputs according to previous examples:
 
 ``` xml
 <user>
@@ -102,6 +102,27 @@ Now, it will generate the following output according to previous examples:
           type="application/vnd.acme.user+xml"
           href="http://example.com/users/999/friends" />
 </user>
+```
+
+``` json
+{
+  "user": {
+    "id": 999,
+      "username": "xxxx",
+      "email": "xxx@example.org",
+      "links": [
+      {
+        "href": "http://example.com/users/999",
+        "rel": "self"
+      },
+      {
+        "href": "http://example.com/users/999/friends",
+        "rel": "friends",
+        "type": "application/vnd.acme.user+xml"
+      }
+    ]
+  }
+}
 ```
 
 
