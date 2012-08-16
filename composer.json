@@ -1,6 +1,7 @@
 {
   "name": "willdurand/hateoas",
   "description": "A PHP 5.3 library to support implementing representations for HATEOAS REST web services",
+  "license": "MIT",
   "authors": [
     {
       "name": "William DURAND",
