@@ -2,6 +2,9 @@
 
 namespace Hateoas;
 
+/**
+ * @author William Durand <william.durand1@gmail.com>
+ */
 class Resource
 {
     /**
