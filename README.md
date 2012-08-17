@@ -147,6 +147,8 @@ $linkDefinition = array(
     'rel'        => Link::REL_SELF,
     'type'       => null
 );
+// or
+$linkDefinition = new RouteLinkDefinition('acme_demo.user_get', array('id'), Link::REL_SELF);
 ```
 
 Now, you can create a factory. Symfony2 users will be interested in the
