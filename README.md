@@ -158,7 +158,7 @@ Now, you can create a factory. Symfony2 users will be interested in the
 use Hateoas\Factory\ExtendedFactory;
 
 $factory = new ExtendedFactory(array(
-    'Acme\DemoBundle\Model\User' => $linkDefinition,
+    'Acme\DemoBundle\Model\User' => array($linkDefinition),
 ));
 ```
 
