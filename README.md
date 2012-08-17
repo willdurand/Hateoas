@@ -46,7 +46,7 @@ $resource->addLink(new Link('http://example.com/users/999/friends', 'friends', '
 ```
 
 This library also provides a `LinkBuilder` which relies on a `RouterInterface`
-instance under the wood. In Symfony2, you could use the `router` service as
+instance under the hood. In Symfony2, you could use the `router` service as
 shown in the following example, but this library is not tied to Symfony2, just
 to the Routing component by now.
 
