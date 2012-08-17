@@ -126,6 +126,70 @@ Now, it will generate the following outputs according to previous examples:
 ```
 
 
+Using Factories and Builders
+----------------------------
+
+Hateoas provides factories and builders to generate `Resource` and `Link`
+instances. A Factory takes a configuration as an array. That means you can use
+XML, YAML, annotations, etc. even if it's not yet implemented in the library
+itself.
+
+In order to describe a `Link`, you need to define a `rel` attribute (and
+optionally a `type`). If you are using Symfony2, you can describe a
+`RouteLinkDefinition` so that you can define a `route` and its `parameters`:
+
+``` php
+<?php
+
+$linkDefinition = array(
+    'route'      => 'acme_demo.user_get',
+    'parameters' => array('id'),
+    'rel'        => Link::REL_SELF,
+    'type'       => null
+);
+```
+
+Now, you can create a factory. Symfony2 users will be interested in the
+`ExtendedFactory`:
+
+``` php
+<?php
+
+use Hateoas\Factory\ExtendedFactory;
+
+$factory = new ExtendedFactory(array(
+    'Acme\DemoBundle\Model\User' => $linkDefinition,
+));
+```
+
+This factory allows to create a `ResourceDefinition` by taking either an
+instance or a classname. This definition contains a class name and a set of
+`LinkDefinition`. The `ExtendedFactory` described above allows to create
+`RouteLinkDefinition`.
+
+Now, you probably want to create resources using your configuration. Thanks to
+the `ResourceBuilder` it's super easy. A `ResourceBuilder` needs a `LinkBuilder`
+and a `Factory`:
+
+``` php
+<?php
+
+use Hateoas\Builder\ResourceBuilder;
+
+$resourceBuilder = ResourceBuilder($factory, $linkBuilder);
+```
+
+Now, you can create a resource for a given object:
+
+``` php
+<?php
+
+$resource = $resourceBuilder->create($user);
+```
+
+`$resource` is an instance of `Resource` and contains a `Link` (the `self` one).
+
+
 License
 -------
 
