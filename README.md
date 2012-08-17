@@ -42,7 +42,7 @@ Then, you will have to add links to this resource:
 <?php
 
 $resource->addLink(new Link('http://example.com/users/999', Link::REL_SELF));
-$resource->addLink(new Link('http://example.com/users/999/friends', 'friends', 'application/vnd.acme.user+xml'));
+$resource->addLink(new Link('http://example.com/users/999/friends', 'friends', 'application/vnd.acme.user'));
 ```
 
 This library also provides a `LinkBuilder` which relies on a `RouterInterface`
@@ -99,7 +99,7 @@ Now, it will generate the following outputs according to previous examples:
     <link href="http://example.com/users/999" rel="self" />
 
     <link rel="friends"
-          type="application/vnd.acme.user+xml"
+          type="application/vnd.acme.user"
           href="http://example.com/users/999/friends" />
 </user>
 ```
@@ -118,7 +118,7 @@ Now, it will generate the following outputs according to previous examples:
       {
         "href": "http://example.com/users/999/friends",
         "rel": "friends",
-        "type": "application/vnd.acme.user+xml"
+        "type": "application/vnd.acme.user"
       }
     ]
   }
@@ -160,7 +160,15 @@ Now, you can create a factory. Symfony2 users will be interested in the
 use Hateoas\Factory\RouteAwareFactory;
 
 $factory = new RouteAwareFactory(array(
-    'Acme\DemoBundle\Model\User' => array($linkDefinition),
+    'Acme\DemoBundle\Model\User' => array(
+        $linkDefinition,
+        array(
+            'route'      => 'acme_demo.friend_get',
+            'parameters' => array('id'),
+            'rel'        => 'friends',
+            'type'       => 'application/vnd.acme.user'
+        ),
+    ),
 ));
 ```
 
@@ -189,7 +197,8 @@ Now, you can create a resource for a given object:
 $resource = $resourceBuilder->create($user);
 ```
 
-`$resource` is an instance of `Resource` and contains a `Link` (the `self` one).
+`$resource` is an instance of `Resource` and contains two `Link` (`self` and
+`friends`).
 
 
 License
