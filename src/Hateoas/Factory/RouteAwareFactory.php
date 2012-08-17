@@ -7,7 +7,7 @@ use Hateoas\Factory\Definition\RouteLinkDefinition;
 /**
  * @author William Durand <william.durand1@gmail.com>
  */
-class ExtendedFactory extends Factory
+class RouteAwareFactory extends Factory
 {
     /**
      * {@inheritdoc}

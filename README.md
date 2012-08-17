@@ -152,21 +152,21 @@ $linkDefinition = new RouteLinkDefinition('acme_demo.user_get', array('id'), Lin
 ```
 
 Now, you can create a factory. Symfony2 users will be interested in the
-`ExtendedFactory`:
+`RouteAwareFactory`:
 
 ``` php
 <?php
 
-use Hateoas\Factory\ExtendedFactory;
+use Hateoas\Factory\RouteAwareFactory;
 
-$factory = new ExtendedFactory(array(
+$factory = new RouteAwareFactory(array(
     'Acme\DemoBundle\Model\User' => array($linkDefinition),
 ));
 ```
 
 This factory allows to create a `ResourceDefinition` by taking either an
 instance or a classname. This definition contains a class name and a set of
-`LinkDefinition`. The `ExtendedFactory` described above allows to create
+`LinkDefinition`. The `RouteAwareFactory` described above allows to create
 `RouteLinkDefinition`.
 
 Now, you probably want to create resources using your configuration. Thanks to
