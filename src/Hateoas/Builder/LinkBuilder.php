@@ -39,7 +39,7 @@ class LinkBuilder
 
     /**
      * @param  LinkDefinition $definition
-     * @param  array|object   $data
+     * @param  object         $data
      * @return Link
      */
     public function createFromDefinition(LinkDefinition $definition, $data)

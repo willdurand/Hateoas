@@ -25,7 +25,7 @@ class ResourceBuilder
     }
 
     /**
-     * @param  array|object $data
+     * @param  object   $data
      * @return Resource
      */
     public function create($data)
