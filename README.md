@@ -186,7 +186,7 @@ and a `Factory`:
 
 use Hateoas\Builder\ResourceBuilder;
 
-$resourceBuilder = ResourceBuilder($factory, $linkBuilder);
+$resourceBuilder = new ResourceBuilder($factory, $linkBuilder);
 ```
 
 Now, you can create a resource for a given object:
