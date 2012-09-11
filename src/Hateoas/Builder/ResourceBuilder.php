@@ -9,7 +9,7 @@ use Hateoas\Builder\LinkBuilder;
 class ResourceBuilder
 {
     /**
-     * @var Factory
+     * @var FactoryInterface
      */
     private $factory;
 
