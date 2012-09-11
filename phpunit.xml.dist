@@ -9,7 +9,7 @@
     processIsolation            = "false"
     stopOnFailure               = "false"
     syntaxCheck                 = "false"
-    bootstrap                   = "Tests/bootstrap.php">
+    bootstrap                   = "tests/bootstrap.php">
 
     <testsuites>
         <testsuite name="Hateoas Test Suite">
