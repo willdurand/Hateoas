@@ -200,6 +200,55 @@ $resource = $resourceBuilder->create($user);
 `$resource` is an instance of `Resource` and contains two `Link` (`self` and
 `friends`).
 
+But you may want to play with collection of resources, like a list of users.
+First, you need to pass a configuration array for your collections as second
+argument of your `Factory`:
+
+
+``` php
+<?php
+
+use Hateoas\Factory\RouteAwareFactory;
+
+$factory = new RouteAwareFactory(
+    // Entities
+    array(
+        'Acme\DemoBundle\Model\User' => array(
+            $linkDefinition,
+            array(
+                'route'      => 'acme_demo.friend_get',
+                'parameters' => array('id'),
+                'rel'        => 'friends',
+                'type'       => 'application/vnd.acme.user'
+            ),
+        ),
+    ),
+    // Collections
+    array(
+        'Acme\DemoBundle\Model\User' => array(
+            array(
+                'route'      => 'acme_demo.friend_all',
+                'rel'        => Link::REL_SELF,
+                'type'       => 'application/vnd.acme.users'
+            ),
+            array(
+                'route'      => 'acme_demo.friend_all',
+                'rel'        => Link::REL_NEXT,
+            ),
+        ),
+    )
+);
+```
+
+Then, you just have to call the `createCollection()` method on the
+`ResourceBuilder`:
+
+```php
+<?php
+
+$collection = $resourceBuilder->createCollection(array($user), 'Acme\DemoBundle\Model\User');
+```
+
 
 License
 -------
