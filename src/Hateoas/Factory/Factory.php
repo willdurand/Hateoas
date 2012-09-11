@@ -81,14 +81,12 @@ class Factory implements FactoryInterface
     private function createResourceDefinition(array $definition, $class)
     {
         $links = array();
-        if (isset($definition['links'])) {
-            foreach ($definition['links'] as $link) {
-                if (!$link instanceof LinkDefinition) {
-                    $link = $this->createLinkDefinition($link);
-                }
-
-                $links[] = $link;
+        foreach ($definition as $link) {
+            if (!$link instanceof LinkDefinition) {
+                $link = $this->createLinkDefinition($link);
             }
+
+            $links[] = $link;
         }
 
         return new ResourceDefinition($class, $links);
@@ -97,14 +95,12 @@ class Factory implements FactoryInterface
     private function createCollectionDefinition(array $definition, $class)
     {
         $links = array();
-        if (isset($definition['links'])) {
-            foreach ($definition['links'] as $link) {
-                if (!$link instanceof LinkDefinition) {
-                    $link = $this->createLinkDefinition($link);
-                }
-
-                $links[] = $link;
+        foreach ($definition as $link) {
+            if (!$link instanceof LinkDefinition) {
+                $link = $this->createLinkDefinition($link);
             }
+
+            $links[] = $link;
         }
 
         return new CollectionDefinition($class, $links);

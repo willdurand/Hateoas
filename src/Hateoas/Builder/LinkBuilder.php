@@ -11,7 +11,7 @@ use Symfony\Component\Form\Util\PropertyPath;
 /**
  * @author William Durand <william.durand1@gmail.com>
  */
-class LinkBuilder
+class LinkBuilder implements LinkBuilderInterface
 {
     /**
      * @var RouterInterface
@@ -24,23 +24,7 @@ class LinkBuilder
     }
 
     /**
-     * @param  string $route
-     * @param  array  $parameters
-     * @param  string $rel
-     * @param  string $type
-     * @return Link
-     */
-    public function create($route, array $parameters = array(), $rel = Link::REL_SELF, $type = null)
-    {
-        $url = $this->router->generate($route, $parameters, true);
-
-        return new Link($url, $rel, $type);
-    }
-
-    /**
-     * @param  LinkDefinition $definition
-     * @param  object         $data
-     * @return Link
+     * {@inheritdoc}
      */
     public function createFromDefinition(LinkDefinition $definition, $data)
     {
@@ -64,5 +48,19 @@ class LinkBuilder
             $definition->getRel(),
             $definition->getType()
         );
+    }
+
+    /**
+     * @param  string $route
+     * @param  array  $parameters
+     * @param  string $rel
+     * @param  string $type
+     * @return Link
+     */
+    public function create($route, array $parameters = array(), $rel = Link::REL_SELF, $type = null)
+    {
+        $url = $this->router->generate($route, $parameters, true);
+
+        return new Link($url, $rel, $type);
     }
 }

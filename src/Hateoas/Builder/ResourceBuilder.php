@@ -2,11 +2,15 @@
 
 namespace Hateoas\Builder;
 
+use Hateoas\Collection;
 use Hateoas\Resource;
 use Hateoas\Factory\FactoryInterface;
-use Hateoas\Builder\LinkBuilder;
+use Hateoas\Builder\LinkBuilderInterface;
 
-class ResourceBuilder
+/**
+ * @author William Durand <william.durand1@gmail.com>
+ */
+class ResourceBuilder implements ResourceBuilderInterface
 {
     /**
      * @var FactoryInterface
@@ -14,19 +18,18 @@ class ResourceBuilder
     private $factory;
 
     /**
-     * @var LinkBuilder
+     * @var LinkBuilderInterface
      */
     private $linkBuilder;
 
-    public function __construct(FactoryInterface $factory, LinkBuilder $linkBuilder)
+    public function __construct(FactoryInterface $factory, LinkBuilderInterface $linkBuilder)
     {
         $this->factory     = $factory;
         $this->linkBuilder = $linkBuilder;
     }
 
     /**
-     * @param  object   $data
-     * @return Resource
+     * {@inheritdoc}
      */
     public function create($data)
     {
@@ -41,12 +44,16 @@ class ResourceBuilder
     }
 
     /**
-     * @param \Traversable $collection
-     * @param  string     $className
-     * @return Collection
+     * {@inheritdoc}
      */
-    public function createCollection(\Traversable $collection, $className)
+    public function createCollection($collection, $className)
     {
+        if (!is_array($collection) && !$collection instanceof \Traversable) {
+            throw new \InvalidArgumentException(
+                sprintf('Expected an array or a Traversable object, got: "%s".', is_object($collection) ? get_class($collection) : $collection)
+            );
+        }
+
         $collectionDefinition = $this->factory->getCollectionDefinition($className);
 
         $resources = array();
@@ -56,7 +63,7 @@ class ResourceBuilder
 
         $links = array();
         foreach ($collectionDefinition->getLinks() as $linkDefinition) {
-            $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $data);
+            $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $collection);
         }
 
         return new Collection($resources, $links);
