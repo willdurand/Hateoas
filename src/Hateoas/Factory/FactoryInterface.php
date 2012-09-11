@@ -9,5 +9,5 @@ interface FactoryInterface
 {
     public function getResourceDefinition($data);
 
-    public function getCollectionDefinition($data);
+    public function getCollectionDefinition($className);
 }

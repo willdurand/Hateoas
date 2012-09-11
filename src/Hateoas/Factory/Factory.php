@@ -2,6 +2,7 @@
 
 namespace Hateoas\Factory;
 
+use Hateoas\Factory\Definition\CollectionDefinition;
 use Hateoas\Factory\Definition\ResourceDefinition;
 use Hateoas\Factory\Definition\LinkDefinition;
 
@@ -13,11 +14,17 @@ class Factory implements FactoryInterface
     /**
      * @var array
      */
-    private $definitions;
+    private $resourceDefinitions;
 
-    public function __construct(array $definitions)
+    /**
+     * @var array
+     */
+    private $collectionDefinitions;
+
+    public function __construct(array $resourceDefinitions, array $collectionDefinitions = array())
     {
-        $this->definitions = $definitions;
+        $this->resourceDefinitions   = $resourceDefinitions;
+        $this->collectionDefinitions = $collectionDefinitions;
     }
 
     /**
@@ -25,16 +32,16 @@ class Factory implements FactoryInterface
      */
     public function getResourceDefinition($data)
     {
-        foreach ($this->definitions as $class => $definition) {
+        foreach ($this->resourceDefinitions as $class => $definition) {
             if ((is_object($data) && !$data instanceof $class) || (!is_object($data) && !is_subclass_of($data, $class) && $data != $class)) {
                 continue;
             }
 
             if (!$definition instanceof ResourceDefinition) {
-                $this->definitions[$class] = $this->createDefinition($definition, $class);
+                $this->resourceDefinitions[$class] = $this->createResourceDefinition($definition, $class);
             }
 
-            return $this->definitions[$class];
+            return $this->resourceDefinitions[$class];
         }
 
         throw new \RuntimeException(sprintf('No definition found for resource "%s".', is_object($data) ? get_class($data) : $data));
@@ -43,8 +50,21 @@ class Factory implements FactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getCollectionDefinition($data)
+    public function getCollectionDefinition($className)
     {
+        foreach ($this->collectionDefinitions as $class => $definition) {
+            if ($className !== $class) {
+                continue;
+            }
+
+            if (!$definition instanceof CollectionDefinition) {
+                $this->collectionDefinitions[$class] = $this->createCollectionDefinition($definition, $class);
+            }
+
+            return $this->collectionDefinitions[$class];
+        }
+
+        throw new \RuntimeException(sprintf('No definition found for collection of resources "%s".', is_object($data) ? get_class($data) : $data));
     }
 
     protected function createLinkDefinition(array $definition)
@@ -58,7 +78,7 @@ class Factory implements FactoryInterface
         return new LinkDefinition($definition['rel'], $type);
     }
 
-    private function createDefinition(array $definition, $class)
+    private function createResourceDefinition(array $definition, $class)
     {
         $links = array();
         if (isset($definition['links'])) {
@@ -72,5 +92,21 @@ class Factory implements FactoryInterface
         }
 
         return new ResourceDefinition($class, $links);
+    }
+
+    private function createCollectionDefinition(array $definition, $class)
+    {
+        $links = array();
+        if (isset($definition['links'])) {
+            foreach ($definition['links'] as $link) {
+                if (!$link instanceof LinkDefinition) {
+                    $link = $this->createLinkDefinition($link);
+                }
+
+                $links[] = $link;
+            }
+        }
+
+        return new CollectionDefinition($class, $links);
     }
 }
