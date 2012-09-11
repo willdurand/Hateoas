@@ -110,9 +110,9 @@ Now, it will generate the following outputs according to previous examples:
 {
   "user": {
     "id": 999,
-      "username": "xxxx",
-      "email": "xxx@example.org",
-      "links": [
+    "username": "xxxx",
+    "email": "xxx@example.org",
+    "links": [
       {
         "href": "http://example.com/users/999",
         "rel": "self"
@@ -324,12 +324,12 @@ $factory = new RouteAwareFactory(
                     'type'       => 'application/vnd.acme.user'
                 ),
             ),
+            'attributes' => array(
+                'page'  => 'page',
+                'limit' => 'maxPerPage',
+                'total' => 'nbResults',
+            )
         ),
-        'attributes' => array(
-            'page'  => 'page',
-            'limit' => 'maxPerPage',
-            'total' => 'nbResults',
-        )
     )
 );
 ```
@@ -349,39 +349,50 @@ You will get the following output:
 
 ``` json
 {
-    "users":  [
-        // ...
-    ],
-    "links": [
+  [
+    {
+      "id": 999,
+      "username": "xxxx",
+      "email": "xxx@example.org",
+      "links": [
         {
-            "href": "http://example.com/users?page=1",
-            "rel": "self",
-            "type": "application/vnd.acme.user"
-        },
-        {
-            "href": "http://example.com/users?page=1",
-            "rel": "previous",
-            "type":"application/vnd.acme.user"
-        },
-        {
-            "href": "http://example.com/users?page=2",
-            "rel": "next",
-            "type":"application/vnd.acme.user"
-        },
-        {
-            "href": "http://example.com/users?page=1",
-            "rel": "first",
-            "type":"application/vnd.acme.user"
-        },
-        {
-            "href": "http://example.com/users?page=100",
-            "rel": "last",
-            "type":"application/vnd.acme.user"
+          "href": "http://example.com/users/999",
+          "rel": "self"
         }
-    ],
-    "total": 1000,
-    "page": 1,
-    "limit": 10
+      ]
+    },
+    // ...
+  ],
+  "links": [
+    {
+      "href": "http://example.com/users?page=1",
+      "rel": "self",
+      "type": "application/vnd.acme.user"
+    },
+    {
+      "href": "http://example.com/users?page=1",
+      "rel": "previous",
+      "type":"application/vnd.acme.user"
+    },
+    {
+      "href": "http://example.com/users?page=2",
+      "rel": "next",
+      "type":"application/vnd.acme.user"
+    },
+    {
+      "href": "http://example.com/users?page=1",
+      "rel": "first",
+      "type":"application/vnd.acme.user"
+    },
+    {
+      "href": "http://example.com/users?page=100",
+      "rel": "last",
+      "type":"application/vnd.acme.user"
+    }
+  ],
+  "total": 1000,
+  "page": 1,
+  "limit": 10
 }
 ```
 
