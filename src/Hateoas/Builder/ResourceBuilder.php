@@ -3,7 +3,7 @@
 namespace Hateoas\Builder;
 
 use Hateoas\Resource;
-use Hateoas\Factory\Factory;
+use Hateoas\Factory\FactoryInterface;
 use Hateoas\Builder\LinkBuilder;
 
 class ResourceBuilder
@@ -18,7 +18,7 @@ class ResourceBuilder
      */
     private $linkBuilder;
 
-    public function __construct(Factory $factory, LinkBuilder $linkBuilder)
+    public function __construct(FactoryInterface $factory, LinkBuilder $linkBuilder)
     {
         $this->factory     = $factory;
         $this->linkBuilder = $linkBuilder;
@@ -38,5 +38,27 @@ class ResourceBuilder
         }
 
         return new Resource($data, $links);
+    }
+
+    /**
+     * @param \Traversable $collection
+     * @param  string     $className
+     * @return Collection
+     */
+    public function createCollection(\Traversable $collection, $className)
+    {
+        $collectionDefinition = $this->factory->getCollectionDefinition($className);
+
+        $resources = array();
+        foreach ($collection as $coll) {
+            $resources[] = $this->create($coll);
+        }
+
+        $links = array();
+        foreach ($collectionDefinition->getLinks() as $linkDefinition) {
+            $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $data);
+        }
+
+        return new Collection($resources, $links);
     }
 }

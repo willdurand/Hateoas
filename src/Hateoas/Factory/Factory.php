@@ -8,7 +8,7 @@ use Hateoas\Factory\Definition\LinkDefinition;
 /**
  * @author William Durand <william.durand1@gmail.com>
  */
-class Factory
+class Factory implements FactoryInterface
 {
     /**
      * @var array
@@ -20,6 +20,9 @@ class Factory
         $this->definitions = $definitions;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getResourceDefinition($data)
     {
         foreach ($this->definitions as $class => $definition) {
@@ -35,6 +38,13 @@ class Factory
         }
 
         throw new \RuntimeException(sprintf('No definition found for resource "%s".', is_object($data) ? get_class($data) : $data));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCollectionDefinition($data)
+    {
     }
 
     protected function createLinkDefinition(array $definition)
