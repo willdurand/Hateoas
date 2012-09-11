@@ -1,6 +1,8 @@
 Hateoas
 =======
 
+[![Build Status](https://secure.travis-ci.org/willdurand/Hateoas.png)](http://travis-ci.org/willdurand/Hateoas)
+
 A PHP 5.3 library to support implementing representations for HATEOAS REST web services.
 
 
