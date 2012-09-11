@@ -32,10 +32,13 @@ class Collection
      */
     private $limit;
 
-    public function __construct(array $resources = array(), array $links = array())
+    public function __construct(array $resources = array(), array $links = array(), $total = null, $page = null, $limit = null)
     {
         $this->resources = $resources;
         $this->links     = $links;
+        $this->total     = $total;
+        $this->page      = $page;
+        $this->limit     = $limit;
     }
 
     /**
@@ -52,5 +55,29 @@ class Collection
     public function getLinks()
     {
         return $this->links;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimit()
+    {
+        return $this->limit;
     }
 }
