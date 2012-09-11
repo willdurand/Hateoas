@@ -64,7 +64,7 @@ class Factory implements FactoryInterface
             return $this->collectionDefinitions[$class];
         }
 
-        throw new \RuntimeException(sprintf('No definition found for collection of resources "%s".', is_object($data) ? get_class($data) : $data));
+        throw new \RuntimeException(sprintf('No definition found for collection of "%s".', $className));
     }
 
     protected function createLinkDefinition(array $definition)
@@ -95,14 +95,19 @@ class Factory implements FactoryInterface
     private function createCollectionDefinition(array $definition, $class)
     {
         $links = array();
-        foreach ($definition as $link) {
-            if (!$link instanceof LinkDefinition) {
-                $link = $this->createLinkDefinition($link);
-            }
 
-            $links[] = $link;
+        if (isset($definition['links'])) {
+            foreach ($definition['links'] as $link) {
+                if (!$link instanceof LinkDefinition) {
+                    $link = $this->createLinkDefinition($link);
+                }
+
+                $links[] = $link;
+            }
         }
 
-        return new CollectionDefinition($class, $links);
+        $attributes = isset($definition['attributes']) ? $definition['attributes'] : array();
+
+        return new CollectionDefinition($class, $links, $attributes);
     }
 }

@@ -110,7 +110,9 @@ class FactoryTest extends TestCase
             array(), // entities
             array(
                 'foobar' => array(
-                    array('rel' => 'foo', 'type' => 'bar')
+                    'links' => array(
+                        array('rel' => 'foo', 'type' => 'bar')
+                    )
                 ),
             )
         );
@@ -133,7 +135,9 @@ class FactoryTest extends TestCase
             array(), // entities
             array(
                 'foobar' => array(
-                    $linkDef,
+                    'links' => array(
+                        $linkDef,
+                    )
                 ),
             )
         );

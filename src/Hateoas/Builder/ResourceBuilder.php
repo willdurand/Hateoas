@@ -6,6 +6,7 @@ use Hateoas\Collection;
 use Hateoas\Resource;
 use Hateoas\Factory\FactoryInterface;
 use Hateoas\Builder\LinkBuilderInterface;
+use Symfony\Component\Form\Util\PropertyPath;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
@@ -66,6 +67,30 @@ class ResourceBuilder implements ResourceBuilderInterface
             $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $collection);
         }
 
-        return new Collection($resources, $links);
+        // total
+        if (null !== $total = $collectionDefinition->getTotal()) {
+            $propertyPath = new PropertyPath($total);
+            $total = $propertyPath->getValue($collection);
+        }
+
+        // limit
+        if (null !== $limit = $collectionDefinition->getLimit()) {
+            $propertyPath = new PropertyPath($limit);
+            $limit = $propertyPath->getValue($collection);
+        }
+
+        // page
+        if (null !== $page = $collectionDefinition->getPage()) {
+            $propertyPath = new PropertyPath($page);
+            $page = $propertyPath->getValue($collection);
+        }
+
+        return new Collection(
+            $resources,
+            $links,
+            $total,
+            $page,
+            $limit
+        );
     }
 }

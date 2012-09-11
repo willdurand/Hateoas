@@ -203,9 +203,24 @@ $resource = $resourceBuilder->create($user);
 `friends`).
 
 But you may want to play with collection of resources, like a list of users.
-First, you need to pass a configuration array for your collections as second
-argument of your `Factory`:
+First, configure the serializer:
 
+``` yaml
+# app/config/serializer/Collection.yml
+Hateoas\Collection:
+    properties:
+        resources:
+            inline: true
+        total:
+            xml_attribute: true
+        limit:
+            xml_attribute: true
+        page:
+            xml_attribute: true
+```
+
+Now, you need to pass a configuration array for your collections as second
+argument of your `Factory`:
 
 ``` php
 <?php
@@ -229,13 +244,14 @@ $factory = new RouteAwareFactory(
     array(
         'Acme\DemoBundle\Model\User' => array(
             array(
-                'route'      => 'acme_demo.friend_all',
+                'route'      => 'acme_demo.user_all',
                 'rel'        => Link::REL_SELF,
                 'type'       => 'application/vnd.acme.users'
             ),
             array(
-                'route'      => 'acme_demo.friend_all',
-                'rel'        => Link::REL_NEXT,
+                'route'      => 'acme_demo.user_all',
+                'parameters' => array('page'),
+                'rel'        => Link::REL_NEXT
             ),
         ),
     )
@@ -248,7 +264,125 @@ Then, you just have to call the `createCollection()` method on the
 ```php
 <?php
 
-$collection = $resourceBuilder->createCollection(array($user), 'Acme\DemoBundle\Model\User');
+$collection = $resourceBuilder->createCollection(
+    array($user1, $user2, ...),
+    'Acme\DemoBundle\Model\User'
+);
+```
+
+Let's say you have a pager like the [Propel
+Pager](http://www.propelorm.org/documentation/03-basic-crud.html#query_termination_methods),
+you can configure a set of links for your collection:
+
+
+``` php
+$factory = new RouteAwareFactory(
+    // Entities
+    array(
+        'Acme\DemoBundle\Model\User' => array(
+            $linkDefinition,
+            array(
+                'route'      => 'acme_demo.friend_get',
+                'parameters' => array('id'),
+                'rel'        => 'friends',
+                'type'       => 'application/vnd.acme.user'
+            ),
+        ),
+    ),
+    // Collections
+    array(
+        'Acme\DemoBundle\Model\User' => array(
+            'links' => array(
+                array(
+                    'route'      => 'acme_demo.user_all',
+                    'parameters' => array('page'),
+                    'rel'        => Link::REL_SELF,
+                    'type'       => 'application/vnd.acme.user'
+                ),
+                array(
+                    'route'      => 'acme_demo.user_all',
+                    'parameters' => array('page' => 'firstPage'),
+                    'rel'        => Link::REL_FIRST,
+                    'type'       => 'application/vnd.acme.user'
+                ),
+                array(
+                    'route'      => 'acme_demo.user_all',
+                    'parameters' => array('page' => 'lastPage'),
+                    'rel'        => Link::REL_LAST,
+                    'type'       => 'application/vnd.acme.user'
+                ),
+                array(
+                    'route'      => 'acme_demo.user_all',
+                    'parameters' => array('page' => 'nextPage'),
+                    'rel'        => Link::REL_NEXT,
+                    'type'       => 'application/vnd.acme.user'
+                ),
+                array(
+                    'route'      => 'acme_demo.user_all',
+                    'parameters' => array('page' => 'previousPage'),
+                    'rel'        => Link::REL_PREVIOUS,
+                    'type'       => 'application/vnd.acme.user'
+                ),
+            ),
+        ),
+        'attributes' => array(
+            'page'  => 'page',
+            'limit' => 'maxPerPage',
+            'total' => 'nbResults',
+        )
+    )
+);
+```
+
+Then, just do:
+
+```php
+<?php
+
+$collection = $resourceBuilder->createCollection(
+    UserQuery::create()->paginate(), // returns an instance of ModelPager
+    'Acme\DemoBundle\Model\User'
+);
+```
+
+You will get the following output:
+
+``` json
+{
+    "users":  [
+        // ...
+    ],
+    "links": [
+        {
+            "href": "http://example.com/users?page=1",
+            "rel": "self",
+            "type": "application/vnd.acme.user"
+        },
+        {
+            "href": "http://example.com/users?page=1",
+            "rel": "previous",
+            "type":"application/vnd.acme.user"
+        },
+        {
+            "href": "http://example.com/users?page=2",
+            "rel": "next",
+            "type":"application/vnd.acme.user"
+        },
+        {
+            "href": "http://example.com/users?page=1",
+            "rel": "first",
+            "type":"application/vnd.acme.user"
+        },
+        {
+            "href": "http://example.com/users?page=100",
+            "rel": "last",
+            "type":"application/vnd.acme.user"
+        }
+    ],
+    "total": 1000,
+    "page": 1,
+    "limit": 10
+}
 ```
 
 

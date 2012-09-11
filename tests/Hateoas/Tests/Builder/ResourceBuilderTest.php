@@ -45,8 +45,10 @@ class ResourceBuilderTest extends TestCase
 
         $collDefinitions = array(
             'Hateoas\Tests\Fixtures\DataClass1' => array(
-                array('rel' => 'foo', 'type' => 'bar'),
-                array('rel' => 'toto', 'type' => 'titi'),
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar'),
+                    array('rel' => 'toto', 'type' => 'titi'),
+                ),
             ),
         );
 

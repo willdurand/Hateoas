@@ -8,9 +8,11 @@
       "email": "william.durand1@gmail.com"
     }
   ],
+  "require-dev": {
+    "symfony/form": "2.1.*"
+  },
   "suggest": {
-    "symfony/routing": "",
-    "symfony/form": ""
+    "symfony/routing": ""
   },
   "autoload": {
     "psr-0": { "Hateoas": "src/" }
