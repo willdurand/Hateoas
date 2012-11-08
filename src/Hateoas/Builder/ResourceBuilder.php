@@ -57,7 +57,9 @@ class ResourceBuilder implements ResourceBuilderInterface
                     $obj = $propertyPath->getValue($data);
 
                     // skip null values
-                    if (null === $obj) continue;
+                    if (null === $obj) {
+                        continue;
+                    }
 
                     // create resource and set object
                     $propertyPath->setValue($data, $this->create($obj, $subOptions));
