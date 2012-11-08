@@ -43,16 +43,21 @@ class ResourceBuilder implements ResourceBuilderInterface
             // walk over the object properties to add links
             if (!empty($options['objectProperties'])) {
                 foreach ($options['objectProperties'] as $property => $properties) {
+                    $subOptions = array();
+                    if (is_numeric($property)) {
+                        $property = $properties;
+                    } else {
+                        // override objectProperties
+                        $subOptions = $options;
+                        $subOptions['objectProperties'] = $properties;
+                    }
+
                     // get object
                     $propertyPath = new PropertyPath($property);
                     $obj = $propertyPath->getValue($data);
 
                     // skip null values
                     if (null === $obj) continue;
-
-                    // override objectProperties
-                    $subOptions = $options;
-                    $subOptions['objectProperties'] = $properties;
 
                     // create resource and set object
                     $propertyPath->setValue($data, $this->create($obj, $subOptions));
