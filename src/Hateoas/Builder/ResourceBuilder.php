@@ -32,13 +32,39 @@ class ResourceBuilder implements ResourceBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function create($data)
+    public function create($data, $options = array())
     {
         $resourceDefinition = $this->factory->getResourceDefinition($data);
 
         $links = array();
         foreach ($resourceDefinition->getLinks() as $linkDefinition) {
             $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $data);
+
+            // walk over the object properties to add links
+            if (!empty($options['objectProperties'])) {
+                foreach ($options['objectProperties'] as $property => $properties) {
+                    $subOptions = array();
+                    if (is_numeric($property)) {
+                        $property = $properties;
+                    } else {
+                        // override objectProperties
+                        $subOptions = $options;
+                        $subOptions['objectProperties'] = $properties;
+                    }
+
+                    // get object
+                    $propertyPath = new PropertyPath($property);
+                    $obj = $propertyPath->getValue($data);
+
+                    // skip null values
+                    if (null === $obj) {
+                        continue;
+                    }
+
+                    // create resource and set object
+                    $propertyPath->setValue($data, $this->create($obj, $subOptions));
+                }
+            }
         }
 
         return new Resource($data, $links);
@@ -47,7 +73,7 @@ class ResourceBuilder implements ResourceBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function createCollection($collection, $className)
+    public function createCollection($collection, $className, $options = array())
     {
         if (!is_array($collection) && !$collection instanceof \Traversable) {
             throw new \InvalidArgumentException(
@@ -59,7 +85,7 @@ class ResourceBuilder implements ResourceBuilderInterface
 
         $resources = array();
         foreach ($collection as $coll) {
-            $resources[] = $this->create($coll);
+            $resources[] = $this->create($coll, $options);
         }
 
         $links = array();

@@ -270,6 +270,17 @@ $collection = $resourceBuilder->createCollection(
 );
 ```
 
+Both methods `create()` and `createCollection()` accept a optional parameter to define child properties to iterate over.
+For example you have a Post with a `author` property.
+
+With the following code it adds also hyperlinks to the `author` object:
+
+``` php
+<?php
+
+$resource = $resourceBuilder->create($user, array('objectProperties' => array('author')));
+```
+
 Let's say you have a pager like the [Propel
 Pager](http://www.propelorm.org/documentation/03-basic-crud.html#query_termination_methods),
 you can configure a set of links for your collection:

@@ -20,15 +20,24 @@ class ResourceBuilderTest extends TestCase
         $factory = new Factory($definitions);
         $builder = new ResourceBuilder(
             $factory,
-            $this->getLinkBuilderMock($this->once())
+            $this->getLinkBuilderMock($this->exactly(2))
         );
 
-        $resource = $builder->create(new DataClass1('test'));
+        $resource = $builder->create(new DataClass1('test', new DataClass1('test2')), array('objectProperties' => array('child' => null)));
 
         $this->assertInstanceOf('Hateoas\Resource', $resource);
         $this->assertInstanceOf('Hateoas\Tests\Fixtures\DataClass1', $resource->getData());
+        $this->assertInstanceOf('Hateoas\Tests\Fixtures\DataClass1', $resource->getData()->child->getData());
 
+        // check links
         $this->assertCount(1, $resource->getLinks());
+        $links = $resource->getLinks();
+
+        $this->assertEquals('foo', $links[0]->getRel());
+        $this->assertEquals('bar', $links[0]->getType());
+
+        // check child links
+        $this->assertCount(1, $resource->getData()->child->getLinks());
         $links = $resource->getLinks();
 
         $this->assertEquals('foo', $links[0]->getRel());
