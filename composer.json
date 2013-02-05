@@ -1,23 +1,24 @@
 {
-  "name": "willdurand/hateoas",
-  "description": "A PHP 5.3 library to support implementing representations for HATEOAS REST web services",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "William DURAND",
-      "email": "william.durand1@gmail.com"
+    "name": "willdurand/hateoas",
+    "description": "A PHP library to support implementing representations for HATEOAS REST web services",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "William DURAND",
+            "email": "william.durand1@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/property-access": "2.2.*@dev",
+        "jms/serializer": "1.0.*@dev"
+    },
+    "require-dev": {
+        "symfony/form": "~2.1"
+    },
+    "suggest": {
+        "symfony/routing": ""
+    },
+    "autoload": {
+        "psr-0": { "Hateoas": "src/" }
     }
-  ],
-  "require": {
-      "symfony/property-access": "2.2.*@dev"
-  },
-  "require-dev": {
-      "symfony/form": "~2.1"
-  },
-  "suggest": {
-    "symfony/routing": ""
-  },
-  "autoload": {
-    "psr-0": { "Hateoas": "src/" }
-  }
 }

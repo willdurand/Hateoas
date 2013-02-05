@@ -2,6 +2,9 @@
 
 namespace Hateoas;
 
+use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlRoot;
+
 /**
  * @author William Durand <william.durand1@gmail.com>
  */
@@ -15,16 +18,19 @@ class Link
     const REL_PARENT    = 'parent';
 
     /**
+     * @XmlAttribute
      * @var string
      */
     private $href;
 
     /**
+     * @XmlAttribute
      * @var string
      */
     private $rel;
 
     /**
+     * @XmlAttribute
      * @var string
      */
     private $type;
