@@ -6,7 +6,7 @@ use Hateoas\Factory\Definition\RouteLinkDefinition;
 use Hateoas\Factory\Definition\LinkDefinition;
 use Hateoas\Link;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
@@ -33,13 +33,14 @@ class LinkBuilder implements LinkBuilderInterface
         }
 
         $parameters = array();
+        $accessor   = PropertyAccess::getPropertyAccessor();
+
         foreach ($definition->getParameters() as $name => $path) {
             if (is_numeric($name)) {
                 $name = $path;
             }
 
-            $propertyPath      = new PropertyPath($path);
-            $parameters[$name] = $propertyPath->getValue($data);
+            $parameters[$name] = $accessor->getValue($data, $path);
         }
 
         return $this->create(

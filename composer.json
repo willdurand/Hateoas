@@ -8,14 +8,16 @@
       "email": "william.durand1@gmail.com"
     }
   ],
+  "require": {
+      "symfony/property-access": "2.2.*@dev"
+  },
   "require-dev": {
-    "symfony/form": "2.1.*"
+      "symfony/form": "~2.1"
   },
   "suggest": {
     "symfony/routing": ""
   },
   "autoload": {
     "psr-0": { "Hateoas": "src/" }
-  },
-  "minimum-stability": "dev"
+  }
 }

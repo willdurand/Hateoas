@@ -6,7 +6,7 @@ use Hateoas\Collection;
 use Hateoas\Resource;
 use Hateoas\Factory\FactoryInterface;
 use Hateoas\Builder\LinkBuilderInterface;
-use Symfony\Component\Form\Util\PropertyPath;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
@@ -35,6 +35,7 @@ class ResourceBuilder implements ResourceBuilderInterface
     public function create($data, $options = array())
     {
         $resourceDefinition = $this->factory->getResourceDefinition($data);
+        $accessor           = PropertyAccess::getPropertyAccessor();
 
         $links = array();
         foreach ($resourceDefinition->getLinks() as $linkDefinition) {
@@ -53,8 +54,7 @@ class ResourceBuilder implements ResourceBuilderInterface
                     }
 
                     // get object
-                    $propertyPath = new PropertyPath($property);
-                    $obj = $propertyPath->getValue($data);
+                    $obj = $accessor->getValue($data, $property);
 
                     // skip null values
                     if (null === $obj) {
@@ -62,7 +62,7 @@ class ResourceBuilder implements ResourceBuilderInterface
                     }
 
                     // create resource and set object
-                    $propertyPath->setValue($data, $this->create($obj, $subOptions));
+                    $accessor->setValue($data, $property, $this->create($obj, $subOptions));
                 }
             }
         }
@@ -93,22 +93,21 @@ class ResourceBuilder implements ResourceBuilderInterface
             $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $collection);
         }
 
+        $accessor = PropertyAccess::getPropertyAccessor();
+
         // total
         if (null !== $total = $collectionDefinition->getTotal()) {
-            $propertyPath = new PropertyPath($total);
-            $total = $propertyPath->getValue($collection);
+            $total = $accessor->getValue($collection, $total);
         }
 
         // limit
         if (null !== $limit = $collectionDefinition->getLimit()) {
-            $propertyPath = new PropertyPath($limit);
-            $limit = $propertyPath->getValue($collection);
+            $limit = $access->getValue($collection, $limit);
         }
 
         // page
         if (null !== $page = $collectionDefinition->getPage()) {
-            $propertyPath = new PropertyPath($page);
-            $page = $propertyPath->getValue($collection);
+            $page = $access->getValue($collection, $page);
         }
 
         return new Collection(
