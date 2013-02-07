@@ -2,6 +2,11 @@
 
 namespace Hateoas\Tests\Fixtures;
 
+use JMS\Serializer\Annotation\XmlRoot;
+
+/**
+ * @XmlRoot("data_class")
+ */
 class DataClass1
 {
     public $content;

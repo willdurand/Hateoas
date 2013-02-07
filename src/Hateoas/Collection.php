@@ -4,8 +4,6 @@ namespace Hateoas;
 
 use JMS\Serializer\Annotation\Inline;
 use JMS\Serializer\Annotation\SerializedName;
-use JMS\Serializer\Annotation\XmlAttribute;
-use JMS\Serializer\Annotation\XmlList;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
@@ -20,25 +18,21 @@ class Collection
 
     /**
      * @SerializedName("_links")
-     * @XmlList(entry = "link", inline = true)
      * @var array
      */
     private $links;
 
     /**
-     * @XmlAttribute
      * @var int
      */
     private $total;
 
     /**
-     * @XmlAttribute
      * @var int
      */
     private $page;
 
     /**
-     * @XmlAttribute
      * @var int
      */
     private $limit;
