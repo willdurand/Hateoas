@@ -53,4 +53,36 @@ XML
 XML
         , trim($serializer->serialize($col, 'xml')));
     }
+
+    public function testSerializeResourceInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(new Link('/foo', Link::REL_SELF))
+        );
+
+        $this->assertEquals(
+            '{"content":"foo","_links":[{"href":"\/foo","rel":"self"}]}',
+            $serializer->serialize($res, 'json')
+        );
+    }
+
+    public function testSerializeCollectionInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $col        = new Collection(
+            array(new Resource(
+                new DataClass1('foo'),
+                array(new Link('/foo', Link::REL_SELF))
+            )),
+            array(new Link('/foobar', Link::REL_SELF)),
+            1
+        );
+
+        $this->assertEquals(
+            '{"total":1,"_links":[{"href":"\/foobar","rel":"self"}],"resources":[{"content":"foo","_links":[{"href":"\/foo","rel":"self"}]}]}',
+            $serializer->serialize($col, 'json')
+        );
+    }
 }
