@@ -47,7 +47,7 @@ class Handler implements SubscribingHandlerInterface
                 if (is_object($resource->getData())
                     && null !== ($m = $this->metadataFactory->getMetadataForClass(get_class($resource->getData())))
                 ) {
-                    $visitor->setDefaultRootName($m->xmlRootName ?: 'result');
+                    $visitor->setDefaultRootName($m->xmlRootName ?: 'resource');
                 }
             }
 
@@ -79,7 +79,7 @@ class Handler implements SubscribingHandlerInterface
             $reflProp->setAccessible(true);
 
             if ('result' === $reflProp->getValue($visitor)) {
-                $visitor->setDefaultRootName('collection');
+                $visitor->setDefaultRootName('resources');
             }
 
             $visitor->document = $visitor->createDocument();
@@ -110,7 +110,7 @@ class Handler implements SubscribingHandlerInterface
             if (is_object($resource->getData())
                 && null !== ($m = $this->metadataFactory->getMetadataForClass(get_class($resource->getData())))
             ) {
-                $elementName = $m->xmlRootName ?: 'entry';
+                $elementName = $m->xmlRootName ?: 'resource';
             }
 
             $entryNode = $visitor->getDocument()->createElement($elementName);

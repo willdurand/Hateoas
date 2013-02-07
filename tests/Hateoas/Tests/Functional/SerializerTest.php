@@ -29,6 +29,24 @@ XML
         , trim($serializer->serialize($res, 'xml')));
     }
 
+    public function testSerializeArrayResourceInXml()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            array('foo'),
+            array(new Link('/foo', Link::REL_SELF))
+        );
+
+        $this->assertEquals(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <link href="/foo" rel="self"/>
+  <entry><![CDATA[foo]]></entry>
+</result>
+XML
+        , trim($serializer->serialize($res, 'xml')));
+    }
+
     public function testSerializeCollectionInXml()
     {
         $serializer = Hateoas::getSerializer();
@@ -43,13 +61,13 @@ XML
 
         $this->assertEquals(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<collection total="1">
+<resources total="1">
   <link href="/foobar" rel="self"/>
   <data_class>
     <link href="/foo" rel="self"/>
     <content><![CDATA[foo]]></content>
   </data_class>
-</collection>
+</resources>
 XML
         , trim($serializer->serialize($col, 'xml')));
     }
