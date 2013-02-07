@@ -63,73 +63,7 @@ $resource->addLink($selfLink);
 ```
 
 
-Using Hateoas with FOSRestBundle
---------------------------------
-
-Basically, instead of serializing your `$user` or your `array`, you just have to
-serialize this `$resource` object. The only drawback is that you will get a
-`data` structure. Thanks to the
-[JMSSerializerBundle](https://github.com/schmittjoh/JMSSerializerBundle), you
-can fix this issue:
-
-``` yaml
-# app/config/config.yml
-jms_serializer:
-    metadata:
-        directories:
-            hateoas:
-                namespace_prefix: 'Hateoas'
-                path: %kernel.root_dir%/config/serializer
-```
-
-``` yaml
-# app/config/serializer/Resource.yml
-Hateoas\Resource:
-    properties:
-        data:
-            inline: true
-```
-
-Now, it will generate the following outputs according to previous examples:
-
-``` xml
-<user>
-    <id>999</id>
-    <username>xxxx</username>
-    <email>xxxx@example.org</email>
-
-    <link href="http://example.com/users/999" rel="self" />
-
-    <link rel="friends"
-          type="application/vnd.acme.user"
-          href="http://example.com/users/999/friends" />
-</user>
-```
-
-``` json
-{
-  "user": {
-    "id": 999,
-    "username": "xxxx",
-    "email": "xxx@example.org",
-    "links": [
-      {
-        "href": "http://example.com/users/999",
-        "rel": "self"
-      },
-      {
-        "href": "http://example.com/users/999/friends",
-        "rel": "friends",
-        "type": "application/vnd.acme.user"
-      }
-    ]
-  }
-}
-```
-
-
-Using Factories and Builders
-----------------------------
+### Using Factories and Builders
 
 Hateoas provides factories and builders to generate `Resource` and `Link`
 instances. A Factory takes a configuration as an array. That means you can use
@@ -202,25 +136,8 @@ $resource = $resourceBuilder->create($user);
 `$resource` is an instance of `Resource` and contains two `Link` (`self` and
 `friends`).
 
-But you may want to play with collection of resources, like a list of users.
-First, configure the serializer:
-
-``` yaml
-# app/config/serializer/Collection.yml
-Hateoas\Collection:
-    properties:
-        resources:
-            inline: true
-        total:
-            xml_attribute: true
-        limit:
-            xml_attribute: true
-        page:
-            xml_attribute: true
-```
-
-Now, you need to pass a configuration array for your collections as second
-argument of your `Factory`:
+You need to pass a configuration array for your collections as second argument
+of your `Factory`:
 
 ``` php
 <?php
@@ -270,8 +187,9 @@ $collection = $resourceBuilder->createCollection(
 );
 ```
 
-Both methods `create()` and `createCollection()` accept a optional parameter to define child properties to iterate over.
-For example you have a Post with a `author` property.
+Both methods `create()` and `createCollection()` accept a optional parameter to
+define child properties to iterate over. For example you have a Post with a
+`author` property.
 
 With the following code it adds also hyperlinks to the `author` object:
 
@@ -360,12 +278,15 @@ You will get the following output:
 
 ``` json
 {
-  [
+  "total": 1000,
+  "page": 1,
+  "limit": 10,
+  "resources": [
     {
       "id": 999,
       "username": "xxxx",
       "email": "xxx@example.org",
-      "links": [
+      "_links": [
         {
           "href": "http://example.com/users/999",
           "rel": "self"
@@ -374,7 +295,7 @@ You will get the following output:
     },
     // ...
   ],
-  "links": [
+  "_links": [
     {
       "href": "http://example.com/users?page=1",
       "rel": "self",
@@ -400,10 +321,7 @@ You will get the following output:
       "rel": "last",
       "type":"application/vnd.acme.user"
     }
-  ],
-  "total": 1000,
-  "page": 1,
-  "limit": 10
+  ]
 }
 ```
 
