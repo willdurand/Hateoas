@@ -52,10 +52,10 @@ class LinkBuilder implements LinkBuilderInterface
     }
 
     /**
-     * @param  string $route
-     * @param  array  $parameters
-     * @param  string $rel
-     * @param  string $type
+     * @param string $route
+     * @param array  $parameters
+     * @param string $rel
+     * @param string $type
      *
      * @return Link
      */

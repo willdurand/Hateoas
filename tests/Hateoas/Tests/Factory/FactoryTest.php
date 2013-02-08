@@ -2,6 +2,7 @@
 
 namespace Hateoas\Tests\Factory;
 
+use Hateoas\Factory\Config\ArrayConfig;
 use Hateoas\Factory\Factory;
 use Hateoas\Factory\Definition\LinkDefinition;
 use Hateoas\Tests\Fixtures\DummyClass;
@@ -14,11 +15,11 @@ class FactoryTest extends TestCase
 {
     public function testGetResourceDefinition()
     {
-        $factory = new Factory(array(
+        $factory = new Factory(new ArrayConfig(array(
             'foobar' => array(
                 array('rel' => 'foo', 'type' => 'bar')
             ),
-        ));
+        )));
 
         $def = $factory->getResourceDefinition('foobar');
         $this->assertInstanceOf('Hateoas\Factory\Definition\ResourceDefinition', $def);
@@ -34,11 +35,11 @@ class FactoryTest extends TestCase
     public function testGetResourceDefinitionWithLinkDefinition()
     {
         $linkDef = new LinkDefinition('foo', 'bar');
-        $factory = new Factory(array(
+        $factory = new Factory(new ArrayConfig(array(
             'foobar' => array(
                 $linkDef,
             ),
-        ));
+        )));
 
         $def = $factory->getResourceDefinition('foobar');
         $this->assertInstanceOf('Hateoas\Factory\Definition\ResourceDefinition', $def);
@@ -58,11 +59,11 @@ class FactoryTest extends TestCase
      */
     public function testGetResourceWithUnknownClass()
     {
-        $factory = new Factory(array(
+        $factory = new Factory(new ArrayConfig(array(
             'foobar' => array(
                 array('rel' => 'foo', 'type' => 'bar')
             ),
-        ));
+        )));
 
         $factory->getResourceDefinition('nonexistentclass');
     }
@@ -70,11 +71,11 @@ class FactoryTest extends TestCase
     public function testGetResourceWithObject()
     {
         $linkDef = new LinkDefinition('foo', 'bar');
-        $factory = new Factory(array(
+        $factory = new Factory(new ArrayConfig(array(
             'Hateoas\Tests\Fixtures\DummyClass' => array(
                 $linkDef,
             ),
-        ));
+        )));
 
         $def = $factory->getResourceDefinition(new DummyClass());
 
@@ -95,18 +96,18 @@ class FactoryTest extends TestCase
      */
     public function testGetResourceWithUnknownObject()
     {
-        $factory = new Factory(array(
+        $factory = new Factory(new ArrayConfig(array(
             'foobar' => array(
                 array('rel' => 'foo', 'type' => 'bar')
             ),
-        ));
+        )));
 
         $factory->getResourceDefinition(new DummyClass());
     }
 
     public function testGetCollectionDefinition()
     {
-        $factory = new Factory(
+        $factory = new Factory(new ArrayConfig(
             array(), // entities
             array(
                 'foobar' => array(
@@ -115,7 +116,7 @@ class FactoryTest extends TestCase
                     )
                 ),
             )
-        );
+        ));
 
         $def = $factory->getCollectionDefinition('foobar');
         $this->assertInstanceOf('Hateoas\Factory\Definition\CollectionDefinition', $def);
@@ -131,7 +132,7 @@ class FactoryTest extends TestCase
     public function testGetCollectionDefinitionWithLinkDefinition()
     {
         $linkDef = new LinkDefinition('foo', 'bar');
-        $factory = new Factory(
+        $factory = new Factory(new ArrayConfig(
             array(), // entities
             array(
                 'foobar' => array(
@@ -140,7 +141,7 @@ class FactoryTest extends TestCase
                     )
                 ),
             )
-        );
+        ));
 
         $def = $factory->getCollectionDefinition('foobar');
         $this->assertInstanceOf('Hateoas\Factory\Definition\CollectionDefinition', $def);

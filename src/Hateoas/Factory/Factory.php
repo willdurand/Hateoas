@@ -2,6 +2,7 @@
 
 namespace Hateoas\Factory;
 
+use Hateoas\Factory\Config\ConfigInterface;
 use Hateoas\Factory\Definition\CollectionDefinition;
 use Hateoas\Factory\Definition\ResourceDefinition;
 use Hateoas\Factory\Definition\LinkDefinition;
@@ -21,10 +22,10 @@ class Factory implements FactoryInterface
      */
     private $collectionDefinitions;
 
-    public function __construct(array $resourceDefinitions, array $collectionDefinitions = array())
+    public function __construct(ConfigInterface $config)
     {
-        $this->resourceDefinitions   = $resourceDefinitions;
-        $this->collectionDefinitions = $collectionDefinitions;
+        $this->resourceDefinitions   = $config->getResourceDefinitions();
+        $this->collectionDefinitions = $config->getCollectionDefinitions();
     }
 
     /**

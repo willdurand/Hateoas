@@ -1,0 +1,6 @@
+hateoas:
+    resources:
+        Foo: ~
+
+    collections:
+        Bar: ~

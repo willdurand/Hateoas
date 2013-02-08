@@ -10,10 +10,12 @@
     ],
     "require": {
         "symfony/property-access": "2.2.*@dev",
-        "jms/serializer": "1.0.*@dev"
+        "jms/serializer": "1.0.*@dev",
+        "symfony/yaml": "2.2.*@dev"
     },
     "suggest": {
-        "symfony/routing": "Required if you want to use the LinkBuilder"
+        "symfony/routing": "Required if you want to use the LinkBuilder",
+        "symfony/yaml": "Required if you want to use the YamlConfig"
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }

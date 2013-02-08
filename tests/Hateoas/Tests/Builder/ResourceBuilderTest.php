@@ -2,6 +2,7 @@
 
 namespace Hateoas\Tests\Builder;
 
+use Hateoas\Factory\Config\ArrayConfig;
 use Hateoas\Factory\Factory;
 use Hateoas\Builder\ResourceBuilder;
 use Hateoas\Tests\TestCase;
@@ -17,7 +18,7 @@ class ResourceBuilderTest extends TestCase
             ),
         );
 
-        $factory = new Factory($definitions);
+        $factory = new Factory(new ArrayConfig($definitions));
         $builder = new ResourceBuilder(
             $factory,
             $this->getLinkBuilderMock($this->exactly(2))
@@ -61,7 +62,7 @@ class ResourceBuilderTest extends TestCase
             ),
         );
 
-        $factory = new Factory($definitions, $collDefinitions);
+        $factory = new Factory(new ArrayConfig($definitions, $collDefinitions));
         $builder = new ResourceBuilder(
             $factory,
             $this->getLinkBuilderMock($this->exactly(4))
