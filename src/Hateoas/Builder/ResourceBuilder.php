@@ -102,12 +102,12 @@ class ResourceBuilder implements ResourceBuilderInterface
 
         // limit
         if (null !== $limit = $collectionDefinition->getLimit()) {
-            $limit = $access->getValue($collection, $limit);
+            $limit = $accessor->getValue($collection, $limit);
         }
 
         // page
         if (null !== $page = $collectionDefinition->getPage()) {
-            $page = $access->getValue($collection, $page);
+            $page = $accessor->getValue($collection, $page);
         }
 
         return new Collection(
