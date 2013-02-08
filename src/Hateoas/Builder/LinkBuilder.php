@@ -2,9 +2,9 @@
 
 namespace Hateoas\Builder;
 
+use Hateoas\Link;
 use Hateoas\Factory\Definition\RouteLinkDefinition;
 use Hateoas\Factory\Definition\LinkDefinition;
-use Hateoas\Link;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -56,6 +56,7 @@ class LinkBuilder implements LinkBuilderInterface
      * @param  array  $parameters
      * @param  string $rel
      * @param  string $type
+     *
      * @return Link
      */
     public function create($route, array $parameters = array(), $rel = Link::REL_SELF, $type = null)
