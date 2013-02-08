@@ -3,7 +3,6 @@
 namespace Hateoas;
 
 use JMS\Serializer\Annotation\XmlAttribute;
-use JMS\Serializer\Annotation\XmlRoot;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
