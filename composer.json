@@ -12,11 +12,8 @@
         "symfony/property-access": "2.2.*@dev",
         "jms/serializer": "1.0.*@dev"
     },
-    "require-dev": {
-        "symfony/form": "~2.1"
-    },
     "suggest": {
-        "symfony/routing": ""
+        "symfony/routing": "Required if you want to use the LinkBuilder"
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }
