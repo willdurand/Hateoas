@@ -48,6 +48,9 @@ $resource->addLink(new Link('http://example.com/users/999', Link::REL_SELF));
 $resource->addLink(new Link('http://example.com/users/999/friends', 'friends', 'application/vnd.acme.user'));
 ```
 
+
+### LinkBuilder, CallableLinkBuilder
+
 This library also provides a `LinkBuilder` which relies on a `RouterInterface`
 instance under the hood. In Symfony2, you could use the `router` service as
 shown in the following example, but **this library is not tied to Symfony2**.
@@ -63,7 +66,22 @@ $selfLink = $linkBuilder->create('user_get', array('id' => $user->getId()), Link
 $resource->addLink($selfLink);
 ```
 
-### Serializer
+The `LinkBuilder` has been described above. This builder uses the Symfony2
+Router, but what if you don't use it? `CallableLinkBuilder` to the rescue!
+This builder takes a `callable` as argument:
+
+``` php
+<?php
+
+use Hateoas\Builder\CallableLinkBuilder;
+
+$linkBuilder = new CallableLinkBuilder(function ($route, $parameters) use ($myRouter) {
+    return $myRouter->generateRoute($route, $parameters);
+});
+```
+
+
+### Note About The Serializer
 
 Hateoas uses the [JMS Serializer](https://github.com/schmittjoh/serializer), and
 hooks into it to provide nice features, **but** that also means you need to use
@@ -91,10 +109,17 @@ instances. A Factory takes a `ConfigInterface` object as argument.
 That means you can use XML, YAML, annotations, etc. even if it's not yet
 implemented in the library itself.
 
+
+### Config
+
 At the moment, Hateoas is bundled with an `ArrayConfig` and a `YamlConfig`
 which relies on the Symfony2 Yaml component under the hood.
 
+##### ArrayConfig
+
 The `ArrayConfig` class takes two arrays as arguments.
+
+##### YamlConfig
 
 The `YamlConfig` class takes either a filename or a string containing a YAML
 configuration as described below:
@@ -119,6 +144,9 @@ hateoas:
                 - { route: 'comment.all', rel: 'self', type: 'application/vnd.acme.comment' }
 ```
 
+
+### LinkDefinition, RouteLinkDefinition
+
 In order to describe a `Link`, you need to define a `rel` attribute (and
 optionally a `type`). If you are using Symfony2, you can describe a
 `RouteLinkDefinition` so that you can define a `route` and its `parameters`:
@@ -138,7 +166,10 @@ $linkDefinition = new RouteLinkDefinition('acme_demo.user_get', array('id'), Lin
 
 > **Note:** you can use the `RouteLinkDefinition` even if you don't use the
 > Symfony2 Router. It can be useful if your own router relies on the same
-> principe (a route and its parameters).
+> principle (a route and its parameters).
+
+
+### Factory, RouteAwareFactory
 
 Now, you need a factory. Symfony2 users will be interested in the
 `RouteAwareFactory`, others can implement their own _Factory_:
@@ -170,6 +201,9 @@ instance or a classname. This definition contains a class name and a set of
 `LinkDefinition`. The `RouteAwareFactory` described above allows to create
 `RouteLinkDefinition` instances.
 
+
+### ResourceBuilder
+
 Now, you probably want to create resources using your configuration. Thanks to
 the `ResourceBuilder` it's super easy. A `ResourceBuilder` needs a `LinkBuilder`
 and a `Factory`:
@@ -182,20 +216,6 @@ use Hateoas\Builder\ResourceBuilder;
 $resourceBuilder = new ResourceBuilder($factory, $linkBuilder);
 ```
 
-The `LinkBuilder` has been described above. This builder uses the Symfony2
-Router, but what if you don't use it? `CallableLinkBuilder` to the rescue!
-This builder takes a `callable` as argument:
-
-``` php
-<?php
-
-use Hateoas\Builder\CallableLinkBuilder;
-
-$linkBuilder = new CallableLinkBuilder(function ($route, $parameters) use ($myRouter) {
-    return $myRouter->generateRoute($route, $parameters);
-});
-```
-
 Now, you can create a resource for a given object:
 
 ``` php
@@ -206,6 +226,9 @@ $resource = $resourceBuilder->create($user);
 
 `$resource` is an instance of `Resource` and contains two `Link` (`self` and
 `friends`).
+
+
+### Playing With Collections
 
 You need to pass a configuration array for your collections as second argument
 of your `Factory`:
@@ -260,7 +283,10 @@ $collection = $resourceBuilder->createCollection(
 );
 ```
 
-Both methods `create()` and `createCollection()` accept a optional parameter to
+
+### Dealing With Child Properties
+
+Both methods `create()` and `createCollection()` accept an optional parameter to
 define child properties to iterate over. For example you have a Post with a
 `author` property.
 
@@ -271,6 +297,12 @@ With the following code it adds also hyperlinks to the `author` object:
 
 $resource = $resourceBuilder->create($user, array('objectProperties' => array('author')));
 ```
+
+
+Examples
+--------
+
+### Example With A (Propel) Pager
 
 Let's say you have a pager like the [Propel
 Pager](http://www.propelorm.org/documentation/03-basic-crud.html#query_termination_methods),
