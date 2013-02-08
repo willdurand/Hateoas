@@ -51,15 +51,19 @@ $resource->addLink(new Link('http://example.com/users/999/friends', 'friends', '
 
 ### LinkBuilder, CallableLinkBuilder
 
-This library also provides a `LinkBuilder` which relies on a `RouterInterface`
-instance under the hood. In Symfony2, you could use the `router` service as
-shown in the following example, but **this library is not tied to Symfony2**.
+This library also provides a `LinkBuilder` which relies on a
+`UrlGeneratorInterface` instance under the hood. In Symfony2, you could use the
+`router` service as shown in the following example, but **this library is not
+tied to Symfony2**.
 
 ``` php
 <?php
 
 // if you want to use the Symfony2 router in a Symfony2 project
 $linkBuilder = new LinkBuilder($this->get('router'));
+
+// in a Silex project
+$linkBuilder = new LinkBuilder($app['url_generator']);
 
 // Generate a "self" link
 $selfLink = $linkBuilder->create('user_get', array('id' => $user->getId()), Link::REL_SELF);

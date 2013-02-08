@@ -5,7 +5,7 @@ namespace Hateoas\Builder;
 use Hateoas\Link;
 use Hateoas\Factory\Definition\RouteLinkDefinition;
 use Hateoas\Factory\Definition\LinkDefinition;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
@@ -14,13 +14,13 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class LinkBuilder implements LinkBuilderInterface
 {
     /**
-     * @var RouterInterface
+     * @var UrlGeneratorInterface
      */
-    private $router;
+    private $urlGenerator;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(UrlGeneratorInterface $urlGenerator)
     {
-        $this->router = $router;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -61,7 +61,7 @@ class LinkBuilder implements LinkBuilderInterface
      */
     public function create($route, array $parameters = array(), $rel = Link::REL_SELF, $type = null)
     {
-        $url = $this->router->generate($route, $parameters, true);
+        $url = $this->urlGenerator->generate($route, $parameters, true);
 
         return new Link($url, $rel, $type);
     }
