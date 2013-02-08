@@ -302,6 +302,162 @@ $resource = $resourceBuilder->create($user, array('objectProperties' => array('a
 Examples
 --------
 
+### Quick Example
+
+Let's say you have an application that manages a set of _locations_, and each
+_location_ owns a set of _comments_. According to the YAML configuration shown
+above, here are the outputs:
+
+##### GET /locations
+
+``` xml
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+  <link href="http://localhost:8081/locations" rel="self" type="application/vnd.example.location"/>
+  <location>
+    <link href="http://localhost:8081/locations/1" rel="self" type="application/vnd.example.location"/>
+    <link href="http://localhost:8081/locations/1/comments" rel="comments" type="application/vnd.example.comment"/>
+    <id><![CDATA[1]]></id>
+    <name><![CDATA[test]]></name>
+    <created_at><![CDATA[2013-02-07T18:37:03+0100]]></created_at>
+  </location>
+  <location>
+    <link href="http://localhost:8081/locations/4" rel="self" type="application/vnd.example.location"/>
+    <link href="http://localhost:8081/locations/4/comments" rel="comments" type="application/vnd.example.comment"/>
+    <id><![CDATA[4]]></id>
+    <name><![CDATA[foobar]]></name>
+    <created_at><![CDATA[2013-02-07T18:37:04+0100]]></created_at>
+  </location>
+</resources>
+```
+
+``` json
+{
+   "resources" : [
+      {
+         "created_at" : "2013-02-07T18:37:03+0100",
+         "_links" : [
+            {
+               "rel" : "self",
+               "href" : "http://localhost:8081/locations/1",
+               "type" : "application/vnd.example.location"
+            },
+            {
+               "rel" : "comments",
+               "href" : "http://localhost:8081/locations/1/comments",
+               "type" : "application/vnd.example.comment"
+            }
+         ],
+         "name" : "test",
+         "id" : "1"
+      },
+      {
+         "created_at" : "2013-02-07T18:37:04+0100",
+         "_links" : [
+            {
+               "rel" : "self",
+               "href" : "http://localhost:8081/locations/4",
+               "type" : "application/vnd.example.location"
+            },
+            {
+               "rel" : "comments",
+               "href" : "http://localhost:8081/locations/4/comments",
+               "type" : "application/vnd.example.comment"
+            }
+         ],
+         "name" : "foobar",
+         "id" : "4"
+      }
+   ],
+   "_links" : [
+      {
+         "rel" : "self",
+         "href" : "http://localhost:8081/locations",
+         "type" : "application/vnd.example.location"
+      }
+   ]
+}
+```
+
+
+##### GET /locations/4
+
+``` xml
+<?xml version="1.0" encoding="UTF-8"?>
+<location>
+  <link href="http://localhost:8081/locations/4" rel="self" type="application/vnd.example.location"/>
+  <link href="http://localhost:8081/locations/4/comments" rel="comments" type="application/vnd.example.comment"/>
+  <id><![CDATA[4]]></id>
+  <name><![CDATA[foobar]]></name>
+  <created_at><![CDATA[2013-02-07T18:37:04+0100]]></created_at>
+</location>
+```
+
+``` json
+{
+   "created_at" : "2013-02-07T18:37:04+0100",
+   "_links" : [
+      {
+         "rel" : "self",
+         "href" : "http://localhost:8081/locations/4",
+         "type" : "application/vnd.example.location"
+      },
+      {
+         "rel" : "comments",
+         "href" : "http://localhost:8081/locations/4/comments",
+         "type" : "application/vnd.example.comment"
+      }
+   ],
+   "name" : "foobar",
+   "id" : "4"
+}
+```
+
+
+##### GET /locations/4/comments
+
+``` xml
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+  <link href="http://localhost:8081/comments" rel="self" type="application/vnd.example.comment"/>
+  <comment>
+    <link href="http://localhost:8081/comments/8" rel="self" type="application/vnd.example.comment"/>
+    <id><![CDATA[8]]></id>
+    <username><![CDATA[anonymous]]></username>
+    <body><![CDATA[]]></body>
+    <created_at><![CDATA[2013-02-07T19:41:14+0100]]></created_at>
+  </comment>
+</resources>
+```
+
+``` json
+{
+   "resources" : [
+      {
+         "body" : "",
+         "created_at" : "2013-02-07T19:41:14+0100",
+         "_links" : [
+            {
+               "rel" : "self",
+               "href" : "http://localhost:8081/comments/8",
+               "type" : "application/vnd.example.comment"
+            }
+         ],
+         "id" : "8",
+         "username" : "anonymous"
+      },
+   ],
+   "_links" : [
+      {
+         "rel" : "self",
+         "href" : "http://localhost:8081/comments",
+         "type" : "application/vnd.example.comment"
+      }
+   ]
+}
+```
+
+
 ### Example With A (Propel) Pager
 
 Let's say you have a pager like the [Propel
