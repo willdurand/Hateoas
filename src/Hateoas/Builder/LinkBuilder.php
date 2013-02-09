@@ -35,10 +35,9 @@ class LinkBuilder implements LinkBuilderInterface
         $parameters = array();
         $accessor   = PropertyAccess::getPropertyAccessor();
 
-        foreach ($definition->getParameters() as $name => $path) {
-            if (is_numeric($name)) {
-                $name = $path;
-            }
+        foreach ($definition->getParameters() as $path) {
+            $name = is_array($path) ? key($path) : $path;
+            $path = is_array($path) ? current($path) : $path;
 
             $parameters[$name] = $accessor->getValue($data, $path);
         }
