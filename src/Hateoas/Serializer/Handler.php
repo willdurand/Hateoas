@@ -36,6 +36,12 @@ class Handler implements SubscribingHandlerInterface
                 'type'      => 'Hateoas\Resource',
                 'method'    => 'serializeResourceToJson',
             ),
+            array(
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => 'Hateoas\Collection',
+                'method'    => 'serializeCollectionToJson',
+            ),
         );
     }
 
@@ -82,14 +88,7 @@ class Handler implements SubscribingHandlerInterface
     public function serializeCollectionToXml(XmlSerializationVisitor $visitor, Collection $collection, array $type)
     {
         if (null === $visitor->document) {
-            $reflClass = new \ReflectionClass(get_class($visitor));
-            $reflProp  = $reflClass->getProperty('defaultRootName');
-            $reflProp->setAccessible(true);
-
-            if ('result' === $reflProp->getValue($visitor)) {
-                $visitor->setDefaultRootName('resources');
-            }
-
+            $visitor->setDefaultRootName('resources');
             $visitor->document = $visitor->createDocument();
         }
 
@@ -136,8 +135,51 @@ class Handler implements SubscribingHandlerInterface
 
     public function serializeResourceToJson(JsonSerializationVisitor $visitor, Resource $resource, array $type)
     {
+        $metadata  = $this->metadataFactory
+            ->getMetadataForClass(get_class($resource))
+            ->propertyMetadata['links'];
+        $linksName = $metadata->serializedName ?: '_links';
+
+        // inline
+        $data = $visitor->getNavigator()->accept($resource->getData(), null, $visitor);
+        $data[$linksName] = $this->getLinksFrom($resource);
+
+        $root = $visitor->getRoot();
+
+        if (!empty($root)) {
+            $visitor->setRoot($data);
+        }
+
+        return $data;
+    }
+
+    public function serializeCollectionToJson(JsonSerializationVisitor $visitor, Collection $collection, array $type)
+    {
+        $metadata  = $this->metadataFactory
+            ->getMetadataForClass(get_class($collection))
+            ->propertyMetadata['links'];
+        $linksName = $metadata->serializedName ?: '_links';
+
+        // attributes
+        foreach (array('total', 'page', 'limit') as $attr) {
+            if ($value = $collection->{'get' . ucfirst($attr)}()) {
+                $data[$attr] = $value;
+            }
+        }
+
+        // links
+        $data[$linksName] = $this->getLinksFrom($collection);
+
+        // resources
+        $data['resources'] = $visitor->getNavigator()->accept($collection->getResources(), null, $visitor);
+
+        $visitor->setRoot($data);
+    }
+
+    private function getLinksFrom($object)
+    {
         $links = array();
-        foreach ($resource->getLinks() as $link) {
+        foreach ($object->getLinks() as $link) {
             $data         = array();
             $data['href'] = $link->getHref();
 
@@ -148,19 +190,6 @@ class Handler implements SubscribingHandlerInterface
             $links[$link->getRel()] = $data;
         }
 
-        $metadata  = $this->metadataFactory
-            ->getMetadataForClass(get_class($resource))
-            ->propertyMetadata['links'];
-        $linksName = $metadata->serializedName ?: '_links';
-
-        // inline
-        $data = $visitor->getNavigator()->accept($resource->getData(), null, $visitor);
-        $data[$linksName] = $links;
-
-        if (null !== $visitor->getRoot() && is_array($visitor->getRoot())) {
-            $visitor->setRoot($data);
-        }
-
-        return $data;
+        return $links;
     }
 }
