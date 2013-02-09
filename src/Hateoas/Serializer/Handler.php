@@ -187,7 +187,22 @@ class Handler implements SubscribingHandlerInterface
                 $data['type'] = $type;
             }
 
-            $links[$link->getRel()] = $data;
+            if (isset($links[$link->getRel()])) {
+                // in order to support multiple links per "rel"
+                // we need to transform the "rel" element into
+                // an array, so that we can add oher "rel"
+                // elements
+                if (isset($links[$link->getRel()]['href'])) {
+                    $element = $links[$link->getRel()];
+
+                    $links[$link->getRel()] = array();
+                    $links[$link->getRel()][] = $element;
+                }
+
+                $links[$link->getRel()][] = $data;
+            } else {
+                $links[$link->getRel()] = $data;
+            }
         }
 
         return $links;

@@ -47,6 +47,30 @@ XML
         , trim($serializer->serialize($res, 'xml')));
     }
 
+    public function testSerializeResourceWithMultipleRelInXml()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(
+                new Link('/foo/12', 'foo', 'application/vnd.hateoas.foo'),
+                new Link('/foo/34', 'foo', 'application/vnd.hateoas.foo'),
+                new Link('/foo/56', 'foo', 'application/vnd.hateoas.foo')
+            )
+        );
+
+        $this->assertEquals(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<data_class>
+  <link href="/foo/12" rel="foo" type="application/vnd.hateoas.foo"/>
+  <link href="/foo/34" rel="foo" type="application/vnd.hateoas.foo"/>
+  <link href="/foo/56" rel="foo" type="application/vnd.hateoas.foo"/>
+  <content><![CDATA[foo]]></content>
+</data_class>
+XML
+        , trim($serializer->serialize($res, 'xml')));
+    }
+
     public function testSerializeCollectionInXml()
     {
         $serializer = Hateoas::getSerializer();
@@ -96,6 +120,24 @@ XML
 
         $this->assertEquals(
             '{"content":"foo","_links":{"self":{"href":"\/foo","type":"application\/vnd.hateoas.data_class"}}}',
+            $serializer->serialize($res, 'json')
+        );
+    }
+
+    public function testSerializeResourceWithMultipleRelInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(
+                new Link('/foo/12', 'foo', 'application/vnd.hateoas.foo'),
+                new Link('/foo/34', 'foo', 'application/vnd.hateoas.foo'),
+                new Link('/foo/56', 'foo', 'application/vnd.hateoas.foo')
+            )
+        );
+
+        $this->assertEquals(
+            '{"content":"foo","_links":{"foo":[{"href":"\/foo\/12","type":"application\/vnd.hateoas.foo"},{"href":"\/foo\/34","type":"application\/vnd.hateoas.foo"},{"href":"\/foo\/56","type":"application\/vnd.hateoas.foo"}]}}',
             $serializer->serialize($res, 'json')
         );
     }
