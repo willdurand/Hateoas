@@ -379,6 +379,9 @@ above, here are the outputs:
 }
 ```
 
+The JSON representation of links follows the [Hypertext Application Language
+specification](http://stateless.co/hal_specification.html).
+
 
 ##### GET /locations/4
 
@@ -554,7 +557,7 @@ You will get the following output:
     // ...
   ],
   "_links": {
-      "self": {
+    "self": {
       "href": "http://example.com/users?page=1",
       "type": "application/vnd.acme.user"
     },
