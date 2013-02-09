@@ -13,9 +13,11 @@ use Metadata\MetadataFactory;
  */
 class Hateoas
 {
-    public static function getSerializer()
+    public static function getSerializer(array $metadataDirs = array(), $debug = false)
     {
         return SerializerBuilder::create()
+            ->setDebug($debug)
+            ->addMetadataDirs($metadataDirs)
             ->addDefaultHandlers()
             ->configureHandlers(function ($handlerRegistry) {
                 $metadataFactory = new MetadataFactory(
