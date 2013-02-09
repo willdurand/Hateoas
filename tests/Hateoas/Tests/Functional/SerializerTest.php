@@ -86,6 +86,20 @@ XML
         );
     }
 
+    public function testSerializeResourceWithTypeInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(new Link('/foo', Link::REL_SELF, 'application/vnd.hateoas.data_class'))
+        );
+
+        $this->assertEquals(
+            '{"content":"foo","_links":{"self":{"href":"\/foo","type":"application\/vnd.hateoas.data_class"}}}',
+            $serializer->serialize($res, 'json')
+        );
+    }
+
     public function testSerializeCollectionInJson()
     {
         $serializer = Hateoas::getSerializer();
@@ -113,11 +127,13 @@ XML
                 array(new Link('/foo', Link::REL_SELF, 'application/vnd.hateoas.data_class'))
             )),
             array(new Link('/foobar', Link::REL_SELF, 'application/vnd.hateoas.data_class')),
-            1
+            10,
+            1,
+            2
         );
 
         $this->assertEquals(
-            '{"total":1,"_links":{"self":{"href":"\/foobar","type":"application\/vnd.hateoas.data_class"}},"resources":[{"content":"foo","_links":{"self":{"href":"\/foo","type":"application\/vnd.hateoas.data_class"}}}]}',
+            '{"total":10,"page":1,"limit":2,"_links":{"self":{"href":"\/foobar","type":"application\/vnd.hateoas.data_class"}},"resources":[{"content":"foo","_links":{"self":{"href":"\/foo","type":"application\/vnd.hateoas.data_class"}}}]}',
             $serializer->serialize($col, 'json')
         );
     }
