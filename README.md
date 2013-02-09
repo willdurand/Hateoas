@@ -340,46 +340,42 @@ above, here are the outputs:
    "resources" : [
       {
          "created_at" : "2013-02-07T18:37:03+0100",
-         "_links" : [
-            {
-               "rel" : "self",
+         "_links" : {
+            "self": {
                "href" : "http://localhost:8081/locations/1",
                "type" : "application/vnd.example.location"
             },
-            {
-               "rel" : "comments",
+            "comments": {
                "href" : "http://localhost:8081/locations/1/comments",
                "type" : "application/vnd.example.comment"
             }
-         ],
+         },
          "name" : "test",
          "id" : "1"
       },
       {
          "created_at" : "2013-02-07T18:37:04+0100",
-         "_links" : [
-            {
-               "rel" : "self",
+         "_links" : {
+            "self": {
                "href" : "http://localhost:8081/locations/4",
                "type" : "application/vnd.example.location"
             },
-            {
-               "rel" : "comments",
+            "comments": {
                "href" : "http://localhost:8081/locations/4/comments",
                "type" : "application/vnd.example.comment"
             }
-         ],
+         },
          "name" : "foobar",
          "id" : "4"
       }
    ],
-   "_links" : [
-      {
+   "_links" : {
+      "self": {
          "rel" : "self",
          "href" : "http://localhost:8081/locations",
          "type" : "application/vnd.example.location"
       }
-   ]
+   }
 }
 ```
 
@@ -400,18 +396,16 @@ above, here are the outputs:
 ``` json
 {
    "created_at" : "2013-02-07T18:37:04+0100",
-   "_links" : [
-      {
-         "rel" : "self",
+   "_links" : {
+      "self": {
          "href" : "http://localhost:8081/locations/4",
          "type" : "application/vnd.example.location"
       },
-      {
-         "rel" : "comments",
+      "comments": {
          "href" : "http://localhost:8081/locations/4/comments",
          "type" : "application/vnd.example.comment"
       }
-   ],
+   },
    "name" : "foobar",
    "id" : "4"
 }
@@ -440,24 +434,22 @@ above, here are the outputs:
       {
          "body" : "",
          "created_at" : "2013-02-07T19:41:14+0100",
-         "_links" : [
-            {
-               "rel" : "self",
+         "_links" : {
+            "self": {
                "href" : "http://localhost:8081/comments/8",
                "type" : "application/vnd.example.comment"
             }
-         ],
+         },
          "id" : "8",
          "username" : "anonymous"
       },
    ],
-   "_links" : [
-      {
-         "rel" : "self",
+   "_links" : {
+      "self": {
          "href" : "http://localhost:8081/comments",
          "type" : "application/vnd.example.comment"
       }
-   ]
+   }
 }
 ```
 
@@ -553,42 +545,36 @@ You will get the following output:
       "id": 999,
       "username": "xxxx",
       "email": "xxx@example.org",
-      "_links": [
-        {
-          "href": "http://example.com/users/999",
-          "rel": "self"
+      "_links": {
+        "self": {
+          "href": "http://example.com/users/999"
         }
-      ]
+      }
     },
     // ...
   ],
-  "_links": [
-    {
+  "_links": {
+      "self": {
       "href": "http://example.com/users?page=1",
-      "rel": "self",
       "type": "application/vnd.acme.user"
     },
-    {
+    "previous": {
       "href": "http://example.com/users?page=1",
-      "rel": "previous",
       "type":"application/vnd.acme.user"
     },
-    {
+    "next": {
       "href": "http://example.com/users?page=2",
-      "rel": "next",
       "type":"application/vnd.acme.user"
     },
-    {
+    "first": {
       "href": "http://example.com/users?page=1",
-      "rel": "first",
       "type":"application/vnd.acme.user"
     },
-    {
+    "last": {
       "href": "http://example.com/users?page=100",
-      "rel": "last",
       "type":"application/vnd.acme.user"
     }
-  ]
+  }
 }
 ```
 

@@ -81,7 +81,7 @@ XML
         );
 
         $this->assertEquals(
-            '{"content":"foo","_links":[{"href":"\/foo","rel":"self"}]}',
+            '{"content":"foo","_links":{"self":{"href":"\/foo"}}}',
             $serializer->serialize($res, 'json')
         );
     }
@@ -99,7 +99,7 @@ XML
         );
 
         $this->assertEquals(
-            '{"total":1,"_links":[{"href":"\/foobar","rel":"self"}],"resources":[{"content":"foo","_links":[{"href":"\/foo","rel":"self"}]}]}',
+            '{"total":1,"_links":[{"href":"\/foobar","rel":"self"}],"resources":[{"content":"foo","_links":{"self":{"href":"\/foo"}}}]}',
             $serializer->serialize($col, 'json')
         );
     }
