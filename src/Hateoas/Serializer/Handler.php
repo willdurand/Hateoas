@@ -115,6 +115,7 @@ class Handler implements SubscribingHandlerInterface
 
         // resources
         foreach ($collection->getResources() as $resource) {
+            $elementName = 'resource';
             if (is_object($resource->getData())
                 && null !== ($m = $this->metadataFactory->getMetadataForClass(get_class($resource->getData())))
             ) {
