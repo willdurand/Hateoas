@@ -29,6 +29,9 @@ Usage
 This library is under heavy development but basically it's a wrapper to add
 hypermedia links to a resource or a collection of resources.
 
+
+### Resource
+
 First of all, you have to wrap your data in a `Resource` object:
 
 ``` php
@@ -47,6 +50,8 @@ Now, you are able to add links to this resource:
 $resource->addLink(new Link('http://example.com/users/999', Link::REL_SELF));
 $resource->addLink(new Link('http://example.com/users/999/friends', 'friends', 'application/vnd.acme.user'));
 ```
+
+To sum up, a `Resource` contains **data** and **links** related to the data.
 
 
 ### RouteAwareLinkBuilder, CallableLinkBuilder
@@ -291,6 +296,13 @@ $collection = $resourceBuilder->createCollection(
 );
 ```
 
+A `Collection` contains a set of **resources**, **links** related to these
+resources, and metadata about the collection. For instance, you can set the
+`rootName` that is the name of the set of resources.
+
+If you use pagination, you can set the number of resources (`total`), the
+current `page`, and the `limit`.
+
 
 ### Dealing With Child Properties
 
@@ -343,7 +355,7 @@ above, here are the outputs:
 {
    "locations" : [
       {
-         "created_at" : "2013-02-07T18:37:03+0100",
+
          "_links" : {
             "self": {
                "href" : "http://localhost:8081/locations/1",
@@ -354,11 +366,12 @@ above, here are the outputs:
                "type" : "application/vnd.example.comment"
             }
          },
+         "id" : "1",
          "name" : "test",
-         "id" : "1"
+         "created_at" : "2013-02-07T18:37:03+0100",
       },
       {
-         "created_at" : "2013-02-07T18:37:04+0100",
+
          "_links" : {
             "self": {
                "href" : "http://localhost:8081/locations/4",
@@ -369,8 +382,9 @@ above, here are the outputs:
                "type" : "application/vnd.example.comment"
             }
          },
+         "id" : "4",
          "name" : "foobar",
-         "id" : "4"
+         "created_at" : "2013-02-07T18:37:04+0100"
       }
    ],
    "_links" : {
@@ -402,7 +416,6 @@ specification](http://stateless.co/hal_specification.html).
 
 ``` json
 {
-   "created_at" : "2013-02-07T18:37:04+0100",
    "_links" : {
       "self": {
          "href" : "http://localhost:8081/locations/4",
@@ -413,8 +426,9 @@ specification](http://stateless.co/hal_specification.html).
          "type" : "application/vnd.example.comment"
       }
    },
+   "id" : "4",
    "name" : "foobar",
-   "id" : "4"
+   "created_at" : "2013-02-07T18:37:04+0100"
 }
 ```
 
@@ -439,8 +453,6 @@ specification](http://stateless.co/hal_specification.html).
 {
    "comments" : [
       {
-         "body" : "",
-         "created_at" : "2013-02-07T19:41:14+0100",
          "_links" : {
             "self": {
                "href" : "http://localhost:8081/comments/8",
@@ -448,7 +460,9 @@ specification](http://stateless.co/hal_specification.html).
             }
          },
          "id" : "8",
-         "username" : "anonymous"
+         "username" : "anonymous",
+         "body" : "",
+         "created_at" : "2013-02-07T19:41:14+0100"
       },
    ],
    "_links" : {
