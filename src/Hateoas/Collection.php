@@ -2,12 +2,9 @@
 
 namespace Hateoas;
 
-use JMS\Serializer\Annotation\AccessorOrder;
 use JMS\Serializer\Annotation\SerializedName;
 
 /**
- * @AccessorOrder("custom", custom = {"total", "page", "limit", "links", "resources"})
- *
  * @author William Durand <william.durand1@gmail.com>
  */
 class Collection

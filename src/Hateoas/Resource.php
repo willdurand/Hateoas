@@ -2,7 +2,6 @@
 
 namespace Hateoas;
 
-use JMS\Serializer\Annotation\Inline;
 use JMS\Serializer\Annotation\SerializedName;
 
 /**
@@ -11,7 +10,6 @@ use JMS\Serializer\Annotation\SerializedName;
 class Resource
 {
     /**
-     * @Inline
      * @var object|array
      */
     private $data;
