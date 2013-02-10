@@ -36,7 +36,7 @@ class RouteAwareLinkBuilder implements LinkBuilderInterface
         $accessor   = PropertyAccess::getPropertyAccessor();
 
         foreach ($definition->getParameters() as $path) {
-            $name = is_array($path) ? key($path) : $path;
+            $name = is_array($path) ? key($path)     : $path;
             $path = is_array($path) ? current($path) : $path;
 
             $parameters[$name] = $accessor->getValue($data, $path);
