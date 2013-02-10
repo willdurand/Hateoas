@@ -75,6 +75,41 @@ XML
     {
         $serializer = Hateoas::getSerializer();
         $col        = new Collection(
+            array(
+                new Resource(
+                    new DataClass1('foo'),
+                    array(new Link('/foo', Link::REL_SELF))
+                ),
+                new Resource(
+                    new DataClass1('bar'),
+                    array(new Link('/bar', Link::REL_SELF))
+                ),
+            ),
+            array(new Link('/foobar', Link::REL_SELF)),
+            2
+        );
+
+        $this->assertEquals(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<resources total="2">
+  <link href="/foobar" rel="self"/>
+  <data_class>
+    <link href="/foo" rel="self"/>
+    <content><![CDATA[foo]]></content>
+  </data_class>
+  <data_class>
+    <link href="/bar" rel="self"/>
+    <content><![CDATA[bar]]></content>
+  </data_class>
+</resources>
+XML
+        , trim($serializer->serialize($col, 'xml')));
+    }
+
+    public function testSerializeCollectionWithOneElementInXml()
+    {
+        $serializer = Hateoas::getSerializer();
+        $col        = new Collection(
             array(new Resource(
                 new DataClass1('foo'),
                 array(new Link('/foo', Link::REL_SELF))
