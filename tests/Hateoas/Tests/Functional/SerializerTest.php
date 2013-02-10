@@ -142,20 +142,46 @@ XML
         );
     }
 
-    public function testSerializeCollectionInJson()
+    public function testSerializeCollectionWithOneElementInJson()
     {
         $serializer = Hateoas::getSerializer();
         $col        = new Collection(
-            array(new Resource(
-                new DataClass1('foo'),
-                array(new Link('/foo', Link::REL_SELF))
-            )),
+            array(
+                new Resource(
+                    new DataClass1('foo'),
+                    array(new Link('/foo', Link::REL_SELF))
+                ),
+            ),
             array(new Link('/foobar', Link::REL_SELF)),
             1
         );
 
         $this->assertEquals(
             '{"total":1,"_links":{"self":{"href":"\/foobar"}},"resources":[{"content":"foo","_links":{"self":{"href":"\/foo"}}}]}',
+            $serializer->serialize($col, 'json')
+        );
+    }
+
+    public function testSerializeCollectionInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $col        = new Collection(
+            array(
+                new Resource(
+                    new DataClass1('foo'),
+                    array(new Link('/foo', Link::REL_SELF))
+                ),
+                new Resource(
+                    new DataClass1('bar'),
+                    array(new Link('/bar', Link::REL_SELF))
+                ),
+            ),
+            array(new Link('/foobar', Link::REL_SELF)),
+            2
+        );
+
+        $this->assertEquals(
+            '{"total":2,"_links":{"self":{"href":"\/foobar"}},"resources":[{"content":"foo","_links":{"self":{"href":"\/foo"}}},{"content":"bar","_links":{"self":{"href":"\/bar"}}}]}',
             $serializer->serialize($col, 'json')
         );
     }

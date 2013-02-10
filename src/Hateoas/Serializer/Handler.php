@@ -144,11 +144,7 @@ class Handler implements SubscribingHandlerInterface
         $data = $visitor->getNavigator()->accept($resource->getData(), null, $visitor);
         $data[$linksName] = $this->getLinksFrom($resource);
 
-        $root = $visitor->getRoot();
-
-        if (!empty($root)) {
-            $visitor->setRoot($data);
-        }
+        $visitor->setRoot($data);
 
         return $data;
     }
@@ -168,10 +164,12 @@ class Handler implements SubscribingHandlerInterface
         }
 
         // links
-        $data[$linksName] = $this->getLinksFrom($collection);
-
+        $data[$linksName]  = $this->getLinksFrom($collection);
         // resources
-        $data['resources'] = $visitor->getNavigator()->accept($collection->getResources(), null, $visitor);
+        $data['resources'] = array();
+        foreach ($collection->getResources() as $resource) {
+            $data['resources'][] = $visitor->getNavigator()->accept($resource, null, $visitor);
+        }
 
         $visitor->setRoot($data);
     }
