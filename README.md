@@ -49,9 +49,9 @@ $resource->addLink(new Link('http://example.com/users/999/friends', 'friends', '
 ```
 
 
-### LinkBuilder, CallableLinkBuilder
+### RouteAwareLinkBuilder, CallableLinkBuilder
 
-This library also provides a `LinkBuilder` which relies on a
+This library also provides a `RouteAwareLinkBuilder` which relies on a
 `UrlGeneratorInterface` instance under the hood. In Symfony2, you could use the
 `router` service as shown in the following example, but **this library is not
 tied to Symfony2**.
@@ -60,19 +60,19 @@ tied to Symfony2**.
 <?php
 
 // if you want to use the Symfony2 router in a Symfony2 project
-$linkBuilder = new LinkBuilder($this->get('router'));
+$linkBuilder = new RouteAwareLinkBuilder($this->get('router'));
 
 // in a Silex project
-$linkBuilder = new LinkBuilder($app['url_generator']);
+$linkBuilder = new RouteAwareLinkBuilder($app['url_generator']);
 
 // Generate a "self" link
 $selfLink = $linkBuilder->create('user_get', array('id' => $user->getId()), Link::REL_SELF);
 $resource->addLink($selfLink);
 ```
 
-The `LinkBuilder` has been described above. This builder uses the Symfony2
-Router, but what if you don't use it? `CallableLinkBuilder` to the rescue!
-This builder takes a `callable` as argument:
+The `RouteAwareLinkBuilder` has been described above. This builder uses the
+Symfony2 Router, but what if you don't use it? `CallableLinkBuilder` to the
+rescue! This builder takes a `callable` as argument:
 
 ``` php
 <?php
@@ -209,8 +209,8 @@ instance or a classname. This definition contains a class name and a set of
 ### ResourceBuilder
 
 Now, you probably want to create resources using your configuration. Thanks to
-the `ResourceBuilder` it's super easy. A `ResourceBuilder` needs a `LinkBuilder`
-and a `Factory`:
+the `ResourceBuilder` it's super easy. A `ResourceBuilder` needs a
+`RouteAwareLinkBuilder` and a `Factory`:
 
 ``` php
 <?php

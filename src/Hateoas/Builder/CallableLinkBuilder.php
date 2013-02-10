@@ -7,7 +7,7 @@ use Hateoas\Link;
 /**
  * @author William Durand <william.durand1@gmail.com>
  */
-class CallableLinkBuilder extends LinkBuilder
+class CallableLinkBuilder extends RouteAwareLinkBuilder
 {
     private $callable;
 

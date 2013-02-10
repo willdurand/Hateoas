@@ -11,7 +11,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 /**
  * @author William Durand <william.durand1@gmail.com>
  */
-class LinkBuilder implements LinkBuilderInterface
+class RouteAwareLinkBuilder implements LinkBuilderInterface
 {
     /**
      * @var UrlGeneratorInterface
