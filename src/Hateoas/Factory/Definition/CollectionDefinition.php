@@ -9,11 +9,14 @@ class CollectionDefinition extends ResourceDefinition
 {
     private $attributes;
 
-    public function __construct($class, array $links = array(), $attributes = array())
+    private $rootName;
+
+    public function __construct($class, array $links = array(), $attributes = array(), $rootName = null)
     {
         parent::__construct($class, $links);
 
         $this->attributes = $attributes;
+        $this->rootName   = $rootName;
     }
 
     public function getTotal()
@@ -29,6 +32,11 @@ class CollectionDefinition extends ResourceDefinition
     public function getPage()
     {
         return $this->getAttribute('page');
+    }
+
+    public function getRootName()
+    {
+        return $this->rootName;
     }
 
     private function getAttribute($name)

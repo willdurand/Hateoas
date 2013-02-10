@@ -111,6 +111,7 @@ class ResourceBuilder implements ResourceBuilderInterface
         }
 
         return new Collection(
+            $collectionDefinition->getRootName(),
             $resources,
             $links,
             $total,

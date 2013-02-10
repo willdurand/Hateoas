@@ -75,6 +75,7 @@ XML
     {
         $serializer = Hateoas::getSerializer();
         $col        = new Collection(
+            null,
             array(
                 new Resource(
                     new DataClass1('foo'),
@@ -85,7 +86,9 @@ XML
                     array(new Link('/bar', Link::REL_SELF))
                 ),
             ),
-            array(new Link('/foobar', Link::REL_SELF)),
+            array(
+                new Link('/foobar', Link::REL_SELF)
+            ),
             2
         );
 
@@ -110,11 +113,16 @@ XML
     {
         $serializer = Hateoas::getSerializer();
         $col        = new Collection(
-            array(new Resource(
-                new DataClass1('foo'),
-                array(new Link('/foo', Link::REL_SELF))
-            )),
-            array(new Link('/foobar', Link::REL_SELF)),
+            null,
+            array(
+                new Resource(
+                    new DataClass1('foo'),
+                    array(new Link('/foo', Link::REL_SELF))
+                )
+            ),
+            array(
+                new Link('/foobar', Link::REL_SELF)
+            ),
             1
         );
 
@@ -127,6 +135,36 @@ XML
     <content><![CDATA[foo]]></content>
   </data_class>
 </resources>
+XML
+        , trim($serializer->serialize($col, 'xml')));
+    }
+
+    public function testSerializeCollectionWithRootNameInXml()
+    {
+        $serializer = Hateoas::getSerializer();
+        $col        = new Collection(
+            'data_classes',
+            array(
+                new Resource(
+                    new DataClass1('foo'),
+                    array(new Link('/foo', Link::REL_SELF))
+                )
+            ),
+            array(
+                new Link('/foobar', Link::REL_SELF)
+            ),
+            1
+        );
+
+        $this->assertEquals(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<data_classes total="1">
+  <link href="/foobar" rel="self"/>
+  <data_class>
+    <link href="/foo" rel="self"/>
+    <content><![CDATA[foo]]></content>
+  </data_class>
+</data_classes>
 XML
         , trim($serializer->serialize($col, 'xml')));
     }
@@ -181,6 +219,7 @@ XML
     {
         $serializer = Hateoas::getSerializer();
         $col        = new Collection(
+            null,
             array(
                 new Resource(
                     new DataClass1('foo'),
@@ -201,6 +240,7 @@ XML
     {
         $serializer = Hateoas::getSerializer();
         $col        = new Collection(
+            null,
             array(
                 new Resource(
                     new DataClass1('foo'),
@@ -221,15 +261,45 @@ XML
         );
     }
 
+    public function testSerializeCollectionWithRootNameInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $col        = new Collection(
+            'data_classes',
+            array(
+                new Resource(
+                    new DataClass1('foo'),
+                    array(new Link('/foo', Link::REL_SELF))
+                ),
+                new Resource(
+                    new DataClass1('bar'),
+                    array(new Link('/bar', Link::REL_SELF))
+                ),
+            ),
+            array(new Link('/foobar', Link::REL_SELF)),
+            2
+        );
+
+        $this->assertEquals(
+            '{"total":2,"_links":{"self":{"href":"\/foobar"}},"data_classes":[{"content":"foo","_links":{"self":{"href":"\/foo"}}},{"content":"bar","_links":{"self":{"href":"\/bar"}}}]}',
+            $serializer->serialize($col, 'json')
+        );
+    }
+
     public function testSerializeCollectionWithTypesInJson()
     {
         $serializer = Hateoas::getSerializer();
         $col        = new Collection(
-            array(new Resource(
-                new DataClass1('foo'),
-                array(new Link('/foo', Link::REL_SELF, 'application/vnd.hateoas.data_class'))
-            )),
-            array(new Link('/foobar', Link::REL_SELF, 'application/vnd.hateoas.data_class')),
+            null,
+            array(
+                new Resource(
+                    new DataClass1('foo'),
+                    array(new Link('/foo', Link::REL_SELF, 'application/vnd.hateoas.data_class'))
+                )
+            ),
+            array(
+                new Link('/foobar', Link::REL_SELF, 'application/vnd.hateoas.data_class')
+            ),
             10,
             1,
             2

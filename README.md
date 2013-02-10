@@ -140,10 +140,12 @@ hateoas:
 
     collections:
         Acme\Entity\Location:
+            rootName: locations
             links:
                 - { route: 'location.all', rel: 'self', type: 'application/vnd.acme.location' }
 
         Acme\Entity\Comment:
+            rootName: comments
             links:
                 - { route: 'comment.all', rel: 'self', type: 'application/vnd.acme.comment' }
 ```
@@ -259,15 +261,17 @@ $factory = new RouteAwareFactory(
         // collection
         array(
             'Acme\DemoBundle\Model\User' => array(
-                array(
-                    'route'      => 'acme_demo.user_all',
-                    'rel'        => Link::REL_SELF,
-                    'type'       => 'application/vnd.acme.users'
-                ),
-                array(
-                    'route'      => 'acme_demo.user_all',
-                    'parameters' => array('page'),
-                    'rel'        => Link::REL_NEXT
+                'links' => array(
+                    array(
+                        'route'      => 'acme_demo.user_all',
+                        'rel'        => Link::REL_SELF,
+                        'type'       => 'application/vnd.acme.users'
+                    ),
+                    array(
+                        'route'      => 'acme_demo.user_all',
+                        'parameters' => array('page'),
+                        'rel'        => Link::REL_NEXT
+                    ),
                 ),
             ),
         )
@@ -316,7 +320,7 @@ above, here are the outputs:
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
-<resources>
+<locations>
   <link href="http://localhost:8081/locations" rel="self" type="application/vnd.example.location"/>
   <location>
     <link href="http://localhost:8081/locations/1" rel="self" type="application/vnd.example.location"/>
@@ -332,12 +336,12 @@ above, here are the outputs:
     <name><![CDATA[foobar]]></name>
     <created_at><![CDATA[2013-02-07T18:37:04+0100]]></created_at>
   </location>
-</resources>
+</locations>
 ```
 
 ``` json
 {
-   "resources" : [
+   "locations" : [
       {
          "created_at" : "2013-02-07T18:37:03+0100",
          "_links" : {
@@ -419,7 +423,7 @@ specification](http://stateless.co/hal_specification.html).
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
-<resources>
+<comments>
   <link href="http://localhost:8081/comments" rel="self" type="application/vnd.example.comment"/>
   <comment>
     <link href="http://localhost:8081/comments/8" rel="self" type="application/vnd.example.comment"/>
@@ -428,12 +432,12 @@ specification](http://stateless.co/hal_specification.html).
     <body><![CDATA[]]></body>
     <created_at><![CDATA[2013-02-07T19:41:14+0100]]></created_at>
   </comment>
-</resources>
+</comments>
 ```
 
 ``` json
 {
-   "resources" : [
+   "comments" : [
       {
          "body" : "",
          "created_at" : "2013-02-07T19:41:14+0100",

@@ -108,7 +108,8 @@ class Factory implements FactoryInterface
         }
 
         $attributes = isset($definition['attributes']) ? $definition['attributes'] : array();
+        $rootName   = isset($definition['rootName']) ? $definition['rootName'] : null;
 
-        return new CollectionDefinition($class, $links, $attributes);
+        return new CollectionDefinition($class, $links, $attributes, $rootName);
     }
 }

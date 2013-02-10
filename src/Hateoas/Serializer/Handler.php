@@ -88,7 +88,7 @@ class Handler implements SubscribingHandlerInterface
     public function serializeCollectionToXml(XmlSerializationVisitor $visitor, Collection $collection, array $type)
     {
         if (null === $visitor->document) {
-            $visitor->setDefaultRootName('resources');
+            $visitor->setDefaultRootName($collection->getRootName() ?: 'resources');
             $visitor->document = $visitor->createDocument();
         }
 
@@ -155,6 +155,7 @@ class Handler implements SubscribingHandlerInterface
             ->getMetadataForClass(get_class($collection))
             ->propertyMetadata['links'];
         $linksName = $metadata->serializedName ?: '_links';
+        $rootName  = $collection->getRootName() ?: 'resources';
 
         // attributes
         foreach (array('total', 'page', 'limit') as $attr) {
@@ -166,9 +167,9 @@ class Handler implements SubscribingHandlerInterface
         // links
         $data[$linksName]  = $this->getLinksFrom($collection);
         // resources
-        $data['resources'] = array();
+        $data[$rootName] = array();
         foreach ($collection->getResources() as $resource) {
-            $data['resources'][] = $visitor->getNavigator()->accept($resource, null, $visitor);
+            $data[$rootName][] = $visitor->getNavigator()->accept($resource, null, $visitor);
         }
 
         $visitor->setRoot($data);
