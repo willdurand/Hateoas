@@ -11,7 +11,7 @@
     "require": {
         "symfony/property-access": "2.2.*@dev",
         "jms/serializer": "1.0.*@dev",
-        "symfony/yaml": "2.2.*@dev"
+        "symfony/yaml": "~2.0"
     },
     "suggest": {
         "symfony/routing": "Required if you want to use the LinkBuilder",
