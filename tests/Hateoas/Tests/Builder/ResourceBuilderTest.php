@@ -100,6 +100,76 @@ class ResourceBuilderTest extends TestCase
         $this->assertEquals('titi', $links[1]->getType());
     }
 
+    public function testCreateCollectionWithArrayObject()
+    {
+        $definitions = array(
+            'Hateoas\Tests\Fixtures\DataClass1' => array(
+                array('rel' => 'test', 'type' => 'test'),
+            ),
+        );
+
+        $collDefinitions = array(
+            'Hateoas\Tests\Fixtures\DataClass1' => array(
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar'),
+                    array('rel' => 'toto', 'type' => 'titi'),
+                ),
+                'attributes' => array(
+                    'total' => 'count()',
+                ),
+            ),
+        );
+
+        $factory = new Factory(new ArrayConfig($definitions, $collDefinitions));
+        $builder = new ResourceBuilder(
+            $factory,
+            $this->getLinkBuilderMock($this->exactly(5))
+        );
+
+        $coll = new Collection();
+        $coll->append(new DataClass1('test'));
+        $coll->append(new DataClass1('fooo'));
+        $coll->append(new DataClass1('barr'));
+
+        $collection = $builder->createCollection($coll, 'Hateoas\Tests\Fixtures\DataClass1');
+        $this->assertEquals(3, $collection->getTotal());
+    }
+
+    public function testCreateCollectionWithArray()
+    {
+        $definitions = array(
+            'Hateoas\Tests\Fixtures\DataClass1' => array(
+                array('rel' => 'test', 'type' => 'test'),
+            ),
+        );
+
+        $collDefinitions = array(
+            'Hateoas\Tests\Fixtures\DataClass1' => array(
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar'),
+                    array('rel' => 'toto', 'type' => 'titi'),
+                ),
+                'attributes' => array(
+                    'total' => 'count()',
+                ),
+            ),
+        );
+
+        $factory = new Factory(new ArrayConfig($definitions, $collDefinitions));
+        $builder = new ResourceBuilder(
+            $factory,
+            $this->getLinkBuilderMock($this->exactly(4))
+        );
+
+        $coll = array(
+            new DataClass1('foo'),
+            new DataClass1('bar'),
+        );
+
+        $collection = $builder->createCollection($coll, 'Hateoas\Tests\Fixtures\DataClass1');
+        $this->assertEquals(2, $collection->getTotal());
+    }
+
     protected function getLinkBuilderMock($expected)
     {
         $mock = $this->getMock('Hateoas\Builder\LinkBuilderInterface');
@@ -111,3 +181,5 @@ class ResourceBuilderTest extends TestCase
         return $mock;
     }
 }
+
+class Collection extends \ArrayObject {}

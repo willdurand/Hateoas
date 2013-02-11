@@ -97,7 +97,11 @@ class ResourceBuilder implements ResourceBuilderInterface
 
         // total
         if (null !== $total = $collectionDefinition->getTotal()) {
-            $total = $accessor->getValue($collection, $total);
+            if ((is_array($collection) || $collection instanceof \Countable) && 'count()' === $total) {
+                $total = count($collection);
+            } else {
+                $total = $accessor->getValue($collection, $total);
+            }
         }
 
         // limit
