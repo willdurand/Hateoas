@@ -10,7 +10,7 @@
     ],
     "require": {
         "symfony/property-access": "2.2.*@dev",
-        "jms/serializer": "1.0.*@dev",
+        "jms/serializer-bundle": "0.12.*@dev",
         "symfony/yaml": "~2.0"
     },
     "suggest": {
