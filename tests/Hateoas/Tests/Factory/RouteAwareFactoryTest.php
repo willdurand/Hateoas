@@ -13,7 +13,9 @@ class RouteAwareFactoryTest extends TestCase
     {
         $factory = new RouteAwareFactory(new ArrayConfig(array(
             'foobar' => array(
-                array('rel' => 'foo', 'type' => 'bar', 'route' => 'foo.get')
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar', 'route' => 'foo.get')
+                ),
             ),
         ), array()));
 
@@ -34,7 +36,9 @@ class RouteAwareFactoryTest extends TestCase
         $linkDef = new RouteLinkDefinition('foo.bar',  array(), 'foo', 'bar');
         $factory = new RouteAwareFactory(new ArrayConfig(array(
             'foobar' => array(
-                $linkDef,
+                'links' => array(
+                    $linkDef,
+                ),
             ),
         )));
 
@@ -60,7 +64,9 @@ class RouteAwareFactoryTest extends TestCase
     {
         $factory = new RouteAwareFactory(new ArrayConfig(array(
             'foobar' => array(
-                array('rel' => 'foo', 'type' => 'bar')
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar')
+                ),
             ),
         ), array()));
 
@@ -75,7 +81,9 @@ class RouteAwareFactoryTest extends TestCase
     {
         $factory = new RouteAwareFactory(new ArrayConfig(array(
             'foobar' => array(
-                array('route' => 'foo', 'type' => 'bar')
+                'links' => array(
+                    array('route' => 'foo', 'type' => 'bar')
+                ),
             ),
         ), array()));
 

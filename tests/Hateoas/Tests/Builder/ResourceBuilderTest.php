@@ -14,7 +14,9 @@ class ResourceBuilderTest extends TestCase
     {
         $definitions = array(
             'Hateoas\Tests\Fixtures\DataClass1' => array(
-                array('rel' => 'foo', 'type' => 'bar'),
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar'),
+                ),
             ),
         );
 
@@ -49,7 +51,9 @@ class ResourceBuilderTest extends TestCase
     {
         $definitions = array(
             'Hateoas\Tests\Fixtures\DataClass1' => array(
-                array('rel' => 'test', 'type' => 'test'),
+                'links' => array(
+                    array('rel' => 'test', 'type' => 'test'),
+                ),
             ),
         );
 
@@ -104,7 +108,9 @@ class ResourceBuilderTest extends TestCase
     {
         $definitions = array(
             'Hateoas\Tests\Fixtures\DataClass1' => array(
-                array('rel' => 'test', 'type' => 'test'),
+                'links' => array(
+                    array('rel' => 'test', 'type' => 'test'),
+                ),
             ),
         );
 
@@ -139,7 +145,9 @@ class ResourceBuilderTest extends TestCase
     {
         $definitions = array(
             'Hateoas\Tests\Fixtures\DataClass1' => array(
-                array('rel' => 'test', 'type' => 'test'),
+                'links' => array(
+                    array('rel' => 'test', 'type' => 'test'),
+                ),
             ),
         );
 

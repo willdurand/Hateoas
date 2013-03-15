@@ -137,11 +137,13 @@ configuration as described below:
 hateoas:
     resources:
         Acme\Entity\Location:
-            - { route: 'location.get',          parameters: [ 'id' ], rel: 'self',      type: 'application/vnd.acme.location' }
-            - { route: 'location.get_comments', parameters: [ 'id' ], rel: 'comments',  type: 'application/vnd.acme.comment' }
+            links:
+                - { route: 'location.get',          parameters: [ 'id' ], rel: 'self',      type: 'application/vnd.acme.location' }
+                - { route: 'location.get_comments', parameters: [ 'id' ], rel: 'comments',  type: 'application/vnd.acme.comment' }
 
         Acme\Entity\Comment:
-            - { route: 'comment.get',           parameters: [ 'id' ], rel: 'self',      type: 'application/vnd.acme.comment' }
+            links:
+                - { route: 'comment.get',           parameters: [ 'id' ], rel: 'self',      type: 'application/vnd.acme.comment' }
 
     collections:
         Acme\Entity\Location:

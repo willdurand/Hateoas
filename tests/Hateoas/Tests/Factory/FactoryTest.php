@@ -17,7 +17,9 @@ class FactoryTest extends TestCase
     {
         $factory = new Factory(new ArrayConfig(array(
             'foobar' => array(
-                array('rel' => 'foo', 'type' => 'bar')
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar')
+                ),
             ),
         )));
 
@@ -37,7 +39,9 @@ class FactoryTest extends TestCase
         $linkDef = new LinkDefinition('foo', 'bar');
         $factory = new Factory(new ArrayConfig(array(
             'foobar' => array(
-                $linkDef,
+                'links' => array(
+                    $linkDef,
+                ),
             ),
         )));
 
@@ -61,7 +65,9 @@ class FactoryTest extends TestCase
     {
         $factory = new Factory(new ArrayConfig(array(
             'foobar' => array(
-                array('rel' => 'foo', 'type' => 'bar')
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar')
+                ),
             ),
         )));
 
@@ -73,7 +79,9 @@ class FactoryTest extends TestCase
         $linkDef = new LinkDefinition('foo', 'bar');
         $factory = new Factory(new ArrayConfig(array(
             'Hateoas\Tests\Fixtures\DummyClass' => array(
-                $linkDef,
+                'links' => array(
+                    $linkDef,
+                ),
             ),
         )));
 
@@ -98,7 +106,9 @@ class FactoryTest extends TestCase
     {
         $factory = new Factory(new ArrayConfig(array(
             'foobar' => array(
-                array('rel' => 'foo', 'type' => 'bar')
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar')
+                ),
             ),
         )));
 
