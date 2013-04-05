@@ -196,14 +196,16 @@ $factory = new RouteAwareFactory(
     new ArrayConfig(
         array(
             'Acme\DemoBundle\Model\User' => array(
-                $linkDefinition,
-                array(
-                    'route'      => 'acme_demo.friend_get',
-                    'parameters' => array('id'),
-                    'rel'        => 'friends',
-                    'type'       => 'application/vnd.acme.user'
-                ),
-            ),
+                'links' => array(
+                    $linkDefinition,
+                    array(
+                        'route'      => 'acme_demo.friend_get',
+                        'parameters' => array('id'),
+                        'rel'        => 'friends',
+                        'type'       => 'application/vnd.acme.user'
+                    )
+                )
+            )
         )
     )
 );
@@ -256,14 +258,16 @@ $factory = new RouteAwareFactory(
         // single resource
         array(
             'Acme\DemoBundle\Model\User' => array(
-                $linkDefinition,
-                array(
-                    'route'      => 'acme_demo.friend_get',
-                    'parameters' => array('id'),
-                    'rel'        => 'friends',
-                    'type'       => 'application/vnd.acme.user'
-                ),
-            ),
+                'links' => array(
+                    $linkDefinition,
+                    array(
+                        'route'      => 'acme_demo.friend_get',
+                        'parameters' => array('id'),
+                        'rel'        => 'friends',
+                        'type'       => 'application/vnd.acme.user'
+                    )
+                )
+            )
         ),
         // collection
         array(
