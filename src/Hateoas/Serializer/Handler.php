@@ -5,6 +5,7 @@ namespace Hateoas\Serializer;
 use Hateoas\Collection;
 use Hateoas\Link;
 use Hateoas\Resource;
+use JMS\Serializer\Context;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\JsonSerializationVisitor;
@@ -50,7 +51,7 @@ class Handler implements SubscribingHandlerInterface
         $this->metadataFactory = $metadataFactory;
     }
 
-    public function serializeResourceToXml(XmlSerializationVisitor $visitor, Resource $resource, array $type)
+    public function serializeResourceToXml(XmlSerializationVisitor $visitor, Resource $resource, array $type, Context $context)
     {
         if (null === $visitor->document) {
             $reflClass = new \ReflectionClass(get_class($visitor));
@@ -74,7 +75,7 @@ class Handler implements SubscribingHandlerInterface
             $visitor->getCurrentNode()->appendChild($linkNode);
             $visitor->setCurrentNode($linkNode);
 
-            if (null !== $node = $visitor->getNavigator()->accept($link, null, $visitor)) {
+            if (null !== $node = $context->accept($link)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 
@@ -82,10 +83,10 @@ class Handler implements SubscribingHandlerInterface
         }
 
         // inline data
-        return $visitor->getNavigator()->accept($resource->getData(), null, $visitor);
+        return $context->accept($resource->getData());
     }
 
-    public function serializeCollectionToXml(XmlSerializationVisitor $visitor, Collection $collection, array $type)
+    public function serializeCollectionToXml(XmlSerializationVisitor $visitor, Collection $collection, array $type, Context $context)
     {
         if (null === $visitor->document) {
             $visitor->setDefaultRootName($collection->getRootName() ?: 'resources');
@@ -105,7 +106,7 @@ class Handler implements SubscribingHandlerInterface
             $visitor->getCurrentNode()->appendChild($linkNode);
             $visitor->setCurrentNode($linkNode);
 
-            if (null !== $node = $visitor->getNavigator()->accept($link, null, $visitor)) {
+            if (null !== $node = $context->accept($link)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 
@@ -125,7 +126,7 @@ class Handler implements SubscribingHandlerInterface
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
 
-            if (null !== $node = $visitor->getNavigator()->accept($resource, null, $visitor)) {
+            if (null !== $node = $context->accept($resource)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 
@@ -133,7 +134,7 @@ class Handler implements SubscribingHandlerInterface
         }
     }
 
-    public function serializeResourceToJson(JsonSerializationVisitor $visitor, Resource $resource, array $type)
+    public function serializeResourceToJson(JsonSerializationVisitor $visitor, Resource $resource, array $type, Context $context)
     {
         $metadata  = $this->metadataFactory
             ->getMetadataForClass(get_class($resource))
@@ -141,7 +142,7 @@ class Handler implements SubscribingHandlerInterface
         $linksName = $metadata->serializedName ?: '_links';
 
         // inline
-        $data = $visitor->getNavigator()->accept($resource->getData(), null, $visitor);
+        $data = $context->accept($resource->getData());
         $data[$linksName] = $this->getLinksFrom($resource);
 
         $visitor->setRoot($data);
@@ -149,7 +150,7 @@ class Handler implements SubscribingHandlerInterface
         return $data;
     }
 
-    public function serializeCollectionToJson(JsonSerializationVisitor $visitor, Collection $collection, array $type)
+    public function serializeCollectionToJson(JsonSerializationVisitor $visitor, Collection $collection, array $type, Context $context)
     {
         $metadata  = $this->metadataFactory
             ->getMetadataForClass(get_class($collection))
@@ -169,7 +170,7 @@ class Handler implements SubscribingHandlerInterface
         // resources
         $data[$rootName] = array();
         foreach ($collection->getResources() as $resource) {
-            $data[$rootName][] = $visitor->getNavigator()->accept($resource, null, $visitor);
+            $data[$rootName][] = $context->accept($resource);
         }
 
         $visitor->setRoot($data);
