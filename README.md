@@ -48,7 +48,7 @@ Now, you are able to add links to this resource:
 <?php
 
 $resource->addLink(new Link('http://example.com/users/999', Link::REL_SELF));
-$resource->addLink(new Link('http://example.com/users/999/friends', 'friends', 'application/vnd.acme.user'));
+$resource->addLink(new Link('http://example.com/users/999/friends', 'friends', 'application/vnd.acme.users'));
 ```
 
 To sum up, a `Resource` contains **data** and **links** related to the data.
@@ -139,7 +139,7 @@ hateoas:
         Acme\Entity\Location:
             links:
                 - { route: 'location.get',          parameters: [ 'id' ], rel: 'self',      type: 'application/vnd.acme.location' }
-                - { route: 'location.get_comments', parameters: [ 'id' ], rel: 'comments',  type: 'application/vnd.acme.comment' }
+                - { route: 'location.get_comments', parameters: [ 'id' ], rel: 'comments',  type: 'application/vnd.acme.comments' }
 
         Acme\Entity\Comment:
             links:
@@ -149,12 +149,12 @@ hateoas:
         Acme\Entity\Location:
             rootName: locations
             links:
-                - { route: 'location.all', rel: 'self', type: 'application/vnd.acme.location' }
+                - { route: 'location.all', rel: 'self', type: 'application/vnd.acme.locations' }
 
         Acme\Entity\Comment:
             rootName: comments
             links:
-                - { route: 'comment.all', rel: 'self', type: 'application/vnd.acme.comment' }
+                - { route: 'comment.all', rel: 'self', type: 'application/vnd.acme.comments' }
 ```
 
 
@@ -223,7 +223,7 @@ $factory = new RouteAwareFactory(
                         'route'      => 'acme_demo.friend_get',
                         'parameters' => array('id'),
                         'rel'        => 'friends',
-                        'type'       => 'application/vnd.acme.user'
+                        'type'       => 'application/vnd.acme.users'
                     )
                 )
             )
@@ -285,7 +285,7 @@ $factory = new RouteAwareFactory(
                         'route'      => 'acme_demo.friend_get',
                         'parameters' => array('id'),
                         'rel'        => 'friends',
-                        'type'       => 'application/vnd.acme.user'
+                        'type'       => 'application/vnd.acme.users'
                     )
                 ),
                 'embedded' => array(
@@ -364,17 +364,17 @@ above, here are the outputs:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <locations>
-  <link href="http://localhost:8081/locations" rel="self" type="application/vnd.example.location"/>
+  <link href="http://localhost:8081/locations" rel="self" type="application/vnd.example.locations"/>
   <location>
     <link href="http://localhost:8081/locations/1" rel="self" type="application/vnd.example.location"/>
-    <link href="http://localhost:8081/locations/1/comments" rel="comments" type="application/vnd.example.comment"/>
+    <link href="http://localhost:8081/locations/1/comments" rel="comments" type="application/vnd.example.comments"/>
     <id><![CDATA[1]]></id>
     <name><![CDATA[test]]></name>
     <created_at><![CDATA[2013-02-07T18:37:03+0100]]></created_at>
   </location>
   <location>
     <link href="http://localhost:8081/locations/4" rel="self" type="application/vnd.example.location"/>
-    <link href="http://localhost:8081/locations/4/comments" rel="comments" type="application/vnd.example.comment"/>
+    <link href="http://localhost:8081/locations/4/comments" rel="comments" type="application/vnd.example.comments"/>
     <id><![CDATA[4]]></id>
     <name><![CDATA[foobar]]></name>
     <created_at><![CDATA[2013-02-07T18:37:04+0100]]></created_at>
@@ -394,7 +394,7 @@ above, here are the outputs:
             },
             "comments": {
                "href" : "http://localhost:8081/locations/1/comments",
-               "type" : "application/vnd.example.comment"
+               "type" : "application/vnd.example.comments"
             }
          },
          "id" : "1",
@@ -410,7 +410,7 @@ above, here are the outputs:
             },
             "comments": {
                "href" : "http://localhost:8081/locations/4/comments",
-               "type" : "application/vnd.example.comment"
+               "type" : "application/vnd.example.comments"
             }
          },
          "id" : "4",
@@ -422,7 +422,7 @@ above, here are the outputs:
       "self": {
          "rel" : "self",
          "href" : "http://localhost:8081/locations",
-         "type" : "application/vnd.example.location"
+         "type" : "application/vnd.example.locations"
       }
    }
 }
@@ -438,7 +438,7 @@ specification](http://stateless.co/hal_specification.html).
 <?xml version="1.0" encoding="UTF-8"?>
 <location>
   <link href="http://localhost:8081/locations/4" rel="self" type="application/vnd.example.location"/>
-  <link href="http://localhost:8081/locations/4/comments" rel="comments" type="application/vnd.example.comment"/>
+  <link href="http://localhost:8081/locations/4/comments" rel="comments" type="application/vnd.example.comments"/>
   <id><![CDATA[4]]></id>
   <name><![CDATA[foobar]]></name>
   <created_at><![CDATA[2013-02-07T18:37:04+0100]]></created_at>
@@ -454,7 +454,7 @@ specification](http://stateless.co/hal_specification.html).
       },
       "comments": {
          "href" : "http://localhost:8081/locations/4/comments",
-         "type" : "application/vnd.example.comment"
+         "type" : "application/vnd.example.comments"
       }
    },
    "id" : "4",
@@ -469,7 +469,7 @@ specification](http://stateless.co/hal_specification.html).
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <comments>
-  <link href="http://localhost:8081/comments" rel="self" type="application/vnd.example.comment"/>
+  <link href="http://localhost:8081/comments" rel="self" type="application/vnd.example.comments"/>
   <comment>
     <link href="http://localhost:8081/comments/8" rel="self" type="application/vnd.example.comment"/>
     <id><![CDATA[8]]></id>
@@ -499,7 +499,7 @@ specification](http://stateless.co/hal_specification.html).
    "_links" : {
       "self": {
          "href" : "http://localhost:8081/comments",
-         "type" : "application/vnd.example.comment"
+         "type" : "application/vnd.example.comments"
       }
    }
 }
@@ -524,7 +524,7 @@ $factory = new RouteAwareFactory(
                     'route'      => 'acme_demo.friend_get',
                     'parameters' => array('id'),
                     'rel'        => 'friends',
-                    'type'       => 'application/vnd.acme.user'
+                    'type'       => 'application/vnd.acme.users'
                 ),
             ),
         ),
@@ -536,31 +536,31 @@ $factory = new RouteAwareFactory(
                         'route'      => 'acme_demo.user_all',
                         'parameters' => array('page'),
                         'rel'        => Link::REL_SELF,
-                        'type'       => 'application/vnd.acme.user'
+                        'type'       => 'application/vnd.acme.users'
                     ),
                     array(
                         'route'      => 'acme_demo.user_all',
                         'parameters' => array('page' => 'firstPage'),
                         'rel'        => Link::REL_FIRST,
-                        'type'       => 'application/vnd.acme.user'
+                        'type'       => 'application/vnd.acme.users'
                     ),
                     array(
                         'route'      => 'acme_demo.user_all',
                         'parameters' => array('page' => 'lastPage'),
                         'rel'        => Link::REL_LAST,
-                        'type'       => 'application/vnd.acme.user'
+                        'type'       => 'application/vnd.acme.users'
                     ),
                     array(
                         'route'      => 'acme_demo.user_all',
                         'parameters' => array('page' => 'nextPage'),
                         'rel'        => Link::REL_NEXT,
-                        'type'       => 'application/vnd.acme.user'
+                        'type'       => 'application/vnd.acme.users'
                     ),
                     array(
                         'route'      => 'acme_demo.user_all',
                         'parameters' => array('page' => 'previousPage'),
                         'rel'        => Link::REL_PREVIOUS,
-                        'type'       => 'application/vnd.acme.user'
+                        'type'       => 'application/vnd.acme.users'
                     ),
                 ),
                 'attributes' => array(
@@ -608,23 +608,23 @@ You will get the following output:
   "_links": {
     "self": {
       "href": "http://example.com/users?page=1",
-      "type": "application/vnd.acme.user"
+      "type": "application/vnd.acme.users"
     },
     "previous": {
       "href": "http://example.com/users?page=1",
-      "type":"application/vnd.acme.user"
+      "type":"application/vnd.acme.users"
     },
     "next": {
       "href": "http://example.com/users?page=2",
-      "type":"application/vnd.acme.user"
+      "type":"application/vnd.acme.users"
     },
     "first": {
       "href": "http://example.com/users?page=1",
-      "type":"application/vnd.acme.user"
+      "type":"application/vnd.acme.users"
     },
     "last": {
       "href": "http://example.com/users?page=100",
-      "type":"application/vnd.acme.user"
+      "type":"application/vnd.acme.users"
     }
   }
 }
