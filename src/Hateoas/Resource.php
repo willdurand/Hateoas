@@ -19,11 +19,18 @@ class Resource
      * @var array
      */
     private $links;
+    
+    /**
+     * @SerializedName("_embedded")
+     * @var array
+     */
+    private $embedded;
 
-    public function __construct($data, $links = array())
+    public function __construct($data, $links = array(), $embedded = array())
     {
         $this->data  = $data;
         $this->links = $links;
+        $this->embedded = $embedded;
     }
 
     /**
@@ -40,6 +47,14 @@ class Resource
     public function getLinks()
     {
         return $this->links;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEmbedded()
+    {
+        return $this->embedded;
     }
 
     /**

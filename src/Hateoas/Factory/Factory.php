@@ -6,6 +6,7 @@ use Hateoas\Factory\Config\ConfigInterface;
 use Hateoas\Factory\Definition\CollectionDefinition;
 use Hateoas\Factory\Definition\ResourceDefinition;
 use Hateoas\Factory\Definition\LinkDefinition;
+use Hateoas\Factory\Definition\EmbedDefinition;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
@@ -78,12 +79,24 @@ class Factory implements FactoryInterface
 
         return new LinkDefinition($definition['rel'], $type);
     }
+    
+    protected function createEmbedDefinition(array $definition)
+    {
+    	if (!isset($definition['name'])) {
+    		throw new \InvalidArgumentException('An embed definition should define a "name" value.');
+    	}
+    
+    	$accessor = isset($definition['accessor']) ? $definition['accessor'] : null;
+    
+    	return new EmbedDefinition($definition['name'], $accessor);
+    }    
 
     private function createResourceDefinition(array $definition, $class)
     {
         $links = $this->createLinks($definition);
+        $embedded = $this->createEmbedded($definition);
 
-        return new ResourceDefinition($class, $links);
+        return new ResourceDefinition($class, $links, $embedded);
     }
 
     private function createCollectionDefinition(array $definition, $class)
@@ -110,5 +123,22 @@ class Factory implements FactoryInterface
         }
 
         return $links;
+    }
+    
+    private function createEmbedded(array $definition)
+    {
+        $embedded = array();
+
+        if (isset($definition['embedded'])) {
+            foreach ($definition['embedded'] as $embed) {
+                if (!$embed instanceof EmbedDefinition) {
+                    $embed = $this->createEmbedDefinition($embed);
+                }
+
+                $embedded[] = $embed;
+            }
+        }
+
+        return $embedded;
     }
 }

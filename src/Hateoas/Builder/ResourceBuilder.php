@@ -66,8 +66,18 @@ class ResourceBuilder implements ResourceBuilderInterface
                 }
             }
         }
-
-        return new Resource($data, $links);
+        
+        $embedded = array();
+        foreach($resourceDefinition->getEmbedded() as $embeddedDefinition)
+        {
+            $embeddedData = $data->{$embeddedDefinition->getAccessor()}();
+            foreach($embeddedData as $embeddedObj)
+            {
+                $embedded[$embeddedDefinition->getName()][] = $this->create($embeddedObj, get_class($embeddedObj));
+            }
+        }
+        
+        return new Resource($data, $links, $embedded);
     }
 
     /**

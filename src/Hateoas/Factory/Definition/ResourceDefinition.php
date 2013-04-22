@@ -16,11 +16,17 @@ class ResourceDefinition
      * @var array
      */
     private $links;
+    
+    /**
+     * @var array
+     */
+    private $embedded;
 
-    public function __construct($class, array $links = array())
+    public function __construct($class, array $links = array(), array $embedded = array())
     {
         $this->class = $class;
         $this->links = $links;
+        $this->embedded = $embedded;
     }
 
     /**
@@ -37,5 +43,13 @@ class ResourceDefinition
     public function getLinks()
     {
         return $this->links;
+    }
+    
+    /**
+     * @return array
+     */
+    public function getEmbedded()
+    {
+        return $this->embedded;
     }
 }
