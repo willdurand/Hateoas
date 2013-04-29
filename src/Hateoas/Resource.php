@@ -15,15 +15,21 @@ class Resource
     private $data;
 
     /**
+     * @var array
+     */
+    private $forms;
+
+    /**
      * @SerializedName("_links")
      * @var array
      */
     private $links;
 
-    public function __construct($data, $links = array())
+    public function __construct($data, $links = array(), array $forms = array())
     {
         $this->data  = $data;
         $this->links = $links;
+        $this->forms = $forms;
     }
 
     /**
@@ -51,6 +57,24 @@ class Resource
         if (!in_array($link, $this->links)) {
             $this->links[] = $link;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getForms()
+    {
+        return $this->forms;
+    }
+
+    /**
+     * @param array $forms
+     */
+    public function setForms(array $forms)
+    {
+        $this->forms = $forms;
 
         return $this;
     }
