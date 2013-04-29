@@ -11,9 +11,13 @@ class YamlConfig implements ConfigInterface
 {
     private $config = array();
 
-    public function __construct($stringOrFile)
+    public function __construct($file)
     {
-        $config = Yaml::parse($stringOrFile);
+        if (!file_exists($file)) {
+            throw new \InvalidArgumentException(sprintf('The file "%s" does not exist', $file));
+        }
+
+        $config = Yaml::parse(file_get_contents($file));
 
         if (isset($config['hateoas'])) {
             $this->config = $config['hateoas'];
