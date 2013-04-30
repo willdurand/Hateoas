@@ -18,22 +18,11 @@ class YamlConfigTest extends TestCase
         $this->assertCount(1, $config->getCollectionDefinitions());
     }
 
-    public function testParseString()
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testParseInvalidFile()
     {
-        $config = new YamlConfig(<<<YAML
-hateoas:
-    resources:
-        Foo: ~
-
-    collections:
-        Bar: ~
-YAML
-        );
-
-        $this->assertTrue(is_array($config->getResourceDefinitions()));
-        $this->assertTrue(is_array($config->getCollectionDefinitions()));
-
-        $this->assertCount(1, $config->getResourceDefinitions());
-        $this->assertCount(1, $config->getCollectionDefinitions());
+        $config = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas-404.yml');
     }
 }
