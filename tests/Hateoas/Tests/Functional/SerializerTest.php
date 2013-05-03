@@ -3,6 +3,7 @@
 namespace Hateoas\Tests\Functional;
 
 use Hateoas\Collection;
+use Hateoas\Tests\Fixtures\FormClass;
 use Hateoas\Hateoas;
 use Hateoas\Link;
 use Hateoas\Resource;
@@ -65,6 +66,24 @@ XML
   <link href="/foo/12" rel="foo" type="application/vnd.hateoas.foo"/>
   <link href="/foo/34" rel="foo" type="application/vnd.hateoas.foo"/>
   <link href="/foo/56" rel="foo" type="application/vnd.hateoas.foo"/>
+  <content><![CDATA[foo]]></content>
+</data_class>
+XML
+        , trim($serializer->serialize($res, 'xml')));
+    }
+
+    public function testSerializeResourceWithForm()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res = new Resource(new DataClass1('foo'));
+        $res->setForms(array('form-new' => new FormClass()));
+
+        $this->assertSame(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<data_class>
+  <form-new>
+    <textarea><![CDATA[form_textarea]]></textarea>
+  </form-new>
   <content><![CDATA[foo]]></content>
 </data_class>
 XML
@@ -167,6 +186,26 @@ XML
 </data_classes>
 XML
         , trim($serializer->serialize($col, 'xml')));
+    }
+
+    public function testSerializeCollectionWithForm()
+    {
+        $serializer = Hateoas::getSerializer();
+        $collection = new Collection('data_classes', array(new Resource(new DataClass1('foo'))));
+        $collection->setForms(array('form-new' => new FormClass()));
+
+        $this->assertSame(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<data_classes>
+  <data_class>
+    <content><![CDATA[foo]]></content>
+  </data_class>
+  <form-new>
+    <textarea><![CDATA[form_textarea]]></textarea>
+  </form-new>
+</data_classes>
+XML
+        , trim($serializer->serialize($collection, 'xml')));
     }
 
     public function testSerializeResourceInJson()
