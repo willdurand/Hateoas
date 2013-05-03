@@ -15,6 +15,11 @@ class Collection
     private $resources;
 
     /**
+     * @var array
+     */
+    private $forms;
+
+    /**
      * @SerializedName("_links")
      * @var array
      */
@@ -40,7 +45,7 @@ class Collection
      */
     private $rootName;
 
-    public function __construct($rootName = null, array $resources = array(), array $links = array(), $total = null, $page = null, $limit = null)
+    public function __construct($rootName = null, array $resources = array(), array $links = array(), $total = null, $page = null, $limit = null, array $forms = array())
     {
         $this->rootName  = $rootName;
         $this->resources = $resources;
@@ -48,6 +53,7 @@ class Collection
         $this->total     = $total;
         $this->page      = $page;
         $this->limit     = $limit;
+        $this->forms     = $forms;
     }
 
     /**
@@ -96,5 +102,23 @@ class Collection
     public function getRootName()
     {
         return $this->rootName;
+    }
+
+    /**
+     * @return array
+     */
+    public function getForms()
+    {
+        return $this->forms;
+    }
+
+    /**
+     * @param array $forms
+     */
+    public function setForms(array $forms)
+    {
+        $this->forms = $forms;
+
+        return $this;
     }
 }
