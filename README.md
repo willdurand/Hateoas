@@ -182,6 +182,27 @@ $linkDefinition = new RouteLinkDefinition('acme_demo.user_get', array('id'), Lin
 > principle (a route and its parameters).
 
 
+### EmbedDefinition
+
+You can load `embedded` resources from within a defined resource. You need to 
+define a `name` for the collection you are embedding, and optionally an 
+`accessor` to load it from the parent resource.
+
+``` php
+<?php
+
+$embedDefinition = array(
+    'name' => 'comments',
+    'accessor' => 'TopComments'
+);
+//or
+$embedDefinition = new EmbedDefinition('comments', 'TopComments');
+```
+
+> **Note:** The embedded resources are rendered as a sequence of individual
+> resources, not as a collection.
+
+
 ### Factory, RouteAwareFactory
 
 Now, you need a factory. Symfony2 users will be interested in the
@@ -266,6 +287,10 @@ $factory = new RouteAwareFactory(
                         'rel'        => 'friends',
                         'type'       => 'application/vnd.acme.users'
                     )
+                ),
+                'embedded' => array(
+                    $embedDefinition,
+                    array('name' => 'best_friends', 'accessor' => 'BestFriends')
                 )
             )
         ),

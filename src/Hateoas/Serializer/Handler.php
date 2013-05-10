@@ -136,14 +136,24 @@ class Handler implements SubscribingHandlerInterface
 
     public function serializeResourceToJson(JsonSerializationVisitor $visitor, Resource $resource, array $type, Context $context)
     {
-        $metadata  = $this->metadataFactory
-            ->getMetadataForClass(get_class($resource))
-            ->propertyMetadata['links'];
-        $linksName = $metadata->serializedName ?: '_links';
+    	  $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($resource));
+        $propertyMetadata = $classMetadata->propertyMetadata['links'];
+        $linksName = $propertyMetadata->serializedName ?: '_links';
+        $propertyMetadata = $classMetadata->propertyMetadata['embedded'];
+        $embeddedName = $propertyMetadata->serializedName ?: '_embedded';
 
         // inline
         $data = $context->accept($resource->getData());
         $data[$linksName] = $this->getLinksFrom($resource);
+
+        // embedded resources
+        foreach($resource->getEmbedded() as $name => $embedded)
+        {
+            foreach($embedded as $embed)
+            {
+                $data[$embeddedName][$name][] = $this->serializeResourceToJson($visitor, $embed, $type, $context);
+            }
+        }
 
         $visitor->setRoot($data);
 
