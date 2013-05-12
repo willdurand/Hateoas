@@ -82,6 +82,19 @@ class Handler implements SubscribingHandlerInterface
             $visitor->revertCurrentNode();
         }
 
+        // form
+        foreach ($resource->getForms() as $elementName => $form) {
+            $entryNode = $visitor->getDocument()->createElement($elementName);
+            $visitor->getCurrentNode()->appendChild($entryNode);
+            $visitor->setCurrentNode($entryNode);
+
+            if (null !== $node = $context->accept($form)) {
+                $visitor->getCurrentNode()->appendChild($node);
+            }
+
+            $visitor->revertCurrentNode();
+        }
+
         // inline data
         return $context->accept($resource->getData());
     }
@@ -127,6 +140,19 @@ class Handler implements SubscribingHandlerInterface
             $visitor->setCurrentNode($entryNode);
 
             if (null !== $node = $context->accept($resource)) {
+                $visitor->getCurrentNode()->appendChild($node);
+            }
+
+            $visitor->revertCurrentNode();
+        }
+
+        // form
+        foreach ($collection->getForms() as $elementName => $form) {
+            $entryNode = $visitor->getDocument()->createElement($elementName);
+            $visitor->getCurrentNode()->appendChild($entryNode);
+            $visitor->setCurrentNode($entryNode);
+
+            if (null !== $node = $context->accept($form)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 
