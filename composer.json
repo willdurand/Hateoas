@@ -10,7 +10,13 @@
     ],
     "require": {
     },
+    "require-dev": {
+        "atoum/atoum": "dev-master"
+    },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }
