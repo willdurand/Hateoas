@@ -1,11 +1,11 @@
 <?php
 
-namespace Hateoas\tests\units\Configuration;
+namespace tests\Hateoas\Configuration;
 
 use Hateoas\Configuration\Relation as RelationTested;
-use mageekguy\atoum;
+use tests\Test;
 
-class Relation extends atoum\test
+class Relation extends Test
 {
     public function testConstructor()
     {
