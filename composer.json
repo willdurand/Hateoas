@@ -10,16 +10,21 @@
     ],
     "require": {
         "symfony/property-access": "~2.2",
-        "jms/metadata": "~1.1"
+        "jms/serializer": "~0.12"
     },
     "require-dev": {
         "atoum/atoum": "dev-master",
+        "jms/metadata": "~1.1",
         "doctrine/annotations": "1.*",
-        "symfony/yaml": "~2.0"
+        "symfony/yaml": "~2.0",
+        "doctrine/common": "~2.0",
+        "symfony/routing": "~2.0"
     },
     "suggests": {
+        "jms/metadata": "Required if you want yaml/annotations based configuration.",
         "doctrine/annotations": "To use annotation based configuration.",
-        "symfony/yaml": "To use yaml based configuration."
+        "symfony/yaml": "To use yaml based configuration.",
+        "symfony/routing": "To use the SymfonyRouteFactory."
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }

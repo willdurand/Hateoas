@@ -15,7 +15,7 @@ class PropertyPathHandler extends Test
         );
 
         $this
-            ->integer($handler->transform('@this.id', $data))
+            ->integer($handler->transform('id', $data))
                 ->isEqualTo(42)
         ;
     }

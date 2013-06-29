@@ -11,28 +11,20 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 class PropertyPathHandler implements HandlerInterface
 {
     /**
-     * @var Parser\PropertyPathParser
-     */
-    private $parser;
-
-    /**
      * @var PropertyAccessor
      */
     private $propertyAccessor;
 
-    public function __construct(Parser\PropertyPathParser $parser = null, PropertyAccessor $propertyAccessor = null)
+    public function __construct(PropertyAccessor $propertyAccessor = null)
     {
-        $this->parser = $parser ?: new Parser\PropertyPathParser();
         $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function transform($value, $data)
+    public function transform($propertyPath, $data)
     {
-        $propertyPath = $this->parser->getPropertyPath($value);
-
         return $this->propertyAccessor->getValue($data, $propertyPath);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Hateoas\Configuration;
 
+use Doctrine\Common\Util\ClassUtils;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -9,9 +10,22 @@ use Metadata\MetadataFactoryInterface;
  */
 class RelationsManager implements RelationsManagerInterface
 {
+    /**
+     * @var MetadataFactoryInterface
+     */
     private $metadataFactory;
 
-    public function __construct(MetadataFactoryInterface $metadataFactory)
+    /**
+     * @var array fqcn => Relation[]
+     */
+    private $classesRelations = array();
+
+    /**
+     * @var array objectid => Relation[]
+     */
+    private $objectsRelations = array();
+
+    public function __construct(MetadataFactoryInterface $metadataFactory = null)
     {
         $this->metadataFactory = $metadataFactory;
     }
@@ -21,9 +35,26 @@ class RelationsManager implements RelationsManagerInterface
      */
     public function getRelations($object)
     {
-        $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
+        $relations = array();
 
-        return $classMetadata->getRelations();
+        if (null !== $this->metadataFactory) {
+            $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
+            if (null !== $classMetadata) {
+                $relations = array_merge($relations, $classMetadata->getRelations());
+            }
+        }
+
+        $class = ClassUtils::getClass($object);
+        if (isset($this->classesRelations[$class])) {
+            $relations = array_merge($relations, $this->classesRelations[$class]);
+        }
+
+        $objectId = $this->getObjectId($object);
+        if (isset($this->objectsRelations[$objectId])) {
+            $relations = array_merge($relations, $this->objectsRelations[$objectId]);
+        }
+
+        return $relations;
     }
 
     /**
@@ -31,7 +62,7 @@ class RelationsManager implements RelationsManagerInterface
      */
     public function addRelation($object, Relation $relation)
     {
-
+        $this->objectsRelations[$this->getObjectId($object)][] = $relation;
     }
 
     /**
@@ -39,6 +70,11 @@ class RelationsManager implements RelationsManagerInterface
      */
     public function addClassRelation($class, Relation $relation)
     {
+        $this->classesRelations[$class][] = $relation;
+    }
 
+    private function getObjectId($object)
+    {
+        return spl_object_hash($object);
     }
 }
