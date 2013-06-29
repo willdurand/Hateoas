@@ -2,7 +2,7 @@
 
 namespace Hateoas\Configuration;
 
-use Metadata\MetadataFactory;
+use Metadata\MetadataFactoryInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -11,7 +11,7 @@ class RelationsManager implements RelationsManagerInterface
 {
     private $metadataFactory;
 
-    public function __construct(MetadataFactory $metadataFactory)
+    public function __construct(MetadataFactoryInterface $metadataFactory)
     {
         $this->metadataFactory = $metadataFactory;
     }
