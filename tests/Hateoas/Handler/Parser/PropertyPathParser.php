@@ -7,7 +7,7 @@ use Hateoas\Handler\Parser\PropertyPathParser as TestedPropertyPathParser;
 
 class PropertyPathParser extends Test
 {
-    public function testTransform()
+    public function testGetPropertyPath()
     {
         $handler = new TestedPropertyPathParser();
 
