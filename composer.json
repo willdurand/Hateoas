@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "symfony/property-access": "~2.2"
     },
     "require-dev": {
         "atoum/atoum": "dev-master"
