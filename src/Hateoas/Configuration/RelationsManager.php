@@ -17,8 +17,7 @@ class RelationsManager implements RelationsManagerInterface
     }
 
     /**
-     * @param $object
-     * @return Relation[]
+     * {@inheritdoc}
      */
     public function getRelations($object)
     {
@@ -28,9 +27,7 @@ class RelationsManager implements RelationsManagerInterface
     }
 
     /**
-     * @param $object
-     * @param Relation $relation
-     * @return void
+     * {@inheritdoc}
      */
     public function addRelation($object, Relation $relation)
     {
@@ -38,9 +35,7 @@ class RelationsManager implements RelationsManagerInterface
     }
 
     /**
-     * @param $class
-     * @param Relation $relation
-     * @return void
+     * {@inheritdoc}
      */
     public function addClassRelation($class, Relation $relation)
     {
