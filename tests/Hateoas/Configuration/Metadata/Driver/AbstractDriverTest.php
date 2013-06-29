@@ -13,7 +13,7 @@ abstract class AbstractDriverTest extends Test
      */
     abstract public function createDriver();
 
-    public function test()
+    public function testUser()
     {
         $driver = $this->createDriver();
         $class = new \ReflectionClass('tests\fixtures\User');
@@ -62,6 +62,18 @@ abstract class AbstractDriverTest extends Test
                         ->isEqualTo(array(
                             'id' => '@this.id',
                         ))
+        ;
+    }
+
+    public function testEmptyClass()
+    {
+        $driver = $this->createDriver();
+        $class = new \ReflectionClass('tests\fixtures\EmptyClass');
+        $classMetadata = $driver->loadMetadataForClass($class);
+
+        $this
+            ->variable($classMetadata)
+                ->isNull()
         ;
     }
 }

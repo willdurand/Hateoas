@@ -10,11 +10,16 @@
     ],
     "require": {
         "symfony/property-access": "~2.2",
-        "jms/metadata": "~1.1",
-        "symfony/yaml": "~2.0"
+        "jms/metadata": "~1.1"
     },
     "require-dev": {
-        "atoum/atoum": "dev-master"
+        "atoum/atoum": "dev-master",
+        "doctrine/annotations": "1.*",
+        "symfony/yaml": "~2.0"
+    },
+    "suggests": {
+        "doctrine/annotations": "To use annotation based configuration.",
+        "symfony/yaml": "To use yaml based configuration."
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }
