@@ -12,4 +12,9 @@ abstract class Test extends atoum\test
 
         parent::__construct($adapter, $annotationExtractor, $asserterGenerator, $assertionManager, $reflectionClassFactory);
     }
+
+    public static function rootPath()
+    {
+        return __DIR__;
+    }
 }

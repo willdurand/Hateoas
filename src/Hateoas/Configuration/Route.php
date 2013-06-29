@@ -22,4 +22,20 @@ class Route
         $this->name = $name;
         $this->parameters = $parameters;
     }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
 }

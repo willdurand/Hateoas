@@ -1,0 +1,12 @@
+tests\fixtures\User:
+    relations:
+        -
+            rel: self
+            href: http://hateoas.web/user/42
+            attributes:
+                type: application/json
+        -
+            rel: foo
+            href:
+                route: user_get
+                parameters: { id: @this.id }
