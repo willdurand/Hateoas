@@ -14,8 +14,7 @@
         "symfony/yaml": "~2.0"
     },
     "suggest": {
-        "symfony/routing": "Required if you want to use the LinkBuilder",
-        "symfony/yaml": "Required if you want to use the YamlConfig"
+        "symfony/routing": "Required if you want to use the LinkBuilder"
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }
