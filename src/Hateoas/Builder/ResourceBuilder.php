@@ -67,7 +67,21 @@ class ResourceBuilder implements ResourceBuilderInterface
             }
         }
 
-        return new Resource($data, $links);
+        $embeds = array();
+        foreach ($resourceDefinition->getEmbeds() as $embedDefinition) {
+            $embedData = $data->{$embedDefinition->getAccessor()}();
+            if (null === $embedData) {
+                continue;
+            } elseif (is_array($embedData) || $embedData instanceof \Traversable) {
+                foreach ($embedData as $embedData) {
+                    $embeds[$embedDefinition->getName()][] = $this->create($embedData);
+                }
+            } else {
+                $embeds[$embedDefinition->getName()] = $this->create($embedData);
+            }
+        }
+
+        return new Resource($data, $links, array(), $embeds);
     }
 
     /**

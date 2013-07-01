@@ -6,6 +6,7 @@ use Hateoas\Factory\Config\ConfigInterface;
 use Hateoas\Factory\Definition\CollectionDefinition;
 use Hateoas\Factory\Definition\ResourceDefinition;
 use Hateoas\Factory\Definition\LinkDefinition;
+use Hateoas\Factory\Definition\EmbedDefinition;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
@@ -83,11 +84,28 @@ class Factory implements FactoryInterface
         return new LinkDefinition($definition['rel'], $type);
     }
 
+    protected function createEmbedsDefinition($definition, $class)
+    {
+        if (!is_array($definition)) {
+            throw new \InvalidArgumentException(sprintf('An embed definition should be an array in "%s".', $class));
+        }
+
+        if (!isset($definition['name'])) {
+            throw new \InvalidArgumentException('An embed definition should define a "name" value.');
+        }
+
+        $accessor = isset($definition['accessor']) ? $definition['accessor'] : null;
+
+        return new EmbedDefinition($definition['name'], $accessor);
+    }
+
     private function createResourceDefinition(array $definition, $class)
     {
-        $links = $this->createLinks($definition, $class);
 
-        return new ResourceDefinition($class, $links);
+        $links = $this->createLinks($definition, $class);
+        $embeds = $this->createEmbeds($definition, $class);
+
+        return new ResourceDefinition($class, $links, $embeds);
     }
 
     private function createCollectionDefinition(array $definition, $class)
@@ -105,7 +123,7 @@ class Factory implements FactoryInterface
 
         if (isset($definition['links'])) {
             if (!is_array($definition['links'])) {
-                throw new \InvalidArgumentException(sprintf('The "link" definition should be an array in "%s".', $class, $class));
+                throw new \InvalidArgumentException(sprintf('The "links" definition should be an array in "%s".', $class, $class));
             }
             foreach ($definition['links'] as $link) {
                 if (!$link instanceof LinkDefinition) {
@@ -117,5 +135,25 @@ class Factory implements FactoryInterface
         }
 
         return $links;
+    }
+
+    private function createEmbeds(array $definition, $class)
+    {
+        $embeds = array();
+
+        if (isset($definition['embeds'])) {
+            if (!is_array($definition['embeds'])) {
+                throw new \InvalidArgumentException(sprintf('The "embeds" definition should be an array in "%s".', $class, $class));
+            }
+            foreach ($definition['embeds'] as $embed) {
+                if (!$embed instanceof EmbedDefinition) {
+                    $embed = $this->createEmbedsDefinition($embed, $class);
+                }
+
+                $embeds[] = $embed;
+            }
+        }
+
+        return $embeds;
     }
 }
