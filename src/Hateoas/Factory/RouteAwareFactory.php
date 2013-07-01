@@ -12,8 +12,12 @@ class RouteAwareFactory extends Factory
     /**
      * {@inheritdoc}
      */
-    protected function createLinkDefinition(array $definition)
+    protected function createLinkDefinition($definition, $class)
     {
+        if (!is_array($definition)) {
+            throw new \InvalidArgumentException(sprintf('A link definition should be an array in "%s".', $class));
+        }
+
         if (!isset($definition['route'])) {
             throw new \InvalidArgumentException('A link definition should define a "route" value.');
         }
