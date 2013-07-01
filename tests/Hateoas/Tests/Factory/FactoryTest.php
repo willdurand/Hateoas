@@ -58,6 +58,39 @@ class FactoryTest extends TestCase
         $this->assertSame($linkDef, $links[0]);
     }
 
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The "link" definition should be an array in "foobar".
+     */
+    public function testGetResourceDefinitionWithBadLinkDefinition()
+    {
+        $linkDef = new LinkDefinition('foo', 'bar');
+        $factory = new Factory(new ArrayConfig(array(
+            'foobar' => array(
+                'links' => 'foo'
+            ),
+        )));
+
+        $def = $factory->getResourceDefinition('foobar');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage A link definition should be an array in "foobar".
+     */
+    public function testGetResourceDefinitionWithBadLinkDefinition2()
+    {
+        $linkDef = new LinkDefinition('foo', 'bar');
+        $factory = new Factory(new ArrayConfig(array(
+            'foobar' => array(
+                'links' => array('foo'),
+            ),
+        )));
+
+        $def = $factory->getResourceDefinition('foobar');
+    }
+
     /**
      * @expectedException RuntimeException
      */
