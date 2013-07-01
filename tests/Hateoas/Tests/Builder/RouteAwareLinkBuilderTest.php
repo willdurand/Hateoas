@@ -25,7 +25,7 @@ class RouteAwareLinkBuilderTest extends TestCase
 
     public function testCreateFromDefinition()
     {
-        $urlGeneratorMock = $this->getMock('Symfony\Component\Routing\Generator\UrlGeneratorInterface', array('generate'));
+        $urlGeneratorMock = $this->getMock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
         $urlGeneratorMock
             ->expects($this->once())
             ->method('generate')
@@ -44,7 +44,7 @@ class RouteAwareLinkBuilderTest extends TestCase
 
     public function testCreateFromDefinitionWithParameters()
     {
-        $urlGeneratorMock = $this->getMock('Symfony\Component\Routing\Generator\UrlGeneratorInterface', array('generate'));
+        $urlGeneratorMock = $this->getMock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
         $urlGeneratorMock
             ->expects($this->once())
             ->method('generate')
