@@ -22,7 +22,7 @@ class Relation
      */
     private $attributes;
 
-    public function __construct($name, $href, $attributes = array())
+    public function __construct($name, $href, array $attributes = array())
     {
         $this->name = $name;
         $this->href = $href;

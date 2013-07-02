@@ -45,7 +45,7 @@ class AnnotationDriver implements DriverInterface
                     $href = new Route($href->name, $href->parameters);
                 }
 
-                $relation = new Relation($annotation->name, $href, $annotation->attributes);
+                $relation = new Relation($annotation->name, $href, $annotation->attributes ?: array());
                 $classMetadata->addRelation($relation);
             }
         }
