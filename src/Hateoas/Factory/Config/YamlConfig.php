@@ -11,13 +11,13 @@ class YamlConfig implements ConfigInterface
 {
     private $config = array();
 
-    public function __construct($file, $cacheDir = null)
+    public function __construct($file, $cacheDir = null, $debug = false)
     {
         if (!file_exists($file)) {
             throw new \InvalidArgumentException(sprintf('The file "%s" does not exist', $file));
         }
 
-        if ($cacheDir) {
+        if (!$debug && $cacheDir) {
             if (!is_dir($cacheDir) && ! @mkdir($cacheDir, 0777, true)) {
                 throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist and could not be created.', $cacheDir));
             }
@@ -41,7 +41,7 @@ class YamlConfig implements ConfigInterface
 
         $config = Yaml::parse(file_get_contents($file));
 
-        if ($cacheDir) {
+        if (!$debug && $cacheDir) {
             file_put_contents($cacheFile, json_encode($config));
         }
 
