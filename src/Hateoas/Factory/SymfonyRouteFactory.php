@@ -22,8 +22,8 @@ class SymfonyRouteFactory implements RouteFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create($name, $parameters)
+    public function create($name, array $parameters, $absolute = false)
     {
-        return $this->urlGenerator->generate($name, $parameters);
+        return $this->urlGenerator->generate($name, $parameters, $absolute);
     }
 }

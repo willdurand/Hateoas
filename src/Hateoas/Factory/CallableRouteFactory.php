@@ -20,8 +20,8 @@ class CallableRouteFactory implements RouteFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create($name, $parameters)
+    public function create($name, array $parameters, $absolute = false)
     {
-        return call_user_func_array($this->callable, array($name, $parameters));
+        return call_user_func_array($this->callable, array($name, $parameters, $absolute));
     }
 }

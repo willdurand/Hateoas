@@ -8,9 +8,10 @@ namespace Hateoas\Factory;
 interface RouteFactoryInterface
 {
     /**
-     * @param $name
-     * @param $parameters
+     * @param string $name
+     * @param array $parameters
+     * @param boolean $absolute
      * @return string
      */
-    public function create($name, $parameters);
+    public function create($name, array $parameters, $absolute = false);
 }

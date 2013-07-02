@@ -3,9 +3,9 @@
 namespace tests\Hateoas\Factory;
 
 use tests\Test;
-use Hateoas\Factory\CallableRouteFactory as TestedCallableRouteFactory;
+use Hateoas\Factory\SymfonyRouteFactory as TestedSymfonyRouteFactory;
 
-class CallableRouteFactory extends Test
+class SymfonyRouteFactory extends Test
 {
     public function test()
     {
@@ -15,18 +15,21 @@ class CallableRouteFactory extends Test
         $expectedResult = '/users/42';
 
         $test = $this;
-        $callable = function ($name, $parameters, $absolute) use ($expectedName, $expectedParameters, $expectedResult, $expectedAbsolute, $test) {
+        $urlGenerator = new \mock\Symfony\Component\Routing\Generator\UrlGeneratorInterface();
+        $urlGenerator->getMockController()->generate = function ($name, $parameters, $absolute) use ($expectedName, $expectedParameters, $expectedResult, $expectedAbsolute, $test) {
             $test
                 ->string($name)
-                    ->isEqualTo($expectedName)
+                ->isEqualTo($expectedName)
                 ->array($parameters)
-                    ->isEqualTo($expectedParameters)
+                ->isEqualTo($expectedParameters)
                 ->boolean($absolute)
-                    ->isEqualTo($expectedAbsolute)
+                ->isEqualTo($expectedAbsolute)
             ;
+
             return $expectedResult;
         };
-        $routeFactory = new TestedCallableRouteFactory($callable);
+
+        $routeFactory = new TestedSymfonyRouteFactory($urlGenerator);
 
         $this
             ->string($routeFactory->create($expectedName, $expectedParameters, $expectedAbsolute))
