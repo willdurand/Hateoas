@@ -2,7 +2,7 @@
 
 namespace Hateoas\Configuration;
 
-use Doctrine\Common\Util\ClassUtils;
+use Hateoas\Util\ClassUtils;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -44,7 +44,7 @@ class RelationsManager implements RelationsManagerInterface
             }
         }
 
-        $class = ClassUtils::getClass($object);
+        $class = strtolower(ClassUtils::getClass($object));
         if (isset($this->classesRelations[$class])) {
             $relations = array_merge($relations, $this->classesRelations[$class]);
         }
@@ -70,6 +70,8 @@ class RelationsManager implements RelationsManagerInterface
      */
     public function addClassRelation($class, Relation $relation)
     {
+        $class = strtolower(ClassUtils::getRealClass($class));
+
         $this->classesRelations[$class][] = $relation;
     }
 

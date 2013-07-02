@@ -11,8 +11,11 @@ class ClassUtils
 {
     public static function getClass($object)
     {
-        $class = get_class($object);
+        return self::getRealClass(get_class($object));
+    }
 
+    public static function getRealClass($class)
+    {
         if (class_exists('Doctrine\Common\Util\ClassUtils')) {
             $class = DoctrineClassUtils::getRealClass($class);
         }

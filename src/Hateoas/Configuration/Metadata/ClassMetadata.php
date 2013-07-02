@@ -9,7 +9,7 @@ use Metadata\MergeableInterface;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class ClassMetadata extends MergeableClassMetadata
+class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInterface
 {
     /**
      * @var Relation[]
@@ -17,7 +17,7 @@ class ClassMetadata extends MergeableClassMetadata
     private $relations = array();
 
     /**
-     * @return Relation[]
+     * {@inheritdoc}
      */
     public function getRelations()
     {
