@@ -19,11 +19,11 @@ class SymfonyRouteFactory extends Test
         $urlGenerator->getMockController()->generate = function ($name, $parameters, $absolute) use ($expectedName, $expectedParameters, $expectedResult, $expectedAbsolute, $test) {
             $test
                 ->string($name)
-                ->isEqualTo($expectedName)
+                    ->isEqualTo($expectedName)
                 ->array($parameters)
-                ->isEqualTo($expectedParameters)
+                    ->isEqualTo($expectedParameters)
                 ->boolean($absolute)
-                ->isEqualTo($expectedAbsolute)
+                    ->isEqualTo($expectedAbsolute)
             ;
 
             return $expectedResult;
