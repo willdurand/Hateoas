@@ -1,3 +1,4 @@
 vendor
 composer.lock
 composer.phar
+/tests/Hateoas/Tests/cache/
