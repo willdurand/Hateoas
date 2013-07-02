@@ -22,7 +22,7 @@ class Link
      */
     private $attributes;
 
-    public function __construct($rel, $href, array $attributes)
+    public function __construct($rel, $href, array $attributes = array())
     {
         $this->rel = $rel;
         $this->href = $href;

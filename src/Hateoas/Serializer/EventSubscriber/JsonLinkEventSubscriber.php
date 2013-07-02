@@ -7,27 +7,23 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 
-
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class LinkEventSubscriber implements EventSubscriberInterface
+class JsonLinkEventSubscriber implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
-        $methods = array();
-        foreach (array('json', 'xml') as $format) {
-            $methods[] = array(
+        return array(
+            array(
                 'event' => Events::POST_SERIALIZE,
-                'format' => $format,
-                'method' => 'onPostSerialize'.strtoupper($format),
-            );
-        }
-
-        return $methods;
+                'format' => 'json',
+                'method' => 'onPostSerialize',
+            ),
+        );
     }
 
     private $linksFactory;
@@ -37,14 +33,7 @@ class LinkEventSubscriber implements EventSubscriberInterface
         $this->linksFactory = $linksFactory;
     }
 
-    public function onPostSerializeXML(ObjectEvent $event)
-    {
-        $links = $this->linksFactory->createLinks($event->getObject());
-
-
-    }
-
-    public function onPostSerializeJSON(ObjectEvent $event)
+    public function onPostSerialize(ObjectEvent $event)
     {
 
     }
