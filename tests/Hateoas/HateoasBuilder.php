@@ -3,10 +3,10 @@
 namespace tests\Hateoas;
 
 use tests\fixtures\AdrienBrault;
-use tests\Test;
+use tests\TestCase;
 use Hateoas\HateoasBuilder as TestedHateoasBuilder;
 
-class HateoasBuilder extends Test
+class HateoasBuilder extends TestCase
 {
     public function test()
     {

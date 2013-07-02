@@ -4,9 +4,9 @@ namespace tests\Hateoas\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Relation;
 use Metadata\Driver\DriverInterface;
-use tests\Test;
+use tests\TestCase;
 
-abstract class AbstractDriverTest extends Test
+abstract class AbstractDriverTest extends TestCase
 {
     /**
      * @return DriverInterface

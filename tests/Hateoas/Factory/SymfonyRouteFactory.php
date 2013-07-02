@@ -2,10 +2,10 @@
 
 namespace tests\Hateoas\Factory;
 
-use tests\Test;
+use tests\TestCase;
 use Hateoas\Factory\SymfonyRouteFactory as TestedSymfonyRouteFactory;
 
-class SymfonyRouteFactory extends Test
+class SymfonyRouteFactory extends TestCase
 {
     public function test()
     {

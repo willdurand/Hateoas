@@ -5,4 +5,4 @@ $loader->add('tests', __DIR__.'/../');
 
 \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
 
-require __DIR__.'/Test.php';
+require __DIR__ . '/TestCase.php';

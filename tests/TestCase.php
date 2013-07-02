@@ -4,7 +4,7 @@ namespace tests;
 
 use mageekguy\atoum;
 
-abstract class Test extends atoum\test
+abstract class TestCase extends atoum\test
 {
     public function __construct(atoum\adapter $adapter = null, atoum\annotations\extractor $annotationExtractor = null, atoum\asserter\generator $asserterGenerator = null, atoum\test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null)
     {

@@ -2,10 +2,10 @@
 
 namespace tests\Hateoas\Factory;
 
-use tests\Test;
+use tests\TestCase;
 use Hateoas\Factory\CallableRouteFactory as TestedCallableRouteFactory;
 
-class CallableRouteFactory extends Test
+class CallableRouteFactory extends TestCase
 {
     public function test()
     {

@@ -2,10 +2,10 @@
 
 namespace tests\Hateoas\Handler;
 
-use tests\Test;
+use tests\TestCase;
 use Hateoas\Handler\PropertyPathHandler as TestedPropertyPathHandler;
 
-class PropertyPathHandler extends Test
+class PropertyPathHandler extends TestCase
 {
     public function testTransform()
     {

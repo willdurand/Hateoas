@@ -2,10 +2,10 @@
 
 namespace tests\Hateoas\Handler;
 
-use tests\Test;
+use tests\TestCase;
 use Hateoas\Handler\HandlerManager as TestedHandlerManager;
 
-class HandlerManager extends Test
+class HandlerManager extends TestCase
 {
     public function testStringTransform()
     {

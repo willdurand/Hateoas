@@ -2,11 +2,11 @@
 
 namespace tests\Hateoas\Serializer;
 
-use tests\Test;
+use tests\TestCase;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\XmlSerializer as TestedXmlSerializer;
 
-class XmlSerializer extends Test
+class XmlSerializer extends TestCase
 {
     public function testSerializeLinks()
     {

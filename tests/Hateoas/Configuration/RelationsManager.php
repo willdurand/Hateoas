@@ -2,11 +2,11 @@
 
 namespace tests\Hateoas\Configuration;
 
-use tests\Test;
+use tests\TestCase;
 use Hateoas\Configuration\Relation as Relation_;
 use Hateoas\Configuration\RelationsManager as TestedRelationsManager;
 
-class RelationsManager extends Test
+class RelationsManager extends TestCase
 {
     public function testEmptyGetRelations()
     {

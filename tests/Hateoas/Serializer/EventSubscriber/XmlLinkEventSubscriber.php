@@ -2,10 +2,10 @@
 
 namespace tests\Hateoas\Serializer\EventSubscriber;
 
-use tests\Test;
+use tests\TestCase;
 use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber as TestedXmlLinkEventSubscriber;
 
-class XmlLinkEventSubscriber extends Test
+class XmlLinkEventSubscriber extends TestCase
 {
     public function testOnPostSerialize()
     {

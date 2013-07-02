@@ -2,10 +2,10 @@
 
 namespace tests\Hateoas\Configuration;
 
-use tests\Test;
+use tests\TestCase;
 use Hateoas\Configuration\Relation as TestedRelation;
 
-class Relation extends Test
+class Relation extends TestCase
 {
     public function testConstructor()
     {
