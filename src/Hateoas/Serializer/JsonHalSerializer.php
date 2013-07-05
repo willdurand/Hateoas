@@ -41,7 +41,7 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbeddedMap(\SplObjectStorage $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbedded(\SplObjectStorage $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
         $serializedEmbedded = array();
 

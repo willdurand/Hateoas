@@ -3,7 +3,7 @@
 namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\EmbeddedMapFactory;
-use Hateoas\Serializer\JsonSerializerInterface;
+use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -11,7 +11,7 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class JsonEmbedEventSubscriber implements EventSubscriberInterface
+class XmlEmbedEventSubscriber implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}
@@ -21,7 +21,7 @@ class JsonEmbedEventSubscriber implements EventSubscriberInterface
         return array(
             array(
                 'event' => Events::POST_SERIALIZE,
-                'format' => 'json',
+                'format' => 'xml',
                 'method' => 'onPostSerialize',
             ),
         );
@@ -33,19 +33,19 @@ class JsonEmbedEventSubscriber implements EventSubscriberInterface
     private $embeddedMapFactory;
 
     /**
-     * @var JsonSerializerInterface
+     * @var XmlSerializerInterface
      */
-    private $jsonSerializer;
+    private $xmlSerializer;
 
-    public function __construct(EmbeddedMapFactory $embeddedMapFactory, JsonSerializerInterface $jsonSerializer)
+    public function __construct(EmbeddedMapFactory $embeddedMapFactory, XmlSerializerInterface $xmlSerializer)
     {
         $this->embeddedMapFactory = $embeddedMapFactory;
-        $this->jsonSerializer = $jsonSerializer;
+        $this->xmlSerializer = $xmlSerializer;
     }
 
     public function onPostSerialize(ObjectEvent $event)
     {
         $embeddedMap = $this->embeddedMapFactory->create($event->getObject());
-        $this->jsonSerializer->serializeEmbedded($embeddedMap, $event->getVisitor(), $event->getContext());
+        $this->xmlSerializer->serializeEmbedded($embeddedMap, $event->getVisitor(), $event->getContext());
     }
 }

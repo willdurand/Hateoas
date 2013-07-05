@@ -1,6 +1,7 @@
 <?php
 
 namespace Hateoas\Serializer;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
 
 /**
@@ -23,6 +24,29 @@ class XmlSerializer implements XmlSerializerInterface
             foreach ($link->getAttributes() as $attributeName => $attributeValue) {
                 $linkNode->setAttribute($attributeName, $attributeValue);
             }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serializeEmbedded(\SplObjectStorage $embeddedMap, XmlSerializationVisitor $visitor, SerializationContext $context)
+    {
+        foreach ($embeddedMap as $relation) {
+            $data = $embeddedMap->offsetGet($relation);
+
+            $entryNode = $visitor->getDocument()->createElement('entry'); // TODO use the jms serializer metadata factory to get the xmlrootname...
+            $visitor->getCurrentNode()->appendChild($entryNode);
+            $visitor->setCurrentNode($entryNode);
+
+            $visitor->getCurrentNode()->setAttribute('rel', $relation->getName());
+
+            $node = $visitor->getNavigator()->accept($data, null, $context);
+            if (null !== $node) {
+                $visitor->getCurrentNode()->appendChild($node);
+            }
+
+            $visitor->revertCurrentNode();
         }
     }
 }

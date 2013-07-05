@@ -2,6 +2,9 @@
 
 namespace tests\Hateoas\Serializer;
 
+use Hateoas\Configuration\Relation;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\SerializationContext;
 use tests\TestCase;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\XmlSerializer as TestedXmlSerializer;
@@ -32,6 +35,11 @@ class XmlSerializer extends TestCase
 XML
                 )
         ;
+    }
+
+    public function testSerializeEmbedded()
+    {
+        // TODO ... seemed hard to test :(
     }
 
     private function createXmlSerializationVisitor()

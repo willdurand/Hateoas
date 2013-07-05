@@ -33,6 +33,9 @@ class HateoasBuilder extends TestCase
   <last_name><![CDATA[Brault]]></last_name>
   <link rel="self" href="http://adrienbrault.fr"/>
   <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
+  <entry rel="computer">
+    <entry><![CDATA[MacBook Pro]]></entry>
+  </entry>
 </result>
 
 XML

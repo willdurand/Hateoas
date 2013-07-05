@@ -24,5 +24,5 @@ interface JsonSerializerInterface
      * @param SerializationContext $context
      * @return mixed
      */
-    public function serializeEmbeddedMap(\SplObjectStorage $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbedded(\SplObjectStorage $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context);
 }

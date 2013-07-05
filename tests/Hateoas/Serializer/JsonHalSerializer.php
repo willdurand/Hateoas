@@ -51,7 +51,7 @@ class JsonHalSerializer extends TestCase
         ;
     }
 
-    public function testSerializeEmbeddedMap()
+    public function testSerializeEmbedded()
     {
         $jsonHalSerializer = new TestedJsonHalSerializer();
 
@@ -70,7 +70,7 @@ class JsonHalSerializer extends TestCase
             array('name' => 'John')
         );
 
-        $jsonHalSerializer->serializeEmbeddedMap($embeddedMap, $jsonSerializationVisitor, $context);
+        $jsonHalSerializer->serializeEmbedded($embeddedMap, $jsonSerializationVisitor, $context);
 
         $expectedEmbedded = array(
             'friend' => array('name' => 'John'),

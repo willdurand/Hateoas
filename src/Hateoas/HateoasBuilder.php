@@ -16,6 +16,7 @@ use Hateoas\Handler\HandlerManager;
 use Hateoas\Handler\PropertyPathHandler;
 use Hateoas\Serializer\EventSubscriber\JsonEmbedEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\JsonLinkEventSubscriber;
+use Hateoas\Serializer\EventSubscriber\XmlEmbedEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\JsonSerializerInterface;
@@ -94,12 +95,14 @@ class HateoasBuilder
         }
 
         $xmlLinkEventSubscriber = new XmlLinkEventSubscriber($linksFactory, $this->xmlSerializer);
+        $xmlEmbedEventSubscriber = new XmlEmbedEventSubscriber($embeddedMapFactory, $this->xmlSerializer);
         $jsonLinkEventSubscriber = new JsonLinkEventSubscriber($linksFactory, $this->jsonSerializer);
         $jsonEmbedEventSubscriber = new JsonEmbedEventSubscriber($embeddedMapFactory, $this->jsonSerializer);
         $this->serializerBuilder
             ->addDefaultListeners()
-            ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($xmlLinkEventSubscriber, $jsonLinkEventSubscriber, $jsonEmbedEventSubscriber) {
+            ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($xmlLinkEventSubscriber, $xmlEmbedEventSubscriber, $jsonLinkEventSubscriber, $jsonEmbedEventSubscriber) {
                 $dispatcher->addSubscriber($xmlLinkEventSubscriber);
+                $dispatcher->addSubscriber($xmlEmbedEventSubscriber);
                 $dispatcher->addSubscriber($jsonLinkEventSubscriber);
                 $dispatcher->addSubscriber($jsonEmbedEventSubscriber);
             })
