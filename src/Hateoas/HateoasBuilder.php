@@ -10,8 +10,8 @@ use Hateoas\Configuration\RelationsManager;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Factory\RouteFactoryInterface;
+use Hateoas\Handler\HandlerInterface;
 use Hateoas\Handler\HandlerManager;
-use Hateoas\Serializer\EventSubscriber\JsonLinkEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
@@ -30,6 +30,12 @@ use Metadata\MetadataFactory;
  */
 class HateoasBuilder
 {
+    /**
+     * @var SerializerBuilder
+     */
+    private $serializerBuilder;
+    private $handlerManager;
+
     private $xmlSerializer;
     private $routeFactory;
 
@@ -44,56 +50,25 @@ class HateoasBuilder
         return new static($serializerBuilder);
     }
 
-    public static function getSerializer()
+    public static function buildHateoas()
     {
         $builder = static::create();
 
-        return $builder->configureSerializerBuilder()->build();
+        return $builder->build();
     }
-
-    /**
-     * @var SerializerBuilder
-     */
-    private $serializerBuilder;
 
     public function __construct(SerializerBuilder $serializerBuilder = null)
     {
         $this->serializerBuilder = $serializerBuilder ?: SerializerBuilder::create();
+        $this->handlerManager = new HandlerManager();
     }
 
-    public function configureSerializerBuilder()
+    public function build()
     {
-        $annotationReader = $this->annotationReader;
-        if (null === $annotationReader) {
-            $annotationReader = new AnnotationReader();
+        $metadataFactory = $this->buildMetadataFactory();
 
-            if (null !== $this->cacheDir) {
-                $this->createDir($this->cacheDir.'/annotations');
-                $annotationReader = new FileCacheReader($annotationReader, $this->cacheDir.'/annotations', $this->debug);
-            }
-        }
-
-        if ( ! empty($this->metadataDirs)) {
-            $fileLocator = new FileLocator($this->metadataDirs);
-            $metadataDriver = new DriverChain(array(
-                new YamlDriver($fileLocator),
-                new AnnotationDriver($annotationReader),
-            ));
-        } else {
-            $metadataDriver = new AnnotationDriver($annotationReader);
-        }
-
-        $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
-        $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
-
-        if (null !== $this->cacheDir) {
-            $this->createDir($this->cacheDir.'/metadata');
-            $metadataFactory->setCache(new FileCache($this->cacheDir.'/metadata'));
-        }
-
-        $handlerManager = new HandlerManager();
         $relationsManager = new RelationsManager($metadataFactory);
-        $linkFactory = new LinkFactory($handlerManager, $this->routeFactory);
+        $linkFactory = new LinkFactory($this->handlerManager, $this->routeFactory);
         $linksFactory = new LinksFactory($relationsManager, $linkFactory);
 
         if (null === $this->xmlSerializer) {
@@ -108,7 +83,7 @@ class HateoasBuilder
             })
         ;
 
-        return $this->serializerBuilder;
+        return new Hateoas($this->serializerBuilder->build(), $relationsManager, $this->handlerManager);
     }
 
     public function setXmlSerializer(XmlSerializerInterface $xmlSerializer)
@@ -126,6 +101,13 @@ class HateoasBuilder
     public function setRouteFactory(RouteFactoryInterface $routeFactory)
     {
         $this->routeFactory = $routeFactory;
+
+        return $this;
+    }
+
+    public function setHandler($name, HandlerInterface $handler)
+    {
+        $this->handlerManager->setHandler($name, $handler);
 
         return $this;
     }
@@ -247,6 +229,39 @@ class HateoasBuilder
         $this->metadataDirs[$namespacePrefix] = $dir;
 
         return $this;
+    }
+
+    private function buildMetadataFactory()
+    {
+        $annotationReader = $this->annotationReader;
+        if (null === $annotationReader) {
+            $annotationReader = new AnnotationReader();
+
+            if (null !== $this->cacheDir) {
+                $this->createDir($this->cacheDir.'/annotations');
+                $annotationReader = new FileCacheReader($annotationReader, $this->cacheDir.'/annotations', $this->debug);
+            }
+        }
+
+        if ( ! empty($this->metadataDirs)) {
+            $fileLocator = new FileLocator($this->metadataDirs);
+            $metadataDriver = new DriverChain(array(
+                new YamlDriver($fileLocator),
+                new AnnotationDriver($annotationReader),
+            ));
+        } else {
+            $metadataDriver = new AnnotationDriver($annotationReader);
+        }
+
+        $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
+        $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
+
+        if (null !== $this->cacheDir) {
+            $this->createDir($this->cacheDir.'/metadata');
+            $metadataFactory->setCache(new FileCache($this->cacheDir.'/metadata'));
+        }
+
+        return $metadataFactory;
     }
 
     private function createDir($dir)

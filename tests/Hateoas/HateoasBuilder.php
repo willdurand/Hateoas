@@ -11,21 +11,21 @@ class HateoasBuilder extends TestCase
     public function test()
     {
         $hateoasBuilder = new TestedHateoasBuilder();
-        $serializerBuilder = $hateoasBuilder->configureSerializerBuilder();
+        $hateoas = $hateoasBuilder->build();
 
         $this
-            ->object($serializerBuilder)
-                ->isInstanceOf('JMS\Serializer\SerializerBuilder')
+            ->object($hateoas)
+                ->isInstanceOf('Hateoas\Hateoas')
         ;
     }
 
     public function testSerializeAdrienBrault()
     {
-        $serializer = TestedHateoasBuilder::getSerializer();
+        $hateoas = TestedHateoasBuilder::buildHateoas();
         $adrienBrault = new AdrienBrault();
 
         $this
-            ->string($serializer->serialize($adrienBrault, 'xml'))
+            ->string($hateoas->serialize($adrienBrault, 'xml'))
                 ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
