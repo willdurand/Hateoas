@@ -4,6 +4,7 @@ namespace Hateoas\Tests\Factory\Config;
 
 use Hateoas\Factory\Config\YamlConfig;
 use Hateoas\Tests\TestCase;
+use org\bovigo\vfs\vfsStream;
 
 class YamlConfigTest extends TestCase
 {
@@ -11,8 +12,7 @@ class YamlConfigTest extends TestCase
 
     public function setUp()
     {
-        $this->cachePath = __DIR__ . '/../../cache';
-        $this->deleteDir($this->cachePath);
+        $this->cachePath = vfsStream::setup('cache');
     }
 
     public function testParseFile()
@@ -29,10 +29,13 @@ class YamlConfigTest extends TestCase
     public function testParseFileAndCachedIt()
     {
         $config = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas.yml');
-        $configWithCache = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas.yml', $this->cachePath);
-        $this->assertTrue(file_exists($this->cachePath.'/a4d2105894aca3be64d8be987a1df652.yml.cache'));
-        $this->assertSame($config->getResourceDefinitions(), $configWithCache->getResourceDefinitions());
-        $this->assertSame($config->getCollectionDefinitions(), $configWithCache->getCollectionDefinitions());
+        $this->assertFalse($this->cachePath->hasChildren());
+
+        $cachedConfig = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas.yml', vfsStream::url('cache'));
+        $this->assertTrue($this->cachePath->hasChildren());
+
+        $this->assertSame($config->getResourceDefinitions(), $cachedConfig->getResourceDefinitions());
+        $this->assertSame($config->getCollectionDefinitions(), $cachedConfig->getCollectionDefinitions());
     }
 
     /**
@@ -41,16 +44,5 @@ class YamlConfigTest extends TestCase
     public function testParseInvalidFile()
     {
         $config = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas-404.yml');
-    }
-
-    private function deleteDir($dirPath)
-    {
-        if (!is_dir($dirPath)) {
-            return;
-        }
-
-        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
-            $path->isFile() ? unlink($path->getPathname()) : rmdir($path->getPathname());
-        }
     }
 }

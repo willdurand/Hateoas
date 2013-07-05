@@ -14,7 +14,8 @@
         "symfony/yaml": "~2.0"
     },
     "require-dev": {
-        "symfony/routing": "~2.0"
+        "symfony/routing": "~2.0",
+        "mikey179/vfsStream": "~1.2"
     },
     "suggest": {
         "symfony/routing": "Required if you want to use the LinkBuilder"
