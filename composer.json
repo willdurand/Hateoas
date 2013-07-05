@@ -13,11 +13,19 @@
         "jms/serializer": ">=0.12,<0.13-dev",
         "symfony/yaml": "~2.0"
     },
+    "require-dev": {
+        "symfony/routing": "~2.0",
+        "mikey179/vfsStream": "~1.2"
+    },
     "suggest": {
-        "symfony/routing": "Required if you want to use the LinkBuilder",
-        "symfony/yaml": "Required if you want to use the YamlConfig"
+        "symfony/routing": "Required if you want to use the LinkBuilder"
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
