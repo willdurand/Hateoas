@@ -82,6 +82,37 @@ class Handler implements SubscribingHandlerInterface
             $visitor->revertCurrentNode();
         }
 
+        // Embeds
+        foreach ($resource->getEmbeds() as $name => $embeds) {
+            $embedNode = $visitor->getDocument()->createElement($name);
+            $visitor->getCurrentNode()->appendChild($embedNode);
+            $visitor->setCurrentNode($embedNode);
+
+            if (is_array($embeds)) {
+                foreach ($embeds as $embed) {
+                    $elementName = 'resource';
+                    if (is_object($embed->getData()) && null !== ($m = $this->metadataFactory->getMetadataForClass(get_class($embed->getData())))) {
+                        $elementName = $m->xmlRootName ?: 'resource';
+                    }
+
+                    $entryNode = $visitor->getDocument()->createElement($elementName);
+                    $visitor->getCurrentNode()->appendChild($entryNode);
+                    $visitor->setCurrentNode($entryNode);
+
+                    if (null !== $node = $context->accept($embed)) {
+                        $visitor->getCurrentNode()->appendChild($node);
+                    }
+
+                    $visitor->revertCurrentNode();
+                }
+            } else {
+                if (null !== $node = $context->accept($embeds)) {
+                    $visitor->getCurrentNode()->appendChild($embeds);
+                }
+            }
+            $visitor->revertCurrentNode();
+        }
+
         // form
         foreach ($resource->getForms() as $elementName => $form) {
             $entryNode = $visitor->getDocument()->createElement($elementName);
@@ -162,14 +193,28 @@ class Handler implements SubscribingHandlerInterface
 
     public function serializeResourceToJson(JsonSerializationVisitor $visitor, Resource $resource, array $type, Context $context)
     {
-        $metadata  = $this->metadataFactory
-            ->getMetadataForClass(get_class($resource))
-            ->propertyMetadata['links'];
-        $linksName = $metadata->serializedName ?: '_links';
+        $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($resource));
 
         // inline
         $data = $context->accept($resource->getData());
+
+        //links
+        $linkPropertyMetadata = $classMetadata->propertyMetadata['links'];
+        $linksName = $linkPropertyMetadata->serializedName ?: '_links';
         $data[$linksName] = $this->getLinksFrom($resource);
+
+        // embeds
+        $EmbedPropertyMetadata = $classMetadata->propertyMetadata['embeds'];
+        $embedName = $EmbedPropertyMetadata->serializedName ?: '_embeds';
+        foreach ($resource->getEmbeds() as $name => $embeds) {
+            if (is_array($embeds)) {
+                foreach ($embeds as $embed) {
+                    $data[$embedName][$name][] = $this->serializeResourceToJson($visitor, $embed, $type, $context);
+                }
+            } else {
+                $data[$embedName][$name] = $this->serializeResourceToJson($visitor, $embeds, $type, $context);
+            }
+        }
 
         $visitor->setRoot($data);
 

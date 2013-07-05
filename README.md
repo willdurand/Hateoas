@@ -140,7 +140,8 @@ hateoas:
             links:
                 - { route: 'location.get',          parameters: [ 'id' ], rel: 'self',      type: 'application/vnd.acme.location' }
                 - { route: 'location.get_comments', parameters: [ 'id' ], rel: 'comments',  type: 'application/vnd.acme.comments' }
-
+            embeds:
+                - { name: 'last-comments', accessor: 'lastComments'}
         Acme\Entity\Comment:
             links:
                 - { route: 'comment.get',           parameters: [ 'id' ], rel: 'self',      type: 'application/vnd.acme.comment' }
@@ -180,6 +181,27 @@ $linkDefinition = new RouteLinkDefinition('acme_demo.user_get', array('id'), Lin
 > **Note:** you can use the `RouteLinkDefinition` even if you don't use the
 > Symfony2 Router. It can be useful if your own router relies on the same
 > principle (a route and its parameters).
+
+
+### EmbedDefinition
+
+You can load `embeds` resources from within a defined resource. You need to
+define a `name` for the collection you are embedding, and optionally an
+`accessor` to load it from the parent resource.
+
+``` php
+<?php
+
+$embedDefinition = array(
+    'name' => 'comments',
+    'accessor' => 'TopComments'
+);
+//or
+$embedDefinition = new EmbedDefinition('comments', 'TopComments');
+```
+
+> **Note:** The embed resources are rendered as a sequence of individual
+> resources, not as a collection.
 
 
 ### Factory, RouteAwareFactory
@@ -266,6 +288,10 @@ $factory = new RouteAwareFactory(
                         'rel'        => 'friends',
                         'type'       => 'application/vnd.acme.users'
                     )
+                ),
+                'embed' => array(
+                    $embedDefinition,
+                    array('name' => 'best_friends', 'accessor' => 'BestFriends')
                 )
             )
         ),

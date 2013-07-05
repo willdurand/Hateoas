@@ -3,11 +3,12 @@
 namespace Hateoas\Tests\Functional;
 
 use Hateoas\Collection;
-use Hateoas\Tests\Fixtures\FormClass;
 use Hateoas\Hateoas;
 use Hateoas\Link;
 use Hateoas\Resource;
 use Hateoas\Tests\Fixtures\DataClass1;
+use Hateoas\Tests\Fixtures\DummyClass;
+use Hateoas\Tests\Fixtures\FormClass;
 use Hateoas\Tests\TestCase;
 
 class SerializerTest extends TestCase
@@ -24,6 +25,112 @@ class SerializerTest extends TestCase
 <?xml version="1.0" encoding="UTF-8"?>
 <data_class>
   <link href="/foo" rel="self"/>
+  <content><![CDATA[foo]]></content>
+</data_class>
+XML
+        , trim($serializer->serialize($res, 'xml')));
+    }
+
+    public function testSerializeResourceWithOneEmbedInXml()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(new Link('/foo', Link::REL_SELF)),
+            array(),
+            array(
+                'dummy-class' => new Resource(
+                    new DummyClass(),
+                    array(new Link('/dummy', Link::REL_SELF))
+                ),
+            )
+        );
+
+        $this->assertEquals(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<data_class>
+  <link href="/foo" rel="self"/>
+  <dummy-class>
+    <link href="/dummy" rel="self"/>
+  </dummy-class>
+  <content><![CDATA[foo]]></content>
+</data_class>
+XML
+        , trim($serializer->serialize($res, 'xml')));
+    }
+
+    public function testSerializeResourceWithTwoEmbedInXml()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(new Link('/foo', Link::REL_SELF)),
+            array(),
+            array(
+                'data-class1' => new Resource(
+                    new DataClass1('data1'),
+                    array(new Link('/data1', Link::REL_SELF))
+                ),
+                'dummy-class2' => new Resource(
+                    new DummyClass(),
+                    array(new Link('/dummy2', Link::REL_SELF))
+                ),
+            )
+        );
+
+        $this->assertEquals(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<data_class>
+  <link href="/foo" rel="self"/>
+  <data-class1>
+    <link href="/data1" rel="self"/>
+    <content><![CDATA[data1]]></content>
+  </data-class1>
+  <dummy-class2>
+    <link href="/dummy2" rel="self"/>
+  </dummy-class2>
+  <content><![CDATA[foo]]></content>
+</data_class>
+XML
+        , trim($serializer->serialize($res, 'xml')));
+    }
+
+
+    public function testSerializeResourceWithOneEmbedCollectionInXml()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(new Link('/foo', Link::REL_SELF)),
+            array(),
+            array(
+                'dummy-classes' => array(
+                    new Resource(
+                        new DataClass1('data1'),
+                        array(new Link('/data1', Link::REL_SELF))
+                    ),
+                    new Resource(
+                        new DataClass1('data2'),
+                        array(new Link('/data2', Link::REL_SELF))
+                    ),
+                ),
+            )
+        );
+
+        $this->assertEquals(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<data_class>
+  <link href="/foo" rel="self"/>
+  <dummy-classes>
+    <data_class>
+      <link href="/data1" rel="self"/>
+      <content><![CDATA[data1]]></content>
+    </data_class>
+    <data_class>
+      <link href="/data2" rel="self"/>
+      <content><![CDATA[data2]]></content>
+    </data_class>
+  </dummy-classes>
   <content><![CDATA[foo]]></content>
 </data_class>
 XML
@@ -348,5 +455,72 @@ XML
             '{"total":10,"page":1,"limit":2,"_links":{"self":{"href":"\/foobar","type":"application\/vnd.hateoas.data_class"}},"resources":[{"content":"foo","_links":{"self":{"href":"\/foo","type":"application\/vnd.hateoas.data_class"}}}]}',
             $serializer->serialize($col, 'json')
         );
+    }
+
+    public function testSerializeResourceWithOneEmbedInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(new Link('/foo', Link::REL_SELF)),
+            array(),
+            array(
+                'dummy-class' => new Resource(
+                    new DummyClass(),
+                    array(new Link('/dummy', Link::REL_SELF))
+                ),
+            )
+        );
+
+        $this->assertEquals('{"content":"foo","_links":{"self":{"href":"\/foo"}},"_embeds":{"dummy-class":{"_links":{"self":{"href":"\/dummy"}}}}}'
+            , $serializer->serialize($res, 'json'));
+    }
+
+    public function testSerializeResourceWithTwoEmbedInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(new Link('/foo', Link::REL_SELF)),
+            array(),
+            array(
+                'data-class1' => new Resource(
+                    new DataClass1('data1'),
+                    array(new Link('/data1', Link::REL_SELF))
+                ),
+                'dummy-class2' => new Resource(
+                    new DummyClass(),
+                    array(new Link('/dummy2', Link::REL_SELF))
+                ),
+            )
+        );
+
+        $this->assertEquals('{"content":"foo","_links":{"self":{"href":"\/foo"}},"_embeds":{"data-class1":{"content":"data1","_links":{"self":{"href":"\/data1"}}},"dummy-class2":{"_links":{"self":{"href":"\/dummy2"}}}}}'
+            , trim($serializer->serialize($res, 'json')));
+    }
+
+    public function testSerializeResourceWithOneEmbedCollectionInJson()
+    {
+        $serializer = Hateoas::getSerializer();
+        $res        = new Resource(
+            new DataClass1('foo'),
+            array(new Link('/foo', Link::REL_SELF)),
+            array(),
+            array(
+                'dummy-classes' => array(
+                    new Resource(
+                        new DataClass1('data1'),
+                        array(new Link('/data1', Link::REL_SELF))
+                    ),
+                    new Resource(
+                        new DataClass1('data2'),
+                        array(new Link('/data2', Link::REL_SELF))
+                    ),
+                ),
+            )
+        );
+
+        $this->assertEquals('{"content":"foo","_links":{"self":{"href":"\/foo"}},"_embeds":{"dummy-classes":[{"content":"data1","_links":{"self":{"href":"\/data1"}}},{"content":"data2","_links":{"self":{"href":"\/data2"}}}]}}'
+            , trim($serializer->serialize($res, 'json')));
     }
 }

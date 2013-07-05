@@ -7,30 +7,39 @@ use Hateoas\Factory\Factory;
 use Hateoas\Builder\ResourceBuilder;
 use Hateoas\Tests\TestCase;
 use Hateoas\Tests\Fixtures\DataClass1;
+use Hateoas\Tests\Fixtures\DataClass2;
 
 class ResourceBuilderTest extends TestCase
 {
     public function testCreate()
     {
         $definitions = array(
-            'Hateoas\Tests\Fixtures\DataClass1' => array(
+            'Hateoas\Tests\Fixtures\DataClass2' => array(
                 'links' => array(
                     array('rel' => 'foo', 'type' => 'bar'),
                 ),
+                'embeds' => array(
+                    array('name' => 'dummy', 'accessor' => 'dummyClass')
+                ),
             ),
+            'Hateoas\Tests\Fixtures\DummyClass' => array(
+                'links' => array(
+                    array('rel' => 'dummy-rel', 'type' => 'dummy-type'),
+                )
+            )
         );
 
         $factory = new Factory(new ArrayConfig($definitions));
         $builder = new ResourceBuilder(
             $factory,
-            $this->getLinkBuilderMock($this->exactly(2))
+            $this->getLinkBuilderMock($this->exactly(4))
         );
 
-        $resource = $builder->create(new DataClass1('test', new DataClass1('test2')), array('objectProperties' => array('child' => null)));
+        $resource = $builder->create(new DataClass2('test', new DataClass2('test2')), array('objectProperties' => array('child' => null)));
 
         $this->assertInstanceOf('Hateoas\Resource', $resource);
-        $this->assertInstanceOf('Hateoas\Tests\Fixtures\DataClass1', $resource->getData());
-        $this->assertInstanceOf('Hateoas\Tests\Fixtures\DataClass1', $resource->getData()->child->getData());
+        $this->assertInstanceOf('Hateoas\Tests\Fixtures\DataClass2', $resource->getData());
+        $this->assertInstanceOf('Hateoas\Tests\Fixtures\DataClass2', $resource->getData()->child->getData());
 
         // check links
         $this->assertCount(1, $resource->getLinks());
@@ -41,10 +50,22 @@ class ResourceBuilderTest extends TestCase
 
         // check child links
         $this->assertCount(1, $resource->getData()->child->getLinks());
-        $links = $resource->getLinks();
+        $links = $resource->getData()->child->getLinks();
 
         $this->assertEquals('foo', $links[0]->getRel());
         $this->assertEquals('bar', $links[0]->getType());
+
+        // check embed
+        $embeds = $resource->getEmbeds();
+        $this->assertCount(1, $embeds);
+        $first = reset($embeds);
+
+        $this->assertInstanceOf('Hateoas\Resource', $first);
+        $this->assertInstanceOf('Hateoas\Tests\Fixtures\DummyClass', $first->getData());
+        $this->assertCount(1, $first->getLinks());
+        $links = $first->getLinks();
+        $this->assertEquals('dummy-rel', $links[0]->getRel());
+        $this->assertEquals('dummy-type', $links[0]->getType());
     }
 
     public function testCreateCollection()
