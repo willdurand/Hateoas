@@ -25,11 +25,18 @@ class Resource
      */
     private $links;
 
-    public function __construct($data, $links = array(), array $forms = array())
+    /**
+     * @SerializedName("_embeds")
+     * @var array
+     */
+    private $embeds;
+
+    public function __construct($data, $links = array(), array $forms = array(), array $embeds = array())
     {
-        $this->data  = $data;
+        $this->data = $data;
         $this->links = $links;
         $this->forms = $forms;
+        $this->embeds = $embeds;
     }
 
     /**
@@ -46,6 +53,14 @@ class Resource
     public function getLinks()
     {
         return $this->links;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEmbeds()
+    {
+        return $this->embeds;
     }
 
     /**
