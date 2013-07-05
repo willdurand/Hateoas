@@ -7,6 +7,14 @@ use Hateoas\Tests\TestCase;
 
 class YamlConfigTest extends TestCase
 {
+    private $cachePath;
+
+    public function setUp()
+    {
+        $this->cachePath = __DIR__ . '/../../cache';
+        $this->deleteDir($this->cachePath);
+    }
+
     public function testParseFile()
     {
         $config = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas.yml');
@@ -18,11 +26,31 @@ class YamlConfigTest extends TestCase
         $this->assertCount(1, $config->getCollectionDefinitions());
     }
 
+    public function testParseFileAndCachedIt()
+    {
+        $config = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas.yml');
+        $configWithCache = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas.yml', $this->cachePath);
+        $this->assertTrue(file_exists($this->cachePath.'/a4d2105894aca3be64d8be987a1df652.yml.cache'));
+        $this->assertSame($config->getResourceDefinitions(), $configWithCache->getResourceDefinitions());
+        $this->assertSame($config->getCollectionDefinitions(), $configWithCache->getCollectionDefinitions());
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */
     public function testParseInvalidFile()
     {
         $config = new YamlConfig(__DIR__ . '/../../Fixtures/hateoas-404.yml');
+    }
+
+    private function deleteDir($dirPath)
+    {
+        if (!is_dir($dirPath)) {
+            return;
+        }
+
+        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirPath, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $path) {
+            $path->isFile() ? unlink($path->getPathname()) : rmdir($path->getPathname());
+        }
     }
 }
