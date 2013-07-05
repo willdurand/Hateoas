@@ -3,6 +3,7 @@
 namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\LinksFactory;
+use Hateoas\Serializer\JsonSerializerInterface;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -26,15 +27,25 @@ class JsonLinkEventSubscriber implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @var LinksFactory
+     */
     private $linksFactory;
 
-    public function __construct(LinksFactory $linksFactory)
+    /**
+     * @var JsonSerializerInterface
+     */
+    private $jsonSerializer;
+
+    public function __construct(LinksFactory $linksFactory, JsonSerializerInterface $jsonSerializer)
     {
         $this->linksFactory = $linksFactory;
+        $this->jsonSerializer = $jsonSerializer;
     }
 
     public function onPostSerialize(ObjectEvent $event)
     {
-
+        $links = $this->linksFactory->createLinks($event->getObject());
+        $this->jsonSerializer->serializeLinks($links, $event->getVisitor());
     }
 }

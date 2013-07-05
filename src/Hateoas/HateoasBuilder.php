@@ -12,7 +12,10 @@ use Hateoas\Factory\LinksFactory;
 use Hateoas\Factory\RouteFactoryInterface;
 use Hateoas\Handler\HandlerInterface;
 use Hateoas\Handler\HandlerManager;
+use Hateoas\Serializer\EventSubscriber\JsonLinkEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber;
+use Hateoas\Serializer\JsonHalSerializer;
+use Hateoas\Serializer\JsonSerializerInterface;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
@@ -37,6 +40,7 @@ class HateoasBuilder
     private $handlerManager;
 
     private $xmlSerializer;
+    private $jsonSerializer;
     private $routeFactory;
 
     private $metadataDirs = array();
@@ -75,11 +79,17 @@ class HateoasBuilder
             $this->addXmlSerializer();
         }
 
-        $xmlEventSubscriber = new XmlLinkEventSubscriber($linksFactory, $this->xmlSerializer);
+        if (null === $this->jsonSerializer) {
+            $this->addHalSerializer();
+        }
+
+        $xmlLinkEventSubscriber = new XmlLinkEventSubscriber($linksFactory, $this->xmlSerializer);
+        $jsonLinkEventSubscriber = new JsonLinkEventSubscriber($linksFactory, $this->jsonSerializer);
         $this->serializerBuilder
             ->addDefaultListeners()
-            ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($xmlEventSubscriber) {
-                $dispatcher->addSubscriber($xmlEventSubscriber);
+            ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($xmlLinkEventSubscriber, $jsonLinkEventSubscriber) {
+                $dispatcher->addSubscriber($xmlLinkEventSubscriber);
+                $dispatcher->addSubscriber($jsonLinkEventSubscriber);
             })
         ;
 
@@ -96,6 +106,18 @@ class HateoasBuilder
     public function addXmlSerializer()
     {
         return $this->setXmlSerializer(new XmlSerializer());
+    }
+
+    public function setJsonSerializer(JsonSerializerInterface $jsonSerializer)
+    {
+        $this->jsonSerializer = $jsonSerializer;
+
+        return $this;
+    }
+
+    public function addHalSerializer()
+    {
+        return $this->setJsonSerializer(new JsonHalSerializer());
     }
 
     public function setRouteFactory(RouteFactoryInterface $routeFactory)

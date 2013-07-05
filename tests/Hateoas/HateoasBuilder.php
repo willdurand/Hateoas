@@ -36,6 +36,12 @@ class HateoasBuilder extends TestCase
 
 XML
                 )
+            ->string($hateoas->serialize($adrienBrault, 'json'))
+                ->isEqualTo(<<<JSON
+{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"}}}
+JSON
+                )
+
         ;
     }
 }
