@@ -35,9 +35,13 @@ class YamlDriver extends AbstractFileDriver
                 if (is_array($href) && isset($href['route'])) {
                     $href = new Route($href['route'], $href['parameters']);
                 }
+                $embed = null;
+                if (isset($relation['embed'])) {
+                    $embed = $relation['embed'];
+                }
                 $attributes = isset($relation['attributes']) ? $relation['attributes'] : array();
 
-                $relation = new Relation($name, $href, $attributes);
+                $relation = new Relation($name, $href, $embed, $attributes);
                 $classMetadata->addRelation($relation);
             }
         }

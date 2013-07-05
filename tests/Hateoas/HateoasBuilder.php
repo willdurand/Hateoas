@@ -32,13 +32,14 @@ class HateoasBuilder extends TestCase
   <first_name><![CDATA[Adrien]]></first_name>
   <last_name><![CDATA[Brault]]></last_name>
   <link rel="self" href="http://adrienbrault.fr"/>
+  <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
 </result>
 
 XML
                 )
             ->string($hateoas->serialize($adrienBrault, 'json'))
                 ->isEqualTo(<<<JSON
-{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"}}}
+{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"}},"_embedded":{"computer":{"name":"MacBook Pro"}}}
 JSON
                 )
 

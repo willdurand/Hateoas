@@ -3,6 +3,7 @@
 namespace Hateoas\Serializer;
 
 use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -35,5 +36,20 @@ class JsonHalSerializer implements JsonSerializerInterface
         }
 
         $visitor->addData('_links', $serializedLinks);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serializeEmbeddedMap(\SplObjectStorage $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context)
+    {
+        $serializedEmbedded = array();
+
+        foreach ($embeddedMap as $relation) {
+            $data = $embeddedMap->offsetGet($relation);
+            $serializedEmbedded[$relation->getName()] = $context->accept($data);
+        }
+
+        $visitor->addData('_embedded', $serializedEmbedded);
     }
 }

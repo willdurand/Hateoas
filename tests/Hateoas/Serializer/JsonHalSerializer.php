@@ -2,6 +2,7 @@
 
 namespace tests\Hateoas\Serializer;
 
+use Hateoas\Configuration\Relation;
 use tests\TestCase;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\JsonHalSerializer as TestedJsonHalSerializer;
@@ -46,6 +47,39 @@ class JsonHalSerializer extends TestCase
             ->mock($jsonSerializationVisitor)
                 ->call('addData')
                     ->withArguments('_links', $expectedSerializedLinks)
+                    ->once()
+        ;
+    }
+
+    public function testSerializeEmbeddedMap()
+    {
+        $jsonHalSerializer = new TestedJsonHalSerializer();
+
+        $this->mockGenerator->orphanize('__construct');
+        $jsonSerializationVisitor = new \mock\JMS\Serializer\JsonSerializationVisitor();
+
+        $this->mockGenerator->orphanize('__construct');
+        $context = new \mock\JMS\Serializer\SerializationContext();
+        $context->getMockController()->accept = function ($data) {
+            return $data;
+        };
+
+        $embeddedMap = new \SplObjectStorage();
+        $embeddedMap->attach(
+            new Relation('friend', '/users/42'),
+            array('name' => 'John')
+        );
+
+        $jsonHalSerializer->serializeEmbeddedMap($embeddedMap, $jsonSerializationVisitor, $context);
+
+        $expectedEmbedded = array(
+            'friend' => array('name' => 'John'),
+        );
+
+        $this
+            ->mock($jsonSerializationVisitor)
+                ->call('addData')
+                    ->withArguments('_embedded', $expectedEmbedded)
                     ->once()
         ;
     }

@@ -22,10 +22,16 @@ class Relation
      */
     private $attributes;
 
-    public function __construct($name, $href, array $attributes = array())
+    /**
+     * @var string|mixed
+     */
+    private $embed;
+
+    public function __construct($name, $href, $embed = null, array $attributes = array())
     {
         $this->name = $name;
         $this->href = $href;
+        $this->embed = $embed;
         $this->attributes = $attributes;
     }
 
@@ -51,5 +57,13 @@ class Relation
     public function getAttributes()
     {
         return $this->attributes;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getEmbed()
+    {
+        return $this->embed;
     }
 }

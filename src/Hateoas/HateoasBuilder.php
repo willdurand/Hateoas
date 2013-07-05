@@ -7,11 +7,14 @@ use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
 use Hateoas\Configuration\RelationsManager;
+use Hateoas\Factory\EmbeddedMapFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Factory\RouteFactoryInterface;
 use Hateoas\Handler\HandlerInterface;
 use Hateoas\Handler\HandlerManager;
+use Hateoas\Handler\PropertyPathHandler;
+use Hateoas\Serializer\EventSubscriber\JsonEmbedEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\JsonLinkEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber;
 use Hateoas\Serializer\JsonHalSerializer;
@@ -37,6 +40,8 @@ class HateoasBuilder
      * @var SerializerBuilder
      */
     private $serializerBuilder;
+
+    private $handlerSet = false;
     private $handlerManager;
 
     private $xmlSerializer;
@@ -74,6 +79,7 @@ class HateoasBuilder
         $relationsManager = new RelationsManager($metadataFactory);
         $linkFactory = new LinkFactory($this->handlerManager, $this->routeFactory);
         $linksFactory = new LinksFactory($relationsManager, $linkFactory);
+        $embeddedMapFactory = new EmbeddedMapFactory($relationsManager, $this->handlerManager);
 
         if (null === $this->xmlSerializer) {
             $this->addXmlSerializer();
@@ -83,13 +89,19 @@ class HateoasBuilder
             $this->addHalSerializer();
         }
 
+        if (!$this->handlerSet) {
+            $this->addDefaultHandlers();
+        }
+
         $xmlLinkEventSubscriber = new XmlLinkEventSubscriber($linksFactory, $this->xmlSerializer);
         $jsonLinkEventSubscriber = new JsonLinkEventSubscriber($linksFactory, $this->jsonSerializer);
+        $jsonEmbedEventSubscriber = new JsonEmbedEventSubscriber($embeddedMapFactory, $this->jsonSerializer);
         $this->serializerBuilder
             ->addDefaultListeners()
-            ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($xmlLinkEventSubscriber, $jsonLinkEventSubscriber) {
+            ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($xmlLinkEventSubscriber, $jsonLinkEventSubscriber, $jsonEmbedEventSubscriber) {
                 $dispatcher->addSubscriber($xmlLinkEventSubscriber);
                 $dispatcher->addSubscriber($jsonLinkEventSubscriber);
+                $dispatcher->addSubscriber($jsonEmbedEventSubscriber);
             })
         ;
 
@@ -130,6 +142,14 @@ class HateoasBuilder
     public function setHandler($name, HandlerInterface $handler)
     {
         $this->handlerManager->setHandler($name, $handler);
+        $this->handlerSet = true;
+
+        return $this;
+    }
+
+    public function addDefaultHandlers()
+    {
+        $this->handlerManager->setHandler('this', new PropertyPathHandler());
 
         return $this;
     }

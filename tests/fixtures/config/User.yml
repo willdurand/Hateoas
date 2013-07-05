@@ -10,3 +10,4 @@ tests\fixtures\User:
             href:
                 route: user_get
                 parameters: { id: @this.id }
+            embed: @this.foo

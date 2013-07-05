@@ -47,6 +47,8 @@ abstract class AbstractDriverTest extends TestCase
                 ->isEqualTo(array(
                     'type' => 'application/json',
                 ))
+            ->variable($relation->getEmbed())
+                ->isNull()
         ;
 
         $relation = $relations[$i++];
@@ -62,6 +64,8 @@ abstract class AbstractDriverTest extends TestCase
                         ->isEqualTo(array(
                             'id' => '@this.id',
                         ))
+                ->string($relation->getEmbed())
+                    ->isEqualTo('@this.foo')
         ;
     }
 
