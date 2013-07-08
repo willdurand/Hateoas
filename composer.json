@@ -10,14 +10,26 @@
     ],
     "require": {
         "symfony/property-access": "~2.2",
-        "jms/serializer": ">=0.12,<0.13-dev",
-        "symfony/yaml": "~2.0"
+        "doctrine/common": "~2.0",
+        "doctrine/annotations": "1.*",
+        "jms/metadata": "~1.1",
+        "jms/serializer": "~0.13@dev"
     },
-    "suggest": {
-        "symfony/routing": "Required if you want to use the LinkBuilder",
-        "symfony/yaml": "Required if you want to use the YamlConfig"
+    "require-dev": {
+        "atoum/atoum": "dev-master",
+        "symfony/yaml": "~2.0",
+        "symfony/routing": "~2.0"
+    },
+    "suggests": {
+        "jms/metadata": "Required if you want yaml/annotations based configuration.",
+        "doctrine/annotations": "To use annotation based configuration.",
+        "symfony/yaml": "To use yaml based configuration.",
+        "symfony/routing": "To use the SymfonyRouteFactory."
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }

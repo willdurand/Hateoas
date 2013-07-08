@@ -2,92 +2,78 @@
 
 namespace Hateoas;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Hateoas\Serializer\Handler;
-use JMS\Serializer\Metadata\Driver\AnnotationDriver;
-use JMS\Serializer\SerializerBuilder;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
-use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
-use JMS\Serializer\EventDispatcher\EventDispatcher;
-use Metadata\MetadataFactory;
+use Hateoas\Configuration\RelationsManagerInterface;
+use Hateoas\Handler\HandlerManager;
+use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 
 /**
- * @author William Durand <william.durand1@gmail.com>
+ * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class Hateoas
+class Hateoas implements SerializerInterface
 {
-    protected $metadataDirs = array();
-    
-    protected $debug = false;
-    
-    protected $handler;
-    
-    protected $subscribers = array();
-    
-    public static function getSerializer(array $metadataDirs = array(), $debug = false)
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    /**
+     * @var RelationsManagerInterface
+     */
+    private $relationsManager;
+
+    /**
+     * @var HandlerManager
+     */
+    private $handlerManager;
+
+    public function __construct(
+        SerializerInterface $serializer, RelationsManagerInterface $relationsManager, HandlerManager $handlerManager
+    )
     {
-        return SerializerBuilder::create()
-            ->setDebug($debug)
-            ->addMetadataDirs($metadataDirs)
-            ->addDefaultHandlers()
-            ->configureHandlers(function ($handlerRegistry) {
-                $metadataFactory = new MetadataFactory(
-                    new AnnotationDriver(new AnnotationReader())
-                );
-                $handlerRegistry->registerSubscribingHandler(new Handler($metadataFactory));
-            })
-            ->build();
+        $this->serializer = $serializer;
+        $this->relationsManager = $relationsManager;
+        $this->handlerManager = $handlerManager;
     }
-    
-    public function setMetadataDirs(array $metadataDirs)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize($data, $format, SerializationContext $context = null)
     {
-        $this->metadataDirs = $metadataDirs;
-        return $this;
+        return $this->serializer->serialize($data, $format, $context);
     }
-    
-    public function setDebug($debug)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
-        $this->debug = $debug;
-        return $this;
+        return $this->serializer->deserialize($data, $type, $format, $context);
     }
-    
-    public function setHandler(SubscribingHandlerInterface $handler)
+
+    /**
+     * @return HandlerManager
+     */
+    public function getHandlerManager()
     {
-        $this->handler = $handler;
-        return $this;
+        return $this->handlerManager;
     }
-    
-    public function registerSubscriber(EventSubscriberInterface $subscriber)
+
+    /**
+     * @return RelationsManagerInterface
+     */
+    public function getRelationsManager()
     {
-        $this->subscribers[] = $subscriber;
-        return $this;
+        return $this->relationsManager;
     }
-    
-    public function build()
+
+    /**
+     * @return SerializerInterface
+     */
+    public function getSerializer()
     {
-        $handler = $this->handler;
-        
-        $builder = SerializerBuilder::create()
-            ->setDebug($this->debug)
-            ->addMetadataDirs($this->metadataDirs)
-            ->addDefaultHandlers()
-            ->configureHandlers(function ($handlerRegistry) use($handler) {
-                if(!$handler) {
-                    $metadataFactory = new MetadataFactory(
-    	                  new AnnotationDriver(new AnnotationReader())
-                    );
-                	$handler = new Handler($metadataFactory);
-                }
-                $handlerRegistry->registerSubscribingHandler($handler);
-            });
-        
-        $subscribers = $this->subscribers;
-        $builder->configureListeners(function(EventDispatcher $dispatcher) use($subscribers) {
-            foreach($subscribers as $subscriber) {
-                $dispatcher->addSubscriber($subscriber);
-            }
-        });
-            
-        return $builder->build();
+        return $this->serializer;
     }
 }
