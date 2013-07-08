@@ -3,6 +3,7 @@
 namespace tests\Hateoas\Serializer;
 
 use Hateoas\Configuration\Relation;
+use Hateoas\Model\Resource;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\SerializationContext;
 use tests\TestCase;
@@ -40,6 +41,11 @@ XML
     public function testSerializeEmbedded()
     {
         // TODO ... seemed hard to test :(
+    }
+
+    public function testSerializeResource()
+    {
+        // TODO ... same as above
     }
 
     private function createXmlSerializationVisitor()

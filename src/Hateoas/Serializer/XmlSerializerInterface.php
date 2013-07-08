@@ -3,6 +3,7 @@
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Link;
+use Hateoas\Model\Resource;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
 
@@ -22,7 +23,15 @@ interface XmlSerializerInterface
      * @param array<string, mixed> $embeddedMap rel => data
      * @param XmlSerializationVisitor $visitor
      * @param SerializationContext $context
-     * @return mixed
+     * @return void
      */
     public function serializeEmbedded(array $embeddedMap, XmlSerializationVisitor $visitor, SerializationContext $context);
+
+    /**
+     * @param Resource $resource
+     * @param XmlSerializationVisitor $visitor
+     * @param SerializationContext $context
+     * @return void
+     */
+    public function serializeResource(Resource $resource, XmlSerializationVisitor $visitor, SerializationContext $context);
 }

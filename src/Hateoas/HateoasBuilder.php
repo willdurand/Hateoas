@@ -18,11 +18,14 @@ use Hateoas\Serializer\EventSubscriber\JsonEmbedEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\JsonLinkEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEmbedEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber;
+use Hateoas\Serializer\Handler\JsonResourceHandler;
+use Hateoas\Serializer\Handler\XmlResourceHandler;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\JsonSerializerInterface;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\SerializerBuilder;
 use Metadata\Cache\FileCache;
 use Metadata\Driver\DriverChain;
@@ -94,17 +97,27 @@ class HateoasBuilder
             $this->addDefaultHandlers();
         }
 
-        $xmlLinkEventSubscriber = new XmlLinkEventSubscriber($linksFactory, $this->xmlSerializer);
-        $xmlEmbedEventSubscriber = new XmlEmbedEventSubscriber($embeddedMapFactory, $this->xmlSerializer);
-        $jsonLinkEventSubscriber = new JsonLinkEventSubscriber($linksFactory, $this->jsonSerializer);
-        $jsonEmbedEventSubscriber = new JsonEmbedEventSubscriber($embeddedMapFactory, $this->jsonSerializer);
+        $eventSubscribers = array(
+            new XmlLinkEventSubscriber($linksFactory, $this->xmlSerializer),
+            new XmlEmbedEventSubscriber($embeddedMapFactory, $this->xmlSerializer),
+            new JsonLinkEventSubscriber($linksFactory, $this->jsonSerializer),
+            new JsonEmbedEventSubscriber($embeddedMapFactory, $this->jsonSerializer),
+        );
+        $handlers = array(
+            new XmlResourceHandler($this->xmlSerializer),
+            new JsonResourceHandler($this->jsonSerializer),
+        );
         $this->serializerBuilder
             ->addDefaultListeners()
-            ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($xmlLinkEventSubscriber, $xmlEmbedEventSubscriber, $jsonLinkEventSubscriber, $jsonEmbedEventSubscriber) {
-                $dispatcher->addSubscriber($xmlLinkEventSubscriber);
-                $dispatcher->addSubscriber($xmlEmbedEventSubscriber);
-                $dispatcher->addSubscriber($jsonLinkEventSubscriber);
-                $dispatcher->addSubscriber($jsonEmbedEventSubscriber);
+            ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($eventSubscribers) {
+                foreach ($eventSubscribers as $eventSubscriber) {
+                    $dispatcher->addSubscriber($eventSubscriber);
+                }
+            })
+            ->configureHandlers(function (HandlerRegistryInterface $registry) use ($handlers) {
+                foreach ($handlers as $handler) {
+                    $registry->registerSubscribingHandler($handler);
+                }
             })
         ;
 

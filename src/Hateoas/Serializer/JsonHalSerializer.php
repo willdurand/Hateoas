@@ -2,6 +2,7 @@
 
 namespace Hateoas\Serializer;
 
+use Hateoas\Model\Resource;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationContext;
 
@@ -14,6 +15,46 @@ class JsonHalSerializer implements JsonSerializerInterface
      * {@inheritdoc}
      */
     public function serializeLinks(array $links, JsonSerializationVisitor $visitor)
+    {
+        $visitor->addData('_links', $this->createSerializedLinks($links));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serializeEmbedded(array $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context)
+    {
+        $visitor->addData('_embedded', $context->accept($embeddedMap));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serializeResource(Resource $resource, JsonSerializationVisitor $visitor, SerializationContext $context)
+    {
+        $addRoot = false;
+        if (null === $visitor->getRoot()) {
+            $addRoot = true;
+        }
+
+        $result = $resource->getData();
+
+        if (count($resource->getLinks()) > 0) {
+            $result['_links'] = $this->createSerializedLinks($resource->getLinks());
+        }
+
+        if (count($resource->getEmbedded()) > 0) {
+            $result['_embedded'] = $context->accept($resource->getEmbedded());
+        }
+
+        if ($addRoot) {
+            $visitor->setRoot($result);
+        }
+
+        return $result;
+    }
+
+    private function createSerializedLinks(array $links)
     {
         $serializedLinks = array();
 
@@ -35,20 +76,6 @@ class JsonHalSerializer implements JsonSerializerInterface
             }
         }
 
-        $visitor->addData('_links', $serializedLinks);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeEmbedded(array $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context)
-    {
-        $serializedEmbedded = array();
-
-        foreach ($embeddedMap as $rel => $data) {
-            $serializedEmbedded[$rel] = $context->accept($data);
-        }
-
-        $visitor->addData('_embedded', $serializedEmbedded);
+        return $serializedLinks;
     }
 }

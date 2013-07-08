@@ -1,6 +1,8 @@
 <?php
 
 namespace Hateoas\Serializer;
+
+use Hateoas\Model\Resource;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
 
@@ -39,12 +41,42 @@ class XmlSerializer implements XmlSerializerInterface
 
             $visitor->getCurrentNode()->setAttribute('rel', $rel);
 
-            $node = $visitor->getNavigator()->accept($data, null, $context);
+            $node = $context->accept($data);
             if (null !== $node) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 
             $visitor->revertCurrentNode();
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serializeResource(Resource $resource, XmlSerializationVisitor $visitor, SerializationContext $context)
+    {
+        if (null === $visitor->getDocument()) {
+            if ($visitor->hasDefaultRootName()) {
+                //$visitor->setDefaultRootName('resource'); // todo maybe allow Resource to define the rootname
+            }
+
+            $visitor->document = $visitor->createDocument();
+        }
+
+        foreach ($resource->getData() as $key => $value) {
+            $entryNode = $visitor->getDocument()->createElement($key);
+            $visitor->getCurrentNode()->appendChild($entryNode);
+            $visitor->setCurrentNode($entryNode);
+
+            $node = $context->accept($value);
+            if (null !== $node) {
+                $visitor->getCurrentNode()->appendChild($node);
+            }
+
+            $visitor->revertCurrentNode();
+        }
+
+        $this->serializeLinks($resource->getLinks(), $visitor);
+        $this->serializeEmbedded($resource->getEmbedded(), $visitor, $context);
     }
 }

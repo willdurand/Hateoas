@@ -13,7 +13,7 @@
         "doctrine/common": "~2.0",
         "doctrine/annotations": "1.*",
         "jms/metadata": "~1.1",
-        "jms/serializer": "~0.12"
+        "jms/serializer": "~0.13@dev"
     },
     "require-dev": {
         "atoum/atoum": "dev-master",

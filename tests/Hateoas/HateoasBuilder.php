@@ -2,6 +2,8 @@
 
 namespace tests\Hateoas;
 
+use Hateoas\Model\Link;
+use Hateoas\Model\Resource;
 use tests\fixtures\AdrienBrault;
 use tests\TestCase;
 use Hateoas\HateoasBuilder as TestedHateoasBuilder;
@@ -46,6 +48,48 @@ XML
 JSON
                 )
 
+        ;
+    }
+
+    public function testSerializeResource()
+    {
+        $resource = new Resource(array(
+            'page' => 2,
+            'limit' => 10,
+        ), array(
+            new Link('self', '/users?page=2'),
+            new Link('next', '/users?page=3'),
+        ), array(
+            'users' => array(
+                'Adrien',
+                'William',
+            ),
+        ));
+
+        $hateoas = TestedHateoasBuilder::buildHateoas();
+
+        $this
+            ->string($hateoas->serialize($resource, 'xml'))
+                ->isEqualTo(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <page>2</page>
+  <limit>10</limit>
+  <link rel="self" href="/users?page=2"/>
+  <link rel="next" href="/users?page=3"/>
+  <entry rel="users">
+    <entry><![CDATA[Adrien]]></entry>
+    <entry><![CDATA[William]]></entry>
+  </entry>
+</result>
+
+XML
+                )
+            ->string($hateoas->serialize($resource, 'json'))
+                ->isEqualTo(<<<JSON
+{"page":2,"limit":10,"_links":{"self":{"href":"\/users?page=2"},"next":{"href":"\/users?page=3"}},"_embedded":{"users":["Adrien","William"]}}
+JSON
+                )
         ;
     }
 }
