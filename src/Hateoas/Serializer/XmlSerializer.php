@@ -77,6 +77,12 @@ class XmlSerializer implements XmlSerializerInterface
         }
 
         $this->serializeLinks($resource->getLinks(), $visitor);
-        $this->serializeEmbedded($resource->getEmbedded(), $visitor, $context);
+
+        foreach ($resource->getEmbedded() as $rel => $embedded) {
+            $node = $context->accept($embedded);
+            if (null !== $node) {
+                $visitor->getCurrentNode()->appendChild($node);
+            }
+        }
     }
 }

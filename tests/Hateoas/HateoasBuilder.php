@@ -60,7 +60,7 @@ JSON
             new Link('self', '/users?page=2'),
             new Link('next', '/users?page=3'),
         ), array(
-            'users' => array(
+            'user' => array(
                 'Adrien',
                 'William',
             ),
@@ -77,17 +77,15 @@ JSON
   <limit>10</limit>
   <link rel="self" href="/users?page=2"/>
   <link rel="next" href="/users?page=3"/>
-  <entry rel="users">
-    <entry><![CDATA[Adrien]]></entry>
-    <entry><![CDATA[William]]></entry>
-  </entry>
+  <entry><![CDATA[Adrien]]></entry>
+  <entry><![CDATA[William]]></entry>
 </users>
 
 XML
                 )
             ->string($hateoas->serialize($resource, 'json'))
                 ->isEqualTo(<<<JSON
-{"page":2,"limit":10,"_links":{"self":{"href":"\/users?page=2"},"next":{"href":"\/users?page=3"}},"_embedded":{"users":["Adrien","William"]}}
+{"page":2,"limit":10,"_links":{"self":{"href":"\/users?page=2"},"next":{"href":"\/users?page=3"}},"_embedded":{"user":["Adrien","William"]}}
 JSON
                 )
         ;
