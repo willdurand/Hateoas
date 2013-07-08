@@ -26,11 +26,11 @@ class EmbeddedMapFactory
     }
     /**
      * @param object $object
-     * @return \SplObjectStorage Map<Relation, mixed>
+     * @return array<string, mixed> rel => data
      */
     public function create($object)
     {
-        $embeddedMap = new \SplObjectStorage();
+        $embeddedMap = array();
 
         $relations = $this->relationsManager->getRelations($object);
         foreach ($relations as $relation) {
@@ -38,10 +38,7 @@ class EmbeddedMapFactory
                 continue;
             }
 
-            $embeddedMap->attach(
-                $relation,
-                $this->handlerManager->transform($relation->getEmbed(), $object)
-            );
+            $embeddedMap[$relation->getName()] = $this->handlerManager->transform($relation->getEmbed(), $object);
         }
 
         return $embeddedMap;

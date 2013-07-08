@@ -19,10 +19,10 @@ interface XmlSerializerInterface
     public function serializeLinks(array $links, XmlSerializationVisitor $visitor);
 
     /**
-     * @param \SplObjectStorage $embeddedMap Map<Relation, mixed>
+     * @param array<string, mixed> $embeddedMap rel => data
      * @param XmlSerializationVisitor $visitor
      * @param SerializationContext $context
      * @return mixed
      */
-    public function serializeEmbedded(\SplObjectStorage $embeddedMap, XmlSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbedded(array $embeddedMap, XmlSerializationVisitor $visitor, SerializationContext $context);
 }

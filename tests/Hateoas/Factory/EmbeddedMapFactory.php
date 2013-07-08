@@ -32,12 +32,14 @@ class EmbeddedMapFactory extends TestCase
         $object = new \StdClass();
 
         $embeddedMap = $embeddedMapFactory->create($object);
+        $expectedEmbeddedMap = array(
+            'friend' => 42,
+            'manager' => 42,
+        );
 
         $this
-            ->object($embeddedMap)
-                ->isInstanceOf('SplObjectStorage')
-            ->integer($embeddedMap->count())
-                ->isEqualTo(2)
+            ->array($embeddedMap)
+                ->isEqualTo($expectedEmbeddedMap)
             ->mock($relationsManager)
                 ->call('getRelations')
                     ->withArguments($object)
@@ -50,18 +52,5 @@ class EmbeddedMapFactory extends TestCase
                     ->withArguments('@this.manager', $object)
                     ->once()
         ;
-
-        foreach ($relations as $relation) {
-            if (null === $relation->getEmbed()) {
-                continue;
-            }
-
-            $this
-                ->boolean($embeddedMap->contains($relation))
-                    ->isTrue()
-                ->variable($embeddedMap->offsetGet($relation))
-                    ->isEqualTo(42)
-            ;
-        }
     }
 }

@@ -41,13 +41,12 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbedded(\SplObjectStorage $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbedded(array $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
         $serializedEmbedded = array();
 
-        foreach ($embeddedMap as $relation) {
-            $data = $embeddedMap->offsetGet($relation);
-            $serializedEmbedded[$relation->getName()] = $context->accept($data);
+        foreach ($embeddedMap as $rel => $data) {
+            $serializedEmbedded[$rel] = $context->accept($data);
         }
 
         $visitor->addData('_embedded', $serializedEmbedded);

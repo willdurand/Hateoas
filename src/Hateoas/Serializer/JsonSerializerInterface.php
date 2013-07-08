@@ -19,10 +19,10 @@ interface JsonSerializerInterface
     public function serializeLinks(array $links, JsonSerializationVisitor $visitor);
 
     /**
-     * @param \SplObjectStorage $embeddedMap Map<Relation, mixed>
+     * @param array<string, mixed> $embeddedMap rel => data
      * @param JsonSerializationVisitor $visitor
      * @param SerializationContext $context
      * @return mixed
      */
-    public function serializeEmbedded(\SplObjectStorage $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbedded(array $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context);
 }

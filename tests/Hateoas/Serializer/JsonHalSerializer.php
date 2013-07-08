@@ -64,10 +64,8 @@ class JsonHalSerializer extends TestCase
             return $data;
         };
 
-        $embeddedMap = new \SplObjectStorage();
-        $embeddedMap->attach(
-            new Relation('friend', '/users/42'),
-            array('name' => 'John')
+        $embeddedMap = array(
+            'friend' => array('name' => 'John'),
         );
 
         $jsonHalSerializer->serializeEmbedded($embeddedMap, $jsonSerializationVisitor, $context);

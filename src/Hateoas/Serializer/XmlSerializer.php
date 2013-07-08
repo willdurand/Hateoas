@@ -30,16 +30,14 @@ class XmlSerializer implements XmlSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbedded(\SplObjectStorage $embeddedMap, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbedded(array $embeddedMap, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
-        foreach ($embeddedMap as $relation) {
-            $data = $embeddedMap->offsetGet($relation);
-
+        foreach ($embeddedMap as $rel => $data) {
             $entryNode = $visitor->getDocument()->createElement('entry'); // TODO use the jms serializer metadata factory to get the xmlrootname...
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
 
-            $visitor->getCurrentNode()->setAttribute('rel', $relation->getName());
+            $visitor->getCurrentNode()->setAttribute('rel', $rel);
 
             $node = $visitor->getNavigator()->accept($data, null, $context);
             if (null !== $node) {

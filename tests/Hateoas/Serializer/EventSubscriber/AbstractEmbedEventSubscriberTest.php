@@ -8,7 +8,7 @@ abstract class AbstractEmbedEventSubscriberTest extends TestCase
 {
     public function testOnPostSerialize()
     {
-        $embeddedMap = new \SplObjectStorage();
+        $embeddedMap = array();
         $object = new \StdClass();
 
         $this->mockGenerator->orphanize('__construct');
