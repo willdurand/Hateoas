@@ -24,6 +24,7 @@ class CallableRouteFactory extends TestCase
                 ->boolean($absolute)
                     ->isEqualTo($expectedAbsolute)
             ;
+
             return $expectedResult;
         };
         $routeFactory = new TestedCallableRouteFactory($callable);

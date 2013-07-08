@@ -27,7 +27,7 @@ class Resource
      */
     private $xmlRootName;
 
-    function __construct(array $data, array $links, array $embedded = array(), $xmlRootName = null)
+    public function __construct(array $data, array $links, array $embedded = array(), $xmlRootName = null)
     {
         $this->data = $data;
         $this->embedded = $embedded;

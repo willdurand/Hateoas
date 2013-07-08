@@ -2,7 +2,6 @@
 
 namespace tests\Hateoas\Serializer;
 
-use Hateoas\Configuration\Relation;
 use Hateoas\Model\Resource;
 use tests\TestCase;
 use Hateoas\Model\Link;

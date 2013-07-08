@@ -10,7 +10,7 @@ class PropertyPathHandler extends TestCase
     public function testTransform()
     {
         $handler = new TestedPropertyPathHandler();
-        $data = (object)array(
+        $data = (object) array(
             'id' => 42,
         );
 

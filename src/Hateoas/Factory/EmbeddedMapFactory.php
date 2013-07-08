@@ -25,7 +25,7 @@ class EmbeddedMapFactory
         $this->handlerManager = $handlerManager;
     }
     /**
-     * @param object $object
+     * @param  object        $object
      * @return array<string, mixed> rel => data
      */
     public function create($object)

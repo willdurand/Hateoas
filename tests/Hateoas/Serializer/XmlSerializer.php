@@ -2,10 +2,6 @@
 
 namespace tests\Hateoas\Serializer;
 
-use Hateoas\Configuration\Relation;
-use Hateoas\Model\Resource;
-use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\SerializationContext;
 use tests\TestCase;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\XmlSerializer as TestedXmlSerializer;

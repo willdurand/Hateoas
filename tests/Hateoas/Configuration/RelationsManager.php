@@ -72,6 +72,7 @@ class RelationsManager extends TestCase
             $classMetadata->getMockController()->getRelations = function () use ($relations) {
                 return $relations;
             };
+
             return $classMetadata;
         };
         $relationsManager = new TestedRelationsManager($metadataFactory);

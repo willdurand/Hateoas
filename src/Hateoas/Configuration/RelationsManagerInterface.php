@@ -15,14 +15,14 @@ interface RelationsManagerInterface
 
     /**
      * @param $object
-     * @param Relation $relation
+     * @param  Relation $relation
      * @return void
      */
     public function addRelation($object, Relation $relation);
 
     /**
      * @param $class
-     * @param Relation $relation
+     * @param  Relation $relation
      * @return void
      */
     public function addClassRelation($class, Relation $relation);

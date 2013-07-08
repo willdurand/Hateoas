@@ -2,7 +2,6 @@
 
 namespace tests\Hateoas\Serializer\EventSubscriber;
 
-use tests\TestCase;
 use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber as TestedXmlLinkEventSubscriber;
 
 class XmlLinkEventSubscriber extends AbstractLinkEventSubscriberTest

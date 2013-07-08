@@ -224,7 +224,7 @@ class HateoasBuilder
      *
      * Please keep in mind that you currently may only have one directory per namespace prefix.
      *
-     * @param string $dir The directory where metadata files are located.
+     * @param string $dir             The directory where metadata files are located.
      * @param string $namespacePrefix An optional prefix if you only store metadata for specific namespaces in this directory.
      *
      * @return self

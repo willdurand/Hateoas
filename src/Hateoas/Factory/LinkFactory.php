@@ -29,8 +29,8 @@ class LinkFactory
     }
 
     /**
-     * @param object $object
-     * @param Relation $relation
+     * @param  object   $object
+     * @param  Relation $relation
      * @return Link
      */
     public function createLink($object, Relation $relation)

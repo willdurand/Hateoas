@@ -13,24 +13,24 @@ use JMS\Serializer\XmlSerializationVisitor;
 interface XmlSerializerInterface
 {
     /**
-     * @param Link[] $links
-     * @param XmlSerializationVisitor $visitor
+     * @param  Link[]                  $links
+     * @param  XmlSerializationVisitor $visitor
      * @return void
      */
     public function serializeLinks(array $links, XmlSerializationVisitor $visitor);
 
     /**
-     * @param array<string, mixed> $embeddedMap rel => data
-     * @param XmlSerializationVisitor $visitor
-     * @param SerializationContext $context
+     * @param  array<string, mixed>    $embeddedMap rel => data
+     * @param  XmlSerializationVisitor $visitor
+     * @param  SerializationContext    $context
      * @return void
      */
     public function serializeEmbedded(array $embeddedMap, XmlSerializationVisitor $visitor, SerializationContext $context);
 
     /**
-     * @param Resource $resource
-     * @param XmlSerializationVisitor $visitor
-     * @param SerializationContext $context
+     * @param  Resource                $resource
+     * @param  XmlSerializationVisitor $visitor
+     * @param  SerializationContext    $context
      * @return void
      */
     public function serializeResource(Resource $resource, XmlSerializationVisitor $visitor, SerializationContext $context);

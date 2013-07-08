@@ -8,8 +8,8 @@ namespace Hateoas\Handler;
 interface HandlerInterface
 {
     /**
-     * @param string $value
-     * @param mixed $data
+     * @param  string $value
+     * @param  mixed  $data
      * @return mixed
      */
     public function transform($value, $data);
