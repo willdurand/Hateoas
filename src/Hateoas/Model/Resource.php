@@ -22,11 +22,17 @@ class Resource
      */
     private $links;
 
-    function __construct(array $data, array $links, array $embedded = array())
+    /**
+     * @var null|string
+     */
+    private $xmlRootName;
+
+    function __construct(array $data, array $links, array $embedded = array(), $xmlRootName = null)
     {
         $this->data = $data;
         $this->embedded = $embedded;
         $this->links = $links;
+        $this->xmlRootName = $xmlRootName;
     }
 
     /**
@@ -51,5 +57,13 @@ class Resource
     public function getLinks()
     {
         return $this->links;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getXmlRootName()
+    {
+        return $this->xmlRootName;
     }
 }

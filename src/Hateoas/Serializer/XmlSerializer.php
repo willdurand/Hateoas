@@ -56,8 +56,8 @@ class XmlSerializer implements XmlSerializerInterface
     public function serializeResource(Resource $resource, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         if (null === $visitor->getDocument()) {
-            if ($visitor->hasDefaultRootName()) {
-                //$visitor->setDefaultRootName('resource'); // todo maybe allow Resource to define the rootname
+            if ($visitor->hasDefaultRootName() && null !== $resource->getXmlRootName()) {
+                $visitor->setDefaultRootName($resource->getXmlRootName());
             }
 
             $visitor->document = $visitor->createDocument();

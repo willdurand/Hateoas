@@ -64,7 +64,7 @@ JSON
                 'Adrien',
                 'William',
             ),
-        ));
+        ), 'users');
 
         $hateoas = TestedHateoasBuilder::buildHateoas();
 
@@ -72,7 +72,7 @@ JSON
             ->string($hateoas->serialize($resource, 'xml'))
                 ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<result>
+<users>
   <page>2</page>
   <limit>10</limit>
   <link rel="self" href="/users?page=2"/>
@@ -81,7 +81,7 @@ JSON
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
   </entry>
-</result>
+</users>
 
 XML
                 )
