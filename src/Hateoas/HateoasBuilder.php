@@ -86,15 +86,15 @@ class HateoasBuilder
         $embeddedMapFactory = new EmbeddedMapFactory($relationsManager, $this->handlerManager);
 
         if (null === $this->xmlSerializer) {
-            $this->addXmlSerializer();
+            $this->setDefaultXmlSerializer();
         }
 
         if (null === $this->jsonSerializer) {
-            $this->addHalSerializer();
+            $this->setHalJsonSerializer();
         }
 
         if (!$this->handlerSet) {
-            $this->addDefaultHandlers();
+            $this->setDefaultHandlers();
         }
 
         $eventSubscribers = array(
@@ -131,7 +131,7 @@ class HateoasBuilder
         return $this;
     }
 
-    public function addXmlSerializer()
+    public function setDefaultXmlSerializer()
     {
         return $this->setXmlSerializer(new XmlSerializer());
     }
@@ -143,7 +143,7 @@ class HateoasBuilder
         return $this;
     }
 
-    public function addHalSerializer()
+    public function setHalJsonSerializer()
     {
         return $this->setJsonSerializer(new JsonHalSerializer());
     }
@@ -163,9 +163,30 @@ class HateoasBuilder
         return $this;
     }
 
-    public function addDefaultHandlers()
+    public function setDefaultHandlers()
     {
         $this->handlerManager->setHandler('this', new PropertyPathHandler());
+
+        return $this;
+    }
+
+    public function setDebug($bool)
+    {
+        $this->debug = (boolean) $bool;
+
+        return $this;
+    }
+
+    public function setCacheDir($dir)
+    {
+        if ( ! is_dir($dir)) {
+            $this->createDir($dir);
+        }
+        if ( ! is_writable($dir)) {
+            throw new \InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
+        }
+
+        $this->cacheDir = $dir;
 
         return $this;
     }
@@ -215,7 +236,7 @@ class HateoasBuilder
      * If you use an empty prefix, your metadata files would need to look like:
      *
      * ``my-dir/MyApplication.Entity.SomeObject.yml``
-     * ``my-dir/MyApplication.Entity.OtherObject.xml``
+     * ``my-dir/MyApplication.Entity.OtherObject.yml``
      *
      * If you use ``MyApplication\Entity`` as prefix, your metadata files would need to look like:
      *
