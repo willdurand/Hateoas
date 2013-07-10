@@ -236,7 +236,7 @@ class HateoasBuilder
      * If you use an empty prefix, your metadata files would need to look like:
      *
      * ``my-dir/MyApplication.Entity.SomeObject.yml``
-     * ``my-dir/MyApplication.Entity.OtherObject.xml``
+     * ``my-dir/MyApplication.Entity.OtherObject.yml``
      *
      * If you use ``MyApplication\Entity`` as prefix, your metadata files would need to look like:
      *
