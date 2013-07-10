@@ -2,7 +2,7 @@
 
 namespace Hateoas;
 
-use Hateoas\Configuration\RelationsManagerInterface;
+use Hateoas\Configuration\RelationsManager;
 use Hateoas\Handler\HandlerManager;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
@@ -19,7 +19,7 @@ class Hateoas implements SerializerInterface
     private $serializer;
 
     /**
-     * @var RelationsManagerInterface
+     * @var RelationsManager
      */
     private $relationsManager;
 
@@ -29,7 +29,7 @@ class Hateoas implements SerializerInterface
     private $handlerManager;
 
     public function __construct(
-        SerializerInterface $serializer, RelationsManagerInterface $relationsManager, HandlerManager $handlerManager
+        SerializerInterface $serializer, RelationsManager $relationsManager, HandlerManager $handlerManager
     )
     {
         $this->serializer = $serializer;
@@ -62,7 +62,7 @@ class Hateoas implements SerializerInterface
     }
 
     /**
-     * @return RelationsManagerInterface
+     * @return RelationsManager
      */
     public function getRelationsManager()
     {

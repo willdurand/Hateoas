@@ -17,7 +17,7 @@ class EmbeddedMapFactory extends TestCase
         );
 
         $this->mockGenerator->orphanize('__construct');
-        $relationsManager = new \mock\Hateoas\Configuration\RelationsManagerInterface();
+        $relationsManager = new \mock\Hateoas\Configuration\RelationsManager();
         $relationsManager->getMockController()->getRelations = function () use ($relations) {
             return $relations;
         };

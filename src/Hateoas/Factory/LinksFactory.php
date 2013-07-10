@@ -2,7 +2,7 @@
 
 namespace Hateoas\Factory;
 
-use Hateoas\Configuration\RelationsManagerInterface;
+use Hateoas\Configuration\RelationsManager;
 use Hateoas\Model\Link;
 
 /**
@@ -11,7 +11,7 @@ use Hateoas\Model\Link;
 class LinksFactory
 {
     /**
-     * @var RelationsManagerInterface
+     * @var RelationsManager
      */
     private $relationsManager;
 
@@ -20,7 +20,7 @@ class LinksFactory
      */
     private $linkFactory;
 
-    public function __construct(RelationsManagerInterface $relationsManager, LinkFactory $linkFactory)
+    public function __construct(RelationsManager $relationsManager, LinkFactory $linkFactory)
     {
         $this->relationsManager = $relationsManager;
         $this->linkFactory = $linkFactory;

@@ -1,7 +1,7 @@
 <?php
 
 namespace Hateoas\Factory;
-use Hateoas\Configuration\RelationsManagerInterface;
+use Hateoas\Configuration\RelationsManager;
 use Hateoas\Handler\HandlerManager;
 
 /**
@@ -10,7 +10,7 @@ use Hateoas\Handler\HandlerManager;
 class EmbeddedMapFactory
 {
     /**
-     * @var RelationsManagerInterface
+     * @var RelationsManager
      */
     private $relationsManager;
 
@@ -19,7 +19,7 @@ class EmbeddedMapFactory
      */
     private $handlerManager;
 
-    public function __construct(RelationsManagerInterface $relationsManager, HandlerManager $handlerManager)
+    public function __construct(RelationsManager $relationsManager, HandlerManager $handlerManager)
     {
         $this->relationsManager = $relationsManager;
         $this->handlerManager = $handlerManager;
