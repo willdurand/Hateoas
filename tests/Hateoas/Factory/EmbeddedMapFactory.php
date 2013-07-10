@@ -17,8 +17,8 @@ class EmbeddedMapFactory extends TestCase
         );
 
         $this->mockGenerator->orphanize('__construct');
-        $relationsManager = new \mock\Hateoas\Configuration\RelationsManager();
-        $relationsManager->getMockController()->getRelations = function () use ($relations) {
+        $relationsRepository = new \mock\Hateoas\Configuration\RelationsRepository();
+        $relationsRepository->getMockController()->getRelations = function () use ($relations) {
             return $relations;
         };
 
@@ -27,7 +27,7 @@ class EmbeddedMapFactory extends TestCase
             return 42;
         };
 
-        $embeddedMapFactory = new TestedEmbeddedMapFactory($relationsManager, $handlerManager);
+        $embeddedMapFactory = new TestedEmbeddedMapFactory($relationsRepository, $handlerManager);
 
         $object = new \StdClass();
 
@@ -40,7 +40,7 @@ class EmbeddedMapFactory extends TestCase
         $this
             ->array($embeddedMap)
                 ->isEqualTo($expectedEmbeddedMap)
-            ->mock($relationsManager)
+            ->mock($relationsRepository)
                 ->call('getRelations')
                     ->withArguments($object)
                     ->once()
