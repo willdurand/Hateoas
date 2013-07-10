@@ -6,7 +6,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
-use Hateoas\Configuration\RelationsManager;
+use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Factory\EmbeddedMapFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
@@ -80,10 +80,10 @@ class HateoasBuilder
     {
         $metadataFactory = $this->buildMetadataFactory();
 
-        $relationsManager = new RelationsManager($metadataFactory);
+        $relationsRepository = new RelationsRepository($metadataFactory);
         $linkFactory = new LinkFactory($this->handlerManager, $this->routeFactory);
-        $linksFactory = new LinksFactory($relationsManager, $linkFactory);
-        $embeddedMapFactory = new EmbeddedMapFactory($relationsManager, $this->handlerManager);
+        $linksFactory = new LinksFactory($relationsRepository, $linkFactory);
+        $embeddedMapFactory = new EmbeddedMapFactory($relationsRepository, $this->handlerManager);
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -121,7 +121,7 @@ class HateoasBuilder
             })
         ;
 
-        return new Hateoas($this->serializerBuilder->build(), $relationsManager, $this->handlerManager);
+        return new Hateoas($this->serializerBuilder->build(), $relationsRepository, $this->handlerManager);
     }
 
     public function setXmlSerializer(XmlSerializerInterface $xmlSerializer)

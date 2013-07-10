@@ -1,7 +1,7 @@
 <?php
 
 namespace Hateoas\Factory;
-use Hateoas\Configuration\RelationsManagerInterface;
+use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Handler\HandlerManager;
 
 /**
@@ -10,18 +10,18 @@ use Hateoas\Handler\HandlerManager;
 class EmbeddedMapFactory
 {
     /**
-     * @var RelationsManagerInterface
+     * @var RelationsRepository
      */
-    private $relationsManager;
+    private $relationsRepository;
 
     /**
      * @var HandlerManager
      */
     private $handlerManager;
 
-    public function __construct(RelationsManagerInterface $relationsManager, HandlerManager $handlerManager)
+    public function __construct(RelationsRepository $relationsRepository, HandlerManager $handlerManager)
     {
-        $this->relationsManager = $relationsManager;
+        $this->relationsRepository = $relationsRepository;
         $this->handlerManager = $handlerManager;
     }
     /**
@@ -32,7 +32,7 @@ class EmbeddedMapFactory
     {
         $embeddedMap = array();
 
-        $relations = $this->relationsManager->getRelations($object);
+        $relations = $this->relationsRepository->getRelations($object);
         foreach ($relations as $relation) {
             if (null === $relation->getEmbed()) {
                 continue;
