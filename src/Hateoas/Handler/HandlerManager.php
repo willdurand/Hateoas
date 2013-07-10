@@ -33,14 +33,14 @@ class HandlerManager
         }
 
         if (!preg_match('/^@([a-zA-Z0-9]+)[.](.+)$/', $value, $matches)) {
-            throw new \RuntimeException(sprintf('Cannot parse "%s".', $value));
+            throw new \InvalidArgumentException(sprintf('Cannot parse "%s".', $value));
         }
 
         $handlerName = $matches[1];
         $handlerValue = $matches[2];
 
         if (!isset($this->handlers[$handlerName])) {
-            throw new \RuntimeException(sprintf('Handler "%s" does not exist.', $handlerName));
+            throw new \InvalidArgumentException(sprintf('Handler "%s" does not exist.', $handlerName));
         }
 
         $handler = $this->handlers[$handlerName];
