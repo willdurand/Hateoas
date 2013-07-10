@@ -25,7 +25,7 @@ class HandlerManager extends TestCase
             ->exception(function () use ($handlerManager) {
                 $handlerManager->transform('@', null);
             })
-                ->isInstanceOf('RuntimeException')
+                ->isInstanceOf('InvalidArgumentException')
                 ->hasMessage('Cannot parse "@".')
         ;
     }
@@ -38,7 +38,7 @@ class HandlerManager extends TestCase
             ->exception(function () use ($handlerManager) {
                 $handlerManager->transform('@this.id', null);
             })
-                ->isInstanceOf('RuntimeException')
+                ->isInstanceOf('InvalidArgumentException')
                 ->hasMessage('Handler "this" does not exist.')
         ;
     }
