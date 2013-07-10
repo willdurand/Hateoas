@@ -179,10 +179,10 @@ class HateoasBuilder
 
     public function setCacheDir($dir)
     {
-        if ( ! is_dir($dir)) {
+        if (!is_dir($dir)) {
             $this->createDir($dir);
         }
-        if ( ! is_writable($dir)) {
+        if (!is_writable($dir)) {
             throw new \InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
         }
 
@@ -217,7 +217,7 @@ class HateoasBuilder
     public function setMetadataDirs(array $namespacePrefixToDirMap)
     {
         foreach ($namespacePrefixToDirMap as $dir) {
-            if ( ! is_dir($dir)) {
+            if (!is_dir($dir)) {
                 throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
             }
         }
@@ -255,7 +255,7 @@ class HateoasBuilder
      */
     public function addMetadataDir($dir, $namespacePrefix = '')
     {
-        if ( ! is_dir($dir)) {
+        if (!is_dir($dir)) {
             throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
         }
 
@@ -297,11 +297,11 @@ class HateoasBuilder
      */
     public function replaceMetadataDir($dir, $namespacePrefix = '')
     {
-        if ( ! is_dir($dir)) {
+        if (!is_dir($dir)) {
             throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist.', $dir));
         }
 
-        if ( ! isset($this->metadataDirs[$namespacePrefix])) {
+        if (!isset($this->metadataDirs[$namespacePrefix])) {
             throw new \InvalidArgumentException(sprintf('There is no directory configured for namespace prefix "%s". Please use addMetadataDir() for adding new directories.', $namespacePrefix));
         }
 
@@ -322,7 +322,7 @@ class HateoasBuilder
             }
         }
 
-        if ( ! empty($this->metadataDirs)) {
+        if (!empty($this->metadataDirs)) {
             $fileLocator = new FileLocator($this->metadataDirs);
             $metadataDriver = new DriverChain(array(
                 new YamlDriver($fileLocator),
