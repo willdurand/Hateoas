@@ -8,7 +8,7 @@ use Metadata\MetadataFactoryInterface;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class RelationsManager implements RelationsManagerInterface
+class RelationsRepository
 {
     /**
      * @var MetadataFactoryInterface

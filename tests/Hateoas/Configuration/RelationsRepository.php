@@ -4,34 +4,34 @@ namespace tests\Hateoas\Configuration;
 
 use tests\TestCase;
 use Hateoas\Configuration\Relation as Relation_;
-use Hateoas\Configuration\RelationsManager as TestedRelationsManager;
+use Hateoas\Configuration\RelationsRepository as TestedRelationsRepository;
 
-class RelationsManager extends TestCase
+class RelationsRepository extends TestCase
 {
     public function testEmptyGetRelations()
     {
-        $relationsManager = new TestedRelationsManager();
+        $relationsRepository = new TestedRelationsRepository();
         $object = new \StdClass();
 
         $this
-            ->array($relationsManager->getRelations($object))
+            ->array($relationsRepository->getRelations($object))
                 ->isEmpty()
         ;
     }
 
     public function testAddRelation()
     {
-        $relationsManager = new TestedRelationsManager();
+        $relationsRepository = new TestedRelationsRepository();
         $object = new \StdClass();
 
         $relation1 = new Relation_('', '');
         $relation2 = new Relation_('', '');
 
-        $relationsManager->addRelation($object, $relation1);
-        $relationsManager->addRelation($object, $relation2);
+        $relationsRepository->addRelation($object, $relation1);
+        $relationsRepository->addRelation($object, $relation2);
 
         $this
-            ->array($relationsManager->getRelations($object))
+            ->array($relationsRepository->getRelations($object))
                 ->contains($relation1)
                 ->contains($relation2)
         ;
@@ -39,21 +39,21 @@ class RelationsManager extends TestCase
 
     public function testAddClassRelation()
     {
-        $relationsManager = new TestedRelationsManager();
+        $relationsRepository = new TestedRelationsRepository();
         $object1 = new \StdClass();
         $object2 = new \StdClass();
 
         $relation1 = new Relation_('', '');
         $relation2 = new Relation_('', '');
 
-        $relationsManager->addClassRelation('StdClass', $relation1);
-        $relationsManager->addClassRelation('StdClass', $relation2);
+        $relationsRepository->addClassRelation('StdClass', $relation1);
+        $relationsRepository->addClassRelation('StdClass', $relation2);
 
         $this
-            ->array($relationsManager->getRelations($object1))
+            ->array($relationsRepository->getRelations($object1))
                 ->contains($relation1)
                 ->contains($relation2)
-            ->array($relationsManager->getRelations($object2))
+            ->array($relationsRepository->getRelations($object2))
                 ->contains($relation1)
                 ->contains($relation2)
         ;
@@ -75,10 +75,10 @@ class RelationsManager extends TestCase
 
             return $classMetadata;
         };
-        $relationsManager = new TestedRelationsManager($metadataFactory);
+        $relationsRepository = new TestedRelationsRepository($metadataFactory);
 
         $this
-            ->array($relationsManager->getRelations(new \StdClass()))
+            ->array($relationsRepository->getRelations(new \StdClass()))
                 ->isEqualTo($relations)
             ->mock($metadataFactory)
                 ->call('getMetadataForClass')
