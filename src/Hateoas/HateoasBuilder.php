@@ -170,6 +170,27 @@ class HateoasBuilder
         return $this;
     }
 
+    public function setDebug($bool)
+    {
+        $this->debug = (boolean) $bool;
+
+        return $this;
+    }
+
+    public function setCacheDir($dir)
+    {
+        if ( ! is_dir($dir)) {
+            $this->createDir($dir);
+        }
+        if ( ! is_writable($dir)) {
+            throw new \InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
+        }
+
+        $this->cacheDir = $dir;
+
+        return $this;
+    }
+
     /**
      * @param Boolean $include Whether to include the metadata from the interfaces
      *
