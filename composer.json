@@ -6,6 +6,10 @@
         {
             "name": "William DURAND",
             "email": "william.durand1@gmail.com"
+        },
+        {
+            "name": "Adrien Brault",
+            "email": "adrien.brault@gmail.com"
         }
     ],
     "require": {
@@ -21,8 +25,6 @@
         "symfony/routing": "~2.0"
     },
     "suggests": {
-        "jms/metadata": "Required if you want yaml/annotations based configuration.",
-        "doctrine/annotations": "To use annotation based configuration.",
         "symfony/yaml": "To use yaml based configuration.",
         "symfony/routing": "To use the SymfonyRouteFactory."
     },
