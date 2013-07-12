@@ -41,8 +41,8 @@ class EmbedsFactory
             }
 
             $rel = $this->handlerManager->transform($relation->getName(), $object);
-            $data = $this->handlerManager->transform($relation->getEmbed(), $object);
-            $embeds[] = new Embed($rel, $data);
+            $data = $this->handlerManager->transform($relation->getEmbed()->getContent(), $object);
+            $embeds[] = new Embed($rel, $data, $relation->getEmbed()->getXmlElementName());
         }
 
         return $embeds;

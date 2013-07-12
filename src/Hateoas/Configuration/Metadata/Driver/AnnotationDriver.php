@@ -4,6 +4,7 @@ namespace Hateoas\Configuration\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader as AnnotationsReader;
 use Hateoas\Configuration\Annotation;
+use Hateoas\Configuration\Embed;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
@@ -45,7 +46,12 @@ class AnnotationDriver implements DriverInterface
                     $href = new Route($href->name, $href->parameters);
                 }
 
-                $relation = new Relation($annotation->name, $href, $annotation->embed, $annotation->attributes ?: array());
+                $embed = $annotation->embed;
+                if ($embed instanceof Annotation\Embed) {
+                    $embed = new Embed($embed->content, $embed->xmlElementName);
+                }
+
+                $relation = new Relation($annotation->name, $href, $embed, $annotation->attributes ?: array());
                 $classMetadata->addRelation($relation);
             }
         }

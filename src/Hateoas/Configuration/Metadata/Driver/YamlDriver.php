@@ -2,6 +2,7 @@
 
 namespace Hateoas\Configuration\Metadata\Driver;
 
+use Hateoas\Configuration\Embed;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
@@ -38,6 +39,12 @@ class YamlDriver extends AbstractFileDriver
                 $embed = null;
                 if (isset($relation['embed'])) {
                     $embed = $relation['embed'];
+
+                    if (is_array($embed)) {
+                        $xmlElementName = isset($embed['xmlElementName']) ? $embed['xmlElementName'] : null;
+
+                        $embed = new Embed($embed['content'], $xmlElementName);
+                    }
                 }
                 $attributes = isset($relation['attributes']) ? $relation['attributes'] : array();
 

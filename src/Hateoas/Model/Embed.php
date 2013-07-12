@@ -20,13 +20,13 @@ class Embed
     /**
      * @var string|null
      */
-    private $xmlRootName;
+    private $xmlElementName;
 
-    public function __construct($rel, $data, $xmlRootName = null)
+    public function __construct($rel, $data, $xmlElementName = null)
     {
         $this->rel = $rel;
         $this->data = $data;
-        $this->xmlRootName = $xmlRootName;
+        $this->xmlElementName = $xmlElementName;
     }
 
     /**
@@ -48,8 +48,8 @@ class Embed
     /**
      * @return null|string
      */
-    public function getXmlRootName()
+    public function getXmlElementName()
     {
-        return $this->xmlRootName;
+        return $this->xmlElementName;
     }
 }
