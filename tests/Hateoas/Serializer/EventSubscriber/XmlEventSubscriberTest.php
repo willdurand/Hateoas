@@ -6,9 +6,9 @@ use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber as TestedXmlEventSubsc
 
 class XmlEventSubscriber extends AbstractEventSubscriberTest
 {
-    protected function createEventSubscriber($serializer, $linksFactory, $embeddedMapFactory)
+    protected function createEventSubscriber($serializer, $linksFactory, $embedsFactory)
     {
-        return new TestedXmlEventSubscriber($serializer, $linksFactory, $embeddedMapFactory);
+        return new TestedXmlEventSubscriber($serializer, $linksFactory, $embedsFactory);
     }
 
     protected function createSerializerMock()

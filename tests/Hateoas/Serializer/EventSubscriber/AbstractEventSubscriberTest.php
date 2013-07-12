@@ -26,8 +26,8 @@ abstract class AbstractEventSubscriberTest extends TestCase
         };
 
         $this->mockGenerator->orphanize('__construct');
-        $embeddedMapFactory = new \mock\Hateoas\Factory\EmbeddedMapFactory();
-        $embeddedMapFactory->getMockController()->create = function () use ($embeddedMap) {
+        $embedsFactory = new \mock\Hateoas\Factory\EmbedsFactory();
+        $embedsFactory->getMockController()->create = function () use ($embeddedMap) {
             return $embeddedMap;
         };
 
@@ -46,11 +46,11 @@ abstract class AbstractEventSubscriberTest extends TestCase
             return $context;
         };
 
-        $embedEventSubscriber = $this->createEventSubscriber($serializer, $linksFactory, $embeddedMapFactory);
+        $embedEventSubscriber = $this->createEventSubscriber($serializer, $linksFactory, $embedsFactory);
         $embedEventSubscriber->onPostSerialize($event);
 
         $this
-            ->mock($embeddedMapFactory)
+            ->mock($embedsFactory)
                 ->call('create')
                     ->withArguments($object)
                     ->once()

@@ -6,9 +6,9 @@ use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber as TestedJsonEventSub
 
 class JsonEventSubscriber extends AbstractEventSubscriberTest
 {
-    protected function createEventSubscriber($serializer, $linksFactory, $embeddedMapFactory)
+    protected function createEventSubscriber($serializer, $linksFactory, $embedsFactory)
     {
-        return new TestedJsonEventSubscriber($serializer, $linksFactory, $embeddedMapFactory);
+        return new TestedJsonEventSubscriber($serializer, $linksFactory, $embedsFactory);
     }
 
     protected function createSerializerMock()

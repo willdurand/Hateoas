@@ -2,10 +2,11 @@
 
 namespace tests\Hateoas\Serializer;
 
+use Hateoas\Model\Embed;
 use Hateoas\Model\Resource;
-use tests\TestCase;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\JsonHalSerializer as TestedJsonHalSerializer;
+use tests\TestCase;
 
 class JsonHalSerializer extends TestCase
 {
@@ -64,11 +65,11 @@ class JsonHalSerializer extends TestCase
             return $data;
         };
 
-        $embeddedMap = array(
-            'friend' => array('name' => 'John'),
+        $embeds = array(
+            new Embed('friend', array('name' => 'John')),
         );
 
-        $jsonHalSerializer->serializeEmbedded($embeddedMap, $jsonSerializationVisitor, $context);
+        $jsonHalSerializer->serializeEmbedded($embeds, $jsonSerializationVisitor, $context);
 
         $expectedEmbedded = array(
             'friend' => array('name' => 'John'),
@@ -106,10 +107,10 @@ class JsonHalSerializer extends TestCase
             new Link('self', '/users?page=2'),
             new Link('next', '/users?page=3'),
         ), array(
-            'users' => array(
+            new Embed('users', array(
                 array('name' => 'Adrien'),
                 array('name' => 'William'),
-            ),
+            )),
         ));
 
         $serializedResource = $jsonHalSerializer->serializeResource($resource, $jsonSerializationVisitor, $context);

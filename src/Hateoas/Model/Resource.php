@@ -13,25 +13,25 @@ class Resource
     private $data;
 
     /**
-     * @var array<string, mixed>
-     */
-    private $embedded;
-
-    /**
      * @var Link[]
      */
     private $links;
+
+    /**
+     * @var Embed[]
+     */
+    private $embeds;
 
     /**
      * @var null|string
      */
     private $xmlRootName;
 
-    public function __construct(array $data, array $links, array $embedded = array(), $xmlRootName = null)
+    public function __construct(array $data, array $links, array $embeds = array(), $xmlRootName = null)
     {
         $this->data = $data;
-        $this->embedded = $embedded;
         $this->links = $links;
+        $this->embeds = $embeds;
         $this->xmlRootName = $xmlRootName;
     }
 
@@ -44,11 +44,11 @@ class Resource
     }
 
     /**
-     * @return array
+     * @return Embed[]
      */
-    public function getEmbedded()
+    public function getEmbeds()
     {
-        return $this->embedded;
+        return $this->embeds;
     }
 
     /**
