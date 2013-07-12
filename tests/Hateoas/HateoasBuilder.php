@@ -63,7 +63,7 @@ XML
                 )
             ->string($hateoas->serialize($adrienBrault, 'json'))
                 ->isEqualTo(<<<JSON
-{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"}},"_embedded":{"computer":{"name":"MacBook Pro","_links":[],"_embedded":[]}}}
+{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"}},"_embedded":{"computer":{"name":"MacBook Pro"}}}
 JSON
                 )
 
