@@ -2,6 +2,7 @@
 
 namespace Hateoas\Serializer\EventSubscriber;
 
+use Hateoas\Factory\EmbeddedMapFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Serializer\JsonSerializerInterface;
 use JMS\Serializer\EventDispatcher\Events;
@@ -11,7 +12,7 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class JsonLinkEventSubscriber implements EventSubscriberInterface
+class JsonEventSubscriber implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}
@@ -28,24 +29,35 @@ class JsonLinkEventSubscriber implements EventSubscriberInterface
     }
 
     /**
+     * @var JsonSerializerInterface
+     */
+    private $jsonSerializer;
+
+    /**
      * @var LinksFactory
      */
     private $linksFactory;
 
     /**
-     * @var JsonSerializerInterface
+     * @var EmbeddedMapFactory
      */
-    private $jsonSerializer;
+    private $embeddedMapFactory;
 
-    public function __construct(LinksFactory $linksFactory, JsonSerializerInterface $jsonSerializer)
+    public function __construct(
+        JsonSerializerInterface $jsonSerializer, LinksFactory $linksFactory, EmbeddedMapFactory $embeddedMapFactory
+    )
     {
-        $this->linksFactory = $linksFactory;
         $this->jsonSerializer = $jsonSerializer;
+        $this->linksFactory = $linksFactory;
+        $this->embeddedMapFactory = $embeddedMapFactory;
     }
 
     public function onPostSerialize(ObjectEvent $event)
     {
+        $embeddedMap = $this->embeddedMapFactory->create($event->getObject());
         $links = $this->linksFactory->createLinks($event->getObject());
+
         $this->jsonSerializer->serializeLinks($links, $event->getVisitor());
+        $this->jsonSerializer->serializeEmbedded($embeddedMap, $event->getVisitor(), $event->getContext());
     }
 }

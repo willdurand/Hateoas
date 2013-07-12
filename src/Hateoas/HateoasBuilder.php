@@ -14,10 +14,8 @@ use Hateoas\Factory\RouteFactoryInterface;
 use Hateoas\Handler\HandlerInterface;
 use Hateoas\Handler\HandlerManager;
 use Hateoas\Handler\PropertyPathHandler;
-use Hateoas\Serializer\EventSubscriber\JsonEmbedEventSubscriber;
-use Hateoas\Serializer\EventSubscriber\JsonLinkEventSubscriber;
-use Hateoas\Serializer\EventSubscriber\XmlEmbedEventSubscriber;
-use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber;
+use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
+use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\Handler\JsonResourceHandler;
 use Hateoas\Serializer\Handler\XmlResourceHandler;
 use Hateoas\Serializer\JsonHalSerializer;
@@ -98,10 +96,8 @@ class HateoasBuilder
         }
 
         $eventSubscribers = array(
-            new XmlLinkEventSubscriber($linksFactory, $this->xmlSerializer),
-            new XmlEmbedEventSubscriber($embeddedMapFactory, $this->xmlSerializer),
-            new JsonLinkEventSubscriber($linksFactory, $this->jsonSerializer),
-            new JsonEmbedEventSubscriber($embeddedMapFactory, $this->jsonSerializer),
+            new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedMapFactory),
+            new JsonEventSubscriber($this->jsonSerializer, $linksFactory, $embeddedMapFactory),
         );
         $handlers = array(
             new XmlResourceHandler($this->xmlSerializer),
