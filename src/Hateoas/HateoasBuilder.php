@@ -7,17 +7,15 @@ use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
 use Hateoas\Configuration\RelationsRepository;
-use Hateoas\Factory\EmbeddedMapFactory;
+use Hateoas\Factory\EmbedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Factory\RouteFactoryInterface;
 use Hateoas\Handler\HandlerInterface;
 use Hateoas\Handler\HandlerManager;
 use Hateoas\Handler\PropertyPathHandler;
-use Hateoas\Serializer\EventSubscriber\JsonEmbedEventSubscriber;
-use Hateoas\Serializer\EventSubscriber\JsonLinkEventSubscriber;
-use Hateoas\Serializer\EventSubscriber\XmlEmbedEventSubscriber;
-use Hateoas\Serializer\EventSubscriber\XmlLinkEventSubscriber;
+use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
+use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\Handler\JsonResourceHandler;
 use Hateoas\Serializer\Handler\XmlResourceHandler;
 use Hateoas\Serializer\JsonHalSerializer;
@@ -83,7 +81,7 @@ class HateoasBuilder
         $relationsRepository = new RelationsRepository($metadataFactory);
         $linkFactory = new LinkFactory($this->handlerManager, $this->routeFactory);
         $linksFactory = new LinksFactory($relationsRepository, $linkFactory);
-        $embeddedMapFactory = new EmbeddedMapFactory($relationsRepository, $this->handlerManager);
+        $embeddedMapFactory = new EmbedsFactory($relationsRepository, $this->handlerManager);
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -98,10 +96,8 @@ class HateoasBuilder
         }
 
         $eventSubscribers = array(
-            new XmlLinkEventSubscriber($linksFactory, $this->xmlSerializer),
-            new XmlEmbedEventSubscriber($embeddedMapFactory, $this->xmlSerializer),
-            new JsonLinkEventSubscriber($linksFactory, $this->jsonSerializer),
-            new JsonEmbedEventSubscriber($embeddedMapFactory, $this->jsonSerializer),
+            new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedMapFactory),
+            new JsonEventSubscriber($this->jsonSerializer, $linksFactory, $embeddedMapFactory),
         );
         $handlers = array(
             new XmlResourceHandler($this->xmlSerializer),

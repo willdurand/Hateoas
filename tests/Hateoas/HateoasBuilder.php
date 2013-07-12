@@ -2,11 +2,12 @@
 
 namespace tests\Hateoas;
 
+use Hateoas\Model\Embed;
 use Hateoas\Model\Link;
 use Hateoas\Model\Resource;
+use Hateoas\HateoasBuilder as TestedHateoasBuilder;
 use tests\fixtures\AdrienBrault;
 use tests\TestCase;
-use Hateoas\HateoasBuilder as TestedHateoasBuilder;
 
 class HateoasBuilder extends TestCase
 {
@@ -60,10 +61,10 @@ JSON
             new Link('self', '/users?page=2'),
             new Link('next', '/users?page=3'),
         ), array(
-            'user' => array(
+            new Embed('user', array(
                 'Adrien',
                 'William',
-            ),
+            )),
         ), 'users');
 
         $hateoas = TestedHateoasBuilder::buildHateoas();

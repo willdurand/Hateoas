@@ -22,9 +22,9 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbedded(array $embeddedMap, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbedded(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
-        $visitor->addData('_embedded', $context->accept($embeddedMap));
+        $visitor->addData('_embedded', $this->createSerializedEmbeds($embeds, $context));
     }
 
     /**
@@ -43,8 +43,8 @@ class JsonHalSerializer implements JsonSerializerInterface
             $result['_links'] = $this->createSerializedLinks($resource->getLinks());
         }
 
-        if (count($resource->getEmbedded()) > 0) {
-            $result['_embedded'] = $context->accept($resource->getEmbedded());
+        if (count($resource->getEmbeds()) > 0) {
+            $result['_embedded'] = $this->createSerializedEmbeds($resource->getEmbeds(), $context);
         }
 
         if ($addRoot) {
@@ -77,5 +77,15 @@ class JsonHalSerializer implements JsonSerializerInterface
         }
 
         return $serializedLinks;
+    }
+
+    private function createSerializedEmbeds(array $embeds, SerializationContext $context)
+    {
+        $serializedEmbeds = array();
+        foreach ($embeds as $embed) {
+            $serializedEmbeds[$embed->getRel()] = $context->accept($embed->getData());
+        }
+
+        return $serializedEmbeds;
     }
 }
