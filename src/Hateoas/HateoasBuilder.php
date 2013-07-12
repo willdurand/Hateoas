@@ -20,6 +20,7 @@ use Hateoas\Serializer\Handler\JsonResourceHandler;
 use Hateoas\Serializer\Handler\XmlResourceHandler;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\JsonSerializerInterface;
+use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
@@ -130,6 +131,11 @@ class HateoasBuilder
     public function setDefaultXmlSerializer()
     {
         return $this->setXmlSerializer(new XmlSerializer());
+    }
+
+    public function addXmlHalSerializer()
+    {
+        return $this->setXmlSerializer(new XmlHalSerializer());
     }
 
     public function setJsonSerializer(JsonSerializerInterface $jsonSerializer)
