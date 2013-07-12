@@ -35,7 +35,13 @@ class XmlSerializer implements XmlSerializerInterface
     public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($embeds as $embed) {
-            $entryNode = $visitor->getDocument()->createElement('entry'); // TODO use the jms serializer metadata factory to get the xmlrootname...
+            $rootName = $embed->getXmlRootName();
+
+            if (null == $rootName) {
+                // TODO use the jms serializer metadata factory to get the xmlrootname...
+            }
+
+            $entryNode = $visitor->getDocument()->createElement($rootName ?: 'entry');
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
 

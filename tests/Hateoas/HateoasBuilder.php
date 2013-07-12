@@ -81,7 +81,7 @@ JSON
             new Embed('user', array(
                 'Adrien',
                 'William',
-            )),
+            ), 'users'),
             new Embed('test', 'test'),
         ), 'users');
 
@@ -99,10 +99,10 @@ JSON
   <limit>10</limit>
   <link rel="self" href="/users?page=2"/>
   <link rel="next" href="/users?page=3"/>
-  <entry rel="user">
+  <users rel="user">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
-  </entry>
+  </users>
   <entry rel="test"><![CDATA[test]]></entry>
 </users>
 
