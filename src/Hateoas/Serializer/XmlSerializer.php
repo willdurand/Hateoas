@@ -3,14 +3,29 @@
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Resource;
+use Hateoas\Util\ClassUtils;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
+use Metadata\MetadataFactoryInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class XmlSerializer implements XmlSerializerInterface
+class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwareInterface
 {
+    /**
+     * @var MetadataFactoryInterface
+     */
+    private $metadataFactory;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMetadataFactory(MetadataFactoryInterface $metadataFactory)
+    {
+        $this->metadataFactory = $metadataFactory;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -35,13 +50,14 @@ class XmlSerializer implements XmlSerializerInterface
     public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($embeds as $embed) {
-            $rootName = $embed->getXmlElementName();
+            $elementName = $embed->getXmlElementName();
 
-            if (null == $rootName) {
-                // TODO use the jms serializer metadata factory to get the xmlrootname...
+            if (null == $elementName && is_object($embed->getData())) {
+                $metadata = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($embed->getData()));
+                $elementName = $metadata->xmlRootName;
             }
 
-            $entryNode = $visitor->getDocument()->createElement($rootName ?: 'entry');
+            $entryNode = $visitor->getDocument()->createElement($elementName ?: 'entry');
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
 

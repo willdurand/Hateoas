@@ -7,6 +7,7 @@ use Hateoas\Model\Link;
 use Hateoas\Model\Resource;
 use Hateoas\HateoasBuilder as TestedHateoasBuilder;
 use tests\fixtures\AdrienBrault;
+use tests\fixtures\SimpleUser;
 use tests\TestCase;
 
 class HateoasBuilder extends TestCase
@@ -39,9 +40,9 @@ class HateoasBuilder extends TestCase
   <last_name><![CDATA[Brault]]></last_name>
   <link rel="self" href="http://adrienbrault.fr"/>
   <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
-  <entry rel="computer">
-    <entry><![CDATA[MacBook Pro]]></entry>
-  </entry>
+  <computer rel="computer">
+    <name><![CDATA[MacBook Pro]]></name>
+  </computer>
 </result>
 
 XML
@@ -54,7 +55,7 @@ XML
   <last_name><![CDATA[Brault]]></last_name>
   <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
   <resource rel="computer">
-    <entry><![CDATA[MacBook Pro]]></entry>
+    <name><![CDATA[MacBook Pro]]></name>
   </resource>
 </result>
 
@@ -62,7 +63,7 @@ XML
                 )
             ->string($hateoas->serialize($adrienBrault, 'json'))
                 ->isEqualTo(<<<JSON
-{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"}},"_embedded":{"computer":{"name":"MacBook Pro"}}}
+{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"}},"_embedded":{"computer":{"name":"MacBook Pro","_links":[],"_embedded":[]}}}
 JSON
                 )
 
