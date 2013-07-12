@@ -1,13 +1,15 @@
 <?php
 
 namespace Hateoas\Factory;
+
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Handler\HandlerManager;
+use Hateoas\Model\Embed;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class EmbeddedMapFactory
+class EmbedsFactory
 {
     /**
      * @var RelationsRepository
@@ -25,12 +27,12 @@ class EmbeddedMapFactory
         $this->handlerManager = $handlerManager;
     }
     /**
-     * @param  object        $object
-     * @return array<string, mixed> rel => data
+     * @param  object  $object
+     * @return Embed[]
      */
     public function create($object)
     {
-        $embeddedMap = array();
+        $embeds = array();
 
         $relations = $this->relationsRepository->getRelations($object);
         foreach ($relations as $relation) {
@@ -38,9 +40,11 @@ class EmbeddedMapFactory
                 continue;
             }
 
-            $embeddedMap[$relation->getName()] = $this->handlerManager->transform($relation->getEmbed(), $object);
+            $rel = $this->handlerManager->transform($relation->getName(), $object);
+            $data = $this->handlerManager->transform($relation->getEmbed(), $object);
+            $embeds[] = new Embed($rel, $data);
         }
 
-        return $embeddedMap;
+        return $embeds;
     }
 }
