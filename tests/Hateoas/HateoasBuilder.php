@@ -7,7 +7,6 @@ use Hateoas\Model\Link;
 use Hateoas\Model\Resource;
 use Hateoas\HateoasBuilder as TestedHateoasBuilder;
 use tests\fixtures\AdrienBrault;
-use tests\fixtures\SimpleUser;
 use tests\TestCase;
 
 class HateoasBuilder extends TestCase
