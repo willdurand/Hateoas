@@ -1,6 +1,7 @@
 <?php
 
 namespace Hateoas\Serializer;
+
 use Hateoas\Model\Resource;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;

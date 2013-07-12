@@ -1,6 +1,7 @@
 <?php
 
 namespace Hateoas\Serializer;
+
 use Metadata\MetadataFactoryInterface;
 
 /**
