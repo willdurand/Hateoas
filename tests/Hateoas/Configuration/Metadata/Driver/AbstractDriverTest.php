@@ -64,8 +64,28 @@ abstract class AbstractDriverTest extends TestCase
                         ->isEqualTo(array(
                             'id' => '@this.id',
                         ))
-                ->string($relation->getEmbed())
-                    ->isEqualTo('@this.foo')
+            ->object($relation->getEmbed())
+                ->isInstanceOf('Hateoas\Configuration\Embed')
+                ->and($embed = $relation->getEmbed())
+                    ->string($embed->getContent())
+                        ->isEqualTo('@this.foo')
+                    ->variable($embed->getXmlElementName())
+                        ->isNull()
+        ;
+
+        $relation = $relations[$i++];
+        $this
+            ->string($relation->getName())
+                ->isEqualTo('bar')
+            ->string($relation->getHref())
+                ->isEqualTo('foo')
+            ->object($relation->getEmbed())
+                ->isInstanceOf('Hateoas\Configuration\Embed')
+                ->and($embed = $relation->getEmbed())
+                    ->variable($embed->getContent())
+                        ->isEqualTo('data')
+                    ->string($embed->getXmlElementName())
+                        ->isEqualTo('barTag')
         ;
     }
 

@@ -11,3 +11,9 @@ tests\fixtures\User:
                 route: user_get
                 parameters: { id: @this.id }
             embed: @this.foo
+        -
+            rel: bar
+            href: foo
+            embed:
+                content: data
+                xmlElementName: barTag

@@ -20,6 +20,8 @@ use Hateoas\Serializer\Handler\JsonResourceHandler;
 use Hateoas\Serializer\Handler\XmlResourceHandler;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\JsonSerializerInterface;
+use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
+use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
@@ -117,7 +119,15 @@ class HateoasBuilder
             })
         ;
 
-        return new Hateoas($this->serializerBuilder->build(), $relationsRepository, $this->handlerManager);
+        $jmsSerializer = $this->serializerBuilder->build();
+
+        foreach (array($this->jsonSerializer, $this->xmlSerializer) as $serializer) {
+            if ($serializer instanceof JMSSerializerMetadataAwareInterface) {
+                $serializer->setMetadataFactory($jmsSerializer->getMetadataFactory());
+            }
+        }
+
+        return new Hateoas($jmsSerializer, $relationsRepository, $this->handlerManager);
     }
 
     public function setXmlSerializer(XmlSerializerInterface $xmlSerializer)
@@ -130,6 +140,11 @@ class HateoasBuilder
     public function setDefaultXmlSerializer()
     {
         return $this->setXmlSerializer(new XmlSerializer());
+    }
+
+    public function addXmlHalSerializer()
+    {
+        return $this->setXmlSerializer(new XmlHalSerializer());
     }
 
     public function setJsonSerializer(JsonSerializerInterface $jsonSerializer)

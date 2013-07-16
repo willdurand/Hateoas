@@ -22,13 +22,10 @@ final class Relation
      */
     public $href;
 
-    /**
-     * @var string
-     */
     public $embed = null;
 
     /**
      * @var array
      */
-    public $attributes;
+    public $attributes = array();
 }

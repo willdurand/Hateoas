@@ -3,35 +3,27 @@
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Resource;
-use Hateoas\Util\ClassUtils;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
-use Metadata\MetadataFactoryInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwareInterface
+class XmlHalSerializer implements XmlSerializerInterface
 {
-    /**
-     * @var MetadataFactoryInterface
-     */
-    private $metadataFactory;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetadataFactory(MetadataFactoryInterface $metadataFactory)
-    {
-        $this->metadataFactory = $metadataFactory;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function serializeLinks(array $links, XmlSerializationVisitor $visitor)
     {
         foreach ($links as $link) {
+            if ('self' === $link->getRel()) {
+                $visitor->getCurrentNode()->setAttribute('href', $link->getHref());
+                // todo what about this link attributes ?
+
+                continue;
+            }
+
             $linkNode = $visitor->getDocument()->createElement('link');
             $visitor->getCurrentNode()->appendChild($linkNode);
 
@@ -50,14 +42,27 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($embeds as $embed) {
-            $elementName = $embed->getXmlElementName();
+            $isDataArray = is_array($embed->getData()) && 0 === count(array_filter(array_keys($embed->getData()), 'is_string'));
 
-            if (null == $elementName && is_object($embed->getData())) {
-                $metadata = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($embed->getData()));
-                $elementName = $metadata->xmlRootName;
+            if ($isDataArray) {
+                foreach ($embed->getData() as $data) {
+                    $entryNode = $visitor->getDocument()->createElement('resource');
+                    $visitor->getCurrentNode()->appendChild($entryNode);
+                    $visitor->setCurrentNode($entryNode);
+
+                    $node = $context->accept($data);
+                    if (null !== $node) {
+                        $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
+                        $visitor->getCurrentNode()->appendChild($node);
+                    }
+
+                    $visitor->revertCurrentNode();
+                }
+
+                continue;
             }
 
-            $entryNode = $visitor->getDocument()->createElement($elementName ?: 'entry');
+            $entryNode = $visitor->getDocument()->createElement('resource');
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
 
@@ -78,8 +83,8 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     public function serializeResource(Resource $resource, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         if (null === $visitor->getDocument()) {
-            if ($visitor->hasDefaultRootName() && null !== $resource->getXmlRootName()) {
-                $visitor->setDefaultRootName($resource->getXmlRootName());
+            if ($visitor->hasDefaultRootName()) {
+                $visitor->setDefaultRootName('resource');
             }
 
             $visitor->document = $visitor->createDocument();
