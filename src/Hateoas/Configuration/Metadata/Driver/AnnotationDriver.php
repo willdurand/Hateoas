@@ -35,7 +35,7 @@ class AnnotationDriver implements DriverInterface
             return null;
         }
 
-        $classMetadata = new ClassMetadata($name = $class->getName());
+        $classMetadata = new ClassMetadata($class->getName());
         $classMetadata->fileResources[] = $class->getFilename();
 
         foreach ($annotations as $annotation) {
