@@ -24,7 +24,7 @@
         "symfony/yaml": "~2.0",
         "symfony/routing": "~2.0"
     },
-    "suggests": {
+    "suggest": {
         "symfony/yaml": "To use yaml based configuration.",
         "symfony/routing": "To use the SymfonyRouteFactory."
     },
