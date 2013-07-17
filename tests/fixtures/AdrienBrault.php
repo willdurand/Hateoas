@@ -15,8 +15,6 @@ class AdrienBrault
 
     public function getMacbookPro()
     {
-        return array(
-            'name' => 'MacBook Pro',
-        );
+        return new Computer('MacBook Pro');
     }
 }

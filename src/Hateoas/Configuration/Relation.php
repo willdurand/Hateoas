@@ -23,12 +23,22 @@ class Relation
     private $attributes;
 
     /**
-     * @var string|mixed
+     * @var Embed
      */
     private $embed;
 
+    /**
+     * @param string             $name
+     * @param string|Route       $href
+     * @param Embed|string|mixed $embed
+     * @param array              $attributes
+     */
     public function __construct($name, $href, $embed = null, array $attributes = array())
     {
+        if (null !== $embed && !$embed instanceof Embed) {
+            $embed = new Embed($embed);
+        }
+
         $this->name = $name;
         $this->href = $href;
         $this->embed = $embed;
@@ -60,7 +70,7 @@ class Relation
     }
 
     /**
-     * @return mixed|string
+     * @return Embed
      */
     public function getEmbed()
     {
