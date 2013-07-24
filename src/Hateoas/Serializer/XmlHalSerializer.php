@@ -42,17 +42,15 @@ class XmlHalSerializer implements XmlSerializerInterface
     public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($embeds as $embed) {
-            $isDataArray = is_array($embed->getData()) && 0 === count(array_filter(array_keys($embed->getData()), 'is_string'));
-
-            if ($isDataArray) {
+            if ($embed->getData() instanceof \Traversable || is_array($embed->getData())) {
                 foreach ($embed->getData() as $data) {
                     $entryNode = $visitor->getDocument()->createElement('resource');
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
+                    $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
 
                     $node = $context->accept($data);
                     if (null !== $node) {
-                        $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
                         $visitor->getCurrentNode()->appendChild($node);
                     }
 
