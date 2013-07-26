@@ -7,8 +7,13 @@ use Hateoas\Model\Link;
 use Hateoas\Model\Resource;
 use Hateoas\HateoasBuilder as TestedHateoasBuilder;
 use tests\fixtures\AdrienBrault;
+use tests\fixtures\Computer;
+use tests\fixtures\Smartphone;
 use tests\TestCase;
 
+/**
+ * Contains functional tests
+ */
 class HateoasBuilder extends TestCase
 {
     public function test()
@@ -82,6 +87,10 @@ JSON
                 'Adrien',
                 'William',
             ), 'users'),
+            new Embed('tech', array(
+                new Computer('Mac'),
+                new Smartphone('iPhone'),
+            )),
             new Embed('test', 'test'),
         ), 'users');
 
@@ -103,6 +112,14 @@ JSON
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
   </users>
+  <entry rel="tech">
+    <computer>
+      <name><![CDATA[Mac]]></name>
+    </computer>
+    <smartphone>
+      <name><![CDATA[iPhone]]></name>
+    </smartphone>
+  </entry>
   <entry rel="test"><![CDATA[test]]></entry>
 </users>
 
@@ -117,6 +134,12 @@ XML
   <link rel="next" href="/users?page=3"/>
   <resource rel="user"><![CDATA[Adrien]]></resource>
   <resource rel="user"><![CDATA[William]]></resource>
+  <resource rel="tech">
+    <name><![CDATA[Mac]]></name>
+  </resource>
+  <resource rel="tech">
+    <name><![CDATA[iPhone]]></name>
+  </resource>
   <resource rel="test"><![CDATA[test]]></resource>
 </resource>
 
@@ -124,7 +147,7 @@ XML
                 )
             ->string($hateoas->serialize($resource, 'json'))
                 ->isEqualTo(<<<JSON
-{"page":2,"limit":10,"_links":{"self":{"href":"\/users?page=2"},"next":{"href":"\/users?page=3"}},"_embedded":{"user":["Adrien","William"],"test":"test"}}
+{"page":2,"limit":10,"_links":{"self":{"href":"\/users?page=2"},"next":{"href":"\/users?page=3"}},"_embedded":{"user":["Adrien","William"],"tech":[{"name":"Mac"},{"name":"iPhone"}],"test":"test"}}
 JSON
                 )
         ;

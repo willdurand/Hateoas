@@ -2,6 +2,7 @@
 
 namespace Hateoas\Serializer;
 
+use Hateoas\Model\Embed;
 use Hateoas\Model\Resource;
 use Hateoas\Util\ClassUtils;
 use JMS\Serializer\SerializationContext;
@@ -50,22 +51,29 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($embeds as $embed) {
-            $elementName = $embed->getXmlElementName();
-
-            if (null == $elementName && is_object($embed->getData())) {
-                $metadata = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($embed->getData()));
-                $elementName = $metadata->xmlRootName;
-            }
-
-            $entryNode = $visitor->getDocument()->createElement($elementName ?: 'entry');
+            $entryNode = $visitor->getDocument()->createElement($this->getElementName($embed->getData(), $embed));
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
 
             $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
 
-            $node = $context->accept($embed->getData());
-            if (null !== $node) {
-                $visitor->getCurrentNode()->appendChild($node);
+            if ($embed->getData() instanceof \Traversable || is_array($embed->getData())) {
+                foreach ($embed->getData() as $entry) {
+                    $entryNode = $visitor->getDocument()->createElement($this->getElementName($entry));
+                    $visitor->getCurrentNode()->appendChild($entryNode);
+                    $visitor->setCurrentNode($entryNode);
+
+                    if (null !== $node = $context->accept($entry)) {
+                        $visitor->getCurrentNode()->appendChild($node);
+                    }
+
+                    $visitor->revertCurrentNode();
+                }
+            } else {
+                $node = $context->accept($embed->getData());
+                if (null !== $node) {
+                    $visitor->getCurrentNode()->appendChild($node);
+                }
             }
 
             $visitor->revertCurrentNode();
@@ -100,5 +108,21 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
 
         $this->serializeLinks($resource->getLinks(), $visitor);
         $this->serializeEmbedded($resource->getEmbeds(), $visitor, $context);
+    }
+
+    private function getElementName($data, Embed $embed = null)
+    {
+        $elementName = null;
+
+        if (null !== $embed) {
+            $elementName = $embed->getXmlElementName();
+        }
+
+        if (null == $elementName && is_object($data)) {
+            $metadata = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($data));
+            $elementName = $metadata->xmlRootName;
+        }
+
+        return $elementName ?: 'entry';
     }
 }
