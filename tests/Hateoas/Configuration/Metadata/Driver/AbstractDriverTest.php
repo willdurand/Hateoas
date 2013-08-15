@@ -64,6 +64,8 @@ abstract class AbstractDriverTest extends TestCase
                         ->isEqualTo(array(
                             'id' => '@this.id',
                         ))
+                    ->boolean($route->isAbsolute())
+                        ->isEqualTo(false)
             ->object($relation->getEmbed())
                 ->isInstanceOf('Hateoas\Configuration\Embed')
                 ->and($embed = $relation->getEmbed())
@@ -86,6 +88,40 @@ abstract class AbstractDriverTest extends TestCase
                         ->isEqualTo('data')
                     ->string($embed->getXmlElementName())
                         ->isEqualTo('barTag')
+        ;
+
+        $relation = $relations[$i++];
+        $this
+            ->string($relation->getName())
+                ->isEqualTo('baz')
+            ->object($relation->getHref())
+                ->isInstanceOf('Hateoas\Configuration\Route')
+                ->and($route = $relation->getHref())
+                    ->string($route->getName())
+                        ->isEqualTo('user_get')
+                    ->array($route->getParameters())
+                        ->isEqualTo(array(
+                            'id' => '@this.id',
+                        ))
+                    ->boolean($route->isAbsolute())
+                        ->isEqualTo(true)
+        ;
+
+        $relation = $relations[$i++];
+        $this
+            ->string($relation->getName())
+                ->isEqualTo('boom')
+            ->object($relation->getHref())
+                ->isInstanceOf('Hateoas\Configuration\Route')
+                ->and($route = $relation->getHref())
+                    ->string($route->getName())
+                        ->isEqualTo('user_get')
+                    ->array($route->getParameters())
+                        ->isEqualTo(array(
+                            'id' => '@this.id',
+                        ))
+                    ->boolean($route->isAbsolute())
+                        ->isEqualTo(false)
         ;
     }
 

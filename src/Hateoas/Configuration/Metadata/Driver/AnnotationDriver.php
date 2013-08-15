@@ -47,7 +47,7 @@ class AnnotationDriver implements DriverInterface
                 $href = $annotation->href;
 
                 if ($href instanceof Annotation\Route) {
-                    $href = new Route($href->name, $href->parameters);
+                    $href = new Route($href->name, $href->parameters, $href->absolute);
                 }
 
                 $embed = $annotation->embed;

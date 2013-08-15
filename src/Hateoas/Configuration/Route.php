@@ -18,13 +18,20 @@ class Route
     private $parameters;
 
     /**
-     * @param string $name
-     * @param array  $parameters
+     * @var boolean
      */
-    public function __construct($name, array $parameters = array())
+    private $isAbsolute;
+
+    /**
+     * @param string  $name
+     * @param array   $parameters
+     * @param boolean $isAbsolute
+     */
+    public function __construct($name, array $parameters = array(), $isAbsolute = false)
     {
         $this->name       = $name;
         $this->parameters = $parameters;
+        $this->isAbsolute = $isAbsolute;
     }
 
     /**
@@ -41,5 +48,13 @@ class Route
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAbsolute()
+    {
+        return $this->isAbsolute;
     }
 }
