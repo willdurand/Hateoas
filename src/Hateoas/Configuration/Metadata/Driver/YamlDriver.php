@@ -34,7 +34,11 @@ class YamlDriver extends AbstractFileDriver
                 $href = $relation['href'];
 
                 if (is_array($href) && isset($href['route'])) {
-                    $href = new Route($href['route'], $href['parameters']);
+                    $href = new Route(
+                        $href['route'],
+                        $href['parameters'],
+                        isset($href['absolute']) ? $href['absolute'] : false
+                    );
                 }
 
                 $embed = null;
