@@ -20,22 +20,25 @@ class LinksFactory
      */
     private $linkFactory;
 
+    /**
+     * @param RelationsRepository $relationsRepository
+     * @param LinkFactory         $linkFactory
+     */
     public function __construct(RelationsRepository $relationsRepository, LinkFactory $linkFactory)
     {
         $this->relationsRepository = $relationsRepository;
-        $this->linkFactory = $linkFactory;
+        $this->linkFactory         = $linkFactory;
     }
 
     /**
      * @param $object
+     *
      * @return Link[]
      */
     public function createLinks($object)
     {
-        $relations = $this->relationsRepository->getRelations($object);
-
         $links = array();
-        foreach ($relations as $relation) {
+        foreach ($this->relationsRepository->getRelations($object) as $relation) {
             $links[] = $this->linkFactory->createLink($object, $relation);
         }
 

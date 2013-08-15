@@ -25,6 +25,9 @@ class RelationsRepository
      */
     private $objectsRelations = array();
 
+    /**
+     * @param MetadataFactoryInterface|null $metadataFactory
+     */
     public function __construct(MetadataFactoryInterface $metadataFactory = null)
     {
         $this->metadataFactory = $metadataFactory;
@@ -38,8 +41,7 @@ class RelationsRepository
         $relations = array();
 
         if (null !== $this->metadataFactory) {
-            $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object));
-            if (null !== $classMetadata) {
+            if (null !== $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object))) {
                 $relations = array_merge($relations, $classMetadata->getRelations());
             }
         }

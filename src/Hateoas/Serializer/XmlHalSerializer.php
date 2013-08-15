@@ -19,8 +19,7 @@ class XmlHalSerializer implements XmlSerializerInterface
         foreach ($links as $link) {
             if ('self' === $link->getRel()) {
                 $visitor->getCurrentNode()->setAttribute('href', $link->getHref());
-                // todo what about this link attributes ?
-
+                // TODO: what about this link attributes ?
                 continue;
             }
 
@@ -45,12 +44,12 @@ class XmlHalSerializer implements XmlSerializerInterface
             if ($embed->getData() instanceof \Traversable || is_array($embed->getData())) {
                 foreach ($embed->getData() as $data) {
                     $entryNode = $visitor->getDocument()->createElement('resource');
+
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
                     $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
 
-                    $node = $context->accept($data);
-                    if (null !== $node) {
+                    if (null !== $node = $context->accept($data)) {
                         $visitor->getCurrentNode()->appendChild($node);
                     }
 
@@ -61,13 +60,12 @@ class XmlHalSerializer implements XmlSerializerInterface
             }
 
             $entryNode = $visitor->getDocument()->createElement('resource');
+
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
-
             $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
 
-            $node = $context->accept($embed->getData());
-            if (null !== $node) {
+            if (null !== $node = $context->accept($embed->getData())) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 
@@ -90,11 +88,11 @@ class XmlHalSerializer implements XmlSerializerInterface
 
         foreach ($resource->getData() as $key => $value) {
             $entryNode = $visitor->getDocument()->createElement($key);
+
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
 
-            $node = $context->accept($value);
-            if (null !== $node) {
+            if (null !== $node = $context->accept($value)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 

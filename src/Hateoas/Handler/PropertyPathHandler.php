@@ -15,6 +15,9 @@ class PropertyPathHandler implements HandlerInterface
      */
     private $propertyAccessor;
 
+    /**
+     * @param PropertyAccessor|null $propertyAccessor
+     */
     public function __construct(PropertyAccessor $propertyAccessor = null)
     {
         $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();

@@ -28,13 +28,16 @@ class Hateoas implements SerializerInterface
      */
     private $handlerManager;
 
-    public function __construct(
-        SerializerInterface $serializer, RelationsRepository $relationsRepository, HandlerManager $handlerManager
-    )
+    /**
+     * @param SerializerInterface $serializer
+     * @param RelationsRepository $RelationsRepository
+     * @param HandlerManager      $handlerManager
+     */
+    public function __construct(SerializerInterface $serializer, RelationsRepository $relationsRepository, HandlerManager $handlerManager)
     {
-        $this->serializer = $serializer;
+        $this->serializer          = $serializer;
         $this->relationsRepository = $relationsRepository;
-        $this->handlerManager = $handlerManager;
+        $this->handlerManager      = $handlerManager;
     }
 
     /**

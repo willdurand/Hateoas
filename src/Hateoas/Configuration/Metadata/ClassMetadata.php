@@ -56,8 +56,9 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     public function merge(MergeableInterface $object)
     {
         if (!$object instanceof self) {
-            throw new \InvalidArgumentException('object must be an instance of Hateoas\Configuration\Metadata\ClassMetadata.');
+            throw new \InvalidArgumentException(sprintf('Object must be an instance of %s.', __CLASS__));
         }
+
         parent::merge($object);
 
         $this->relations = array_merge($this->relations, $object->getRelations());

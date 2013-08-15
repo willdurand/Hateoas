@@ -32,12 +32,8 @@ class JsonHalSerializer implements JsonSerializerInterface
      */
     public function serializeResource(Resource $resource, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
-        $addRoot = false;
-        if (null === $visitor->getRoot()) {
-            $addRoot = true;
-        }
-
-        $result = $resource->getData();
+        $addRoot = null === $visitor->getRoot() ? true : false;
+        $result  = $resource->getData();
 
         if (count($resource->getLinks()) > 0) {
             $result['_links'] = $this->createSerializedLinks($resource->getLinks());
@@ -57,12 +53,10 @@ class JsonHalSerializer implements JsonSerializerInterface
     private function createSerializedLinks(array $links)
     {
         $serializedLinks = array();
-
         foreach ($links as $link) {
-            $serializedLink = array(
+            $serializedLink = array_merge(array(
                 'href' => $link->getHref(),
-            );
-            $serializedLink = array_merge($serializedLink, $link->getAttributes());
+            ), $link->getAttributes());
 
             if (!isset($serializedLinks[$link->getRel()])) {
                 $serializedLinks[$link->getRel()] = $serializedLink;

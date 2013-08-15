@@ -17,9 +17,13 @@ class Embed
      */
     private $xmlElementName;
 
+    /**
+     * @param string|mixed $content
+     * @param string\null  $xmlElementName
+     */
     public function __construct($content, $xmlElementName = null)
     {
-        $this->content = $content;
+        $this->content        = $content;
         $this->xmlElementName = $xmlElementName;
     }
 

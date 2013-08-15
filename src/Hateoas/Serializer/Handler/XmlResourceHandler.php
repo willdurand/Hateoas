@@ -21,10 +21,10 @@ class XmlResourceHandler implements SubscribingHandlerInterface
     {
         return array(
             array(
-                'format' => 'xml',
-                'type' => 'Hateoas\Model\Resource',
+                'format'    => 'xml',
+                'type'      => 'Hateoas\Model\Resource',
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'method' => 'serializeToXml',
+                'method'    => 'serializeToXml',
             ),
         );
     }
@@ -34,6 +34,9 @@ class XmlResourceHandler implements SubscribingHandlerInterface
      */
     private $xmlSerializer;
 
+    /**
+     * @param XmlSerializerInterface $xmlSerializer
+     */
     public function __construct(XmlSerializerInterface $xmlSerializer)
     {
         $this->xmlSerializer = $xmlSerializer;

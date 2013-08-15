@@ -25,31 +25,36 @@ class YamlDriver extends AbstractFileDriver
             throw new \RuntimeException(sprintf('Expected metadata for class %s to be defined in %s.', $name, $file));
         }
 
-        $config = $config[$name];
-
+        $config        = $config[$name];
         $classMetadata = new ClassMetadata($name);
 
         if (isset($config['relations'])) {
             foreach ($config['relations'] as $relation) {
                 $name = $relation['rel'];
                 $href = $relation['href'];
+
                 if (is_array($href) && isset($href['route'])) {
                     $href = new Route($href['route'], $href['parameters']);
                 }
+
                 $embed = null;
                 if (isset($relation['embed'])) {
                     $embed = $relation['embed'];
 
                     if (is_array($embed)) {
                         $xmlElementName = isset($embed['xmlElementName']) ? $embed['xmlElementName'] : null;
-
-                        $embed = new Embed($embed['content'], $xmlElementName);
+                        $embed          = new Embed($embed['content'], $xmlElementName);
                     }
                 }
+
                 $attributes = isset($relation['attributes']) ? $relation['attributes'] : array();
 
-                $relation = new Relation($name, $href, $embed, $attributes);
-                $classMetadata->addRelation($relation);
+                $classMetadata->addRelation(new Relation(
+                    $name,
+                    $href,
+                    $embed,
+                    $attributes
+                ));
             }
         }
 

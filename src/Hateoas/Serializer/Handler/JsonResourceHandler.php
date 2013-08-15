@@ -21,10 +21,10 @@ class JsonResourceHandler implements SubscribingHandlerInterface
     {
         return array(
             array(
-                'format' => 'json',
-                'type' => 'Hateoas\Model\Resource',
+                'format'    => 'json',
+                'type'      => 'Hateoas\Model\Resource',
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'method' => 'serializeToJson',
+                'method'    => 'serializeToJson',
             ),
         );
     }
@@ -34,6 +34,9 @@ class JsonResourceHandler implements SubscribingHandlerInterface
      */
     private $jsonSerializer;
 
+    /**
+     * @param JsonSerializerInterface $jsonSerializer
+     */
     public function __construct(JsonSerializerInterface $jsonSerializer)
     {
         $this->jsonSerializer = $jsonSerializer;

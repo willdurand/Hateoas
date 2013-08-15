@@ -39,9 +39,9 @@ class Relation
             $embed = new Embed($embed);
         }
 
-        $this->name = $name;
-        $this->href = $href;
-        $this->embed = $embed;
+        $this->name       = $name;
+        $this->href       = $href;
+        $this->embed      = $embed;
         $this->attributes = $attributes;
     }
 

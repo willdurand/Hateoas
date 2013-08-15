@@ -22,28 +22,33 @@ class LinkFactory
      */
     private $routeFactory;
 
+    /**
+     * @param HandlerManager             $handlerManager
+     * @param RouteFactoryInterface|null $routeFactory
+     */
     public function __construct(HandlerManager $handlerManager, RouteFactoryInterface $routeFactory = null)
     {
         $this->handlerManager = $handlerManager;
-        $this->routeFactory = $routeFactory;
+        $this->routeFactory   = $routeFactory;
     }
 
     /**
-     * @param  object   $object
-     * @param  Relation $relation
+     * @param object   $object
+     * @param Relation $relation
+     *
      * @return Link
      */
     public function createLink($object, Relation $relation)
     {
-        $rel = $this->handlerManager->transform($relation->getName(), $object);
-
+        $rel  = $this->handlerManager->transform($relation->getName(), $object);
         $href = $relation->getHref();
+
         if ($href instanceof Route) {
             if (null === $this->routeFactory) {
-                throw new \RuntimeException('You cannot use route without a route factory.');
+                throw new \RuntimeException('You cannot use a route without a route factory.');
             }
 
-            $name = $this->handlerManager->transform($href->getName(), $object);
+            $name       = $this->handlerManager->transform($href->getName(), $object);
             $parameters = $this->handlerManager->transformArray($href->getParameters(), $object);
 
             $href = $this->routeFactory->create($name, $parameters);

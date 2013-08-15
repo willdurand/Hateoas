@@ -17,9 +17,13 @@ class Route
      */
     private $parameters;
 
-    public function __construct($name, $parameters = array())
+    /**
+     * @param string $name
+     * @param array  $parameters
+     */
+    public function __construct($name, array $parameters = array())
     {
-        $this->name = $name;
+        $this->name       = $name;
         $this->parameters = $parameters;
     }
 

@@ -27,11 +27,17 @@ class Resource
      */
     private $xmlRootName;
 
+    /**
+     * @param array       $data
+     * @param array       $links
+     * @param array       $embeds
+     * @param string|null $xmlRootName
+     */
     public function __construct(array $data, array $links, array $embeds = array(), $xmlRootName = null)
     {
-        $this->data = $data;
-        $this->links = $links;
-        $this->embeds = $embeds;
+        $this->data        = $data;
+        $this->links       = $links;
+        $this->embeds      = $embeds;
         $this->xmlRootName = $xmlRootName;
     }
 

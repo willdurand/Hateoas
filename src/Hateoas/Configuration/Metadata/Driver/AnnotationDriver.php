@@ -20,6 +20,9 @@ class AnnotationDriver implements DriverInterface
      */
     private $reader;
 
+    /**
+     * @param AnnotationsReader $reader
+     */
     public function __construct(AnnotationsReader $reader)
     {
         $this->reader = $reader;
@@ -32,7 +35,7 @@ class AnnotationDriver implements DriverInterface
     {
         $annotations = $this->reader->getClassAnnotations($class);
 
-        if (0 == count($annotations)) {
+        if (0 === count($annotations)) {
             return null;
         }
 
@@ -42,21 +45,27 @@ class AnnotationDriver implements DriverInterface
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Annotation\Relation) {
                 $href = $annotation->href;
+
                 if ($href instanceof Annotation\Route) {
                     $href = new Route($href->name, $href->parameters);
                 }
 
                 $embed = $annotation->embed;
+
                 if ($embed instanceof Annotation\Embed) {
                     $embed = new Embed($embed->content, $embed->xmlElementName);
                 }
 
-                $relation = new Relation($annotation->name, $href, $embed, $annotation->attributes ?: array());
-                $classMetadata->addRelation($relation);
+                $classMetadata->addRelation(new Relation(
+                    $annotation->name,
+                    $href,
+                    $embed,
+                    $annotation->attributes ?: array()
+                ));
             }
         }
 
-        if (0 == count($classMetadata->getRelations())) {
+        if (0 === count($classMetadata->getRelations())) {
             return null;
         }
 

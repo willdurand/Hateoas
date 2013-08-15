@@ -21,7 +21,7 @@ class XmlEventSubscriber implements EventSubscriberInterface
     {
         return array(
             array(
-                'event' => Events::POST_SERIALIZE,
+                'event'  => Events::POST_SERIALIZE,
                 'format' => 'xml',
                 'method' => 'onPostSerialize',
             ),
@@ -43,23 +43,27 @@ class XmlEventSubscriber implements EventSubscriberInterface
      */
     private $embedsFactory;
 
-    public function __construct(
-        XmlSerializerInterface $xmlSerializer, LinksFactory $linksFactory, EmbedsFactory $embedsFactory
-    )
+    /**
+     * @param XmlSerializerInterface $xmlSerializer
+     * @param LinksFactory           $linksFactory
+     * @param EmbedsFactory          $embedsFactory
+     */
+    public function __construct(XmlSerializerInterface $xmlSerializer, LinksFactory $linksFactory, EmbedsFactory $embedsFactory)
     {
         $this->xmlSerializer = $xmlSerializer;
-        $this->linksFactory = $linksFactory;
+        $this->linksFactory  = $linksFactory;
         $this->embedsFactory = $embedsFactory;
     }
 
     public function onPostSerialize(ObjectEvent $event)
     {
         $embeds = $this->embedsFactory->create($event->getObject());
-        $links = $this->linksFactory->createLinks($event->getObject());
+        $links  = $this->linksFactory->createLinks($event->getObject());
 
         if (count($links) > 0) {
             $this->xmlSerializer->serializeLinks($links, $event->getVisitor());
         }
+
         if (count($embeds) > 0) {
             $this->xmlSerializer->serializeEmbedded($embeds, $event->getVisitor(), $event->getContext());
         }

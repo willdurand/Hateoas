@@ -21,10 +21,14 @@ class EmbedsFactory
      */
     private $handlerManager;
 
+    /**
+     * @param RelationsRepository $relationsRepository
+     * @param HandlerManager      $handlerManager
+     */
     public function __construct(RelationsRepository $relationsRepository, HandlerManager $handlerManager)
     {
         $this->relationsRepository = $relationsRepository;
-        $this->handlerManager = $handlerManager;
+        $this->handlerManager      = $handlerManager;
     }
     /**
      * @param  object  $object
@@ -33,15 +37,14 @@ class EmbedsFactory
     public function create($object)
     {
         $embeds = array();
-
-        $relations = $this->relationsRepository->getRelations($object);
-        foreach ($relations as $relation) {
+        foreach ($this->relationsRepository->getRelations($object) as $relation) {
             if (null === $relation->getEmbed()) {
                 continue;
             }
 
-            $rel = $this->handlerManager->transform($relation->getName(), $object);
+            $rel  = $this->handlerManager->transform($relation->getName(), $object);
             $data = $this->handlerManager->transform($relation->getEmbed()->getContent(), $object);
+
             $embeds[] = new Embed($rel, $data, $relation->getEmbed()->getXmlElementName());
         }
 

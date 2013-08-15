@@ -52,14 +52,15 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     {
         foreach ($embeds as $embed) {
             $entryNode = $visitor->getDocument()->createElement($this->getElementName($embed->getData(), $embed));
+
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
-
             $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
 
             if ($embed->getData() instanceof \Traversable || is_array($embed->getData())) {
                 foreach ($embed->getData() as $entry) {
                     $entryNode = $visitor->getDocument()->createElement($this->getElementName($entry));
+
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
 
@@ -69,11 +70,8 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
 
                     $visitor->revertCurrentNode();
                 }
-            } else {
-                $node = $context->accept($embed->getData());
-                if (null !== $node) {
-                    $visitor->getCurrentNode()->appendChild($node);
-                }
+            } elseif (null !== $node = $context->accept($embed->getData())) {
+                $visitor->getCurrentNode()->appendChild($node);
             }
 
             $visitor->revertCurrentNode();
@@ -95,11 +93,11 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
 
         foreach ($resource->getData() as $key => $value) {
             $entryNode = $visitor->getDocument()->createElement($key);
+
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
 
-            $node = $context->accept($value);
-            if (null !== $node) {
+            if (null !== $node = $context->accept($value)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 
@@ -119,7 +117,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
         }
 
         if (null == $elementName && is_object($data)) {
-            $metadata = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($data));
+            $metadata    = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($data));
             $elementName = $metadata->xmlRootName;
         }
 

@@ -14,13 +14,18 @@ class HandlerManager
      */
     private $handlers;
 
+    /**
+     * @param array $handlers
+     */
     public function __construct(array $handlers = array())
     {
-        foreach ($handlers as $name => $handler) {
-            $this->setHandler($name, $handler);
-        }
+        $this->handlers = $handlers;
     }
 
+    /**
+     * @param string           $name
+     * @param HandlerInterface $handler
+     */
     public function setHandler($name, HandlerInterface $handler)
     {
         $this->handlers[$name] = $handler;
@@ -36,24 +41,21 @@ class HandlerManager
             throw new \InvalidArgumentException(sprintf('Cannot parse "%s".', $value));
         }
 
-        $handlerName = $matches[1];
+        $handlerName  = $matches[1];
         $handlerValue = $matches[2];
 
         if (!isset($this->handlers[$handlerName])) {
             throw new \InvalidArgumentException(sprintf('Handler "%s" does not exist.', $handlerName));
         }
 
-        $handler = $this->handlers[$handlerName];
-
-        return $handler->transform($handlerValue, $object);
+        return $this->handlers[$handlerName]->transform($handlerValue, $object);
     }
 
     public function transformArray(array $array, $object)
     {
         $newArray = array();
-
         foreach ($array as $key => $value) {
-            $key = $this->transform($key, $object);
+            $key   = $this->transform($key, $object);
             $value = $this->transform($value, $object);
 
             $newArray[$key] = $value;

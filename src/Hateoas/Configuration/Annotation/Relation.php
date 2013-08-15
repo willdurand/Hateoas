@@ -22,6 +22,8 @@ final class Relation
      */
     public $href;
 
+    /**
+     */
     public $embed = null;
 
     /**

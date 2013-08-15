@@ -73,17 +73,16 @@ class HateoasBuilder
     public function __construct(SerializerBuilder $serializerBuilder = null)
     {
         $this->serializerBuilder = $serializerBuilder ?: SerializerBuilder::create();
-        $this->handlerManager = new HandlerManager();
+        $this->handlerManager    = new HandlerManager();
     }
 
     public function build()
     {
-        $metadataFactory = $this->buildMetadataFactory();
-
+        $metadataFactory     = $this->buildMetadataFactory();
         $relationsRepository = new RelationsRepository($metadataFactory);
-        $linkFactory = new LinkFactory($this->handlerManager, $this->routeFactory);
-        $linksFactory = new LinksFactory($relationsRepository, $linkFactory);
-        $embeddedMapFactory = new EmbedsFactory($relationsRepository, $this->handlerManager);
+        $linkFactory         = new LinkFactory($this->handlerManager, $this->routeFactory);
+        $linksFactory        = new LinksFactory($relationsRepository, $linkFactory);
+        $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $this->handlerManager);
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -101,10 +100,12 @@ class HateoasBuilder
             new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedMapFactory),
             new JsonEventSubscriber($this->jsonSerializer, $linksFactory, $embeddedMapFactory),
         );
+
         $handlers = array(
             new XmlResourceHandler($this->xmlSerializer),
             new JsonResourceHandler($this->jsonSerializer),
         );
+
         $this->serializerBuilder
             ->addDefaultListeners()
             ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($eventSubscribers) {
@@ -120,7 +121,6 @@ class HateoasBuilder
         ;
 
         $jmsSerializer = $this->serializerBuilder->build();
-
         foreach (array($this->jsonSerializer, $this->xmlSerializer) as $serializer) {
             if ($serializer instanceof JMSSerializerMetadataAwareInterface) {
                 $serializer->setMetadataFactory($jmsSerializer->getMetadataFactory());
@@ -193,6 +193,7 @@ class HateoasBuilder
         if (!is_dir($dir)) {
             $this->createDir($dir);
         }
+
         if (!is_writable($dir)) {
             throw new \InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
         }
@@ -324,6 +325,7 @@ class HateoasBuilder
     private function buildMetadataFactory()
     {
         $annotationReader = $this->annotationReader;
+
         if (null === $annotationReader) {
             $annotationReader = new AnnotationReader();
 
@@ -334,7 +336,7 @@ class HateoasBuilder
         }
 
         if (!empty($this->metadataDirs)) {
-            $fileLocator = new FileLocator($this->metadataDirs);
+            $fileLocator    = new FileLocator($this->metadataDirs);
             $metadataDriver = new DriverChain(array(
                 new YamlDriver($fileLocator),
                 new AnnotationDriver($annotationReader),

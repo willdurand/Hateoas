@@ -21,7 +21,7 @@ class JsonEventSubscriber implements EventSubscriberInterface
     {
         return array(
             array(
-                'event' => Events::POST_SERIALIZE,
+                'event'  => Events::POST_SERIALIZE,
                 'format' => 'json',
                 'method' => 'onPostSerialize',
             ),
@@ -43,23 +43,27 @@ class JsonEventSubscriber implements EventSubscriberInterface
      */
     private $embedsFactory;
 
-    public function __construct(
-        JsonSerializerInterface $jsonSerializer, LinksFactory $linksFactory, EmbedsFactory $embedsFactory
-    )
+    /**
+     * @param JsonSerializerInterface $jsonSerializer
+     * @param LinksFactory            $linksFactory
+     * @param EmbedsFactory           $embedsFactory
+     */
+    public function __construct(JsonSerializerInterface $jsonSerializer, LinksFactory $linksFactory, EmbedsFactory $embedsFactory)
     {
         $this->jsonSerializer = $jsonSerializer;
-        $this->linksFactory = $linksFactory;
-        $this->embedsFactory = $embedsFactory;
+        $this->linksFactory   = $linksFactory;
+        $this->embedsFactory  = $embedsFactory;
     }
 
     public function onPostSerialize(ObjectEvent $event)
     {
         $embeds = $this->embedsFactory->create($event->getObject());
-        $links = $this->linksFactory->createLinks($event->getObject());
+        $links  = $this->linksFactory->createLinks($event->getObject());
 
         if (count($links) > 0) {
             $this->jsonSerializer->serializeLinks($links, $event->getVisitor());
         }
+
         if (count($embeds) > 0) {
             $this->jsonSerializer->serializeEmbedded($embeds, $event->getVisitor(), $event->getContext());
         }

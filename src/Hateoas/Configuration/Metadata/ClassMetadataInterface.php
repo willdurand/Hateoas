@@ -1,6 +1,7 @@
 <?php
 
 namespace Hateoas\Configuration\Metadata;
+
 use Hateoas\Configuration\Relation;
 
 /**
