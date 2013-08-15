@@ -51,7 +51,7 @@ class LinkFactory
             $name       = $this->handlerManager->transform($href->getName(), $object);
             $parameters = $this->handlerManager->transformArray($href->getParameters(), $object);
 
-            $href = $this->routeFactory->create($name, $parameters);
+            $href = $this->routeFactory->create($name, $parameters, $href->isAbsolute());
         } else {
             $href = $this->handlerManager->transform($href, $object);
         }

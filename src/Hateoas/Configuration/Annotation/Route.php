@@ -23,4 +23,9 @@ class Route
      * @var array
      */
     public $parameters = array();
+
+    /**
+     * @var boolean
+     */
+    public $absolute = false;
 }
