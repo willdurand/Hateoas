@@ -22,7 +22,8 @@
     "require-dev": {
         "atoum/atoum": "dev-master",
         "symfony/yaml": "~2.0",
-        "symfony/routing": "~2.0"
+        "symfony/routing": "~2.0",
+        "symfony/http-foundation": "~2.0"
     },
     "suggest": {
         "symfony/yaml": "To use yaml based configuration.",
