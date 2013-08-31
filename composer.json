@@ -13,11 +13,11 @@
         }
     ],
     "require": {
-        "symfony/property-access": "~2.2",
         "doctrine/common": "~2.0",
         "doctrine/annotations": "1.*",
         "jms/metadata": "~1.1",
-        "jms/serializer": "~0.13@dev"
+        "jms/serializer": "~0.13@dev",
+        "symfony/expression-language": "~2.4@dev"
     },
     "require-dev": {
         "atoum/atoum": "dev-master",

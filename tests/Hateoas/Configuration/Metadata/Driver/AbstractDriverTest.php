@@ -62,7 +62,7 @@ abstract class AbstractDriverTest extends TestCase
                         ->isEqualTo('user_get')
                     ->array($route->getParameters())
                         ->isEqualTo(array(
-                            'id' => '@this.id',
+                            'id' => 'expr(object.getId())',
                         ))
                     ->boolean($route->isAbsolute())
                         ->isEqualTo(false)
@@ -70,7 +70,7 @@ abstract class AbstractDriverTest extends TestCase
                 ->isInstanceOf('Hateoas\Configuration\Embed')
                 ->and($embed = $relation->getEmbed())
                     ->string($embed->getContent())
-                        ->isEqualTo('@this.foo')
+                        ->isEqualTo('expr(object.getFoo())')
                     ->variable($embed->getXmlElementName())
                         ->isNull()
         ;
@@ -101,7 +101,7 @@ abstract class AbstractDriverTest extends TestCase
                         ->isEqualTo('user_get')
                     ->array($route->getParameters())
                         ->isEqualTo(array(
-                            'id' => '@this.id',
+                            'id' => 'expr(object.getId())',
                         ))
                     ->boolean($route->isAbsolute())
                         ->isEqualTo(true)
@@ -118,7 +118,7 @@ abstract class AbstractDriverTest extends TestCase
                         ->isEqualTo('user_get')
                     ->array($route->getParameters())
                         ->isEqualTo(array(
-                            'id' => '@this.id',
+                            'id' => 'expr(object.getId())',
                         ))
                     ->boolean($route->isAbsolute())
                         ->isEqualTo(false)

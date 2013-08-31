@@ -9,8 +9,8 @@ tests\fixtures\User:
             rel: foo
             href:
                 route: user_get
-                parameters: { id: @this.id }
-            embed: @this.foo
+                parameters: { id: expr(object.getId()) }
+            embed: expr(object.getFoo())
         -
             rel: bar
             href: foo
@@ -21,11 +21,11 @@ tests\fixtures\User:
             rel: baz
             href:
                 route: user_get
-                parameters: { id: @this.id }
+                parameters: { id: expr(object.getId()) }
                 absolute: true
         -
             rel: boom
             href:
                 route: user_get
-                parameters: { id: @this.id }
+                parameters: { id: expr(object.getId()) }
                 absolute: false

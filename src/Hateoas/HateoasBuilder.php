@@ -7,13 +7,13 @@ use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
 use Hateoas\Configuration\RelationsRepository;
+use Hateoas\Expression\ExpressionParser;
+use Hateoas\Expression\ExpressionParserInterface;
+use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\EmbedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Factory\RouteFactoryInterface;
-use Hateoas\Handler\HandlerInterface;
-use Hateoas\Handler\HandlerManager;
-use Hateoas\Handler\PropertyPathHandler;
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\Handler\JsonResourceHandler;
@@ -31,6 +31,7 @@ use Metadata\Cache\FileCache;
 use Metadata\Driver\DriverChain;
 use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -45,8 +46,10 @@ class HateoasBuilder
      */
     private $serializerBuilder;
 
-    private $handlerSet = false;
-    private $handlerManager;
+    /**
+     * @var ExpressionEvaluator
+     */
+    private $expressionLanguage;
 
     private $xmlSerializer;
     private $jsonSerializer;
@@ -73,16 +76,16 @@ class HateoasBuilder
     public function __construct(SerializerBuilder $serializerBuilder = null)
     {
         $this->serializerBuilder = $serializerBuilder ?: SerializerBuilder::create();
-        $this->handlerManager    = new HandlerManager();
     }
 
     public function build()
     {
         $metadataFactory     = $this->buildMetadataFactory();
         $relationsRepository = new RelationsRepository($metadataFactory);
-        $linkFactory         = new LinkFactory($this->handlerManager, $this->routeFactory);
+        $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage());
+        $linkFactory         = new LinkFactory($expressionEvaluator, $this->routeFactory);
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory);
-        $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $this->handlerManager);
+        $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator);
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -90,10 +93,6 @@ class HateoasBuilder
 
         if (null === $this->jsonSerializer) {
             $this->setHalJsonSerializer();
-        }
-
-        if (!$this->handlerSet) {
-            $this->setDefaultHandlers();
         }
 
         $eventSubscribers = array(
@@ -127,7 +126,7 @@ class HateoasBuilder
             }
         }
 
-        return new Hateoas($jmsSerializer, $relationsRepository, $this->handlerManager);
+        return new Hateoas($jmsSerializer, $relationsRepository);
     }
 
     public function setXmlSerializer(XmlSerializerInterface $xmlSerializer)
@@ -166,19 +165,28 @@ class HateoasBuilder
         return $this;
     }
 
-    public function setHandler($name, HandlerInterface $handler)
+    public function setExpressionContextValue($name, $value)
     {
-        $this->handlerManager->setHandler($name, $handler);
-        $this->handlerSet = true;
+        $this->getExpressionLanguage()->setContextValue($name, $value);
 
         return $this;
     }
 
-    public function setDefaultHandlers()
+    /**
+     * @param ExpressionLanguage $expressionLanguage
+     */
+    public function setExpressionLanguage(ExpressionLanguage $expressionLanguage)
     {
-        $this->handlerManager->setHandler('this', new PropertyPathHandler());
+        $this->expressionLanguage = $expressionLanguage;
+    }
 
-        return $this;
+    private  function getExpressionLanguage()
+    {
+        if (null === $this->expressionLanguage) {
+            $this->expressionLanguage = new ExpressionLanguage();
+        }
+
+        return $this->expressionLanguage;
     }
 
     public function setDebug($bool)

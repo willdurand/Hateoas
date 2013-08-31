@@ -4,7 +4,7 @@ namespace Hateoas\Factory;
 
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
-use Hateoas\Handler\HandlerManager;
+use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Link;
 
 /**
@@ -13,9 +13,9 @@ use Hateoas\Model\Link;
 class LinkFactory
 {
     /**
-     * @var HandlerManager
+     * @var ExpressionEvaluator
      */
-    private $handlerManager;
+    private $expressionEvaluator;
 
     /**
      * @var RouteFactoryInterface
@@ -23,12 +23,15 @@ class LinkFactory
     private $routeFactory;
 
     /**
-     * @param HandlerManager             $handlerManager
+     * @param ExpressionEvaluator        $expressionEvaluator
      * @param RouteFactoryInterface|null $routeFactory
      */
-    public function __construct(HandlerManager $handlerManager, RouteFactoryInterface $routeFactory = null)
+    public function __construct(
+        ExpressionEvaluator $expressionEvaluator,
+        RouteFactoryInterface $routeFactory = null
+    )
     {
-        $this->handlerManager = $handlerManager;
+        $this->expressionEvaluator = $expressionEvaluator;
         $this->routeFactory   = $routeFactory;
     }
 
@@ -40,7 +43,7 @@ class LinkFactory
      */
     public function createLink($object, Relation $relation)
     {
-        $rel  = $this->handlerManager->transform($relation->getName(), $object);
+        $rel =  $this->expressionEvaluator->evaluate($relation->getName(), $object);
         $href = $relation->getHref();
 
         if ($href instanceof Route) {
@@ -48,15 +51,15 @@ class LinkFactory
                 throw new \RuntimeException('You cannot use a route without a route factory.');
             }
 
-            $name       = $this->handlerManager->transform($href->getName(), $object);
-            $parameters = $this->handlerManager->transformArray($href->getParameters(), $object);
+            $name       = $this->expressionEvaluator->evaluate($href->getName(), $object);
+            $parameters = $this->expressionEvaluator->evaluateArray($href->getParameters(), $object);
 
             $href = $this->routeFactory->create($name, $parameters, $href->isAbsolute());
         } else {
-            $href = $this->handlerManager->transform($href, $object);
+            $href = $this->expressionEvaluator->evaluate($href, $object);
         }
 
-        $attributes = $this->handlerManager->transformArray($relation->getAttributes(), $object);
+        $attributes = $this->expressionEvaluator->evaluateArray($relation->getAttributes(), $object);
 
         return new Link($rel, $href, $attributes);
     }
