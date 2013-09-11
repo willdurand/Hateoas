@@ -16,6 +16,9 @@ Usage
 
 Not yet available as the library is currently under heavy refactoring.
 
+For those who use the `1.0` version, you can [jump to this documentation
+page](https://github.com/willdurand/Hateoas/blob/1.0/README.md#readme) though.
+
 
 Installation
 ------------
