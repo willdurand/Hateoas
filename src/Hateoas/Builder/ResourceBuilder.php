@@ -87,7 +87,7 @@ class ResourceBuilder implements ResourceBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function createCollection($collection, $className, $options = array())
+    public function createCollection($collection, $className, $options = array(), $overrides = array())
     {
         if (!is_array($collection) && !$collection instanceof \Traversable) {
             throw new \InvalidArgumentException(
@@ -104,7 +104,8 @@ class ResourceBuilder implements ResourceBuilderInterface
 
         $links = array();
         foreach ($collectionDefinition->getLinks() as $linkDefinition) {
-            $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $collection);
+	    list($finalLinkDefinition, $data) = $this->overrideDefinition($linkDefinition, $overrides, $collection);
+            $links[] = $this->linkBuilder->createFromDefinition($finalLinkDefinition, $data);
         }
 
         $accessor = PropertyAccess::getPropertyAccessor();
@@ -136,5 +137,31 @@ class ResourceBuilder implements ResourceBuilderInterface
             $page,
             $limit
         );
+    }
+    
+    private function overrideDefinition($linkDefinition, $overrides, $collection)
+    {
+      $override = $this->findOverrideForLinkDefinition($linkDefinition, $overrides);
+      
+      if($override){
+	$data = isset($override['data']) ? $override['data'] : $collection;
+	$definition = $override['definition'];
+	$newLinkDefinition = $this->factory->createLinkDefinition($definition, '');
+	
+	return array($newLinkDefinition, $data);
+      }
+      
+      return array($linkDefinition, $collection);
+    }
+    
+    private function findOverrideForLinkDefinition($linkDefinition, $overrides)
+    {
+      foreach($overrides as $override){
+	if($override['rel'] == $linkDefinition->getRel()){
+	  return $override;
+	}
+      }
+    
+      return null;
     }
 }

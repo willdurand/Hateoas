@@ -69,7 +69,7 @@ class Factory implements FactoryInterface
         throw new \RuntimeException(sprintf('No definition found for collection of "%s".', $className));
     }
 
-    protected function createLinkDefinition($definition, $class)
+    public function createLinkDefinition($definition, $class)
     {
         if (!is_array($definition)) {
             throw new \InvalidArgumentException(sprintf('A link definition should be an array in "%s".', $class));

@@ -5,6 +5,7 @@ namespace Hateoas\Tests\Builder;
 use Hateoas\Factory\Config\ArrayConfig;
 use Hateoas\Factory\Factory;
 use Hateoas\Builder\ResourceBuilder;
+use Hateoas\Link;
 use Hateoas\Tests\TestCase;
 use Hateoas\Tests\Fixtures\DataClass1;
 use Hateoas\Tests\Fixtures\DataClass2;
@@ -124,7 +125,129 @@ class ResourceBuilderTest extends TestCase
         $this->assertEquals('toto', $links[1]->getRel());
         $this->assertEquals('titi', $links[1]->getType());
     }
+    
+    public function testCreateCollectionWithLinkOverwrite()
+    {
+        $definitions = array(
+            'Hateoas\Tests\Fixtures\DataClass1' => array(
+                'links' => array(
+                    array('rel' => 'test', 'type' => 'test'),
+                ),
+            ),
+        );
 
+        $collDefinitions = array(
+            'Hateoas\Tests\Fixtures\DataClass1' => array(
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar'),
+                    array('rel' => 'toto', 'type' => 'titi'),
+                ),
+            ),
+        );
+
+        $factory = new Factory(new ArrayConfig($definitions, $collDefinitions));
+        $builder = new ResourceBuilder(
+            $factory,
+            $this->getLinkBuilderMock2($this->exactly(4))
+        );
+
+        $collection = $builder->createCollection(
+            array(
+                new DataClass1('test'),
+                new DataClass1('baz')
+            ),
+            'Hateoas\Tests\Fixtures\DataClass1',
+            array(),
+            array(array('rel' => 'foo', 'definition' => array('rel' => 'foo', 'type' => 'bar2'), 'data' => new DataClass1('overridedLink')))
+        );
+
+        $this->assertInstanceOf('Hateoas\Collection', $collection);
+        $this->assertCount(2, $collection->getResources());
+
+        foreach ($collection->getResources() as $resource) {
+            $this->assertInstanceOf('Hateoas\Resource', $resource);
+            $this->assertInstanceOf('Hateoas\Tests\Fixtures\DataClass1', $resource->getData());
+
+            $this->assertCount(1, $resource->getLinks());
+            $links = $resource->getLinks();
+
+            $this->assertEquals('test', $links[0]->getRel());
+            $this->assertEquals('test', $links[0]->getType());
+        }
+
+        $this->assertCount(2, $collection->getLinks());
+        $links = $collection->getLinks();
+
+        $this->assertEquals('foo', $links[0]->getRel());
+        $this->assertEquals('bar2', $links[0]->getType());
+        $this->assertEquals('foo/overridedLink', $links[0]->getHref());
+
+        $this->assertEquals('toto', $links[1]->getRel());
+        $this->assertEquals('titi', $links[1]->getType());
+        $this->assertEquals('toto', $links[1]->getHref());
+    }
+
+    public function testCreateCollectionWithLinkOverwriteWithoutData()
+    {
+        $definitions = array(
+            'Hateoas\Tests\Fixtures\DataClass1' => array(
+                'links' => array(
+                    array('rel' => 'test', 'type' => 'test'),
+                ),
+            ),
+        );
+
+        $collDefinitions = array(
+            'Hateoas\Tests\Fixtures\DataClass1' => array(
+                'links' => array(
+                    array('rel' => 'foo', 'type' => 'bar'),
+                    array('rel' => 'toto', 'type' => 'titi'),
+                ),
+            ),
+        );
+
+        $factory = new Factory(new ArrayConfig($definitions, $collDefinitions));
+        $builder = new ResourceBuilder(
+            $factory,
+            $this->getLinkBuilderMock2($this->exactly(4))
+        );
+
+        $collection = $builder->createCollection(
+            array(
+                new DataClass1('test'),
+                new DataClass1('baz')
+            ),
+            'Hateoas\Tests\Fixtures\DataClass1',
+            array(),
+            array(array('rel' => 'foo', 'definition' => array('rel' => 'foo', 'type' => 'bar2')))
+        );
+
+        $this->assertInstanceOf('Hateoas\Collection', $collection);
+        $this->assertCount(2, $collection->getResources());
+
+        foreach ($collection->getResources() as $resource) {
+            $this->assertInstanceOf('Hateoas\Resource', $resource);
+            $this->assertInstanceOf('Hateoas\Tests\Fixtures\DataClass1', $resource->getData());
+
+            $this->assertCount(1, $resource->getLinks());
+            $links = $resource->getLinks();
+
+            $this->assertEquals('test', $links[0]->getRel());
+            $this->assertEquals('test', $links[0]->getType());
+        }
+
+        $this->assertCount(2, $collection->getLinks());
+        $links = $collection->getLinks();
+
+        $this->assertEquals('foo', $links[0]->getRel());
+        $this->assertEquals('bar2', $links[0]->getType());
+        $this->assertEquals('foo', $links[0]->getHref());
+
+        $this->assertEquals('toto', $links[1]->getRel());
+        $this->assertEquals('titi', $links[1]->getType());
+        $this->assertEquals('toto', $links[1]->getHref());
+    }
+    
     public function testCreateCollectionWithArrayObject()
     {
         $definitions = array(
@@ -206,6 +329,25 @@ class ResourceBuilderTest extends TestCase
             ->expects($expected)
             ->method('createFromDefinition')
             ->will($this->returnArgument(0));
+
+        return $mock;
+    }
+    
+    protected function getLinkBuilderMock2($expected)
+    {
+        $mock = $this->getMock('Hateoas\Builder\LinkBuilderInterface');
+        $mock
+            ->expects($expected)
+            ->method('createFromDefinition')
+            ->will($this->returnCallback(function($definition, $data){
+	      $url = $definition->getRel();
+	      
+	      if($data && is_object($data)){
+		$url = $url.'/'.$data->content;
+	      }
+	      
+	      return new Link($url, $definition->getRel(), $definition->getType());
+            }));
 
         return $mock;
     }
