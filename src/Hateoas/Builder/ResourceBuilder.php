@@ -39,7 +39,11 @@ class ResourceBuilder implements ResourceBuilderInterface
 
         $links = array();
         foreach ($resourceDefinition->getLinks() as $linkDefinition) {
-            $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $data);
+            $link = $this->linkBuilder->createFromDefinition($linkDefinition, $data);
+
+            if($link) {
+                $links[] = $link;
+            }
 
             // walk over the object properties to add links
             if (!empty($options['objectProperties'])) {
