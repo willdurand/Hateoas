@@ -6,7 +6,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @Hateoas\Relation("self", href = "http://adrienbrault.fr")
- * @Hateoas\Relation("computer", href = "http://www.apple.com/macbook-pro/", embed = "@this.macbookPro")
+ * @Hateoas\Relation("computer", href = "http://www.apple.com/macbook-pro/", embed = "expr(object.getMacbookPro())")
  */
 class AdrienBrault
 {

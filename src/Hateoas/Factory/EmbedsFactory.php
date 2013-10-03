@@ -3,7 +3,7 @@
 namespace Hateoas\Factory;
 
 use Hateoas\Configuration\RelationsRepository;
-use Hateoas\Handler\HandlerManager;
+use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Embed;
 
 /**
@@ -17,18 +17,21 @@ class EmbedsFactory
     private $relationsRepository;
 
     /**
-     * @var HandlerManager
+     * @var ExpressionEvaluator
      */
-    private $handlerManager;
+    private $expressionEvaluator;
 
     /**
      * @param RelationsRepository $relationsRepository
-     * @param HandlerManager      $handlerManager
+     * @param ExpressionEvaluator $expressionEvaluator
      */
-    public function __construct(RelationsRepository $relationsRepository, HandlerManager $handlerManager)
+    public function __construct(
+        RelationsRepository $relationsRepository,
+        ExpressionEvaluator $expressionEvaluator
+    )
     {
         $this->relationsRepository = $relationsRepository;
-        $this->handlerManager      = $handlerManager;
+        $this->expressionEvaluator      = $expressionEvaluator;
     }
     /**
      * @param  object  $object
@@ -42,8 +45,8 @@ class EmbedsFactory
                 continue;
             }
 
-            $rel  = $this->handlerManager->transform($relation->getName(), $object);
-            $data = $this->handlerManager->transform($relation->getEmbed()->getContent(), $object);
+            $rel  = $this->expressionEvaluator->evaluate($relation->getName(), $object);
+            $data = $this->expressionEvaluator->evaluate($relation->getEmbed()->getContent(), $object);
 
             $embeds[] = new Embed($rel, $data, $relation->getEmbed()->getXmlElementName());
         }
