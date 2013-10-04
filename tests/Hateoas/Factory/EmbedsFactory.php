@@ -12,8 +12,8 @@ class EmbedsFactory extends TestCase
     {
         $relations = array(
             new Relation('self', '/users/1'),
-            new Relation('friend', '/users/42', '@this.friend'),
-            new Relation('@this.managerRel', '/users/42', '@this.manager'),
+            new Relation('friend', '/users/42', 'expr(object.getFriend())'),
+            new Relation('expr(object.getManagerRel())', '/users/42', 'expr(object.getManager())'),
         );
 
         $this->mockGenerator->orphanize('__construct');
@@ -22,16 +22,17 @@ class EmbedsFactory extends TestCase
             return $relations;
         };
 
-        $handlerManager = new \mock\Hateoas\Handler\HandlerManager();
-        $handlerManager->getMockController()->transform = function ($value) {
-            if ($value[0] == '@') {
+        $this->mockGenerator->orphanize('__construct');
+        $expressionEvaluator = new \mock\Hateoas\Expression\ExpressionEvaluator();
+        $expressionEvaluator->getMockController()->evaluate = function ($expression) {
+            if (strpos($expression, 'expr(') === 0) {
                 return 42;
             }
 
-            return $value;
+            return $expression;
         };
 
-        $embedsFactory = new TestedEmbedsFactory($relationsRepository, $handlerManager);
+        $embedsFactory = new TestedEmbedsFactory($relationsRepository, $expressionEvaluator);
 
         $object = new \StdClass();
 
@@ -59,15 +60,15 @@ class EmbedsFactory extends TestCase
                 ->call('getRelations')
                     ->withArguments($object)
                     ->once()
-            ->mock($handlerManager)
-                ->call('transform')
-                    ->withArguments('@this.friend', $object)
+            ->mock($expressionEvaluator)
+                ->call('evaluate')
+                    ->withArguments('expr(object.getFriend())', $object)
                     ->once()
-                ->call('transform')
-                    ->withArguments('@this.manager', $object)
+                ->call('evaluate')
+                    ->withArguments('expr(object.getManager())', $object)
                     ->once()
-                ->call('transform')
-                    ->withArguments('@this.managerRel', $object)
+                ->call('evaluate')
+                    ->withArguments('expr(object.getManagerRel())', $object)
                     ->once()
         ;
     }
