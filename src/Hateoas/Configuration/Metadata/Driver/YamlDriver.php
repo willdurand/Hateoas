@@ -38,7 +38,8 @@ class YamlDriver extends AbstractFileDriver
                     $href = new Route(
                         $href['route'],
                         $href['parameters'],
-                        isset($href['absolute']) ? $href['absolute'] : false
+                        isset($href['absolute']) ? $href['absolute'] : false,
+                        isset($href['generator']) ? $href['generator'] : null
                     );
                 }
 

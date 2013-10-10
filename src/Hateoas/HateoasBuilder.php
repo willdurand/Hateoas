@@ -23,6 +23,7 @@ use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
+use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\SerializerBuilder;
@@ -52,7 +53,11 @@ class HateoasBuilder
 
     private $xmlSerializer;
     private $jsonSerializer;
-    private $urlGenerator;
+
+    /**
+     * @var UrlGeneratorRegistry
+     */
+    private $urlGeneratorRegistry;
 
     private $metadataDirs = array();
     private $debug = false;
@@ -75,6 +80,7 @@ class HateoasBuilder
     public function __construct(SerializerBuilder $serializerBuilder = null)
     {
         $this->serializerBuilder = $serializerBuilder ?: SerializerBuilder::create();
+        $this->urlGeneratorRegistry = new UrlGeneratorRegistry();
     }
 
     public function build()
@@ -82,7 +88,7 @@ class HateoasBuilder
         $metadataFactory     = $this->buildMetadataFactory();
         $relationsRepository = new RelationsRepository($metadataFactory);
         $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage());
-        $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGenerator);
+        $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGeneratorRegistry);
         $exclusionManager    = new ExclusionManager($expressionEvaluator);
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
         $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
@@ -158,9 +164,14 @@ class HateoasBuilder
         return $this->setJsonSerializer(new JsonHalSerializer());
     }
 
-    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
+    /**
+     * @param string|null           $name         If you pass null it will be the default url generator
+     * @param UrlGeneratorInterface $urlGenerator
+     * @return $this
+     */
+    public function setUrlGenerator($name = null, UrlGeneratorInterface $urlGenerator)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->urlGeneratorRegistry->set($name, $urlGenerator);
 
         return $this;
     }
