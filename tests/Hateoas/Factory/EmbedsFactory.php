@@ -32,11 +32,14 @@ class EmbedsFactory extends TestCase
             return $expression;
         };
 
-        $embedsFactory = new TestedEmbedsFactory($relationsRepository, $expressionEvaluator);
+        $this->mockGenerator->orphanize('__construct');
+        $exclusionManager = new \mock\Hateoas\Serializer\ExclusionManager();
+
+        $embedsFactory = new TestedEmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
 
         $object = new \StdClass();
 
-        $embeds = $embedsFactory->create($object);
+        $embeds = $embedsFactory->create($object, $this->mockSerializationContext());
 
         $this
             ->array($embeds)
@@ -71,5 +74,21 @@ class EmbedsFactory extends TestCase
                     ->withArguments('expr(object.getManagerRel())', $object)
                     ->once()
         ;
+    }
+
+    private function mockSerializationContext()
+    {
+        $exclusionStrategy = new \mock\JMS\Serializer\ExclusionStrategy\ExclusionStrategyInterface();
+        $exclusionStrategy->getMockController()->shouldSkipProperty = function () {
+            return false;
+        };
+
+        $this->mockGenerator->orphanize('__construct');
+        $serializationContext = new \mock\JMS\Serializer\SerializationContext();
+        $serializationContext->getMockController()->getExclusionStrategy = function () use ($exclusionStrategy) {
+            return $exclusionStrategy;
+        };
+
+        return $serializationContext;
     }
 }

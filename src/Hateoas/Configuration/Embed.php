@@ -18,13 +18,20 @@ class Embed
     private $xmlElementName;
 
     /**
-     * @param string|mixed $content
-     * @param string\null  $xmlElementName
+     * @var Exclusion|null
      */
-    public function __construct($content, $xmlElementName = null)
+    private $exclusion;
+
+    /**
+     * @param string|mixed $content
+     * @param string|null  $xmlElementName
+     * @param Exclusion    $exclusion
+     */
+    public function __construct($content, $xmlElementName = null, Exclusion $exclusion = null)
     {
         $this->content        = $content;
         $this->xmlElementName = $xmlElementName;
+        $this->exclusion      = $exclusion;
     }
 
     /**
@@ -41,5 +48,13 @@ class Embed
     public function getXmlElementName()
     {
         return $this->xmlElementName;
+    }
+
+    /**
+     * @return Exclusion|null
+     */
+    public function getExclusion()
+    {
+        return $this->exclusion;
     }
 }

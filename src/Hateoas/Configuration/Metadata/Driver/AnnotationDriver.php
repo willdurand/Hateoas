@@ -5,6 +5,7 @@ namespace Hateoas\Configuration\Metadata\Driver;
 use Doctrine\Common\Annotations\Reader as AnnotationsReader;
 use Hateoas\Configuration\Annotation;
 use Hateoas\Configuration\Embed;
+use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
@@ -53,14 +54,25 @@ class AnnotationDriver implements DriverInterface
                 $embed = $annotation->embed;
 
                 if ($embed instanceof Annotation\Embed) {
-                    $embed = new Embed($embed->content, $embed->xmlElementName);
+                    $embedExclusion = $embed->exclusion;
+                    if (null !== $embedExclusion) {
+                        $embedExclusion = $this->parseExclusion($embedExclusion);
+                    }
+
+                    $embed = new Embed($embed->content, $embed->xmlElementName, $embedExclusion);
+                }
+
+                $exclusion = $annotation->exclusion;
+                if (null !== $exclusion) {
+                    $exclusion = $this->parseExclusion($exclusion);
                 }
 
                 $classMetadata->addRelation(new Relation(
                     $annotation->name,
                     $href,
                     $embed,
-                    $annotation->attributes ?: array()
+                    $annotation->attributes ?: array(),
+                    $exclusion
                 ));
             }
         }
@@ -70,5 +82,16 @@ class AnnotationDriver implements DriverInterface
         }
 
         return $classMetadata;
+    }
+
+    private function parseExclusion(Annotation\Exclusion $exclusion)
+    {
+        return new Exclusion(
+            $exclusion->groups,
+            $exclusion->sinceVersion,
+            $exclusion->untilVersion,
+            $exclusion->maxDepth,
+            $exclusion->excludeIf
+        );
     }
 }
