@@ -1,11 +1,11 @@
 <?php
 
-namespace tests\Hateoas\Factory;
+namespace tests\Hateoas\UrlGenerator;
 
 use tests\TestCase;
-use Hateoas\Factory\SymfonyRouteFactory as TestedSymfonyRouteFactory;
+use Hateoas\UrlGenerator\SymfonyUrlGenerator as TestedSymfonyUrlGenerator;
 
-class SymfonyRouteFactory extends TestCase
+class SymfonyUrlGenerator extends TestCase
 {
     public function test()
     {
@@ -15,8 +15,8 @@ class SymfonyRouteFactory extends TestCase
         $expectedResult     = '/users/42';
 
         $test = $this;
-        $urlGenerator = new \mock\Symfony\Component\Routing\Generator\UrlGeneratorInterface();
-        $urlGenerator->getMockController()->generate = function ($name, $parameters, $absolute)
+        $symfonyUrlGenerator = new \mock\Symfony\Component\Routing\Generator\UrlGeneratorInterface();
+        $symfonyUrlGenerator->getMockController()->generate = function ($name, $parameters, $absolute)
             use ($expectedName, $expectedParameters, $expectedResult, $expectedAbsolute, $test) {
                 $test
                 ->string($name)
@@ -30,10 +30,10 @@ class SymfonyRouteFactory extends TestCase
             return $expectedResult;
         };
 
-        $routeFactory = new TestedSymfonyRouteFactory($urlGenerator);
+        $urlGenerator = new TestedSymfonyUrlGenerator($symfonyUrlGenerator);
 
         $this
-            ->string($routeFactory->create($expectedName, $expectedParameters, $expectedAbsolute))
+            ->string($urlGenerator->generate($expectedName, $expectedParameters, $expectedAbsolute))
                 ->isEqualTo($expectedResult)
         ;
     }

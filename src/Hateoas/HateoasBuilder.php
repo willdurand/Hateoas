@@ -7,13 +7,11 @@ use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
 use Hateoas\Configuration\RelationsRepository;
-use Hateoas\Expression\ExpressionParser;
-use Hateoas\Expression\ExpressionParserInterface;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\EmbedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
-use Hateoas\Factory\RouteFactoryInterface;
+use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\ExclusionManager;
@@ -54,7 +52,7 @@ class HateoasBuilder
 
     private $xmlSerializer;
     private $jsonSerializer;
-    private $routeFactory;
+    private $urlGenerator;
 
     private $metadataDirs = array();
     private $debug = false;
@@ -84,7 +82,7 @@ class HateoasBuilder
         $metadataFactory     = $this->buildMetadataFactory();
         $relationsRepository = new RelationsRepository($metadataFactory);
         $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage());
-        $linkFactory         = new LinkFactory($expressionEvaluator, $this->routeFactory);
+        $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGenerator);
         $exclusionManager    = new ExclusionManager($expressionEvaluator);
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
         $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
@@ -160,9 +158,9 @@ class HateoasBuilder
         return $this->setJsonSerializer(new JsonHalSerializer());
     }
 
-    public function setRouteFactory(RouteFactoryInterface $routeFactory)
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
     {
-        $this->routeFactory = $routeFactory;
+        $this->urlGenerator = $urlGenerator;
 
         return $this;
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Hateoas\Factory;
+namespace Hateoas\UrlGenerator;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-interface RouteFactoryInterface
+interface UrlGeneratorInterface
 {
     /**
      * @param string  $name
@@ -14,5 +14,5 @@ interface RouteFactoryInterface
      *
      * @return string
      */
-    public function create($name, array $parameters, $absolute = false);
+    public function generate($name, array $parameters, $absolute = false);
 }
