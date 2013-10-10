@@ -47,6 +47,9 @@ class HateoasBuilder extends TestCase
   <computer rel="computer">
     <name><![CDATA[MacBook Pro]]></name>
   </computer>
+  <computer rel="broken-computer">
+    <name><![CDATA[Windows Computer]]></name>
+  </computer>
 </result>
 
 XML
@@ -61,13 +64,16 @@ XML
   <resource rel="computer">
     <name><![CDATA[MacBook Pro]]></name>
   </resource>
+  <resource rel="broken-computer">
+    <name><![CDATA[Windows Computer]]></name>
+  </resource>
 </result>
 
 XML
                 )
             ->string($hateoas->serialize($adrienBrault, 'json'))
                 ->isEqualTo(<<<JSON
-{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"}},"_embedded":{"computer":{"name":"MacBook Pro"}}}
+{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"}},"_embedded":{"computer":{"name":"MacBook Pro"},"broken-computer":{"name":"Windows Computer"}}}
 JSON
                 )
 

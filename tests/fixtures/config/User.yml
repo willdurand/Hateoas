@@ -29,3 +29,6 @@ tests\fixtures\User:
                 route: user_get
                 parameters: { id: expr(object.getId()) }
                 absolute: false
+        -
+            rel: badaboom
+            embed: expr(object.getFoo())
