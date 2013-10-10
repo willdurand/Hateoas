@@ -10,6 +10,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * @Hateoas\Relation("bar", href = "foo", embed = @Hateoas\Embed("data", xmlElementName = "barTag"))
  * @Hateoas\Relation("baz", href = @Hateoas\Route("user_get", parameters = {"id" = "expr(object.getId())"}, absolute = true), embed = "expr(object.getFoo())")
  * @Hateoas\Relation("boom", href = @Hateoas\Route("user_get", parameters = {"id" = "expr(object.getId())"}, absolute = false), embed = "expr(object.getFoo())")
+ * @Hateoas\Relation("badaboom", embed = "expr(object.getFoo())")
  */
 class User
 {

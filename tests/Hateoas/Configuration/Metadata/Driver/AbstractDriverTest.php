@@ -123,6 +123,19 @@ abstract class AbstractDriverTest extends TestCase
                     ->boolean($route->isAbsolute())
                         ->isEqualTo(false)
         ;
+
+        $relation = $relations[$i++];
+        $this
+            ->string($relation->getName())
+                ->isEqualTo('badaboom')
+            ->variable($relation->getHref())
+                ->isNull()
+            ->object($relation->getEmbed())
+                ->isInstanceOf('Hateoas\Configuration\Embed')
+                ->and($embed = $relation->getEmbed())
+                    ->string($embed->getContent())
+                        ->isEqualTo('expr(object.getFoo())')
+        ;
     }
 
     public function testEmptyClass()
