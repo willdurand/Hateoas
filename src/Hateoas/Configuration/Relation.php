@@ -13,7 +13,7 @@ class Relation
     private $name;
 
     /**
-     * @var string|Route
+     * @var string|Route|null
      */
     private $href;
 
@@ -23,19 +23,30 @@ class Relation
     private $attributes;
 
     /**
-     * @var Embed
+     * @var Embed|null
      */
     private $embed;
 
     /**
-     * @param  string                    $name
-     * @param  string|Route|null         $href
-     * @param  mixed|Embed|null          $embed
-     * @param  array                     $attributes
+     * @var Exclusion|null
+     */
+    private $exclusion;
+
+    /**
+     * @param  string             $name
+     * @param  string|Route       $href
+     * @param  Embed|string|mixed $embed
+     * @param  array              $attributes
+     * @param  Exclusion          $exclusion
      * @throws \InvalidArgumentException
      */
-    public function __construct($name, $href = null, $embed = null, array $attributes = array())
-    {
+    public function __construct(
+        $name,
+        $href = null,
+        $embed = null,
+        array $attributes = array(),
+        Exclusion $exclusion = null
+    ) {
         if (null !== $embed && !$embed instanceof Embed) {
             $embed = new Embed($embed);
         }
@@ -48,6 +59,7 @@ class Relation
         $this->href       = $href;
         $this->embed      = $embed;
         $this->attributes = $attributes;
+        $this->exclusion  = $exclusion;
     }
 
     /**
@@ -59,7 +71,7 @@ class Relation
     }
 
     /**
-     * @return Route|string
+     * @return Route|string|null
      */
     public function getHref()
     {
@@ -75,10 +87,18 @@ class Relation
     }
 
     /**
-     * @return Embed
+     * @return Embed|null
      */
     public function getEmbed()
     {
         return $this->embed;
+    }
+
+    /**
+     * @return Exclusion|null
+     */
+    public function getExclusion()
+    {
+        return $this->exclusion;
     }
 }

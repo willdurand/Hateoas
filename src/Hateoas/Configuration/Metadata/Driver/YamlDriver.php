@@ -3,6 +3,7 @@
 namespace Hateoas\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Embed;
+use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
@@ -46,18 +47,29 @@ class YamlDriver extends AbstractFileDriver
                     $embed = $relation['embed'];
 
                     if (is_array($embed)) {
+                        $embedExclusion = null;
+                        if (isset($embed['exclusion'])) {
+                            $embedExclusion = $this->parseExclusion($embed['exclusion']);
+                        }
+
                         $xmlElementName = isset($embed['xmlElementName']) ? $embed['xmlElementName'] : null;
-                        $embed          = new Embed($embed['content'], $xmlElementName);
+                        $embed          = new Embed($embed['content'], $xmlElementName, $embedExclusion);
                     }
                 }
 
                 $attributes = isset($relation['attributes']) ? $relation['attributes'] : array();
 
+                $exclusion = null;
+                if (isset($relation['exclusion'])) {
+                    $exclusion = $this->parseExclusion($relation['exclusion']);
+                }
+
                 $classMetadata->addRelation(new Relation(
                     $name,
                     $href,
                     $embed,
-                    $attributes
+                    $attributes,
+                    $exclusion
                 ));
             }
         }
@@ -71,5 +83,16 @@ class YamlDriver extends AbstractFileDriver
     protected function getExtension()
     {
         return 'yml';
+    }
+
+    private function parseExclusion(array $exclusion)
+    {
+        return new Exclusion(
+            isset($exclusion['groups']) ? $exclusion['groups'] : null,
+            isset($exclusion['since_version']) ? $exclusion['since_version'] : null,
+            isset($exclusion['until_version']) ? $exclusion['until_version'] : null,
+            isset($exclusion['max_depth']) ? $exclusion['max_depth'] : null,
+            isset($exclusion['exclude_if']) ? $exclusion['exclude_if'] : null
+        );
     }
 }

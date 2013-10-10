@@ -19,4 +19,9 @@ class Embed
      * @var string
      */
     public $xmlElementName;
+
+    /**
+     * @var \Hateoas\Configuration\Annotation\Exclusion
+     */
+    public $exclusion = null;
 }

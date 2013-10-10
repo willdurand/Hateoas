@@ -5,6 +5,8 @@ namespace Hateoas\Factory;
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Embed;
+use Hateoas\Serializer\ExclusionManager;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -22,26 +24,34 @@ class EmbedsFactory
     private $expressionEvaluator;
 
     /**
+     * @var ExclusionManager
+     */
+    private $exclusionManager;
+
+    /**
      * @param RelationsRepository $relationsRepository
      * @param ExpressionEvaluator $expressionEvaluator
+     * @param ExclusionManager    $exclusionManager
      */
     public function __construct(
         RelationsRepository $relationsRepository,
-        ExpressionEvaluator $expressionEvaluator
-    )
-    {
+        ExpressionEvaluator $expressionEvaluator,
+        ExclusionManager $exclusionManager
+    ) {
         $this->relationsRepository = $relationsRepository;
-        $this->expressionEvaluator      = $expressionEvaluator;
+        $this->expressionEvaluator = $expressionEvaluator;
+        $this->exclusionManager    = $exclusionManager;
     }
     /**
-     * @param  object  $object
+     * @param  object               $object
+     * @param  SerializationContext $context
      * @return Embed[]
      */
-    public function create($object)
+    public function create($object, SerializationContext $context)
     {
         $embeds = array();
         foreach ($this->relationsRepository->getRelations($object) as $relation) {
-            if (null === $relation->getEmbed()) {
+            if ($this->exclusionManager->shouldSkipEmbed($object, $relation, $context)) {
                 continue;
             }
 
