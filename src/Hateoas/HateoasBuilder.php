@@ -16,6 +16,7 @@ use Hateoas\Factory\LinksFactory;
 use Hateoas\Factory\RouteFactoryInterface;
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
+use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\Handler\JsonResourceHandler;
 use Hateoas\Serializer\Handler\XmlResourceHandler;
 use Hateoas\Serializer\JsonHalSerializer;
@@ -84,8 +85,9 @@ class HateoasBuilder
         $relationsRepository = new RelationsRepository($metadataFactory);
         $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage());
         $linkFactory         = new LinkFactory($expressionEvaluator, $this->routeFactory);
-        $linksFactory        = new LinksFactory($relationsRepository, $linkFactory);
-        $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator);
+        $exclusionManager    = new ExclusionManager($expressionEvaluator);
+        $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
+        $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();

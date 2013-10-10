@@ -6,6 +6,7 @@ use Hateoas\Model\Embed;
 use Hateoas\Model\Link;
 use Hateoas\Model\Resource;
 use Hateoas\HateoasBuilder as TestedHateoasBuilder;
+use JMS\Serializer\SerializationContext;
 use tests\fixtures\AdrienBrault;
 use tests\fixtures\Computer;
 use tests\fixtures\Smartphone;
@@ -77,6 +78,43 @@ XML
 JSON
                 )
 
+        ;
+    }
+
+    public function testSerializeAdrienBraultWithExclusion()
+    {
+        $hateoas = TestedHateoasBuilder::buildHateoas();
+        $adrienBrault = new AdrienBrault();
+        $fakeAdrienBrault = new AdrienBrault();
+        $fakeAdrienBrault->firstName = 'John';
+        $fakeAdrienBrault->lastName = 'Smith';
+        $context = SerializationContext::create()->setGroups(array('simple'));
+        $context2 = clone $context;
+
+        $this
+            ->string($hateoas->serialize($adrienBrault, 'xml', $context))
+                ->isEqualTo(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <first_name><![CDATA[Adrien]]></first_name>
+  <last_name><![CDATA[Brault]]></last_name>
+  <link rel="self" href="http://adrienbrault.fr"/>
+  <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
+</result>
+
+XML
+                )
+            ->string($hateoas->serialize($fakeAdrienBrault, 'xml', $context2))
+                ->isEqualTo(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <first_name><![CDATA[John]]></first_name>
+  <last_name><![CDATA[Smith]]></last_name>
+  <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
+</result>
+
+XML
+                )
         ;
     }
 

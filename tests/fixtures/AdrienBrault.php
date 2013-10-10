@@ -2,17 +2,43 @@
 
 namespace tests\fixtures;
 
+use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
- * @Hateoas\Relation("self", href = "http://adrienbrault.fr")
- * @Hateoas\Relation("computer", href = "http://www.apple.com/macbook-pro/", embed = "expr(object.getMacbookPro())")
- * @Hateoas\Relation("broken-computer", embed = "expr(object.getWindowsComputer())")
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = "http://adrienbrault.fr",
+ *      exclusion = @Hateoas\Exclusion(
+ *          groups = {"Default", "simple"},
+ *          excludeIf = "expr(object.firstName !== 'Adrien' || object.lastName !== 'Brault')"
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "computer",
+ *      href = "http://www.apple.com/macbook-pro/",
+ *      exclusion = @Hateoas\Exclusion(groups = {"Default", "simple"}),
+ *      embed = @Hateoas\Embed(
+ *          "expr(object.getMacbookPro())",
+ *          exclusion = @Hateoas\Exclusion(groups = {"Default"})
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "broken-computer",
+ *      embed = "expr(object.getWindowsComputer())"
+ * )
  */
 class AdrienBrault
 {
-    private $firstName = 'Adrien';
-    private $lastName = 'Brault';
+    /**
+     * @Serializer\Groups({"Default", "simple"})
+     */
+    public $firstName = 'Adrien';
+
+    /**
+     * @Serializer\Groups({"Default", "simple"})
+     */
+    public $lastName = 'Brault';
 
     public function getMacbookPro()
     {

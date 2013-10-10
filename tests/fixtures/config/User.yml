@@ -32,3 +32,20 @@ tests\fixtures\User:
         -
             rel: badaboom
             embed: expr(object.getFoo())
+        -
+            rel: hello
+            href: /hello
+            exclusion:
+                groups: [group1, group2]
+                since_version: 1
+                until_version: 2.2
+                max_depth: 42
+                exclude_if: foo
+            embed:
+                content: hello
+                exclusion:
+                    groups: [group3, group4]
+                    since_version: 1.1
+                    until_version: 2.3
+                    max_depth: 43
+                    exclude_if: bar

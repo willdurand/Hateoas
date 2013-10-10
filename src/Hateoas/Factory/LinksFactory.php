@@ -4,6 +4,8 @@ namespace Hateoas\Factory;
 
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Model\Link;
+use Hateoas\Serializer\ExclusionManager;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -21,25 +23,35 @@ class LinksFactory
     private $linkFactory;
 
     /**
+     * @var ExclusionManager
+     */
+    private $exclusionManager;
+
+    /**
      * @param RelationsRepository $relationsRepository
      * @param LinkFactory         $linkFactory
+     * @param ExclusionManager    $exclusionManager
      */
-    public function __construct(RelationsRepository $relationsRepository, LinkFactory $linkFactory)
-    {
+    public function __construct(
+        RelationsRepository $relationsRepository,
+        LinkFactory $linkFactory,
+        ExclusionManager $exclusionManager
+    ) {
         $this->relationsRepository = $relationsRepository;
         $this->linkFactory         = $linkFactory;
+        $this->exclusionManager    = $exclusionManager;
     }
 
     /**
-     * @param $object
-     *
+     * @param  object               $object
+     * @param  SerializationContext $context
      * @return Link[]
      */
-    public function createLinks($object)
+    public function createLinks($object, SerializationContext $context)
     {
         $links = array();
         foreach ($this->relationsRepository->getRelations($object) as $relation) {
-            if (null === $relation->getHref()) {
+            if ($this->exclusionManager->shouldSkipLink($object, $relation, $context)) {
                 continue;
             }
 

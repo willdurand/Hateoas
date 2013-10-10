@@ -25,4 +25,9 @@ final class Relation
      * @var array
      */
     public $attributes = array();
+
+    /**
+     * @var \Hateoas\Configuration\Annotation\Exclusion
+     */
+    public $exclusion = null;
 }
