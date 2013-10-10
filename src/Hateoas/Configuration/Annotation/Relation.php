@@ -17,13 +17,8 @@ final class Relation
      */
     public $name;
 
-    /**
-     * @Required
-     */
-    public $href;
+    public $href = null;
 
-    /**
-     */
     public $embed = null;
 
     /**

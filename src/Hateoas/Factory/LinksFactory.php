@@ -39,6 +39,10 @@ class LinksFactory
     {
         $links = array();
         foreach ($this->relationsRepository->getRelations($object) as $relation) {
+            if (null === $relation->getHref()) {
+                continue;
+            }
+
             $links[] = $this->linkFactory->createLink($object, $relation);
         }
 

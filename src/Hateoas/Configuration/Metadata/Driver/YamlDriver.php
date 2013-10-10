@@ -31,9 +31,9 @@ class YamlDriver extends AbstractFileDriver
         if (isset($config['relations'])) {
             foreach ($config['relations'] as $relation) {
                 $name = $relation['rel'];
-                $href = $relation['href'];
+                $href = null;
 
-                if (is_array($href) && isset($href['route'])) {
+                if (isset($relation['href']) && is_array($href = $relation['href']) && isset($href['route'])) {
                     $href = new Route(
                         $href['route'],
                         $href['parameters'],
