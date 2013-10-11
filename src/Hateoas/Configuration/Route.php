@@ -23,15 +23,26 @@ class Route
     private $isAbsolute;
 
     /**
-     * @param string  $name
-     * @param array   $parameters
-     * @param boolean $isAbsolute
+     * @var null|string
      */
-    public function __construct($name, array $parameters = array(), $isAbsolute = false)
-    {
-        $this->name       = $name;
-        $this->parameters = $parameters;
-        $this->isAbsolute = $isAbsolute;
+    private $generator;
+
+    /**
+     * @param string      $name
+     * @param array       $parameters
+     * @param boolean     $isAbsolute
+     * @param string|null $generatorName
+     */
+    public function __construct(
+        $name,
+        array $parameters = array(),
+        $isAbsolute = false,
+        $generatorName = null
+    ) {
+        $this->name        = $name;
+        $this->parameters  = $parameters;
+        $this->isAbsolute  = $isAbsolute;
+        $this->generator   = $generatorName;
     }
 
     /**
@@ -56,5 +67,13 @@ class Route
     public function isAbsolute()
     {
         return $this->isAbsolute;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGenerator()
+    {
+        return $this->generator;
     }
 }

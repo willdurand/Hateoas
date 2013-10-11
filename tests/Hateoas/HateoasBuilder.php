@@ -6,10 +6,12 @@ use Hateoas\Model\Embed;
 use Hateoas\Model\Link;
 use Hateoas\Model\Resource;
 use Hateoas\HateoasBuilder as TestedHateoasBuilder;
+use Hateoas\UrlGenerator\CallableUrlGenerator;
 use JMS\Serializer\SerializationContext;
 use tests\fixtures\AdrienBrault;
 use tests\fixtures\Computer;
 use tests\fixtures\Smartphone;
+use tests\fixtures\WithAlternativeRouter;
 use tests\TestCase;
 
 /**
@@ -194,6 +196,30 @@ XML
 {"page":2,"limit":10,"_links":{"self":{"href":"\/users?page=2"},"next":{"href":"\/users?page=3"}},"_embedded":{"user":["Adrien","William"],"tech":[{"name":"Mac"},{"name":"iPhone"}],"test":"test"}}
 JSON
                 )
+        ;
+    }
+
+    public function testAlternativeUrlGenerator()
+    {
+        $brokenUrlGenerator = new CallableUrlGenerator(function ($name, $parameters) {
+            return $name . '?' . http_build_query($parameters);
+        });
+
+        $hateoas = TestedHateoasBuilder::create()
+            ->setUrlGenerator('my_generator', $brokenUrlGenerator)
+            ->build()
+        ;
+
+        $this
+            ->string($hateoas->serialize(new WithAlternativeRouter(), 'xml'))
+            ->isEqualTo(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <link rel="search" href="/search?query=hello"/>
+</result>
+
+XML
+            )
         ;
     }
 }

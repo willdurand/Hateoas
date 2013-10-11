@@ -1,11 +1,11 @@
 <?php
 
-namespace Hateoas\Factory;
+namespace Hateoas\UrlGenerator;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class CallableRouteFactory implements RouteFactoryInterface
+class CallableUrlGenerator implements UrlGeneratorInterface
 {
     /**
      * @var callable
@@ -20,7 +20,7 @@ class CallableRouteFactory implements RouteFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create($name, array $parameters, $absolute = false)
+    public function generate($name, array $parameters, $absolute = false)
     {
         return call_user_func_array($this->callable, array($name, $parameters, $absolute));
     }
