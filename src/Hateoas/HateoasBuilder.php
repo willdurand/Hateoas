@@ -7,13 +7,11 @@ use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
 use Hateoas\Configuration\RelationsRepository;
-use Hateoas\Expression\ExpressionParser;
-use Hateoas\Expression\ExpressionParserInterface;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\EmbedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
-use Hateoas\Factory\RouteFactoryInterface;
+use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\ExclusionManager;
@@ -25,6 +23,7 @@ use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
+use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Handler\HandlerRegistryInterface;
 use JMS\Serializer\SerializerBuilder;
@@ -54,7 +53,11 @@ class HateoasBuilder
 
     private $xmlSerializer;
     private $jsonSerializer;
-    private $routeFactory;
+
+    /**
+     * @var UrlGeneratorRegistry
+     */
+    private $urlGeneratorRegistry;
 
     private $metadataDirs = array();
     private $debug = false;
@@ -77,6 +80,7 @@ class HateoasBuilder
     public function __construct(SerializerBuilder $serializerBuilder = null)
     {
         $this->serializerBuilder = $serializerBuilder ?: SerializerBuilder::create();
+        $this->urlGeneratorRegistry = new UrlGeneratorRegistry();
     }
 
     public function build()
@@ -84,7 +88,7 @@ class HateoasBuilder
         $metadataFactory     = $this->buildMetadataFactory();
         $relationsRepository = new RelationsRepository($metadataFactory);
         $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage());
-        $linkFactory         = new LinkFactory($expressionEvaluator, $this->routeFactory);
+        $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGeneratorRegistry);
         $exclusionManager    = new ExclusionManager($expressionEvaluator);
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
         $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
@@ -160,9 +164,14 @@ class HateoasBuilder
         return $this->setJsonSerializer(new JsonHalSerializer());
     }
 
-    public function setRouteFactory(RouteFactoryInterface $routeFactory)
+    /**
+     * @param string|null           $name         If you pass null it will be the default url generator
+     * @param UrlGeneratorInterface $urlGenerator
+     * @return $this
+     */
+    public function setUrlGenerator($name = null, UrlGeneratorInterface $urlGenerator)
     {
-        $this->routeFactory = $routeFactory;
+        $this->urlGeneratorRegistry->set($name, $urlGenerator);
 
         return $this;
     }

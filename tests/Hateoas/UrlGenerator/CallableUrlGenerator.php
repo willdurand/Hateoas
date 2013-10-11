@@ -1,11 +1,11 @@
 <?php
 
-namespace tests\Hateoas\Factory;
+namespace tests\Hateoas\UrlGenerator;
 
 use tests\TestCase;
-use Hateoas\Factory\CallableRouteFactory as TestedCallableRouteFactory;
+use Hateoas\UrlGenerator\CallableUrlGenerator as TestedCallableUrlGenerator;
 
-class CallableRouteFactory extends TestCase
+class CallableUrlGenerator extends TestCase
 {
     public function test()
     {
@@ -27,10 +27,10 @@ class CallableRouteFactory extends TestCase
 
             return $expectedResult;
         };
-        $routeFactory = new TestedCallableRouteFactory($callable);
+        $urlGenerator = new TestedCallableUrlGenerator($callable);
 
         $this
-            ->string($routeFactory->create($expectedName, $expectedParameters, $expectedAbsolute))
+            ->string($urlGenerator->generate($expectedName, $expectedParameters, $expectedAbsolute))
                 ->isEqualTo($expectedResult)
         ;
     }

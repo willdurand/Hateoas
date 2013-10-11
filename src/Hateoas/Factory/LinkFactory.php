@@ -6,6 +6,8 @@ use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Link;
+use Hateoas\UrlGenerator\UrlGeneratorInterface;
+use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -18,21 +20,20 @@ class LinkFactory
     private $expressionEvaluator;
 
     /**
-     * @var RouteFactoryInterface
+     * @var UrlGeneratorRegistry
      */
-    private $routeFactory;
+    private $urlGeneratorRegistry;
 
     /**
-     * @param ExpressionEvaluator        $expressionEvaluator
-     * @param RouteFactoryInterface|null $routeFactory
+     * @param ExpressionEvaluator  $expressionEvaluator
+     * @param UrlGeneratorRegistry $urlGeneratorRegistry
      */
     public function __construct(
         ExpressionEvaluator $expressionEvaluator,
-        RouteFactoryInterface $routeFactory = null
-    )
-    {
-        $this->expressionEvaluator = $expressionEvaluator;
-        $this->routeFactory   = $routeFactory;
+        UrlGeneratorRegistry $urlGeneratorRegistry
+    ) {
+        $this->expressionEvaluator  = $expressionEvaluator;
+        $this->urlGeneratorRegistry = $urlGeneratorRegistry;
     }
 
     /**
@@ -47,14 +48,17 @@ class LinkFactory
         $href = $relation->getHref();
 
         if ($href instanceof Route) {
-            if (null === $this->routeFactory) {
-                throw new \RuntimeException('You cannot use a route without a route factory.');
+            if (!$this->urlGeneratorRegistry->hasGenerators()) {
+                throw new \RuntimeException('You cannot use a route without an url generator.');
             }
 
             $name       = $this->expressionEvaluator->evaluate($href->getName(), $object);
             $parameters = $this->expressionEvaluator->evaluateArray($href->getParameters(), $object);
 
-            $href = $this->routeFactory->create($name, $parameters, $href->isAbsolute());
+            $href = $this->urlGeneratorRegistry
+                ->get($href->getGenerator())
+                ->generate($name, $parameters, $href->isAbsolute())
+            ;
         } else {
             $href = $this->expressionEvaluator->evaluate($href, $object);
         }
