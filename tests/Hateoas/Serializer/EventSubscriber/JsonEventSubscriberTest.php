@@ -8,7 +8,19 @@ class JsonEventSubscriber extends AbstractEventSubscriberTest
 {
     protected function createEventSubscriber($serializer, $linksFactory, $embedsFactory)
     {
-        return new TestedJsonEventSubscriber($serializer, $linksFactory, $embedsFactory);
+        $this->mockGenerator->orphanize('__construct');
+        $inlineDeferrer = new \mock\Hateoas\Serializer\Metadata\InlineDeferrer();
+        $inlineDeferrer->getMockController()->handleItems = function ($object, $items) {
+            return $items;
+        };
+
+        return new TestedJsonEventSubscriber(
+            $serializer,
+            $linksFactory,
+            $embedsFactory,
+            $inlineDeferrer,
+            $inlineDeferrer
+        );
     }
 
     protected function createSerializerMock()

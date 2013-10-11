@@ -20,6 +20,7 @@ use Hateoas\Serializer\Handler\XmlResourceHandler;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\JsonSerializerInterface;
 use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
+use Hateoas\Serializer\Metadata\InlineDeferrer;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
@@ -101,9 +102,16 @@ class HateoasBuilder
             $this->setHalJsonSerializer();
         }
 
+        $inlineDeferrers = array();
         $eventSubscribers = array(
             new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedMapFactory),
-            new JsonEventSubscriber($this->jsonSerializer, $linksFactory, $embeddedMapFactory),
+            new JsonEventSubscriber(
+                $this->jsonSerializer,
+                $linksFactory,
+                $embeddedMapFactory,
+                $inlineDeferrers[] = new InlineDeferrer(),
+                $inlineDeferrers[] = new InlineDeferrer()
+            ),
         );
 
         $handlers = array(
@@ -126,7 +134,7 @@ class HateoasBuilder
         ;
 
         $jmsSerializer = $this->serializerBuilder->build();
-        foreach (array($this->jsonSerializer, $this->xmlSerializer) as $serializer) {
+        foreach (array_merge($inlineDeferrers, array($this->jsonSerializer, $this->xmlSerializer)) as $serializer) {
             if ($serializer instanceof JMSSerializerMetadataAwareInterface) {
                 $serializer->setMetadataFactory($jmsSerializer->getMetadataFactory());
             }

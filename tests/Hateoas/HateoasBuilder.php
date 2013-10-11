@@ -10,6 +10,9 @@ use Hateoas\UrlGenerator\CallableUrlGenerator;
 use JMS\Serializer\SerializationContext;
 use tests\fixtures\AdrienBrault;
 use tests\fixtures\Computer;
+use tests\fixtures\Foo1;
+use tests\fixtures\Foo2;
+use tests\fixtures\Foo3;
 use tests\fixtures\Smartphone;
 use tests\fixtures\WithAlternativeRouter;
 use tests\TestCase;
@@ -220,6 +223,34 @@ JSON
 
 XML
             )
+        ;
+    }
+
+    public function testSerializeInlineJson()
+    {
+        $foo1 = new Foo1();
+        $foo2 = new Foo2();
+        $foo3 = new Foo3();
+        $foo1->inline = $foo2;
+        $foo2->inline = $foo3;
+
+        $hateoas = TestedHateoasBuilder::buildHateoas();
+
+        $this
+            ->string($hateoas->serialize($foo1, 'json'))
+                ->isEqualTo(
+                    '{'.
+                        '"_links":{'.
+                            '"self3":{"href":"foo3"},'.
+                            '"self2":{"href":"foo2"},'.
+                            '"self1":{"href":"foo1"}},'.
+                        '"_embedded":{'.
+                            '"self3":"foo3",'.
+                            '"self2":"foo2",'.
+                            '"self1":"foo1"'.
+                        '}'.
+                    '}'
+                )
         ;
     }
 }
