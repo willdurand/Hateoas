@@ -21,7 +21,7 @@ class RelationProvider extends TestCase
         );
 
         $metadataFactoryMock = new \mock\Metadata\MetadataFactoryInterface();
-        $relationProviderProvider = new \mock\Hateoas\Configuration\Provider\RelationProviderProviderInterface();
+        $resolverMock = new \mock\Hateoas\Configuration\Provider\RelationProviderResolverInterface();
 
         $metadataFactoryMock->getMockController()->getMetadataForClass = function () use ($relationProviders) {
             $classMetadata = new \mock\Hateoas\Configuration\Metadata\ClassMetadataInterface();
@@ -31,7 +31,7 @@ class RelationProvider extends TestCase
 
             return $classMetadata;
         };
-        $relationProviderProvider->getMockController()->get = function (RelationProviderConfiguration $relationProvider, $object) use ($relations) {
+        $resolverMock->getMockController()->getRelationProvider = function (RelationProviderConfiguration $relationProvider, $object) use ($relations) {
             $relations = $relationProvider->getName() == 'getRelations'
                 ? array($relations[0])
                 : array($relations[1])
@@ -42,7 +42,7 @@ class RelationProvider extends TestCase
             };
         };
 
-        $relationProvider = new TestedRelationProvider($metadataFactoryMock, $relationProviderProvider);
+        $relationProvider = new TestedRelationProvider($metadataFactoryMock, $resolverMock);
 
         $object = new \StdClass();
 

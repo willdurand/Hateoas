@@ -16,16 +16,14 @@ class RelationProvider
     private $metadataFactory;
 
     /**
-     * @var RelationProviderProviderInterface
+     * @var RelationProviderResolverInterface
      */
-    private $relationProviderProvider;
+    private $resolver;
 
-    public function __construct(
-        MetadataFactoryInterface $metadataFactory,
-        RelationProviderProviderInterface $relationProviderProvider
-    ) {
+    public function __construct(MetadataFactoryInterface $metadataFactory, RelationProviderResolverInterface $resolver)
+    {
         $this->metadataFactory = $metadataFactory;
-        $this->relationProviderProvider = $relationProviderProvider;
+        $this->resolver        = $resolver;
     }
 
     public function getRelations($object)
@@ -37,10 +35,8 @@ class RelationProvider
         }
 
         $relations = array();
-        foreach ($classMetadata->getRelationProviders() as $relationProvider) {
-            $relationProviderCallable = $this->relationProviderProvider->get($relationProvider, $object);
-
-            if (null === $relationProviderCallable) {
+        foreach ($classMetadata->getRelationProviders() as $configuration) {
+            if (null === $relationProviderCallable = $this->resolver->getRelationProvider($configuration, $object)) {
                 continue;
             }
 
@@ -50,10 +46,7 @@ class RelationProvider
 
             $newRelations = call_user_func_array(
                 $relationProviderCallable,
-                array(
-                    $object,
-                    $classMetadata
-                )
+                array($object, $classMetadata)
             );
 
             if (is_array($newRelations)) {

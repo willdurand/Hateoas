@@ -7,12 +7,13 @@ use Hateoas\Configuration\RelationProvider as RelationProviderConfiguration;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-interface RelationProviderProviderInterface
+interface RelationProviderResolverInterface
 {
     /**
      * @param  RelationProviderConfiguration $relationProvider
      * @param  object                        $object
-     * @return callable|null                                   Return null if it does not support this RelationProvider
+     * @return callable|false                Returns `false` if it does not support this RelationProvider,
+     *                                       a `callable` otherwise.
      */
-    public function get(RelationProviderConfiguration $relationProvider, $object);
+    public function getRelationProvider(RelationProviderConfiguration $configuration, $object);
 }

@@ -6,11 +6,11 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
-use Hateoas\Configuration\Provider\MethodRelationProviderProvider;
-use Hateoas\Configuration\Provider\ProviderChain;
+use Hateoas\Configuration\Provider\MethodResolver;
+use Hateoas\Configuration\Provider\ChainResolver;
 use Hateoas\Configuration\Provider\RelationProvider;
-use Hateoas\Configuration\Provider\RelationProviderProviderInterface;
-use Hateoas\Configuration\Provider\StaticMethodRelationProviderProvider;
+use Hateoas\Configuration\Provider\RelationProviderResolverInterface;
+use Hateoas\Configuration\Provider\StaticMethodResolver;
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\EmbedsFactory;
@@ -65,7 +65,7 @@ class HateoasBuilder
      */
     private $urlGeneratorRegistry;
 
-    private $providerChain;
+    private $chainResolver;
 
     private $metadataDirs = array();
 
@@ -93,16 +93,16 @@ class HateoasBuilder
     {
         $this->serializerBuilder    = $serializerBuilder ?: SerializerBuilder::create();
         $this->urlGeneratorRegistry = new UrlGeneratorRegistry();
-        $this->providerChain        = new ProviderChain(array(
-            new MethodRelationProviderProvider(),
-            new StaticMethodRelationProviderProvider(),
+        $this->chainResolver        = new ChainResolver(array(
+            new MethodResolver(),
+            new StaticMethodResolver(),
         ));
     }
 
     public function build()
     {
         $metadataFactory     = $this->buildMetadataFactory();
-        $relationProvider    = new RelationProvider($metadataFactory, $this->providerChain);
+        $relationProvider    = new RelationProvider($metadataFactory, $this->chainResolver);
         $relationsRepository = new RelationsRepository($metadataFactory, $relationProvider);
         $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage());
         $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGeneratorRegistry);
@@ -200,9 +200,12 @@ class HateoasBuilder
         return $this;
     }
 
-    public function addRelationProvider(RelationProviderProviderInterface $provider)
+    /**
+     * @param RelationProviderResolverInterface $resolver
+     */
+    public function addRelationProviderResolver(RelationProviderResolverInterface $resolver)
     {
-        $this->providerChain->addProvider($provider);
+        $this->chainResolver->addResolver($resolver);
     }
 
     /**
