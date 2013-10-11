@@ -2,6 +2,7 @@
 
 namespace tests\fixtures;
 
+use Hateoas\Configuration\Relation;
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 
@@ -27,6 +28,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      "broken-computer",
  *      embed = "expr(object.getWindowsComputer())"
  * )
+ *
+ * @Hateoas\RelationProvider("getRelations")
  */
 class AdrienBrault
 {
@@ -48,5 +51,12 @@ class AdrienBrault
     public function getWindowsComputer()
     {
         return new Computer('Windows Computer');
+    }
+
+    public function getRelations()
+    {
+        return array(
+            new Relation('dynamic-relation', 'awesome!!!'),
+        );
     }
 }

@@ -6,6 +6,11 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
+use Hateoas\Configuration\Provider\MethodRelationProviderProvider;
+use Hateoas\Configuration\Provider\ProviderChain;
+use Hateoas\Configuration\Provider\RelationProvider;
+use Hateoas\Configuration\Provider\RelationProviderProviderInterface;
+use Hateoas\Configuration\Provider\StaticMethodRelationProviderProvider;
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\EmbedsFactory;
@@ -52,6 +57,7 @@ class HateoasBuilder
     private $expressionLanguage;
 
     private $xmlSerializer;
+
     private $jsonSerializer;
 
     /**
@@ -59,10 +65,16 @@ class HateoasBuilder
      */
     private $urlGeneratorRegistry;
 
+    private $providerChain;
+
     private $metadataDirs = array();
+
     private $debug = false;
+
     private $cacheDir;
+
     private $annotationReader;
+
     private $includeInterfaceMetadata = false;
 
     public static function create(SerializerBuilder $serializerBuilder = null)
@@ -79,14 +91,19 @@ class HateoasBuilder
 
     public function __construct(SerializerBuilder $serializerBuilder = null)
     {
-        $this->serializerBuilder = $serializerBuilder ?: SerializerBuilder::create();
+        $this->serializerBuilder    = $serializerBuilder ?: SerializerBuilder::create();
         $this->urlGeneratorRegistry = new UrlGeneratorRegistry();
+        $this->providerChain        = new ProviderChain(array(
+            new MethodRelationProviderProvider(),
+            new StaticMethodRelationProviderProvider(),
+        ));
     }
 
     public function build()
     {
         $metadataFactory     = $this->buildMetadataFactory();
-        $relationsRepository = new RelationsRepository($metadataFactory);
+        $relationProvider    = new RelationProvider($metadataFactory, $this->providerChain);
+        $relationsRepository = new RelationsRepository($metadataFactory, $relationProvider);
         $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage());
         $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGeneratorRegistry);
         $exclusionManager    = new ExclusionManager($expressionEvaluator);
@@ -181,6 +198,11 @@ class HateoasBuilder
         $this->getExpressionLanguage()->setContextValue($name, $value);
 
         return $this;
+    }
+
+    public function addRelationProvider(RelationProviderProviderInterface $provider)
+    {
+        $this->providerChain->addProvider($provider);
     }
 
     /**

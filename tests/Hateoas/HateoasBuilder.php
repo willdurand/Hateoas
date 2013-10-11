@@ -47,6 +47,7 @@ class HateoasBuilder extends TestCase
   <last_name><![CDATA[Brault]]></last_name>
   <link rel="self" href="http://adrienbrault.fr"/>
   <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
+  <link rel="dynamic-relation" href="awesome!!!"/>
   <computer rel="computer">
     <name><![CDATA[MacBook Pro]]></name>
   </computer>
@@ -64,6 +65,7 @@ XML
   <first_name><![CDATA[Adrien]]></first_name>
   <last_name><![CDATA[Brault]]></last_name>
   <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
+  <link rel="dynamic-relation" href="awesome!!!"/>
   <resource rel="computer">
     <name><![CDATA[MacBook Pro]]></name>
   </resource>
@@ -76,7 +78,7 @@ XML
                 )
             ->string($hateoas->serialize($adrienBrault, 'json'))
                 ->isEqualTo(<<<JSON
-{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"}},"_embedded":{"computer":{"name":"MacBook Pro"},"broken-computer":{"name":"Windows Computer"}}}
+{"first_name":"Adrien","last_name":"Brault","_links":{"self":{"href":"http:\/\/adrienbrault.fr"},"computer":{"href":"http:\/\/www.apple.com\/macbook-pro\/"},"dynamic-relation":{"href":"awesome!!!"}},"_embedded":{"computer":{"name":"MacBook Pro"},"broken-computer":{"name":"Windows Computer"}}}
 JSON
                 )
 

@@ -3,6 +3,7 @@
 namespace Hateoas\Configuration\Metadata;
 
 use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\RelationProvider;
 use Metadata\MergeableClassMetadata;
 use Metadata\MergeableInterface;
 
@@ -17,11 +18,24 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     private $relations = array();
 
     /**
+     * @var RelationProvider[]
+     */
+    private $relationProviders = array();
+
+    /**
      * {@inheritdoc}
      */
     public function getRelations()
     {
         return $this->relations;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRelationProviders()
+    {
+        return $this->relationProviders;
     }
 
     /**
@@ -32,10 +46,16 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         $this->relations[] = $relation;
     }
 
+    public function addRelationProvider(RelationProvider $relationProvider)
+    {
+        $this->relationProviders[] = $relationProvider;
+    }
+
     public function serialize()
     {
         return serialize(array(
             $this->relations,
+            $this->relationProviders,
             parent::serialize(),
         ));
     }
@@ -44,6 +64,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     {
         list(
             $this->relations,
+            $this->relationProviders,
             $parentStr
         ) = unserialize($str);
 
@@ -62,5 +83,6 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         parent::merge($object);
 
         $this->relations = array_merge($this->relations, $object->getRelations());
+        $this->relationProviders = array_merge($this->relationProviders, $object->getRelationProviders());
     }
 }
