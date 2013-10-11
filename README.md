@@ -3,7 +3,7 @@ Hateoas
 
 [![Build Status](https://secure.travis-ci.org/willdurand/Hateoas.png)](http://travis-ci.org/willdurand/Hateoas)
 
-A PHP library to support implementing representations for HATEOAS REST web services.
+A PHP library to support implementing representations for [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) REST web services.
 
 
 Installation
