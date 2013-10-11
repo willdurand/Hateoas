@@ -57,8 +57,9 @@ class EmbedsFactory
 
             $rel  = $this->expressionEvaluator->evaluate($relation->getName(), $object);
             $data = $this->expressionEvaluator->evaluate($relation->getEmbed()->getContent(), $object);
+            $xmlElementName = $this->expressionEvaluator->evaluate($relation->getEmbed()->getXmlElementName(), $object);
 
-            $embeds[] = new Embed($rel, $data, $relation->getEmbed()->getXmlElementName());
+            $embeds[] = new Embed($rel, $data, $xmlElementName);
         }
 
         return $embeds;
