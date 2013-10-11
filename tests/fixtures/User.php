@@ -33,6 +33,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *          )
  *      )
  * )
+ *
+ * @Hateoas\RelationProvider("getRelations")
  */
 class User
 {

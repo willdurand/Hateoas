@@ -6,6 +6,7 @@ use Hateoas\Configuration\Embed;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use Metadata\Driver\AbstractFileDriver;
 use Symfony\Component\Yaml\Yaml;
@@ -71,6 +72,12 @@ class YamlDriver extends AbstractFileDriver
                     $attributes,
                     $exclusion
                 ));
+            }
+        }
+
+        if (isset($config['relation_providers'])) {
+            foreach ($config['relation_providers'] as $relationProvider) {
+                $classMetadata->addRelationProvider(new RelationProvider($relationProvider));
             }
         }
 

@@ -10,7 +10,10 @@ class RelationsRepository extends TestCase
 {
     public function testEmptyGetRelations()
     {
-        $relationsRepository = new TestedRelationsRepository();
+        $relationsRepository = new TestedRelationsRepository(
+            $this->mockMetadataFactory(),
+            $this->mockRelationProvider()
+        );
         $object = new \StdClass();
 
         $this
@@ -21,7 +24,10 @@ class RelationsRepository extends TestCase
 
     public function testAddRelation()
     {
-        $relationsRepository = new TestedRelationsRepository();
+        $relationsRepository = new TestedRelationsRepository(
+            $this->mockMetadataFactory(),
+            $this->mockRelationProvider()
+        );
         $object = new \StdClass();
 
         $relation1 = new Relation_('', '');
@@ -39,7 +45,10 @@ class RelationsRepository extends TestCase
 
     public function testAddClassRelation()
     {
-        $relationsRepository = new TestedRelationsRepository();
+        $relationsRepository = new TestedRelationsRepository(
+            $this->mockMetadataFactory(),
+            $this->mockRelationProvider()
+        );
         $object1 = new \StdClass();
         $object2 = new \StdClass();
 
@@ -75,7 +84,10 @@ class RelationsRepository extends TestCase
 
             return $classMetadata;
         };
-        $relationsRepository = new TestedRelationsRepository($metadataFactory);
+        $relationsRepository = new TestedRelationsRepository(
+            $metadataFactory,
+            $this->mockRelationProvider()
+        );
 
         $this
             ->array($relationsRepository->getRelations(new \StdClass()))
@@ -85,5 +97,44 @@ class RelationsRepository extends TestCase
                     ->withArguments('stdClass')
                     ->once()
         ;
+    }
+
+    public function testRelationProviderRelations()
+    {
+        $relations = array(
+            new Relation_('', ''),
+            new Relation_('', ''),
+        );
+
+        $relationsRepository = new TestedRelationsRepository(
+            $this->mockMetadataFactory(),
+            $relationProviderMock = $this->mockRelationProvider($relations)
+        );
+
+        $this
+            ->array($relationsRepository->getRelations($object = new \StdClass()))
+                ->isEqualTo($relations)
+            ->mock($relationProviderMock)
+                ->call('getRelations')
+                    ->withArguments($object)
+                    ->once()
+        ;
+    }
+
+    private function mockRelationProvider($relations = array())
+    {
+        $this->mockGenerator->orphanize('__construct');
+
+        $relationProviderMock = new \mock\Hateoas\Configuration\Provider\RelationProvider();
+        $relationProviderMock->getMockController()->getRelations = function () use ($relations) {
+            return $relations;
+        };
+
+        return $relationProviderMock;
+    }
+
+    private function mockMetadataFactory()
+    {
+        return new \mock\Metadata\MetadataFactoryInterface();
     }
 }
