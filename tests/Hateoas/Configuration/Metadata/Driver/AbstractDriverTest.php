@@ -3,6 +3,7 @@
 namespace tests\Hateoas\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\RelationProvider;
 use Metadata\Driver\DriverInterface;
 use tests\TestCase;
 
@@ -186,6 +187,25 @@ abstract class AbstractDriverTest extends TestCase
                                 ->isEqualTo(43)
                             ->string($exclusion->getExcludeIf())
                                 ->isEqualTo('bar')
+        ;
+
+        /** @var $relations RelationProvider[] */
+        $relationProviders = $classMetadata->getRelationProviders();
+
+        $this->array($relationProviders);
+        foreach ($relationProviders as $relationProvider) {
+            $this
+                ->object($relationProvider)
+                    ->isInstanceOf('Hateoas\Configuration\RelationProvider')
+            ;
+        }
+
+        $i = 0;
+
+        $relationProvider = $relationProviders[$i++];
+        $this
+            ->string($relationProvider->getName())
+                ->isEqualTo('getRelations')
         ;
     }
 

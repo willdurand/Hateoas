@@ -8,6 +8,7 @@ use Hateoas\Configuration\Embed;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use Metadata\Driver\DriverInterface;
 
@@ -74,6 +75,8 @@ class AnnotationDriver implements DriverInterface
                     $annotation->attributes ?: array(),
                     $exclusion
                 ));
+            } elseif ($annotation instanceof Annotation\RelationProvider) {
+                $classMetadata->addRelationProvider(new RelationProvider($annotation->name));
             }
         }
 
