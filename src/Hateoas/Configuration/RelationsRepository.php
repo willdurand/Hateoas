@@ -2,6 +2,7 @@
 
 namespace Hateoas\Configuration;
 
+use Hateoas\Configuration\Provider\RelationProvider;
 use Hateoas\Util\ClassUtils;
 use Metadata\MetadataFactoryInterface;
 
@@ -16,6 +17,11 @@ class RelationsRepository
     private $metadataFactory;
 
     /**
+     * @var RelationProvider
+     */
+    private $relationProvider;
+
+    /**
      * @var array fqcn => Relation[]
      */
     private $classesRelations = array();
@@ -26,11 +32,15 @@ class RelationsRepository
     private $objectsRelations = array();
 
     /**
-     * @param MetadataFactoryInterface|null $metadataFactory
+     * @param MetadataFactoryInterface $metadataFactory
+     * @param RelationProvider         $relationProvider
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory = null)
-    {
+    public function __construct(
+        MetadataFactoryInterface $metadataFactory,
+        RelationProvider $relationProvider
+    ) {
         $this->metadataFactory = $metadataFactory;
+        $this->relationProvider = $relationProvider;
     }
 
     /**
@@ -40,10 +50,8 @@ class RelationsRepository
     {
         $relations = array();
 
-        if (null !== $this->metadataFactory) {
-            if (null !== $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object))) {
-                $relations = array_merge($relations, $classMetadata->getRelations());
-            }
+        if (null !== $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object))) {
+            $relations = array_merge($relations, $classMetadata->getRelations());
         }
 
         $class = strtolower(ClassUtils::getClass($object));
@@ -55,6 +63,8 @@ class RelationsRepository
         if (isset($this->objectsRelations[$objectId])) {
             $relations = array_merge($relations, $this->objectsRelations[$objectId]);
         }
+
+        $relations = array_merge($relations, $this->relationProvider->getRelations($object));
 
         return $relations;
     }
