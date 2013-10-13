@@ -32,7 +32,7 @@ class Exclusion
      */
     private $excludeIf;
 
-    function __construct(
+    public function __construct(
         array $groups = null,
         $sinceVersion = null,
         $untilVersion = null,

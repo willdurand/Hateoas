@@ -6,7 +6,6 @@ use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Link;
-use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 
 /**

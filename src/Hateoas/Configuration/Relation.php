@@ -33,11 +33,11 @@ class Relation
     private $exclusion;
 
     /**
-     * @param  string             $name
-     * @param  string|Route       $href
-     * @param  Embed|string|mixed $embed
-     * @param  array              $attributes
-     * @param  Exclusion          $exclusion
+     * @param  string                    $name
+     * @param  string|Route              $href
+     * @param  Embed|string|mixed        $embed
+     * @param  array                     $attributes
+     * @param  Exclusion                 $exclusion
      * @throws \InvalidArgumentException
      */
     public function __construct(
