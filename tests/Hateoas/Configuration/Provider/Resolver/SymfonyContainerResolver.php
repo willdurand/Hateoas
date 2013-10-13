@@ -1,9 +1,9 @@
 <?php
 
-namespace tests\Hateoas\Configuration\Provider;
+namespace tests\Hateoas\Configuration\Provider\Resolver;
 
 use Hateoas\Configuration\RelationProvider as RelationProviderConfiguration;
-use Hateoas\Configuration\Provider\SymfonyContainerResolver as TestedSymfonyContainerResolver;
+use Hateoas\Configuration\Provider\Resolver\SymfonyContainerResolver as TestedSymfonyContainerResolver;
 use tests\TestCase;
 
 class SymfonyContainerResolver extends TestCase

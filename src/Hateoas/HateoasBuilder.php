@@ -6,11 +6,11 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
-use Hateoas\Configuration\Provider\MethodResolver;
-use Hateoas\Configuration\Provider\ChainResolver;
+use Hateoas\Configuration\Provider\Resolver\MethodResolver;
+use Hateoas\Configuration\Provider\Resolver\ChainResolver;
 use Hateoas\Configuration\Provider\RelationProvider;
-use Hateoas\Configuration\Provider\RelationProviderResolverInterface;
-use Hateoas\Configuration\Provider\StaticMethodResolver;
+use Hateoas\Configuration\Provider\Resolver\RelationProviderResolverInterface;
+use Hateoas\Configuration\Provider\Resolver\StaticMethodResolver;
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\EmbedsFactory;
@@ -216,7 +216,7 @@ class HateoasBuilder
         $this->expressionLanguage = $expressionLanguage;
     }
 
-    private  function getExpressionLanguage()
+    private function getExpressionLanguage()
     {
         if (null === $this->expressionLanguage) {
             $this->expressionLanguage = new ExpressionLanguage();

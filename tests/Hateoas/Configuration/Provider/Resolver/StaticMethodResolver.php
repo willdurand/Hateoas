@@ -1,9 +1,9 @@
 <?php
 
-namespace tests\Hateoas\Configuration\Provider;
+namespace tests\Hateoas\Configuration\Provider\Resolver;
 
 use Hateoas\Configuration\RelationProvider as RelationProviderConfiguration;
-use Hateoas\Configuration\Provider\StaticMethodResolver as TestedStaticMethodResolver;
+use Hateoas\Configuration\Provider\Resolver\StaticMethodResolver as TestedStaticMethodResolver;
 use tests\TestCase;
 
 class StaticMethodResolver extends TestCase

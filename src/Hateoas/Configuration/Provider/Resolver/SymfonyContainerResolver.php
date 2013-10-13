@@ -1,6 +1,6 @@
 <?php
 
-namespace Hateoas\Configuration\Provider;
+namespace Hateoas\Configuration\Provider\Resolver;
 
 use Hateoas\Configuration\RelationProvider as RelationProviderConfiguration;
 use Symfony\Component\DependencyInjection\ContainerInterface;
