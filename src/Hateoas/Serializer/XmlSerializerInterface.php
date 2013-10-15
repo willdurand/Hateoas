@@ -4,7 +4,7 @@ namespace Hateoas\Serializer;
 
 use Hateoas\Model\Embed;
 use Hateoas\Model\Link;
-use Hateoas\Model\Resource;
+use Hateoas\Representation\Resource;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
 

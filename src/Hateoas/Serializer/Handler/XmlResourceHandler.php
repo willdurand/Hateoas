@@ -2,7 +2,7 @@
 
 namespace Hateoas\Serializer\Handler;
 
-use Hateoas\Model\Resource;
+use Hateoas\Representation\Resource;
 use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
@@ -22,7 +22,7 @@ class XmlResourceHandler implements SubscribingHandlerInterface
         return array(
             array(
                 'format'    => 'xml',
-                'type'      => 'Hateoas\Model\Resource',
+                'type'      => 'Hateoas\Representation\Resource',
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'method'    => 'serializeToXml',
             ),

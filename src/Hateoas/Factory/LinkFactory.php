@@ -52,7 +52,19 @@ class LinkFactory
             }
 
             $name       = $this->expressionEvaluator->evaluate($href->getName(), $object);
-            $parameters = $this->expressionEvaluator->evaluateArray($href->getParameters(), $object);
+            $parameters = is_array($href->getParameters())
+                ? $this->expressionEvaluator->evaluateArray($href->getParameters(), $object)
+                : $this->expressionEvaluator->evaluate($href->getParameters(), $object)
+            ;
+
+            if (!is_array($parameters)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'The route parameters should be an array, %s given. Maybe you forgot to wrap the expression in expr(...).',
+                        gettype($parameters)
+                    )
+                );
+            }
 
             $href = $this->urlGeneratorRegistry
                 ->get($href->getGenerator())

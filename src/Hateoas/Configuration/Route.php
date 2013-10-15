@@ -13,7 +13,7 @@ class Route
     private $name;
 
     /**
-     * @var array
+     * @var string|array
      */
     private $parameters;
 
@@ -28,14 +28,14 @@ class Route
     private $generator;
 
     /**
-     * @param string      $name
-     * @param array       $parameters
-     * @param boolean     $isAbsolute
-     * @param string|null $generatorName
+     * @param string       $name
+     * @param string|array $parameters
+     * @param boolean      $isAbsolute
+     * @param string|null  $generatorName
      */
     public function __construct(
         $name,
-        array $parameters = array(),
+        $parameters = array(),
         $isAbsolute = false,
         $generatorName = null
     ) {
@@ -54,7 +54,7 @@ class Route
     }
 
     /**
-     * @return array
+     * @return string|array
      */
     public function getParameters()
     {

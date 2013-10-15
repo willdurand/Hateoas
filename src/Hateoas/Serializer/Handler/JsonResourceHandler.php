@@ -2,7 +2,7 @@
 
 namespace Hateoas\Serializer\Handler;
 
-use Hateoas\Model\Resource;
+use Hateoas\Representation\Resource;
 use Hateoas\Serializer\JsonSerializerInterface;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
@@ -22,7 +22,7 @@ class JsonResourceHandler implements SubscribingHandlerInterface
         return array(
             array(
                 'format'    => 'json',
-                'type'      => 'Hateoas\Model\Resource',
+                'type'      => 'Hateoas\Representation\Resource',
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'method'    => 'serializeToJson',
             ),

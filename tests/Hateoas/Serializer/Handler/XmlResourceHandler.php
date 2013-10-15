@@ -13,7 +13,7 @@ class XmlResourceHandler extends TestCase
         $serializer = new \mock\Hateoas\Serializer\XmlSerializerInterface();
 
         $this->mockGenerator->orphanize('__construct');
-        $resource = new \mock\Hateoas\Model\Resource();
+        $resource = new \mock\Hateoas\Representation\Resource();
 
         $this->mockGenerator->orphanize('__construct');
         $visitor = new \mock\JMS\Serializer\XmlSerializationVisitor();

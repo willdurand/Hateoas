@@ -1,6 +1,6 @@
 <?php
 
-namespace Hateoas\Model;
+namespace Hateoas\Representation;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
