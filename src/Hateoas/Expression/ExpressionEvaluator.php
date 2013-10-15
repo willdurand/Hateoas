@@ -59,7 +59,7 @@ class ExpressionEvaluator
         $newArray = array();
         foreach ($array as $key => $value) {
             $key   = $this->evaluate($key, $data);
-            $value = $this->evaluate($value, $data);
+            $value = is_array($value) ? $this->evaluateArray($value, $data) : $this->evaluate($value, $data);
 
             $newArray[$key] = $value;
         }

@@ -70,14 +70,14 @@ class ExpressionEvaluator extends TestCase
 
         $array = array(
             'expr(a)' => 'expr(aa)',
-            'hello' => 'expr(aaa)',
+            'hello' => array('expr(aaa)'),
         );
 
         $this
             ->array($expressionEvaluator->evaluateArray($array, $data))
                 ->isEqualTo(array(
                     1 => 2,
-                    'hello' => 3,
+                    'hello' => array(3),
                 ))
             ->mock($expressionLanguageMock)
                 ->call('parse')
