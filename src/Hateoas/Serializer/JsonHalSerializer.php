@@ -2,7 +2,7 @@
 
 namespace Hateoas\Serializer;
 
-use Hateoas\Model\Resource;
+use Hateoas\Representation\Resource;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationContext;
 

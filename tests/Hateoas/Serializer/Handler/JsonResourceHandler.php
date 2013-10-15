@@ -18,7 +18,7 @@ class JsonResourceHandler extends TestCase
         };
 
         $this->mockGenerator->orphanize('__construct');
-        $resource = new \mock\Hateoas\Model\Resource();
+        $resource = new \mock\Hateoas\Representation\Resource();
 
         $this->mockGenerator->orphanize('__construct');
         $visitor = new \mock\JMS\Serializer\JsonSerializationVisitor();

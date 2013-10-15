@@ -19,8 +19,6 @@ class Route
 
     /**
      * @Required
-     *
-     * @var array
      */
     public $parameters = array();
 

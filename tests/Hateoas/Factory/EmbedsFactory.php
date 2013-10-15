@@ -2,6 +2,7 @@
 
 namespace tests\Hateoas\Factory;
 
+use Hateoas\Configuration\Embed;
 use Hateoas\Configuration\Relation;
 use Hateoas\Factory\EmbedsFactory as TestedEmbedsFactory;
 use tests\TestCase;
@@ -13,7 +14,7 @@ class EmbedsFactory extends TestCase
         $relations = array(
             new Relation('self', '/users/1'),
             new Relation('friend', '/users/42', 'expr(object.getFriend())'),
-            new Relation('expr(object.getManagerRel())', '/users/42', 'expr(object.getManager())'),
+            new Relation('expr(object.getManagerRel())', '/users/42', new Embed('expr(object.getManager())', 'expr(object.getXmlElementName())')),
         );
 
         $this->mockGenerator->orphanize('__construct');
@@ -56,6 +57,8 @@ class EmbedsFactory extends TestCase
                     ->isEqualTo(42)
                 ->variable($embeds[1]->getData())
                     ->isEqualTo(42)
+                ->variable($embeds[1]->getXmlElementName())
+                    ->isEqualTo(42)
         ;
 
         $this
@@ -72,6 +75,9 @@ class EmbedsFactory extends TestCase
                     ->once()
                 ->call('evaluate')
                     ->withArguments('expr(object.getManagerRel())', $object)
+                    ->once()
+                ->call('evaluate')
+                    ->withArguments('expr(object.getXmlElementName())', $object)
                     ->once()
         ;
     }

@@ -3,8 +3,8 @@
 namespace tests\Hateoas\Serializer;
 
 use Hateoas\Model\Embed;
-use Hateoas\Model\Resource;
 use Hateoas\Model\Link;
+use Hateoas\Representation\Resource;
 use Hateoas\Serializer\JsonHalSerializer as TestedJsonHalSerializer;
 use tests\TestCase;
 
