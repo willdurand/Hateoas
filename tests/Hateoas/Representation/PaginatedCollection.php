@@ -5,7 +5,6 @@ namespace tests\Hateoas\Representation;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\Representation\Collection as TestedCollection;
 use Hateoas\Representation\PaginatedCollection as TestedPaginatedCollection;
-use Hateoas\Representation\RouteAwareRepresentation as TestedRouteAwareCollection;
 use Hateoas\HateoasBuilder;
 use tests\TestCase;
 
