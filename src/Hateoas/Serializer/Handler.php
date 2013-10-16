@@ -230,8 +230,8 @@ class Handler implements SubscribingHandlerInterface
         $rootName  = $collection->getRootName() ?: 'resources';
 
         // attributes
-        foreach (array('total', 'page', 'limit') as $attr) {
-            if ($value = $collection->{'get' . ucfirst($attr)}()) {
+        foreach (array('total', 'page', 'limit', 'offset') as $attr) {
+            if (null !== ($value = $collection->{'get' . ucfirst($attr)}())) {
                 $data[$attr] = $value;
             }
         }

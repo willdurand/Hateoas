@@ -133,13 +133,20 @@ class ResourceBuilder implements ResourceBuilderInterface
             $page = $accessor->getValue($collection, $page);
         }
 
+        // offset
+        if (null !== $offset = $collectionDefinition->getOffset()) {
+            $offset = $accessor->getValue($collection, $offset);
+        }
+
         return new Collection(
             $collectionDefinition->getRootName(),
             $resources,
             $links,
             $total,
             $page,
-            $limit
+            $limit,
+            array(),
+            $offset
         );
     }
     
