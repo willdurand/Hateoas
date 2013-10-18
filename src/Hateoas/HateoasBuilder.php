@@ -4,7 +4,9 @@ namespace Hateoas;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
+use Hateoas\Configuration\Metadata\ConfigurationExtensionInterface;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
+use Hateoas\Configuration\Metadata\Driver\ExtensionDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
 use Hateoas\Configuration\Provider\Resolver\MethodResolver;
 use Hateoas\Configuration\Provider\Resolver\ChainResolver;
@@ -65,6 +67,8 @@ class HateoasBuilder
      * @var UrlGeneratorRegistry
      */
     private $urlGeneratorRegistry;
+
+    private $configurationExtensions = array();
 
     private $chainResolver;
 
@@ -233,6 +237,11 @@ class HateoasBuilder
         return $this->expressionLanguage;
     }
 
+    public function addConfigurationExtension(ConfigurationExtensionInterface $configurationExtension)
+    {
+        $this->configurationExtensions[] = $configurationExtension;
+    }
+
     public function setDebug($bool)
     {
         $this->debug = (boolean) $bool;
@@ -396,6 +405,8 @@ class HateoasBuilder
         } else {
             $metadataDriver = new AnnotationDriver($annotationReader);
         }
+
+        $metadataDriver = new ExtensionDriver($metadataDriver, $this->configurationExtensions);
 
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);

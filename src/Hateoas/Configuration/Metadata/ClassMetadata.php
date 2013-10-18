@@ -23,6 +23,14 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     private $relationProviders = array();
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRelations()
