@@ -22,27 +22,6 @@ class RelationsRepository extends TestCase
         ;
     }
 
-    public function testAddRelation()
-    {
-        $relationsRepository = new TestedRelationsRepository(
-            $this->mockMetadataFactory(),
-            $this->mockRelationProvider()
-        );
-        $object = new \StdClass();
-
-        $relation1 = new Relation_('', '');
-        $relation2 = new Relation_('', '');
-
-        $relationsRepository->addRelation($object, $relation1);
-        $relationsRepository->addRelation($object, $relation2);
-
-        $this
-            ->array($relationsRepository->getRelations($object))
-                ->contains($relation1)
-                ->contains($relation2)
-        ;
-    }
-
     public function testAddClassRelation()
     {
         $relationsRepository = new TestedRelationsRepository(
