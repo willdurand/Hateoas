@@ -6,7 +6,6 @@ use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Relation;
 use Hateoas\Serializer\ExclusionManager;
 use JMS\Serializer\Context;
-use JMS\Serializer\Metadata\PropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use Hateoas\Tests\TestCase;
 
