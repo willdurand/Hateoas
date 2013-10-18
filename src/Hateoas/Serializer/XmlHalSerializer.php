@@ -18,8 +18,12 @@ class XmlHalSerializer implements XmlSerializerInterface
     {
         foreach ($links as $link) {
             if ('self' === $link->getRel()) {
+                foreach ($link->getAttributes() as $key => $value) {
+                    $visitor->getCurrentNode()->setAttribute($key, $value);
+                }
+
                 $visitor->getCurrentNode()->setAttribute('href', $link->getHref());
-                // TODO: what about this link attributes ?
+
                 continue;
             }
 
