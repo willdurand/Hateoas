@@ -92,7 +92,7 @@ Install the [Composer](http://getcomposer.org/) `dev` dependencies:
 
 Then, run the test suite using [atoum](http://www.atoum.org/):
 
-    bin/atoum
+    bin/phpunit
 
 
 License
