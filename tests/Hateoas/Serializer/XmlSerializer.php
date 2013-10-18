@@ -39,11 +39,6 @@ XML
         // TODO ... seemed hard to test :(
     }
 
-    public function testSerializeResource()
-    {
-        // TODO ... same as above
-    }
-
     private function createXmlSerializationVisitor()
     {
         $xmlSerializationVisitor = new \mock\JMS\Serializer\XmlSerializationVisitor(

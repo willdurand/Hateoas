@@ -16,42 +16,6 @@ class JsonHalSerializer implements JsonSerializerInterface
      */
     public function serializeLinks(array $links, JsonSerializationVisitor $visitor)
     {
-        $visitor->addData('_links', $this->createSerializedLinks($links));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeEmbedded(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context)
-    {
-        $visitor->addData('_embedded', $this->createSerializedEmbeds($embeds, $context));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeResource(Resource $resource, JsonSerializationVisitor $visitor, SerializationContext $context)
-    {
-        $addRoot = null === $visitor->getRoot() ? true : false;
-        $result  = $resource->getData();
-
-        if (count($resource->getLinks()) > 0) {
-            $result['_links'] = $this->createSerializedLinks($resource->getLinks());
-        }
-
-        if (count($resource->getEmbeds()) > 0) {
-            $result['_embedded'] = $this->createSerializedEmbeds($resource->getEmbeds(), $context);
-        }
-
-        if ($addRoot) {
-            $visitor->setRoot($result);
-        }
-
-        return $result;
-    }
-
-    private function createSerializedLinks(array $links)
-    {
         $serializedLinks = array();
         foreach ($links as $link) {
             $serializedLink = array_merge(array(
@@ -70,16 +34,19 @@ class JsonHalSerializer implements JsonSerializerInterface
             }
         }
 
-        return $serializedLinks;
+        $visitor->addData('_links', $serializedLinks);
     }
 
-    private function createSerializedEmbeds(array $embeds, SerializationContext $context)
+    /**
+     * {@inheritdoc}
+     */
+    public function serializeEmbedded(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
         $serializedEmbeds = array();
         foreach ($embeds as $embed) {
             $serializedEmbeds[$embed->getRel()] = $context->accept($embed->getData());
         }
 
-        return $serializedEmbeds;
+        $visitor->addData('_embedded', $serializedEmbeds);
     }
 }

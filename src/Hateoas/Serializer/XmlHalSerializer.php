@@ -72,34 +72,4 @@ class XmlHalSerializer implements XmlSerializerInterface
             $visitor->revertCurrentNode();
         }
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeResource(Resource $resource, XmlSerializationVisitor $visitor, SerializationContext $context)
-    {
-        if (null === $visitor->getDocument()) {
-            if ($visitor->hasDefaultRootName()) {
-                $visitor->setDefaultRootName('resource');
-            }
-
-            $visitor->document = $visitor->createDocument();
-        }
-
-        foreach ($resource->getData() as $key => $value) {
-            $entryNode = $visitor->getDocument()->createElement($key);
-
-            $visitor->getCurrentNode()->appendChild($entryNode);
-            $visitor->setCurrentNode($entryNode);
-
-            if (null !== $node = $context->accept($value)) {
-                $visitor->getCurrentNode()->appendChild($node);
-            }
-
-            $visitor->revertCurrentNode();
-        }
-
-        $this->serializeLinks($resource->getLinks(), $visitor);
-        $this->serializeEmbedded($resource->getEmbeds(), $visitor, $context);
-    }
 }
