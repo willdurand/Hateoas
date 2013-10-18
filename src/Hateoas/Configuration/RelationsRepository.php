@@ -3,7 +3,6 @@
 namespace Hateoas\Configuration;
 
 use Hateoas\Configuration\Provider\RelationProvider;
-use Hateoas\Util\ClassUtils;
 use Metadata\MetadataFactoryInterface;
 
 /**

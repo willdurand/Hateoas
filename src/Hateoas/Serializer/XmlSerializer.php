@@ -3,7 +3,6 @@
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Embed;
-use Hateoas\Representation\Resource;
 use Hateoas\Util\ClassUtils;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
