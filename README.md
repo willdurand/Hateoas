@@ -19,7 +19,7 @@ Usage
 
 ### Introduction
 
-**Hateoas** leverages the [Serializer](github.com/schmittjoh/serializer) library
+**Hateoas** leverages the [Serializer](https://github.com/schmittjoh/serializer) library
 to provide a nice way to build HATEOAS REST web services. HATEOAS stands for
 **H**ypermedia **a**s **t**he **E**ngine **o**f **A**pplication **S**tate, and
 basically adds **hypermedia links** to your **representations** (ie. your API
