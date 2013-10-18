@@ -33,10 +33,7 @@
         "symfony/routing": "To use the SymfonyRouteFactory."
     },
     "autoload": {
-        "psr-0": {
-            "Hateoas\\Tests": "tests/",
-            "Hateoas": "src/"
-        }
+        "psr-0": { "Hateoas": "src/" }
     },
     "config": {
         "bin-dir": "bin"
