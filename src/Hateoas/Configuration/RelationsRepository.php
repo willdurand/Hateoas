@@ -22,11 +22,6 @@ class RelationsRepository
     private $relationProvider;
 
     /**
-     * @var array fqcn => Relation[]
-     */
-    private $classesRelations = array();
-
-    /**
      * @param MetadataFactoryInterface $metadataFactory
      * @param RelationProvider         $relationProvider
      */
@@ -49,28 +44,8 @@ class RelationsRepository
             $relations = array_merge($relations, $classMetadata->getRelations());
         }
 
-        $class = strtolower(ClassUtils::getClass($object));
-        if (isset($this->classesRelations[$class])) {
-            $relations = array_merge($relations, $this->classesRelations[$class]);
-        }
-
         $relations = array_merge($relations, $this->relationProvider->getRelations($object));
 
         return $relations;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addClassRelation($class, Relation $relation)
-    {
-        $class = strtolower(ClassUtils::getRealClass($class));
-
-        $this->classesRelations[$class][] = $relation;
-    }
-
-    private function getObjectId($object)
-    {
-        return spl_object_hash($object);
     }
 }
