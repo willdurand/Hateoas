@@ -22,8 +22,6 @@ use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\ExclusionManager;
-use Hateoas\Serializer\Handler\JsonResourceHandler;
-use Hateoas\Serializer\Handler\XmlResourceHandler;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\JsonSerializerInterface;
 use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
@@ -135,21 +133,11 @@ class HateoasBuilder
             ),
         );
 
-        $handlers = array(
-            new XmlResourceHandler($this->xmlSerializer),
-            new JsonResourceHandler($this->jsonSerializer),
-        );
-
         $this->serializerBuilder
             ->addDefaultListeners()
             ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($eventSubscribers) {
                 foreach ($eventSubscribers as $eventSubscriber) {
                     $dispatcher->addSubscriber($eventSubscriber);
-                }
-            })
-            ->configureHandlers(function (HandlerRegistryInterface $registry) use ($handlers) {
-                foreach ($handlers as $handler) {
-                    $registry->registerSubscribingHandler($handler);
                 }
             })
         ;

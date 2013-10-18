@@ -78,36 +78,6 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeResource(Resource $resource, XmlSerializationVisitor $visitor, SerializationContext $context)
-    {
-        if (null === $visitor->getDocument()) {
-            if ($visitor->hasDefaultRootName() && null !== $resource->getXmlRootName()) {
-                $visitor->setDefaultRootName($resource->getXmlRootName());
-            }
-
-            $visitor->document = $visitor->createDocument();
-        }
-
-        foreach ($resource->getData() as $key => $value) {
-            $entryNode = $visitor->getDocument()->createElement($key);
-
-            $visitor->getCurrentNode()->appendChild($entryNode);
-            $visitor->setCurrentNode($entryNode);
-
-            if (null !== $node = $context->accept($value)) {
-                $visitor->getCurrentNode()->appendChild($node);
-            }
-
-            $visitor->revertCurrentNode();
-        }
-
-        $this->serializeLinks($resource->getLinks(), $visitor);
-        $this->serializeEmbedded($resource->getEmbeds(), $visitor, $context);
-    }
-
     private function getElementName($data, Embed $embed = null)
     {
         $elementName = null;
