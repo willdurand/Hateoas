@@ -71,15 +71,7 @@ class Handler implements SubscribingHandlerInterface
 
         // links
         foreach ($resource->getLinks() as $link) {
-            $linkNode = $visitor->getDocument()->createElement('link');
-            $visitor->getCurrentNode()->appendChild($linkNode);
-            $visitor->setCurrentNode($linkNode);
-
-            if (null !== $node = $context->accept($link)) {
-                $visitor->getCurrentNode()->appendChild($node);
-            }
-
-            $visitor->revertCurrentNode();
+            $this->addXMLLinkToVisitor($link, $visitor);
         }
 
         // Embeds
@@ -146,15 +138,7 @@ class Handler implements SubscribingHandlerInterface
 
         // links
         foreach ($collection->getLinks() as $link) {
-            $linkNode = $visitor->getDocument()->createElement('link');
-            $visitor->getCurrentNode()->appendChild($linkNode);
-            $visitor->setCurrentNode($linkNode);
-
-            if (null !== $node = $context->accept($link)) {
-                $visitor->getCurrentNode()->appendChild($node);
-            }
-
-            $visitor->revertCurrentNode();
+            $this->addXMLLinkToVisitor($link, $visitor);
         }
 
         // resources
@@ -277,5 +261,24 @@ class Handler implements SubscribingHandlerInterface
         }
 
         return $links;
+    }
+
+    private function addXMLLinkToVisitor($link, $visitor)
+    {
+        $linkNode = $visitor->getDocument()->createElement('link');
+        
+        $attributes = array(
+            'href' => $link->getHref(),
+            'rel' => $link->getRel(),
+            'type' => $link->getType()
+        );
+
+        foreach ($attributes as $attribute => $value) {
+            if($value !== null){
+                $linkNode->setAttribute($attribute, $value);
+            }
+        }
+
+        $visitor->getCurrentNode()->appendChild($linkNode);
     }
 }
