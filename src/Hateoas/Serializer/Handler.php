@@ -138,8 +138,8 @@ class Handler implements SubscribingHandlerInterface
         }
 
         // attributes
-        foreach (array('total', 'page', 'limit') as $attr) {
-            if ($value = $collection->{'get' . ucfirst($attr)}()) {
+        foreach (array('total', 'page', 'limit', 'offset') as $attr) {
+            if (null !== ($value = $collection->{'get' . ucfirst($attr)}())) {
                 $visitor->getCurrentNode()->setAttribute($attr, $value);
             }
         }
