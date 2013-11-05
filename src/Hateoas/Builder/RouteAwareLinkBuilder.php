@@ -39,7 +39,11 @@ class RouteAwareLinkBuilder implements LinkBuilderInterface
             $name = is_array($path) ? key($path)     : $path;
             $path = is_array($path) ? current($path) : $path;
 
-            $parameters[$name] = !is_null($path) ? $accessor->getValue($data, $path) : null;
+            try {
+                $parameters[$name] = !is_null($path) ? $accessor->getValue($data, $path) : null;
+            } catch (\Exception $e) {
+                return;
+            }
         }
 
         return $this->create(

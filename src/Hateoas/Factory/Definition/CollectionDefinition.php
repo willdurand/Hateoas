@@ -34,6 +34,15 @@ class CollectionDefinition extends ResourceDefinition
         return $this->getAttribute('page');
     }
 
+    public function getOffset()
+    {
+        return $this->getAttribute('offset');
+    }
+    public function getCount()
+    {
+    	return $this->getAttribute('count');
+    }
+
     public function getRootName()
     {
         return $this->rootName;

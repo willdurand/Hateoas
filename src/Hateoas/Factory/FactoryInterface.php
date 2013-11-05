@@ -10,4 +10,6 @@ interface FactoryInterface
     public function getResourceDefinition($data);
 
     public function getCollectionDefinition($className);
+    
+    public function createLinkDefinition($definition, $class);
 }

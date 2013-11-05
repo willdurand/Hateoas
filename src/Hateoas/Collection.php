@@ -45,7 +45,16 @@ class Collection
      */
     private $rootName;
 
-    public function __construct($rootName = null, array $resources = array(), array $links = array(), $total = null, $page = null, $limit = null, array $forms = array())
+    /**
+     * @var int
+     */
+    private $offset;
+    /**
+     * @var int
+     */
+    private $count;
+
+    public function __construct($rootName = null, array $resources = array(), array $links = array(), $total = null, $page = null, $limit = null, array $forms = array(), $offset = null, $count = null)
     {
         $this->rootName  = $rootName;
         $this->resources = $resources;
@@ -54,6 +63,8 @@ class Collection
         $this->page      = $page;
         $this->limit     = $limit;
         $this->forms     = $forms;
+        $this->offset    = $offset;
+        $this->count    = $count;
     }
 
     /**
@@ -120,5 +131,21 @@ class Collection
         $this->forms = $forms;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
+    
+    /**
+     * @return int
+     */
+    public function getCount()
+    {
+    	return $this->count;
     }
 }

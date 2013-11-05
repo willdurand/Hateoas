@@ -39,7 +39,11 @@ class ResourceBuilder implements ResourceBuilderInterface
 
         $links = array();
         foreach ($resourceDefinition->getLinks() as $linkDefinition) {
-            $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $data);
+            $link = $this->linkBuilder->createFromDefinition($linkDefinition, $data);
+
+            if($link) {
+                $links[] = $link;
+            }
 
             // walk over the object properties to add links
             if (!empty($options['objectProperties'])) {
@@ -87,7 +91,7 @@ class ResourceBuilder implements ResourceBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function createCollection($collection, $className, $options = array())
+    public function createCollection($collection, $className, $options = array(), $overrides = array())
     {
         if (!is_array($collection) && !$collection instanceof \Traversable) {
             throw new \InvalidArgumentException(
@@ -104,7 +108,8 @@ class ResourceBuilder implements ResourceBuilderInterface
 
         $links = array();
         foreach ($collectionDefinition->getLinks() as $linkDefinition) {
-            $links[] = $this->linkBuilder->createFromDefinition($linkDefinition, $collection);
+	    list($finalLinkDefinition, $data) = $this->overrideDefinition($linkDefinition, $overrides, $collection);
+            $links[] = $this->linkBuilder->createFromDefinition($finalLinkDefinition, $data);
         }
 
         $accessor = PropertyAccess::getPropertyAccessor();
@@ -128,13 +133,52 @@ class ResourceBuilder implements ResourceBuilderInterface
             $page = $accessor->getValue($collection, $page);
         }
 
+        // offset
+        if (null !== $offset = $collectionDefinition->getOffset()) {
+            $offset = $accessor->getValue($collection, $offset);
+        }
+        
+        // count
+        if (null !== $count = $collectionDefinition->getCount()) {
+        	$count = $accessor->getValue($collection, $count);
+        }
+
         return new Collection(
             $collectionDefinition->getRootName(),
             $resources,
             $links,
             $total,
             $page,
-            $limit
+            $limit,
+            array(),
+            $offset,
+        	$count
         );
+    }
+    
+    private function overrideDefinition($linkDefinition, $overrides, $collection)
+    {
+      $override = $this->findOverrideForLinkDefinition($linkDefinition, $overrides);
+      
+      if($override){
+	$data = isset($override['data']) ? $override['data'] : $collection;
+	$definition = $override['definition'];
+	$newLinkDefinition = $this->factory->createLinkDefinition($definition, '');
+	
+	return array($newLinkDefinition, $data);
+      }
+      
+      return array($linkDefinition, $collection);
+    }
+    
+    private function findOverrideForLinkDefinition($linkDefinition, $overrides)
+    {
+      foreach($overrides as $override){
+	if($override['rel'] == $linkDefinition->getRel()){
+	  return $override;
+	}
+      }
+    
+      return null;
     }
 }
