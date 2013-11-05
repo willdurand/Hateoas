@@ -137,6 +137,11 @@ class ResourceBuilder implements ResourceBuilderInterface
         if (null !== $offset = $collectionDefinition->getOffset()) {
             $offset = $accessor->getValue($collection, $offset);
         }
+        
+        // count
+        if (null !== $count = $collectionDefinition->getCount()) {
+        	$count = $accessor->getValue($collection, $count);
+        }
 
         return new Collection(
             $collectionDefinition->getRootName(),
@@ -146,7 +151,8 @@ class ResourceBuilder implements ResourceBuilderInterface
             $page,
             $limit,
             array(),
-            $offset
+            $offset,
+        	$count
         );
     }
     

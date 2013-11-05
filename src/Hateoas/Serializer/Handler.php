@@ -130,7 +130,7 @@ class Handler implements SubscribingHandlerInterface
         }
 
         // attributes
-        foreach (array('total', 'page', 'limit', 'offset') as $attr) {
+        foreach (array('total', 'page', 'limit', 'offset', 'count') as $attr) {
             if (null !== ($value = $collection->{'get' . ucfirst($attr)}())) {
                 $visitor->getCurrentNode()->setAttribute($attr, $value);
             }
@@ -214,7 +214,7 @@ class Handler implements SubscribingHandlerInterface
         $rootName  = $collection->getRootName() ?: 'resources';
 
         // attributes
-        foreach (array('total', 'page', 'limit', 'offset') as $attr) {
+        foreach (array('total', 'page', 'limit', 'offset', 'count') as $attr) {
             if (null !== ($value = $collection->{'get' . ucfirst($attr)}())) {
                 $data[$attr] = $value;
             }
