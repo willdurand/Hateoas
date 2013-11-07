@@ -8,6 +8,7 @@ use Hateoas\Configuration\Metadata\ConfigurationExtensionInterface;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\ExtensionDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
+use Hateoas\Configuration\Metadata\Driver\XmlDriver;
 use Hateoas\Configuration\Provider\Resolver\MethodResolver;
 use Hateoas\Configuration\Provider\Resolver\ChainResolver;
 use Hateoas\Configuration\Provider\RelationProvider;
@@ -387,6 +388,7 @@ class HateoasBuilder
             $fileLocator    = new FileLocator($this->metadataDirs);
             $metadataDriver = new DriverChain(array(
                 new YamlDriver($fileLocator),
+                new XmlDriver($fileLocator),
                 new AnnotationDriver($annotationReader),
             ));
         } else {
