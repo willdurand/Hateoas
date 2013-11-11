@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="https://github.com/willdurand/Hateoas"
+        xmlns:h="https://github.com/willdurand/Hateoas"
+        elementFormDefault="qualified">
+
+    <annotation>
+        <documentation><![CDATA[
+       This is the XML Schema for the hateoas serialization
+     ]]></documentation>
+    </annotation>
+
+    <element name="hateoas">
+        <complexType>
+            <sequence>
+                <element name="class" type="h:class"/>
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="class">
+        <sequence>
+            <element name="relation" type="h:relation" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="name" type="normalizedString" use="required"/>
+        <attribute name="providers" type="normalizedString" use="optional"/>
+    </complexType>
+
+    <complexType name="relation">
+        <sequence>
+            <element name="href" type="h:href" minOccurs="0"/>
+            <element name="embed" type="h:embed" minOccurs="0"/>
+            <element name="exclusion" type="h:exclusion" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="attribute" type="h:attribute" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="rel" type="token" use="required"/>
+    </complexType>
+
+    <complexType name="attribute">
+        <attribute name="name" type="normalizedString" use="required"/>
+        <attribute name="value" type="normalizedString" use="required"/>
+    </complexType>
+
+    <complexType name="href">
+        <sequence>
+            <element name="parameter" type="h:attribute" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="uri" type="normalizedString" use="optional"/>
+        <attribute name="route" type="normalizedString" use="optional"/>
+        <attribute name="absolute" type="boolean" use="optional"/>
+        <attribute name="generator" type="normalizedString" use="optional"/>
+    </complexType>
+
+    <complexType name="embed">
+        <sequence>
+            <element name="content" type="normalizedString"/>
+            <element name="exclusion" type="h:exclusion" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        <attribute name="xml-element-name" type="token" use="optional"/>
+    </complexType>
+
+    <complexType name="exclusion">
+        <attribute name="groups" type="normalizedString" use="optional"/>
+        <attribute name="since-version" type="normalizedString" use="optional"/>
+        <attribute name="until-version" type="normalizedString" use="optional"/>
+        <attribute name="max-depth" type="normalizedString" use="optional"/>
+        <attribute name="exclude-if" type="normalizedString" use="optional"/>
+    </complexType>
+
+</schema>
