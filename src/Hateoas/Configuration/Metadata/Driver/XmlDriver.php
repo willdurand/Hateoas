@@ -32,44 +32,43 @@ class XmlDriver extends AbstractFileDriver
         }
 
         $name = $class->getName();
-        $root->registerXPathNamespace('h', self::NAMESPACE_URI);
-        if (!$exists = $root->xpath("./h:class[@name = '" . $name . "']")) {
+        if (!$exists = $root->xpath("./class[@name = '" . $name . "']")) {
             throw new \RuntimeException(sprintf('Expected metadata for class %s to be defined in %s.', $name, $file));
         }
 
         $classMetadata = new ClassMetadata($name);
 
-        if ($exists[0]->attributes()->providers) {
-            $providers = preg_split('/\s*,\s*/', (string) $exists[0]->attributes()->providers);
+        if ($exists[0]->attributes(self::NAMESPACE_URI)->providers) {
+            $providers = preg_split('/\s*,\s*/', (string) $exists[0]->attributes(self::NAMESPACE_URI)->providers);
 
             foreach ($providers as $relationProvider) {
                 $classMetadata->addRelationProvider(new RelationProvider($relationProvider));
             }
         }
 
-        $elements = reset($exists);
+        $elements = $exists[0]->children(self::NAMESPACE_URI);
 
         foreach ($elements->relation as $relation) {
-            $name = (string) $relation->attributes()->rel;
+            $name = (string) $relation->attributes('')->rel;
             $href = null;
             if (isset($relation->href)) {
                 $href = $relation->href;
-                if (isset($href->attributes()->uri) &&
-                    isset($href->attributes()->route)) {
+                if (isset($href->attributes('')->uri) &&
+                    isset($href->attributes('')->route)) {
                     throw new \RuntimeException(sprintf('uri and route attributes are mutually exclusive, please set only one of them. The problematic relation rel is %s.', $name));
-                } else if (isset($relation->href->attributes()->uri)) {
-                    $href = (string) $relation->href->attributes()->uri;
+                } else if (isset($relation->href->attributes('')->uri)) {
+                    $href = (string) $relation->href->attributes('')->uri;
                 } else {
                     $parameters = array();
                     foreach ($href->parameter as $parameter) {
-                        $parameters[(string) $parameter->attributes()->name] = (string) $parameter->attributes()->value;
+                        $parameters[(string) $parameter->attributes('')->name] = (string) $parameter->attributes('')->value;
                     }
 
                     $href = new Route(
-                        (string) $href->attributes()->route,
+                        (string) $href->attributes('')->route,
                         $parameters,
-                        null !== ($absolute = $href->attributes()->absolute) ? 'true' === strtolower($absolute) : false,
-                        isset($href->attributes()->generator) ? (string) $href->attributes()->generator : null
+                        null !== ($absolute = $href->attributes('')->absolute) ? 'true' === strtolower($absolute) : false,
+                        isset($href->attributes('')->generator) ? (string) $href->attributes('')->generator : null
                     );
                 }
             }
@@ -79,13 +78,13 @@ class XmlDriver extends AbstractFileDriver
                 $embed = $relation->embed;
                 $embedExclusion = isset($embed->exclusion) ? $this->parseExclusion($embed->exclusion) : null;
 
-                $xmlElementName = isset($embed->attributes()->{'xml-element-name'}) ? (string) $embed->attributes()->{'xml-element-name'} : null;
+                $xmlElementName = isset($embed->attributes('')->{'xml-element-name'}) ? (string) $embed->attributes('')->{'xml-element-name'} : null;
                 $embed          = new Embed((string) $embed->content, $xmlElementName, $embedExclusion);
             }
 
             $attributes = array();
             foreach ($relation->attribute as $attribute) {
-                $attributes[(string) $attribute->attributes()->name] = (string) $attribute->attributes()->value;
+                $attributes[(string) $attribute->attributes('')->name] = (string) $attribute->attributes('')->value;
             }
 
             $exclusion = isset($relation->exclusion) ? $this->parseExclusion($relation->exclusion) : null;
@@ -107,11 +106,11 @@ class XmlDriver extends AbstractFileDriver
     private function parseExclusion(\SimpleXMLElement $exclusion)
     {
         return new Exclusion(
-            isset($exclusion->attributes()->groups) ? preg_split('/\s*,\s*/', (string) $exclusion->attributes()->groups) : null,
-            isset($exclusion->attributes()->{'since-version'}) ? (string) $exclusion->attributes()->{'since-version'} : null,
-            isset($exclusion->attributes()->{'until-version'}) ? (string) $exclusion->attributes()->{'until-version'} : null,
-            isset($exclusion->attributes()->{'max-depth'}) ? (string) $exclusion->attributes()->{'max-depth'} : null,
-            isset($exclusion->attributes()->{'exclude-if'}) ? (string) $exclusion->attributes()->{'exclude-if'} : null
+            isset($exclusion->attributes('')->groups) ? preg_split('/\s*,\s*/', (string) $exclusion->attributes('')->groups) : null,
+            isset($exclusion->attributes('')->{'since-version'}) ? (string) $exclusion->attributes('')->{'since-version'} : null,
+            isset($exclusion->attributes('')->{'until-version'}) ? (string) $exclusion->attributes('')->{'until-version'} : null,
+            isset($exclusion->attributes('')->{'max-depth'}) ? (string) $exclusion->attributes('')->{'max-depth'} : null,
+            isset($exclusion->attributes('')->{'exclude-if'}) ? (string) $exclusion->attributes('')->{'exclude-if'} : null
         );
     }
 
