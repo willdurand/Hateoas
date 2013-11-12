@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<hateoas xmlns="https://github.com/willdurand/Hateoas">
-    <class name="Hateoas\Tests\Fixtures\User" providers="getRelations">
-        <relation rel="self">
-            <href uri="http://hateoas.web/user/42"/>
-            <attribute name="type" value="application/json"/>
-        </relation>
+<serializer>
+    <class name="Hateoas\Tests\Fixtures\User" h:providers="getRelations" xmlns:h="https://github.com/willdurand/Hateoas">
+        <h:relation rel="self">
+            <h:href uri="http://hateoas.web/user/42"/>
+            <h:attribute name="type" value="application/json"/>
+        </h:relation>
 
-        <relation rel="foo">
-            <href route="user_get">
-                <parameter name="id" value="expr(object.getId())"/>
-            </href>
-            <embed>
-                <content>expr(object.getFoo())</content>
-            </embed>
-        </relation>
+        <h:relation rel="foo">
+            <h:href route="user_get">
+                <h:parameter name="id" value="expr(object.getId())"/>
+            </h:href>
+            <h:embed>
+                <h:content>expr(object.getFoo())</h:content>
+            </h:embed>
+        </h:relation>
 
-        <relation rel="bar">
-            <href uri="foo"/>
-            <embed xml-element-name="barTag">
-                <content>data</content>
-            </embed>
-        </relation>
+        <h:relation rel="bar">
+            <h:href uri="foo"/>
+            <h:embed xml-element-name="barTag">
+                <h:content>data</h:content>
+            </h:embed>
+        </h:relation>
 
-        <relation rel="baz">
-            <href route="user_get" absolute="true">
-                <parameter name="id" value="expr(object.getId())"/>
-            </href>
-        </relation>
+        <h:relation rel="baz">
+            <h:href route="user_get" absolute="true">
+                <h:parameter name="id" value="expr(object.getId())"/>
+            </h:href>
+        </h:relation>
 
-        <relation rel="boom">
-            <href route="user_get" absolute="false">
-                <parameter name="id" value="expr(object.getId())"/>
-            </href>
-        </relation>
+        <h:relation rel="boom">
+            <h:href route="user_get" absolute="false">
+                <h:parameter name="id" value="expr(object.getId())"/>
+            </h:href>
+        </h:relation>
 
-        <relation rel="badaboom">
-            <embed>
-                <content>expr(object.getFoo())</content>
-            </embed>
-        </relation>
+        <h:relation rel="badaboom">
+            <h:embed>
+                <h:content>expr(object.getFoo())</h:content>
+            </h:embed>
+        </h:relation>
 
-        <relation rel="hello">
-            <href uri="/hello"/>
-            <embed>
-                <content>hello</content>
-                <exclusion groups="group3,group4" since-version="1.1" until-version="2.3" max-depth="43" exclude-if="bar"/>
-            </embed>
-            <exclusion groups="group1, group2" since-version="1" until-version="2.2" max-depth="42" exclude-if="foo"/>
-        </relation>
+        <h:relation rel="hello">
+            <h:href uri="/hello"/>
+            <h:embed>
+                <h:content>hello</h:content>
+                <h:exclusion groups="group3,group4" since-version="1.1" until-version="2.3" max-depth="43" exclude-if="bar"/>
+            </h:embed>
+            <h:exclusion groups="group1, group2" since-version="1" until-version="2.2" max-depth="42" exclude-if="foo"/>
+        </h:relation>
     </class>
-</hateoas>
+</serializer>

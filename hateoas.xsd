@@ -11,19 +11,10 @@
      ]]></documentation>
     </annotation>
 
-    <element name="hateoas">
-        <complexType>
-            <sequence>
-                <element name="class" type="h:class"/>
-            </sequence>
-        </complexType>
-    </element>
-
     <complexType name="class">
         <sequence>
             <element name="relation" type="h:relation" maxOccurs="unbounded"/>
         </sequence>
-        <attribute name="name" type="normalizedString" use="required"/>
         <attribute name="providers" type="normalizedString" use="optional"/>
     </complexType>
 
