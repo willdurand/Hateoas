@@ -29,6 +29,8 @@ class YamlDriver extends AbstractFileDriver
 
         $config        = $config[$name];
         $classMetadata = new ClassMetadata($name);
+        $classMetadata->fileResources[] = $file;
+        $classMetadata->fileResources[] = $class->getFileName();
 
         if (isset($config['relations'])) {
             foreach ($config['relations'] as $relation) {

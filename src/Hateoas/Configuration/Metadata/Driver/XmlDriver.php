@@ -37,6 +37,8 @@ class XmlDriver extends AbstractFileDriver
         }
 
         $classMetadata = new ClassMetadata($name);
+        $classMetadata->fileResources[] = $file;
+        $classMetadata->fileResources[] = $class->getFileName();
 
         if ($exists[0]->attributes(self::NAMESPACE_URI)->providers) {
             $providers = preg_split('/\s*,\s*/', (string) $exists[0]->attributes(self::NAMESPACE_URI)->providers);
