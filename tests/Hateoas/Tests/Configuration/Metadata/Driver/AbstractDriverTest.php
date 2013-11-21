@@ -200,9 +200,7 @@ abstract class AbstractDriverTest extends TestCase
             ;
         }
 
-        $i = 0;
-
-        $relationProvider = $relationProviders[$i++];
+        $relationProvider = current($relationProviders);
         $this
             ->string($relationProvider->getName())
                 ->isEqualTo('getRelations')
