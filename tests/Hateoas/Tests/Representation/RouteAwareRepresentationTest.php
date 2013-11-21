@@ -3,7 +3,7 @@
 namespace Hateoas\Tests\Representation;
 
 use Hateoas\HateoasBuilder;
-use Hateoas\Representation\Collection;
+use Hateoas\Representation\SimpleCollection;
 use Hateoas\Representation\RouteAwareRepresentation;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Tests\TestCase;
@@ -27,7 +27,7 @@ class RouteAwareRepresentationTest extends TestCase
         ;
 
         $collection = new RouteAwareRepresentation(
-            new Collection(
+            new SimpleCollection(
                 array(
                     'Adrien',
                     'William',
