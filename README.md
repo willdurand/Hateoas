@@ -228,7 +228,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
 /**
  * @Hateoas\Relation(
  *      "self",
- *      href = @Route(
+ *      href = @Hateoas\Route(
  *          "user_get",
  *          parameters = {
  *              "id" = "expr(object.getId())"
