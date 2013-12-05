@@ -335,6 +335,24 @@ $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
+### The Expression Language
+
+Hateoas relies on the powerful Symfony
+[ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/introduction.html)
+component to retrieve values such as links, ids or objects to embed.
+
+In order to use the Expression Language, you have to use the `expr()` notation.
+Basically, each time you can fill in a value, you can either pass an
+**hardcoded value** or an **expression**.
+
+A special variable named `object` is available in each expression, and
+represents the current object:
+
+```
+expr(object.getId())
+```
+
+
 Reference
 ---------
 
@@ -523,23 +541,6 @@ class MyRelationProvider
         );
     }
 }
-```
-
-### The Expression Language
-
-Hateoas relies on the powerful Symfony
-[ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/introduction.html)
-component to retrieve values such as links, ids or objects to embed.
-
-In order to use the Expression Language, you have to use the `expr()` notation.
-Basically, each time you can fill in a value, you can either pass an
-**hardcoded value** or an **expression**.
-
-A special variable named `object` is available in each expression, and
-represents the current object:
-
-```
-expr(object.getId())
 ```
 
 
