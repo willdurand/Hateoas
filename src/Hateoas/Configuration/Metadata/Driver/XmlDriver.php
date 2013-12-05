@@ -58,7 +58,7 @@ class XmlDriver extends AbstractFileDriver
                 if (isset($href->attributes('')->uri) &&
                     isset($href->attributes('')->route)) {
                     throw new \RuntimeException(sprintf('uri and route attributes are mutually exclusive, please set only one of them. The problematic relation rel is %s.', $name));
-                } else if (isset($relation->href->attributes('')->uri)) {
+                } elseif (isset($relation->href->attributes('')->uri)) {
                     $href = (string) $relation->href->attributes('')->uri;
                 } else {
                     $parameters = array();
