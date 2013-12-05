@@ -59,7 +59,8 @@ call it `self` as it is the URI for this particular user:
 Generally speaking, a **resource** owns its own **actions** and `self` is a
 well-known relation name. Let's dig into Hateoas now.
 
-### Configuring links
+
+### Configuring Links
 
 ```php
 use JMS\Serializer\Annotation as Serializer;
@@ -68,7 +69,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
 /**
  * @Serializer\XmlRoot("user")
  *
- * @Hateoas\Relation("self", href = "expr('/api/hrefs/' ~ object.getId())")
+ * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")
  */
 class User
 {
@@ -88,7 +89,7 @@ $hateoas = HateoasBuilder::create()->build();
 
 $user = new User(42, 'Adrien', 'Brault');
 $json = $hateoas->serialize($user, 'json');
-$xml = $hateoas->serialize($user, 'xml');
+$xml  = $hateoas->serialize($user, 'xml');
 ```
 
 ```json
@@ -112,7 +113,7 @@ $xml = $hateoas->serialize($user, 'xml');
 </user>
 ```
 
-### Embedding resources
+### Embedding Resources
 
 ```php
 use JMS\Serializer\Annotation as Serializer;
@@ -137,17 +138,18 @@ class User
 }
 ```
 
-You will need to exclude the manager property from the serialization, otherwise both the serializer and Hateoas will
-serialize it.
-You will also have to exclude the manager relation when the manager is null, because otherwise an error will occur
-when creating the href link (calling getId() on null).
+You will need to exclude the manager property from the serialization, otherwise
+both the serializer and Hateoas will serialize it.
+You will also have to exclude the manager relation when the manager is `null`,
+because otherwise an error will occur when creating the `href` link (calling
+`getId()` on `null`).
 
 ```php
 $hateoas = HateoasBuilder::create()->build();
 
 $user = new User(42, 'Adrien', 'Brault', new User(23, 'MANAGER', 'MANAGER!!!'));
 $json = $hateoas->serialize($user, 'json');
-$xml = $hateoas->serialize($user, 'xml');
+$xml  = $hateoas->serialize($user, 'xml');
 ```
 
 ```json
@@ -194,11 +196,14 @@ $xml = $hateoas->serialize($user, 'xml');
 
 ### Url Generators
 
-Since you can use the expression language to define the relations links (`href` key), you can do a lot by default.
-However if you are using a framework, chances are that you will want to use routes to build links.
+Since you can use the expression language to define the relations links (`href`
+key), you can do a lot by default.
+However if you are using a framework, chances are that you will want to use
+routes to build links.
 
-You will first need to configure an UrlGenerator on the builder. You can either implement the
-`Hateoas\UrlGenerator\UrlGeneratorInterface`, or use the `Hateoas\UrlGenerator\CallableUrlGenerator`:
+You will first need to configure an UrlGenerator on the builder. You can either
+implement the `Hateoas\UrlGenerator\UrlGeneratorInterface`, or use the
+`Hateoas\UrlGenerator\CallableUrlGenerator`:
 
 
 ```php
@@ -247,7 +252,8 @@ class User
 }
 ```
 
-Note that the library comes with a SymfonyUrlGenerator. For example to use it in Silex:
+Note that the library comes with a SymfonyUrlGenerator. For example to use it in
+Silex:
 
 ```php
 use Hateoas\UrlGenerator\SymfonyUrlGenerator;
@@ -258,12 +264,14 @@ $hateoas = HateoasBuilder::create()
 ;
 ```
 
-### Collections support
+### Collections Support
 
-The library provides the several classes in the `Hateoas\Representation\*` namespace to help you with common tasks.
-These are simple classes configured the library's annotations.
+The library provides the several classes in the `Hateoas\Representation\*`
+namespace to help you with common tasks. These are simple classes configured the
+library's annotations.
 
-The `PaginatedCollection` and `Collection` classes are probably the most interesting one:
+The `PaginatedCollection` and `Collection` classes are probably the most
+interesting one:
 
 ```php
 use Hateoas\Representation\PaginatedCollection;
@@ -284,15 +292,16 @@ $paginatedCollection = new PaginatedCollection(
     'limit' // limit route parameter name, optional, defaults to 'limit'
 );
 $json = $hateoas->serialize($paginatedCollection, 'json');
-$xml = $hateoas->serialize($paginatedCollection, 'xml');
+$xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
-`Collection` allow you to dynamically configure the collection resources rel, and the xml root element name.
-`PaginatedCollection` is configured to add `self`, `first`, and when possible `last`, `next`, `previous` links.
+`Collection` allow you to dynamically configure the collection resources rel,
+and the xml root element name.
+`PaginatedCollection` is configured to add `self`, `first`, and when possible
+`last`, `next`, `previous` links.
 
-We also provide a `PagerfantaFactory` to easily build PaginatedCollection from a Pagerfanta instance:
-
-TODO: should be able to pass a Collection instance
+We also provide a `PagerfantaFactory` to easily build PaginatedCollection
+from a **Pagerfanta** instance:
 
 ```php
 use Hateoas\Representation\Factory\PagerfantaFactory;
@@ -304,7 +313,7 @@ $paginatedCollection = $pagerfantaFactory->create(
     array() // route parameters
 );
 $json = $hateoas->serialize($paginatedCollection, 'json');
-$xml = $hateoas->serialize($paginatedCollection, 'xml');
+$xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
 Reference
@@ -383,7 +392,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 ```
 
-This annotation can be defined in the **href** property of the [@Relation](#relation) annotation.
+This annotation can be defined in the **href** property of the
+[@Relation](#relation) annotation.
 
 | Property   | Required            | Content        | Expression language             |
 |------------|---------------------|----------------|---------------------------------|
@@ -419,8 +429,8 @@ This annotation can be defined in the **embed** property of the [@Relation](#rel
 
 #### @Exclusion
 
-This annotation can be defined in the **exclusion** property of both the [@Relation](#relation) and [@Embed](#embed)
-annotations.
+This annotation can be defined in the **exclusion** property of both the
+[@Relation](#relation) and [@Embed](#embed) annotations.
 
 | Property     | Required | Content          | Expression language    |
 |--------------|----------|------------------|------------------------|
@@ -430,9 +440,11 @@ annotations.
 | maxDepth     | No       | integer          | No                     |
 | excludeIf    | No       | string / boolean | Yes                    |
 
-All values exception `excludeIf` as if it was defined on regular properties with the serializer.
+All values exception `excludeIf` as if it was defined on regular properties with
+the serializer.
 
-`excludeIf` expects a boolean; and is helpful when an other expression would fail under some circumstances:
+`excludeIf` expects a boolean; and is helpful when an other expression would fail
+under some circumstances:
 
 ```php
 /**
@@ -492,10 +504,6 @@ class MyRelationProvider
     }
 }
 ```
-
-### Expression Language
-
-TODO
 
 
 Installation
