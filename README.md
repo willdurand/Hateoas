@@ -9,6 +9,23 @@ Score](https://scrutinizer-ci.com/g/willdurand/Hateoas/badges/quality-score.png?
 A PHP library to support implementing representations for HATEOAS REST web services.
 
 
+Installation
+------------
+
+Using [Composer](http://getcomposer.org/), require the `willdurand/hateoas`
+package:
+
+``` javascript
+{
+    "require": {
+        "willdurand/hateoas": "2.0.*@dev"
+    }
+}
+```
+
+Otherwise, install the library and setup the autoloader yourself.
+
+
 Usage
 -----
 
@@ -504,23 +521,6 @@ class MyRelationProvider
     }
 }
 ```
-
-
-Installation
-------------
-
-Using [Composer](http://getcomposer.org/), require the `willdurand/hateoas`
-package:
-
-``` javascript
-{
-    "require": {
-        "willdurand/hateoas": "2.0.*@dev"
-    }
-}
-```
-
-Otherwise, install the library and setup the autoloader yourself.
 
 
 Contributing
