@@ -21,7 +21,7 @@ class UrlGeneratorRegistryTest extends TestCase
                 $registry->get('foo');
             })
                 ->isInstanceOf('InvalidArgumentException')
-                    ->hasMessage('The "foo" url generator is not set. Available url generators are default.')
+                    ->hasMessage('The "foo" url generator is not set. Available url generators are: default.')
 
             ->when($registry->set('foo', $fooUrlGenerator = $this->mockUrlGenerator()))
             ->object($registry->get('foo'))

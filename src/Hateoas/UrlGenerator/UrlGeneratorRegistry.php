@@ -36,7 +36,7 @@ class UrlGeneratorRegistry
         if (!isset($this->urlGenerators[$name])) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    'The "%s" url generator is not set. Available url generators are %s.',
+                    'The "%s" url generator is not set. Available url generators are: %s.',
                     $name,
                     join(', ', array_keys($this->urlGenerators))
                 )
