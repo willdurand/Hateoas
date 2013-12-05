@@ -157,6 +157,7 @@ class User
 
 You will need to exclude the manager property from the serialization, otherwise
 both the serializer and Hateoas will serialize it.
+
 You will also have to exclude the manager relation when the manager is `null`,
 because otherwise an error will occur when creating the `href` link (calling
 `getId()` on `null`).
@@ -213,12 +214,12 @@ $xml  = $hateoas->serialize($user, 'xml');
 
 ### Url Generators
 
-Since you can use the expression language to define the relations links (`href`
-key), you can do a lot by default.
+Since you can use the [expression language](#the-expression-language) to define
+the relations links (`href` key), you can do a lot by default.
 However if you are using a framework, chances are that you will want to use
 routes to build links.
 
-You will first need to configure an UrlGenerator on the builder. You can either
+You will first need to configure an `UrlGenerator` on the builder. You can either
 implement the `Hateoas\UrlGenerator\UrlGeneratorInterface`, or use the
 `Hateoas\UrlGenerator\CallableUrlGenerator`:
 
@@ -269,8 +270,8 @@ class User
 }
 ```
 
-Note that the library comes with a SymfonyUrlGenerator. For example to use it in
-Silex:
+Note that the library comes with a `SymfonyUrlGenerator`. For example to use it
+in Silex:
 
 ```php
 use Hateoas\UrlGenerator\SymfonyUrlGenerator;
@@ -308,6 +309,7 @@ $paginatedCollection = new PaginatedCollection(
     'page', // page route parameter name, optional, defaults to 'page'
     'limit' // limit route parameter name, optional, defaults to 'limit'
 );
+
 $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
@@ -436,7 +438,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 ```
 
-This annotation can be defined in the **embed** property of the [@Relation](#relation) annotation.
+This annotation can be defined in the **embed** property of the
+[@Relation](#relation) annotation.
 
 | Property       | Required            | Content                  | Expression language    |
 |----------------|---------------------|--------------------------|------------------------|
@@ -520,6 +523,23 @@ class MyRelationProvider
         );
     }
 }
+```
+
+### The Expression Language
+
+Hateoas relies on the powerful Symfony
+[ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/introduction.html)
+component to retrieve values such as links, ids or objects to embed.
+
+In order to use the Expression Language, you have to use the `expr()` notation.
+Basically, each time you can fill in a value, you can either pass an
+**hardcoded value** or an **expression**.
+
+A special variable named `object` is available in each expression, and
+represents the current object:
+
+```
+expr(object.getId())
 ```
 
 
