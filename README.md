@@ -6,7 +6,8 @@ Status](https://secure.travis-ci.org/willdurand/Hateoas.png)](http://travis-ci.o
 [![Scrutinizer Quality
 Score](https://scrutinizer-ci.com/g/willdurand/Hateoas/badges/quality-score.png?s=45b5a825f99de4d29c98b5103f59e060139cf354)](https://scrutinizer-ci.com/g/willdurand/Hateoas/)
 
-A PHP library to support implementing representations for HATEOAS REST web services.
+A PHP library to support implementing representations for HATEOAS REST web
+services.
 
 
 Installation
@@ -36,15 +37,15 @@ Usage
 
 ### Introduction
 
-**Hateoas** leverages the [Serializer](https://github.com/schmittjoh/serializer) library
-to provide a nice way to build HATEOAS REST web services. HATEOAS stands for
-**H**ypermedia **a**s **t**he **E**ngine **o**f **A**pplication **S**tate, and
-basically adds **hypermedia links** to your **representations** (ie. your API
-responses). [HATEOAS is about the discoverability of actions on a
+**Hateoas** leverages the [Serializer](https://github.com/schmittjoh/serializer)
+library to provide a nice way to build HATEOAS REST web services. HATEOAS stands
+for **H**ypermedia **a**s **t**he **E**ngine **o**f **A**pplication **S**tate,
+and basically adds **hypermedia links** to your **representations** (ie. your
+API responses). [HATEOAS is about the discoverability of actions on a
 resource](http://timelessrepo.com/haters-gonna-hateoas).
 
-For instance, let's say you have a User API that returns a **representation** of
-a single _user_ as follow:
+For instance, let's say you have a User API which returns a **representation**
+of a single _user_ as follow:
 
 ```json
 {
@@ -73,11 +74,18 @@ call it `self` as it is the URI for this particular user:
 }
 ```
 
-Generally speaking, a **resource** owns its own **actions** and `self` is a
-well-known relation name. Let's dig into Hateoas now.
+Let's dig into Hateoas now.
 
 
 ### Configuring Links
+
+In Hateoas terminology, **links** are seen as **relations** added to resources.
+It is worth mentionning that **relations** also refer to **embedded resources**
+too, but this topic will be covered in the [Embedding
+Resources](#embedding-resources) section.
+
+A link is a relation which is identified by a `name` and that owns a `href`
+link:
 
 ```php
 use JMS\Serializer\Annotation as Serializer;
@@ -99,6 +107,20 @@ class User
 }
 ```
 
+In the example above, we configure a `self` relation that is a link because of
+the `href` parameter. Its value, which may look weird at first glance, will be
+extensively covered in [The Language Expression](#the-language-expression)
+section.
+
+In this section, **annotations** are used to configure Hateoas. However, **XML**
+and **YAML** formats are supported too.
+
+**Important:** you must configure both Serializer and Hateoas the same way.
+
+The easiest way to give Hateoas a try is to use the `HateoasBuilder`. This
+builder has numerous methods to configure the Hateoas serializer, but we won't
+dig into it right now.
+
 ```php
 use Hateoas\HateoasBuilder;
 
@@ -108,6 +130,10 @@ $user = new User(42, 'Adrien', 'Brault');
 $json = $hateoas->serialize($user, 'json');
 $xml  = $hateoas->serialize($user, 'xml');
 ```
+
+The `$hateoas` object is an instance of `JMS\Serializer\SerializerInterface`,
+part of the Serializer lib. Hateoas does not come with its own serializer, it
+simply hooks into the JMS Serializer one.
 
 ```json
 {
@@ -130,7 +156,16 @@ $xml  = $hateoas->serialize($user, 'xml');
 </user>
 ```
 
+Now that you know how to add **links**, let's see how to add **embedded
+resources**.
+
 ### Embedding Resources
+
+Sometimes, it's more efficient to embed related resources rather than
+link to them, as it prevents clients from having to make extra round trips.
+
+An **embedded resource** is a named **relation** that contains data, represented
+by the `embed` parameter.
 
 ```php
 use JMS\Serializer\Annotation as Serializer;
@@ -222,7 +257,6 @@ routes to build links.
 You will first need to configure an `UrlGenerator` on the builder. You can either
 implement the `Hateoas\UrlGenerator\UrlGeneratorInterface`, or use the
 `Hateoas\UrlGenerator\CallableUrlGenerator`:
-
 
 ```php
 use Hateoas\UrlGenerator\CallableUrlGenerator;
