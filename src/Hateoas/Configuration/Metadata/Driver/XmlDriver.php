@@ -52,36 +52,15 @@ class XmlDriver extends AbstractFileDriver
 
         foreach ($elements->relation as $relation) {
             $name = (string) $relation->attributes('')->rel;
+
             $href = null;
             if (isset($relation->href)) {
-                $href = $relation->href;
-                if (isset($href->attributes('')->uri) &&
-                    isset($href->attributes('')->route)) {
-                    throw new \RuntimeException(sprintf('uri and route attributes are mutually exclusive, please set only one of them. The problematic relation rel is %s.', $name));
-                } elseif (isset($relation->href->attributes('')->uri)) {
-                    $href = (string) $relation->href->attributes('')->uri;
-                } else {
-                    $parameters = array();
-                    foreach ($href->parameter as $parameter) {
-                        $parameters[(string) $parameter->attributes('')->name] = (string) $parameter->attributes('')->value;
-                    }
-
-                    $href = new Route(
-                        (string) $href->attributes('')->route,
-                        $parameters,
-                        null !== ($absolute = $href->attributes('')->absolute) ? 'true' === strtolower($absolute) : false,
-                        isset($href->attributes('')->generator) ? (string) $href->attributes('')->generator : null
-                    );
-                }
+                $href = $this->createHref($relation->href);
             }
 
             $embed = null;
             if (isset($relation->embed)) {
-                $embed = $relation->embed;
-                $embedExclusion = isset($embed->exclusion) ? $this->parseExclusion($embed->exclusion) : null;
-
-                $xmlElementName = isset($embed->attributes('')->{'xml-element-name'}) ? (string) $embed->attributes('')->{'xml-element-name'} : null;
-                $embed          = new Embed((string) $embed->content, $xmlElementName, $embedExclusion);
+                $embed = $this->createEmbed($relation->embed);
             }
 
             $attributes = array();
@@ -105,6 +84,16 @@ class XmlDriver extends AbstractFileDriver
         return $classMetadata;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function getExtension()
+    {
+        return 'xml';
+    }
+
+
+
     private function parseExclusion(\SimpleXMLElement $exclusion)
     {
         return new Exclusion(
@@ -116,11 +105,41 @@ class XmlDriver extends AbstractFileDriver
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getExtension()
+    private function createHref($href)
     {
-        return 'xml';
+        if (isset($href->attributes('')->uri) && isset($href->attributes('')->route)) {
+            throw new \RuntimeException(sprintf(
+                'uri and route attributes are mutually exclusive, please set only one of them. The problematic relation rel is %s.',
+                $name
+            ));
+        } elseif (isset($href->attributes('')->uri)) {
+            $href = (string) $href->attributes('')->uri;
+        } else {
+            $parameters = array();
+            foreach ($href->parameter as $parameter) {
+                $parameters[(string) $parameter->attributes('')->name] = (string) $parameter->attributes('')->value;
+            }
+
+            $href = new Route(
+                (string) $href->attributes('')->route,
+                $parameters,
+                null !== ($absolute = $href->attributes('')->absolute) ? 'true' === strtolower($absolute) : false,
+                isset($href->attributes('')->generator) ? (string) $href->attributes('')->generator : null
+            );
+        }
+
+        return $href;
+    }
+
+    private function createEmbed($embed)
+    {
+        $embedExclusion = isset($embed->exclusion) ? $this->parseExclusion($embed->exclusion) : null;
+        $xmlElementName = isset($embed->attributes('')->{'xml-element-name'}) ? (string) $embed->attributes('')->{'xml-element-name'} : null;
+
+        return new Embed(
+            (string) $embed->content,
+            $xmlElementName,
+            $embedExclusion
+        );
     }
 }
