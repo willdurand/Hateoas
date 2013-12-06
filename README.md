@@ -109,7 +109,7 @@ class User
 
 In the example above, we configure a `self` relation that is a link because of
 the `href` parameter. Its value, which may look weird at first glance, will be
-extensively covered in [The Language Expression](#the-language-expression)
+extensively covered in [The Expression Language](#the-expression-language)
 section.
 
 In this section, **annotations** are used to configure Hateoas. However, **XML**
