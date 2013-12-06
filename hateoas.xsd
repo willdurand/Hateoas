@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
         targetNamespace="https://github.com/willdurand/Hateoas"
         xmlns:h="https://github.com/willdurand/Hateoas"
         elementFormDefault="qualified">
 
     <annotation>
-        <documentation><![CDATA[
-       This is the XML Schema for the hateoas serialization
-     ]]></documentation>
+        <documentation><![CDATA[This is the XML Schema for the hateoas serialization]]></documentation>
     </annotation>
 
     <complexType name="class">
@@ -58,5 +55,4 @@
         <attribute name="max-depth" type="normalizedString" use="optional"/>
         <attribute name="exclude-if" type="normalizedString" use="optional"/>
     </complexType>
-
 </schema>

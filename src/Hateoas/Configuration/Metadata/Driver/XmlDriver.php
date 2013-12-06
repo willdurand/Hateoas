@@ -92,8 +92,6 @@ class XmlDriver extends AbstractFileDriver
         return 'xml';
     }
 
-
-
     private function parseExclusion(\SimpleXMLElement $exclusion)
     {
         return new Exclusion(
