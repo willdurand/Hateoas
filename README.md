@@ -356,6 +356,33 @@ expr(object.getId())
 Reference
 ---------
 
+### XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+<class name="Acme\Demo\Representation\User" h:providers="Class::getRelations, getRelations" xmlns:h="https://github.com/willdurand/Hateoas">
+        <h:relation rel="self">
+            <h:href uri="http://acme.com/foo/1" />
+        </h:relation>
+        <h:relation rel="expr(object.getFriendsDynamicRel())">
+            <h:href router="user_friends" generator="my_custom_generator">
+                <h:parameter name="id" value="expr(object.getId())" />
+                <h:parameter name="page" value="1" />
+            </h:ref>
+            <h:embed xml-element-name="users">
+                <h:content>expr(object.getFriends())</h:content>
+                <h:exclusion ... />
+            </h:embed>
+            <h:exclusion groups="Default, user_full" since-version="1.0" until-version="2.2" exclude-if="expr(object.getFriends() === null)" />
+        </h:relation>
+    </class>
+</serializer>
+```
+See the
+[`hateoas.xsd`](https://github.com/willdurand/Hateoas/blob/master/hateoas.xsd)
+file for more details.
+
 ### YAML
 
 ```yaml
