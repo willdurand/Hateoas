@@ -341,15 +341,62 @@ Hateoas relies on the powerful Symfony
 [ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/introduction.html)
 component to retrieve values such as links, ids or objects to embed.
 
-In order to use the Expression Language, you have to use the `expr()` notation.
 Basically, each time you can fill in a value, you can either pass an
-**hardcoded value** or an **expression**.
+**hardcoded value** or an **expression**. In order to use the Expression
+Language, you have to use the `expr()` notation:
 
-A special variable named `object` is available in each expression, and
+```php
+/**
+ * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")
+ */
+```
+
+You can learn more about the Expression Syntax by reading the official
+documentation: [The Expression
+Syntax](http://symfony.com/doc/current/components/expression_language/syntax.html).
+
+#### Context
+
+Natively, a special variable named `object` is available in each expression, and
 represents the current object:
 
 ```
 expr(object.getId())
+```
+
+We call such a variable a **context value**.
+
+You can add your own context values to the Expression Language context by adding
+them to the `ExpressionEvaluator`. For instance, the
+[BazingaHateoasBundle](https://github.com/willdurand/BazingaHateoasBundle) adds
+the `request` and the `container` to the context: [BazingaHateoasBundle's
+configuration](https://github.com/willdurand/BazingaHateoasBundle/blob/master/Resources/config/serializer.xml#L52-L59).
+
+You would be able to write the following expressions:
+
+```
+expr(request.method !== 'GET')
+
+expr(container.get('my-service').foo())
+```
+
+##### Adding Your Own Context Values
+
+Using the `HateoasBuilder`, call the `setExpressionContextValue()` method to add
+new context values:
+
+```php
+use Hateoas\HateoasBuilder;
+
+$hateoas = HateoasBuilder::create()
+    ->setExpressionContextValue('foo', new Foo())
+    ->build();
+```
+
+The `foo` variables is now available:
+
+```
+expr(foo !== null)
 ```
 
 
