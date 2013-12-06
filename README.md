@@ -112,14 +112,16 @@ the `href` parameter. Its value, which may look weird at first glance, will be
 extensively covered in [The Expression Language](#the-expression-language)
 section.
 
-In this section, **annotations** are used to configure Hateoas. However, **XML**
-and **YAML** formats are supported too.
+In this section, [**annotations**](#annotations) are used to configure Hateoas.
+However, [**XML**](#xml) and [**YAML**](#yaml) formats are also supported. If
+you wish, you can use plain PHP too.
 
-**Important:** you must configure both Serializer and Hateoas the same way.
+**Important:** you must configure both Serializer and Hateoas the same way. E.g.
+if you use YAML for configuring Serializer, use YAML for configuring Hateoas.
 
 The easiest way to give Hateoas a try is to use the `HateoasBuilder`. This
 builder has numerous methods to configure the Hateoas serializer, but we won't
-dig into it right now.
+dig into it right now. Everything works fine out of the box:
 
 ```php
 use Hateoas\HateoasBuilder;
@@ -132,8 +134,8 @@ $xml  = $hateoas->serialize($user, 'xml');
 ```
 
 The `$hateoas` object is an instance of `JMS\Serializer\SerializerInterface`,
-part of the Serializer lib. Hateoas does not come with its own serializer, it
-simply hooks into the JMS Serializer one.
+part of the Serializer library. Hateoas does not come with its own serializer,
+it simply hooks into the JMS Serializer one.
 
 ```json
 {
