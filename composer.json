@@ -17,7 +17,7 @@
         "doctrine/annotations": "1.*",
         "jms/metadata": "~1.1",
         "jms/serializer": "~0.13@dev",
-        "symfony/expression-language": "~2.4@dev"
+        "symfony/expression-language": "~2.4"
     },
     "require-dev": {
         "hautelook/frankenstein": "~0.1",
