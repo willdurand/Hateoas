@@ -121,7 +121,7 @@ if you use YAML for configuring Serializer, use YAML for configuring Hateoas.
 
 The easiest way to give Hateoas a try is to use the `HateoasBuilder`. This
 builder has numerous methods to configure the Hateoas serializer, but we won't
-dig into it right now (see [The Hateoas Builder](#the-hateoas-builder)).
+dig into it right now (see [The HateoasBuilder](#the-hateoasbuilder)).
 Everything works fine out of the box:
 
 ```php
