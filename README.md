@@ -42,10 +42,11 @@ services.
 Installation
 ------------
 
-Using [Composer](http://getcomposer.org/), require the `willdurand/hateoas`
-package:
+The recommended way to install Hateoas is through
+[Composer](http://getcomposer.org/). Require the `willdurand/hateoas` package
+into your `composer.json` file:
 
-``` javascript
+```json
 {
     "require": {
         "willdurand/hateoas": "2.0.*@dev"
