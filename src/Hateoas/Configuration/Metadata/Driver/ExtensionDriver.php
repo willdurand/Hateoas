@@ -21,11 +21,8 @@ class ExtensionDriver implements DriverInterface
      */
     private $extensions;
 
-    public function __construct(
-        DriverInterface $delegate,
-        array $extensions
-    ) {
-        $this->delegate = $delegate;
+    public function __construct(DriverInterface $delegate, array $extensions) {
+        $this->delegate   = $delegate;
         $this->extensions = $extensions;
     }
 
@@ -34,7 +31,7 @@ class ExtensionDriver implements DriverInterface
      */
     public function loadMetadataForClass(\ReflectionClass $class)
     {
-        $metadata = $this->delegate->loadMetadataForClass($class);
+        $metadata    = $this->delegate->loadMetadataForClass($class);
         $newMetadata = false;
 
         if (empty($this->extensions)) {
@@ -42,7 +39,7 @@ class ExtensionDriver implements DriverInterface
         }
 
         if (null === $metadata) {
-            $metadata = new ClassMetadata($class->getName());
+            $metadata    = new ClassMetadata($class->getName());
             $newMetadata = true;
         }
 

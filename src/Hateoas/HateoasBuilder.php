@@ -450,8 +450,7 @@ class HateoasBuilder
             $metadataDriver = new AnnotationDriver($annotationReader);
         }
 
-        $metadataDriver = new ExtensionDriver($metadataDriver, $this->configurationExtensions);
-
+        $metadataDriver  = new ExtensionDriver($metadataDriver, $this->configurationExtensions);
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
