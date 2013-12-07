@@ -121,7 +121,8 @@ if you use YAML for configuring Serializer, use YAML for configuring Hateoas.
 
 The easiest way to give Hateoas a try is to use the `HateoasBuilder`. This
 builder has numerous methods to configure the Hateoas serializer, but we won't
-dig into it right now. Everything works fine out of the box:
+dig into it right now (see [The Hateoas Builder](#the-hateoas-builder)).
+Everything works fine out of the box:
 
 ```php
 use Hateoas\HateoasBuilder;
@@ -434,6 +435,77 @@ The `foo` variables is now available:
 ```
 expr(foo !== null)
 ```
+
+### The HateoasBuilder
+
+The `HateoasBuilder` class is used to easily configure Hateoas thanks to a
+powerful and fluent API.
+
+```php
+use Hateoas\HateoasBuilder;
+
+$hateoas = HateoasBuilder::create()
+    ->setCacheDir('/path/to/cache/dir')
+    ->setDebug($trueOrFalse)
+    ->setDefaultXmlSerializer()
+    ...
+    ->build();
+```
+
+All the methods below return the current builder, so that you can chain them.
+
+#### XML Serializer
+
+* `setXmlSerializer(XmlSerializerInterface $xmlSerializer)`: sets the XML
+  serializer to use. Default is: `XmlHalSerializer`;
+* `setDefaultXmlSerializer()`: sets the default XML serializer
+  (`XmlHalSerializer`).
+
+#### JSON Serializer
+
+* `setJsonSerializer(JsonSerializerInterface $xmlSerializer)`: sets the JSON
+  serializer to use. Default is: `JsonHalSerializer`;
+* `setDefaultJsonSerializer()`: sets the default JSON serializer
+  (`JsonHalSerializer`).
+
+#### URL Generator
+
+* `setUrlGenerator($name = null, UrlGeneratorInterface $urlGenerator)`: adds a
+  new named URL generator. If `$name` is `null`, the URL generator will be the
+  default one.
+
+#### Expression Evaluator/Expression Language
+
+* `setExpressionContextValue($name, $value)`: adds a new expression context
+  value;
+* `setExpressionLanguage(ExpressionLanguage $expressionLanguage)`.
+
+#### Relation Provider
+
+* `addRelationProviderResolver(RelationProviderResolverInterface $resolver)`:
+  adds a new relation provider resolver.
+
+#### (JMS) Serializer Specific
+
+* `includeInterfaceMetadata($include)`: whether to include the metadata from the
+  interfaces;
+* `setMetadataDirs(array $namespacePrefixToDirMap)`: sets a map of namespace
+  prefixes to directories. This method overrides any previously defined
+  directories;
+* `addMetadataDir($dir, $namespacePrefix = '')`: adds a directory where the
+  serializer will look for class metadata;
+* `addMetadataDirs(array $namespacePrefixToDirMap)`: adds a map of namespace
+  prefixes to directories;
+* `replaceMetadataDir($dir, $namespacePrefix = '')`: similar to
+  `addMetadataDir()`, but overrides an existing entry.
+
+Please read the official [Serializer
+documentation](http://jmsyst.com/libs/serializer) for more details.
+
+#### Others
+
+* `setDebug($debug)`: enables or disables the debug mode;
+* `setCacheDir($dir)`: sets the cache directory.
 
 
 Reference

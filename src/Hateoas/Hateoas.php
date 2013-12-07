@@ -26,10 +26,8 @@ class Hateoas implements SerializerInterface
      * @param SerializerInterface $serializer
      * @param RelationsRepository $RelationsRepository
      */
-    public function __construct(
-        SerializerInterface $serializer,
-        RelationsRepository $relationsRepository
-    ) {
+    public function __construct(SerializerInterface $serializer, RelationsRepository $relationsRepository)
+    {
         $this->serializer          = $serializer;
         $this->relationsRepository = $relationsRepository;
     }

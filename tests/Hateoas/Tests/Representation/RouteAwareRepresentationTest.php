@@ -5,6 +5,7 @@ namespace Hateoas\Tests\Representation;
 use Hateoas\HateoasBuilder;
 use Hateoas\Representation\Collection;
 use Hateoas\Representation\RouteAwareRepresentation;
+use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 
@@ -21,7 +22,7 @@ class RouteAwareRepresentationTest extends TestCase
         ;
         $halHateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, $queryStringUrlGenerator)
-            ->addXmlHalSerializer()
+            ->setXmlSerializer(new XmlHalSerializer())
             ->build()
         ;
 

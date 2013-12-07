@@ -27,7 +27,6 @@ use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\JsonSerializerInterface;
 use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
-use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
@@ -53,12 +52,18 @@ class HateoasBuilder
     private $serializerBuilder;
 
     /**
-     * @var ExpressionEvaluator
+     * @var ExpressionLanguage
      */
     private $expressionLanguage;
 
+    /**
+     * @var XmlSerializerInterface
+     */
     private $xmlSerializer;
 
+    /**
+     * @var JsonSerializerInterface
+     */
     private $jsonSerializer;
 
     /**
@@ -80,11 +85,19 @@ class HateoasBuilder
 
     private $includeInterfaceMetadata = false;
 
+    /**
+     * @param SerializerBuilder $serializerBuilder
+     *
+     * @return Hateoas
+     */
     public static function create(SerializerBuilder $serializerBuilder = null)
     {
         return new static($serializerBuilder);
     }
 
+    /**
+     * @return Hateoas
+     */
     public static function buildHateoas()
     {
         $builder = static::create();
@@ -102,6 +115,11 @@ class HateoasBuilder
         ));
     }
 
+    /**
+     * Build a configured Hateoas instance.
+     *
+     * @return Hateoas
+     */
     public function build()
     {
         $metadataFactory     = $this->buildMetadataFactory();
@@ -118,7 +136,7 @@ class HateoasBuilder
         }
 
         if (null === $this->jsonSerializer) {
-            $this->setHalJsonSerializer();
+            $this->setDefaultJsonSerializer();
         }
 
         $inlineDeferrers = array();
@@ -152,6 +170,11 @@ class HateoasBuilder
         return new Hateoas($jmsSerializer, $relationsRepository);
     }
 
+    /**
+     * @param XmlSerializerInterface $xmlSerializer
+     *
+     * @return HateoasBuilder
+     */
     public function setXmlSerializer(XmlSerializerInterface $xmlSerializer)
     {
         $this->xmlSerializer = $xmlSerializer;
@@ -159,16 +182,21 @@ class HateoasBuilder
         return $this;
     }
 
+    /**
+     * Sets the default XML serializer (`XmlSerializer`).
+     *
+     * @return HateoasBuilder
+     */
     public function setDefaultXmlSerializer()
     {
         return $this->setXmlSerializer(new XmlSerializer());
     }
 
-    public function addXmlHalSerializer()
-    {
-        return $this->setXmlSerializer(new XmlHalSerializer());
-    }
-
+    /**
+     * @param JsonSerializerInterface $jsonSerializer
+     *
+     * @return HateoasBuilder
+     */
     public function setJsonSerializer(JsonSerializerInterface $jsonSerializer)
     {
         $this->jsonSerializer = $jsonSerializer;
@@ -176,15 +204,24 @@ class HateoasBuilder
         return $this;
     }
 
-    public function setHalJsonSerializer()
+    /**
+     * Sets the default JSON serializer (`JsonHalSerializer`).
+     *
+     * @return HateoasBuilder
+     */
+    public function setDefaultJsonSerializer()
     {
         return $this->setJsonSerializer(new JsonHalSerializer());
     }
 
     /**
-     * @param string|null           $name         If you pass null it will be the default url generator
+     * Adds a new URL generator. If you pass `null` as name, it will be the
+     * default URL generator.
+     *
+     * @param string|null           $name
      * @param UrlGeneratorInterface $urlGenerator
-     * @return $this
+     *
+     * @return HateoasBuilder
      */
     public function setUrlGenerator($name = null, UrlGeneratorInterface $urlGenerator)
     {
@@ -193,6 +230,14 @@ class HateoasBuilder
         return $this;
     }
 
+    /**
+     * Adds a new expression context value.
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return HateoasBuilder
+     */
     public function setExpressionContextValue($name, $value)
     {
         $this->getExpressionLanguage()->setContextValue($name, $value);
@@ -201,42 +246,60 @@ class HateoasBuilder
     }
 
     /**
-     * @param RelationProviderResolverInterface $resolver
-     */
-    public function addRelationProviderResolver(RelationProviderResolverInterface $resolver)
-    {
-        $this->chainResolver->addResolver($resolver);
-    }
-
-    /**
      * @param ExpressionLanguage $expressionLanguage
+     *
+     * @return HateoasBuilder
      */
     public function setExpressionLanguage(ExpressionLanguage $expressionLanguage)
     {
         $this->expressionLanguage = $expressionLanguage;
-    }
-
-    private function getExpressionLanguage()
-    {
-        if (null === $this->expressionLanguage) {
-            $this->expressionLanguage = new ExpressionLanguage();
-        }
-
-        return $this->expressionLanguage;
-    }
-
-    public function addConfigurationExtension(ConfigurationExtensionInterface $configurationExtension)
-    {
-        $this->configurationExtensions[] = $configurationExtension;
-    }
-
-    public function setDebug($bool)
-    {
-        $this->debug = (boolean) $bool;
 
         return $this;
     }
 
+    /**
+     * Adds a new relation provider resolver.
+     *
+     * @param RelationProviderResolverInterface $resolver
+     *
+     * @return HateoasBuilder
+     */
+    public function addRelationProviderResolver(RelationProviderResolverInterface $resolver)
+    {
+        $this->chainResolver->addResolver($resolver);
+
+        return $this;
+    }
+
+    /**
+     * @param ConfigurationExtensionInterface $configurationExtension
+     *
+     * @return HateoasBuilder
+     */
+    public function addConfigurationExtension(ConfigurationExtensionInterface $configurationExtension)
+    {
+        $this->configurationExtensions[] = $configurationExtension;
+
+        return $this;
+    }
+
+    /**
+     * @param boolean $debug
+     *
+     * @return HateoasBuilder
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = (boolean) $debug;
+
+        return $this;
+    }
+
+    /**
+     * @param string $dir
+     *
+     * @return HateoasBuilder
+     */
     public function setCacheDir($dir)
     {
         if (!is_dir($dir)) {
@@ -253,13 +316,13 @@ class HateoasBuilder
     }
 
     /**
-     * @param Boolean $include Whether to include the metadata from the interfaces
+     * @param boolean $include Whether to include the metadata from the interfaces
      *
-     * @return SerializerBuilder
+     * @return HateoasBuilder
      */
     public function includeInterfaceMetadata($include)
     {
-        $this->includeInterfaceMetadata = (Boolean) $include;
+        $this->includeInterfaceMetadata = (boolean) $include;
 
         return $this;
     }
@@ -269,11 +332,9 @@ class HateoasBuilder
      *
      * This method overrides any previously defined directories.
      *
-     * @param array<string,string> $namespacePrefixToDirMap
+     * @param array $namespacePrefixToDirMap
      *
-     * @return self
-     *
-     * @throws \InvalidArgumentException When a directory does not exist
+     * @return HateoasBuilder
      */
     public function setMetadataDirs(array $namespacePrefixToDirMap)
     {
@@ -309,10 +370,7 @@ class HateoasBuilder
      * @param string $dir             The directory where metadata files are located.
      * @param string $namespacePrefix An optional prefix if you only store metadata for specific namespaces in this directory.
      *
-     * @return self
-     *
-     * @throws \InvalidArgumentException When a directory does not exist
-     * @throws \InvalidArgumentException When a directory has already been registered
+     * @return HateoasBuilder
      */
     public function addMetadataDir($dir, $namespacePrefix = '')
     {
@@ -332,9 +390,9 @@ class HateoasBuilder
     /**
      * Adds a map of namespace prefixes to directories.
      *
-     * @param array<string,string> $namespacePrefixToDirMap
+     * @param array $namespacePrefixToDirMap
      *
-     * @return self
+     * @return HateoasBuilder
      */
     public function addMetadataDirs(array $namespacePrefixToDirMap)
     {
@@ -351,10 +409,7 @@ class HateoasBuilder
      * @param string $dir
      * @param string $namespacePrefix
      *
-     * @return self
-     *
-     * @throws \InvalidArgumentException When a directory does not exist
-     * @throws \InvalidArgumentException When no directory is configured for the ns prefix
+     * @return HateoasBuilder
      */
     public function replaceMetadataDir($dir, $namespacePrefix = '')
     {
@@ -417,5 +472,14 @@ class HateoasBuilder
         if (false === @mkdir($dir, 0777, true)) {
             throw new \RuntimeException(sprintf('Could not create directory "%s".', $dir));
         }
+    }
+
+    private function getExpressionLanguage()
+    {
+        if (null === $this->expressionLanguage) {
+            $this->expressionLanguage = new ExpressionLanguage();
+        }
+
+        return $this->expressionLanguage;
     }
 }

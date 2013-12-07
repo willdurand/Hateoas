@@ -4,14 +4,17 @@ namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\Collection;
 use Hateoas\HateoasBuilder;
+use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Tests\TestCase;
 
 class CollectionTest extends TestCase
 {
     public function test()
     {
-        $hateoas = HateoasBuilder::buildHateoas();
-        $halHateoas = HateoasBuilder::create()->addXmlHalSerializer()->build();
+        $hateoas    = HateoasBuilder::buildHateoas();
+        $halHateoas = HateoasBuilder::create()
+            ->setXmlSerializer(new XmlHalSerializer())
+            ->build();
 
         $collection = new Collection(
             array(

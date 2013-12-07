@@ -7,6 +7,7 @@ use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\Representation\Collection;
 use Hateoas\Representation\PaginatedCollection;
 use Hateoas\HateoasBuilder;
+use Hateoas\Serializer\XmlHalSerializer;
 
 class PaginatedCollectionTest extends TestCase
 {
@@ -21,7 +22,7 @@ class PaginatedCollectionTest extends TestCase
         ;
         $halHateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, $queryStringUrlGenerator)
-            ->addXmlHalSerializer()
+            ->setXmlSerializer(new XmlHalSerializer())
             ->build()
         ;
 

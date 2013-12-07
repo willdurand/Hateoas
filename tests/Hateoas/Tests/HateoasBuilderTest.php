@@ -4,6 +4,7 @@ namespace Hateoas\Tests;
 
 use Hateoas\HateoasBuilder;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
+use Hateoas\Serializer\XmlHalSerializer;
 use JMS\Serializer\SerializationContext;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\Foo1;
@@ -32,7 +33,7 @@ class HateoasBuilderTest extends TestCase
     {
         $hateoas = HateoasBuilder::buildHateoas();
         $halHateoas = HateoasBuilder::create()
-            ->addXmlHalSerializer()
+            ->setXmlSerializer(new XmlHalSerializer())
             ->build();
         $adrienBrault = new AdrienBrault();
 
