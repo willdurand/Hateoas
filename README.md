@@ -467,9 +467,9 @@ All the methods below return the current builder, so that you can chain them.
 #### XML Serializer
 
 * `setXmlSerializer(XmlSerializerInterface $xmlSerializer)`: sets the XML
-  serializer to use. Default is: `XmlHalSerializer`;
+  serializer to use. Default is: `XmlSerializer`;
 * `setDefaultXmlSerializer()`: sets the default XML serializer
-  (`XmlHalSerializer`).
+  (`XmlSerializer`).
 
 #### JSON Serializer
 
