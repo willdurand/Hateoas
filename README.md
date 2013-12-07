@@ -10,6 +10,28 @@ A PHP library to support implementing representations for HATEOAS REST web
 services.
 
 
+* [Installation](#installation)
+* [Usage](#usage)
+  - [Introduction](#introduction)
+  - [Configuring Links](#configuring-links)
+  - [Embedding Resources](#embedding-resources)
+  - [URL Generators](#url-generators)
+  - [Dealing With Collections](#dealing-with-collections)
+  - [The Expression Language](#the-expression-language)
+    - [Context](#context)
+    - [Adding Your Own Context Values](#adding-your-own-context-values)
+  - [The HateoasBuilder](#the-hateoasbuilder)
+* [Reference](#reference)
+  - [XML](#xml)
+  - [YAML](#yaml)
+  - [Annotations](#annotations)
+    - [@Relation](#relation)
+    - [@Route](#route)
+    - [@Embed](#embed)
+    - [@Exclusion](#exclusion)
+    - [@RelationProvider](#relationprovider)
+
+
 Installation
 ------------
 
@@ -260,7 +282,7 @@ In XML, serializing `embed` relations will create new elements:
 </user>
 ```
 
-### Url Generators
+### URL Generators
 
 Since you can use the [Expression Language](#the-expression-language) to define
 the relations links (`href` key), you can do a lot by default. However if you
