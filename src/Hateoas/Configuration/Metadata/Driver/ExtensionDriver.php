@@ -21,7 +21,8 @@ class ExtensionDriver implements DriverInterface
      */
     private $extensions;
 
-    public function __construct(DriverInterface $delegate, array $extensions) {
+    public function __construct(DriverInterface $delegate, array $extensions)
+    {
         $this->delegate   = $delegate;
         $this->extensions = $extensions;
     }
