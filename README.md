@@ -138,6 +138,10 @@ The `$hateoas` object is an instance of `JMS\Serializer\SerializerInterface`,
 part of the Serializer library. Hateoas does not come with its own serializer,
 it simply hooks into the JMS Serializer one.
 
+Hateoas uses the [Hypertext Application
+Language](http://stateless.co/hal_specification.html) (HAL) for JSON
+serialization:
+
 ```json
 {
     "id": 42,
@@ -150,6 +154,9 @@ it simply hooks into the JMS Serializer one.
     }
 }
 ```
+
+And, [Atom links](http://tools.ietf.org/search/rfc4287#section-4.2.7) are used
+for XML serialization:
 
 ```xml
 <user id="42">
@@ -193,9 +200,8 @@ class User
 }
 ```
 
-You will need to exclude the manager property from the serialization, otherwise
-both the serializer and Hateoas will serialize it.
-
+**Note:** You will need to exclude the manager property from the serialization,
+otherwise both the serializer and Hateoas will serialize it.
 You will also have to exclude the manager relation when the manager is `null`,
 because otherwise an error will occur when creating the `href` link (calling
 `getId()` on `null`).
@@ -207,6 +213,8 @@ $user = new User(42, 'Adrien', 'Brault', new User(23, 'MANAGER', 'MANAGER!!!'));
 $json = $hateoas->serialize($user, 'json');
 $xml  = $hateoas->serialize($user, 'xml');
 ```
+
+Serializing `embed` relations are also HAL compliant:
 
 ```json
 {
@@ -236,6 +244,8 @@ $xml  = $hateoas->serialize($user, 'xml');
 }
 ```
 
+In XML, serializing `embed` relations will create new elements:
+
 ```xml
 <user id="42">
     <first_name><![CDATA[Adrien]]></first_name>
@@ -252,13 +262,13 @@ $xml  = $hateoas->serialize($user, 'xml');
 
 ### Url Generators
 
-Since you can use the [expression language](#the-expression-language) to define
-the relations links (`href` key), you can do a lot by default.
-However if you are using a framework, chances are that you will want to use
-routes to build links.
+Since you can use the [Expression Language](#the-expression-language) to define
+the relations links (`href` key), you can do a lot by default. However if you
+are using a framework, chances are that you will want to use routes to build
+links.
 
-You will first need to configure an `UrlGenerator` on the builder. You can either
-implement the `Hateoas\UrlGenerator\UrlGeneratorInterface`, or use the
+You will first need to configure an `UrlGenerator` on the builder. You can
+either implement the `Hateoas\UrlGenerator\UrlGeneratorInterface`, or use the
 `Hateoas\UrlGenerator\CallableUrlGenerator`:
 
 ```php
