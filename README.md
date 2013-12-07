@@ -209,7 +209,7 @@ because otherwise an error will occur when creating the `href` link (calling
 ```php
 $hateoas = HateoasBuilder::create()->build();
 
-$user = new User(42, 'Adrien', 'Brault', new User(23, 'MANAGER', 'MANAGER!!!'));
+$user = new User(42, 'Adrien', 'Brault', new User(23, 'Will', 'Durand'));
 $json = $hateoas->serialize($user, 'json');
 $xml  = $hateoas->serialize($user, 'xml');
 ```
@@ -232,8 +232,8 @@ Serializing `embed` relations are also HAL compliant:
     "_embedded": {
         "manager": {
             "id": 23,
-            "first_name": "MANAGER",
-            "last_name": "MANAGER!!!",
+            "first_name": "Will",
+            "last_name": "Durand",
             "_links": {
                 "self": {
                     "href": "/api/users/23"
@@ -253,8 +253,8 @@ In XML, serializing `embed` relations will create new elements:
     <link rel="self" href="/api/users/42"/>
     <link rel="manager" href="/api/users/23"/>
     <manager rel="manager" id="23">
-        <first_name><![CDATA[MANAGER]]></first_name>
-        <last_name><![CDATA[MANAGER!!!]]></last_name>
+        <first_name><![CDATA[Will]]></first_name>
+        <last_name><![CDATA[Durand]]></last_name>
         <link rel="self" href="/api/users/23"/>
     </manager>
 </user>
@@ -329,14 +329,14 @@ $hateoas = HateoasBuilder::create()
 ;
 ```
 
-### Collections Support
+### Dealing With Collections
 
 The library provides the several classes in the `Hateoas\Representation\*`
-namespace to help you with common tasks. These are simple classes configured the
-library's annotations.
+namespace to help you with common tasks. These are simple classes configured
+with the library's annotations.
 
 The `PaginatedCollection` and `Collection` classes are probably the most
-interesting one:
+interesting ones:
 
 ```php
 use Hateoas\Representation\PaginatedCollection;
@@ -361,8 +361,8 @@ $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
-`Collection` allow you to dynamically configure the collection resources rel,
-and the xml root element name.
+The `Collection` class allows you to dynamically configure the collection
+resources rel, and the xml root element name.
 `PaginatedCollection` is configured to add `self`, `first`, and when possible
 `last`, `next`, `previous` links.
 
@@ -749,7 +749,7 @@ Install the [Composer](http://getcomposer.org/) `dev` dependencies:
 
     php composer.phar install --dev
 
-Then, run the test suite using [atoum](http://www.atoum.org/):
+Then, run the test suite using [PHPUnit](http://phpunit.de/):
 
     bin/phpunit
 
