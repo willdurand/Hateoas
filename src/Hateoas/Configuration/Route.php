@@ -31,18 +31,14 @@ class Route
      * @param string       $name
      * @param string|array $parameters
      * @param boolean      $isAbsolute
-     * @param string|null  $generatorName
+     * @param string|null  $generator
      */
-    public function __construct(
-        $name,
-        $parameters = array(),
-        $isAbsolute = false,
-        $generatorName = null
-    ) {
-        $this->name        = $name;
-        $this->parameters  = $parameters;
-        $this->isAbsolute  = $isAbsolute;
-        $this->generator   = $generatorName;
+    public function __construct($name, $parameters = array(), $isAbsolute = false, $generator = null)
+    {
+        $this->name       = $name;
+        $this->parameters = $parameters;
+        $this->isAbsolute = $isAbsolute;
+        $this->generator  = $generator;
     }
 
     /**

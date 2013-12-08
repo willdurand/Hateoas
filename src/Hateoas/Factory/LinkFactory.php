@@ -27,10 +27,8 @@ class LinkFactory
      * @param ExpressionEvaluator  $expressionEvaluator
      * @param UrlGeneratorRegistry $urlGeneratorRegistry
      */
-    public function __construct(
-        ExpressionEvaluator $expressionEvaluator,
-        UrlGeneratorRegistry $urlGeneratorRegistry
-    ) {
+    public function __construct(ExpressionEvaluator $expressionEvaluator, UrlGeneratorRegistry $urlGeneratorRegistry)
+    {
         $this->expressionEvaluator  = $expressionEvaluator;
         $this->urlGeneratorRegistry = $urlGeneratorRegistry;
     }

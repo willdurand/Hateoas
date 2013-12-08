@@ -24,16 +24,16 @@ class RelationsRepository
      * @param MetadataFactoryInterface $metadataFactory
      * @param RelationProviderProvider $relationProvider
      */
-    public function __construct(
-        MetadataFactoryInterface $metadataFactory,
-        RelationProviderProvider $relationProvider
-    ) {
-        $this->metadataFactory = $metadataFactory;
+    public function __construct(MetadataFactoryInterface $metadataFactory, RelationProviderProvider $relationProvider)
+    {
+        $this->metadataFactory  = $metadataFactory;
         $this->relationProvider = $relationProvider;
     }
 
     /**
-     * {@inheritdoc}
+     * @param object $object
+     *
+     * @return Relation[]
      */
     public function getRelations($object)
     {

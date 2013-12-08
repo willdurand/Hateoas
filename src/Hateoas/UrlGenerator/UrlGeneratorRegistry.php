@@ -23,9 +23,9 @@ class UrlGeneratorRegistry
     }
 
     /**
-     * @param  string|null               $name If null it will return the default url generator
+     * @param string|null $name If null it will return the default url generator
+     *
      * @return UrlGeneratorInterface
-     * @throws \InvalidArgumentException
      */
     public function get($name = null)
     {
@@ -59,6 +59,9 @@ class UrlGeneratorRegistry
         $this->urlGenerators[$name] = $urlGenerator;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasGenerators()
     {
         return count($this->urlGenerators) > 0;

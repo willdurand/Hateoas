@@ -32,19 +32,17 @@ class LinksFactory
      * @param LinkFactory         $linkFactory
      * @param ExclusionManager    $exclusionManager
      */
-    public function __construct(
-        RelationsRepository $relationsRepository,
-        LinkFactory $linkFactory,
-        ExclusionManager $exclusionManager
-    ) {
+    public function __construct(RelationsRepository $relationsRepository, LinkFactory $linkFactory, ExclusionManager $exclusionManager)
+    {
         $this->relationsRepository = $relationsRepository;
         $this->linkFactory         = $linkFactory;
         $this->exclusionManager    = $exclusionManager;
     }
 
     /**
-     * @param  object               $object
-     * @param  SerializationContext $context
+     * @param object               $object
+     * @param SerializationContext $context
+     *
      * @return Link[]
      */
     public function createLinks($object, SerializationContext $context)

@@ -33,20 +33,14 @@ class Relation
     private $exclusion;
 
     /**
-     * @param  string                    $name
-     * @param  string|Route              $href
-     * @param  Embed|string|mixed        $embed
-     * @param  array                     $attributes
-     * @param  Exclusion                 $exclusion
-     * @throws \InvalidArgumentException
+     * @param string             $name
+     * @param string|Route       $href
+     * @param Embed|string|mixed $embed
+     * @param array              $attributes
+     * @param Exclusion          $exclusion
      */
-    public function __construct(
-        $name,
-        $href = null,
-        $embed = null,
-        array $attributes = array(),
-        Exclusion $exclusion = null
-    ) {
+    public function __construct($name, $href = null, $embed = null, array $attributes = array(), Exclusion $exclusion = null)
+    {
         if (null !== $embed && !$embed instanceof Embed) {
             $embed = new Embed($embed);
         }
