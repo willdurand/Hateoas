@@ -19,7 +19,9 @@ use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\EmbedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
+use Hateoas\Helper\LinkHelper;
 use Hateoas\UrlGenerator\UrlGeneratorInterface;
+use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\ExclusionManager;
@@ -29,7 +31,6 @@ use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
-use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\SerializerBuilder;
 use Metadata\Cache\FileCache;
@@ -167,7 +168,10 @@ class HateoasBuilder
             }
         }
 
-        return new Hateoas($jmsSerializer);
+        return new Hateoas(
+            $jmsSerializer,
+            new LinkHelper($linkFactory, $relationsRepository)
+        );
     }
 
     /**
