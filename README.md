@@ -557,9 +557,9 @@ Hateoas provides a set of helpers to ease the process of building APIs.
 
 The `LinkHelper` class provides two features:
 
-1. The `getLinkHref($object, $rel, $absolute = false)` method allows you to get
-   the _href_ value of any object, for a given relation name. Basically, it is
-   able to generate an URI (either absolute or relative) from a relation:
+* The `getLinkHref($object, $rel, $absolute = false)` method allows you to get
+  the _href_ value of any object, for a given relation name. Basically, it is
+  able to generate an URI (either absolute or relative) from a relation:
 
 ```php
 $user = new User(123, 'William', 'Durand');
@@ -571,17 +571,23 @@ $linkHelper->getLinkHref($user, 'self', true);
 // http://example.com/api/users/123
 ```
 
-2. The `link(object, rel, absolute)` **function** available in your expressions
-   (cf. [The Expression Language](#the-expression-language)):
+* The `link(object, rel, absolute)` **function** available in your expressions
+  (cf. [The Expression Language](#the-expression-language)):
 
 ```php
 /**
- * @Hateoas\Relation("self", href = @Hateoas\Route("post_get", parameters = {"id" = "expr(object.getId())"}))
+ * @Hateoas\Relation(
+ *     "self",
+ *     href = @Hateoas\Route("post_get", parameters = {"id" = "expr(object.getId())"})
+ * )
  */
 class Post {}
 
 /**
- * @Hateoas\Relation("self", href = @Hateoas\Route("user_get", parameters = {"id" = "expr(object.getId())"}))
+ * @Hateoas\Relation(
+ *     "self",
+ *     href = @Hateoas\Route("user_get", parameters = {"id" = "expr(object.getId())"})
+ * )
  * @Hateoas\Relation(
  *     "post",
  *     href = "expr(link(object.getPost(), 'self', true))"
@@ -615,7 +621,7 @@ class User
         "last_name": "Durand",
         "_links": {
             "self": { "href": "http://example.com/api/users/123" },
-            "post": { "href": "http://example.com/api/posts/456" }
+            "post": { "href": "http://example.com/api/posts/456" },
             "relative": { "href": "/api/posts/789" }
         }
     }
