@@ -131,6 +131,10 @@ class HateoasBuilder
         $exclusionManager    = new ExclusionManager($expressionEvaluator);
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
         $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
+        $linkHelper          = new LinkHelper($linkFactory, $relationsRepository);
+
+        // Register Hateoas core functions
+        $expressionEvaluator->registerFunction($linkHelper);
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -140,7 +144,7 @@ class HateoasBuilder
             $this->setDefaultJsonSerializer();
         }
 
-        $inlineDeferrers = array();
+        $inlineDeferrers  = array();
         $eventSubscribers = array(
             new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedMapFactory),
             new JsonEventSubscriber(
@@ -168,10 +172,7 @@ class HateoasBuilder
             }
         }
 
-        return new Hateoas(
-            $jmsSerializer,
-            new LinkHelper($linkFactory, $relationsRepository)
-        );
+        return new Hateoas($jmsSerializer, $linkHelper);
     }
 
     /**
