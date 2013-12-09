@@ -2,10 +2,12 @@
 
 namespace Hateoas\Tests\Expression;
 
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\Node\Node;
 use Symfony\Component\ExpressionLanguage\ParsedExpression;
 use Hateoas\Tests\TestCase;
 use Hateoas\Expression\ExpressionEvaluator;
+use Hateoas\Expression\ExpressionFunctionInterface;
 
 class ExpressionEvaluatorTest extends TestCase
 {
@@ -103,5 +105,48 @@ class ExpressionEvaluatorTest extends TestCase
             ->string($expressionEvaluator->evaluate('expr(name)', $data))
                 ->isEqualTo('Adrien')
         ;
+    }
+
+    public function testRegisterFunction()
+    {
+        $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
+        $expressionEvaluator->registerFunction(new HelloExpressionFunction());
+
+        $this
+            ->string($expressionEvaluator->evaluate('expr(hello("toto"))', null))
+            ->isEqualTo('Hello, toto!')
+        ;
+    }
+}
+
+class HelloExpressionFunction implements ExpressionFunctionInterface
+{
+    public function getName()
+    {
+        return 'hello';
+    }
+
+    public function getCompiler()
+    {
+        return function ($value) {
+            return sprintf('$hello_helper->hello(%s)', $value);
+        };
+    }
+
+    public function getEvaluator()
+    {
+        return function (array $context, $value) {
+            return $context['hello_helper']->hello($value);
+        };
+    }
+
+    public function getContextValues()
+    {
+        return array('hello_helper' => $this);
+    }
+
+    public function hello($name)
+    {
+        return sprintf('Hello, %s!', $name);
     }
 }

@@ -19,7 +19,9 @@ use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\EmbedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
+use Hateoas\Helper\LinkHelper;
 use Hateoas\UrlGenerator\UrlGeneratorInterface;
+use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\ExclusionManager;
@@ -29,7 +31,6 @@ use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
-use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\SerializerBuilder;
 use Metadata\Cache\FileCache;
@@ -130,6 +131,10 @@ class HateoasBuilder
         $exclusionManager    = new ExclusionManager($expressionEvaluator);
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
         $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
+        $linkHelper          = new LinkHelper($linkFactory, $relationsRepository);
+
+        // Register Hateoas core functions
+        $expressionEvaluator->registerFunction($linkHelper);
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -139,7 +144,7 @@ class HateoasBuilder
             $this->setDefaultJsonSerializer();
         }
 
-        $inlineDeferrers = array();
+        $inlineDeferrers  = array();
         $eventSubscribers = array(
             new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedMapFactory),
             new JsonEventSubscriber(
@@ -167,7 +172,7 @@ class HateoasBuilder
             }
         }
 
-        return new Hateoas($jmsSerializer);
+        return new Hateoas($jmsSerializer, $linkHelper);
     }
 
     /**

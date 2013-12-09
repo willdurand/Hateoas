@@ -6,6 +6,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
+ * @author William Durand <william.durand1@gmail.com>
  */
 class ExpressionEvaluator
 {
@@ -65,5 +66,27 @@ class ExpressionEvaluator
         }
 
         return $newArray;
+    }
+
+    /**
+     * Register a new new ExpressionLanguage function.
+     *
+     * @param ExpressionFunctionInterface $function
+     *
+     * @return ExpressionEvaluator
+     */
+    public function registerFunction(ExpressionFunctionInterface $function)
+    {
+        $this->expressionLanguage->register(
+            $function->getName(),
+            $function->getCompiler(),
+            $function->getEvaluator()
+        );
+
+        foreach ($function->getContextValues() as $name => $value) {
+            $this->setContextValue($name, $value);
+        }
+
+        return $this;
     }
 }
