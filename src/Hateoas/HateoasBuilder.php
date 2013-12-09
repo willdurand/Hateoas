@@ -167,7 +167,7 @@ class HateoasBuilder
             }
         }
 
-        return new Hateoas($jmsSerializer, $relationsRepository);
+        return new Hateoas($jmsSerializer);
     }
 
     /**

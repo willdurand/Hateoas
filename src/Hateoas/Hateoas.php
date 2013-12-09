@@ -2,7 +2,6 @@
 
 namespace Hateoas;
 
-use Hateoas\Configuration\RelationsRepository;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -18,18 +17,11 @@ class Hateoas implements SerializerInterface
     private $serializer;
 
     /**
-     * @var RelationsRepository
-     */
-    private $relationsRepository;
-
-    /**
      * @param SerializerInterface $serializer
-     * @param RelationsRepository $RelationsRepository
      */
-    public function __construct(SerializerInterface $serializer, RelationsRepository $relationsRepository)
+    public function __construct(SerializerInterface $serializer)
     {
-        $this->serializer          = $serializer;
-        $this->relationsRepository = $relationsRepository;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -46,14 +38,6 @@ class Hateoas implements SerializerInterface
     public function deserialize($data, $type, $format, DeserializationContext $context = null)
     {
         return $this->serializer->deserialize($data, $type, $format, $context);
-    }
-
-    /**
-     * @return RelationsRepository
-     */
-    public function getRelationsRepository()
-    {
-        return $this->relationsRepository;
     }
 
     /**
