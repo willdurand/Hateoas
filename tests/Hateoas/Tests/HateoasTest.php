@@ -52,9 +52,4 @@ class HateoasTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('http://example.com/users/123', $this->hateoas->getLinkHref(new Will(123), 'self', true));
     }
-
-    public function testGetLinkHrefWithFunctionExpression()
-    {
-        $this->assertEquals('{"id":123,"post":{"id":456,"_links":{"self":{"href":"\/posts\/456"}}},"_links":{"self":{"href":"\/users\/123"},"post":{"href":"http:\/\/example.com\/posts\/456"}}}', $this->hateoas->serialize(new Will(123, new Post(456)), 'json'));
-    }
 }
