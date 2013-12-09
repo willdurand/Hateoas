@@ -223,7 +223,7 @@ class HateoasBuilder
      *
      * @return HateoasBuilder
      */
-    public function setUrlGenerator($name = null, UrlGeneratorInterface $urlGenerator)
+    public function setUrlGenerator($name, UrlGeneratorInterface $urlGenerator)
     {
         $this->urlGeneratorRegistry->set($name, $urlGenerator);
 
