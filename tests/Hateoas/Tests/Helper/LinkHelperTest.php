@@ -7,7 +7,6 @@ use Hateoas\Configuration\Route;
 use Hateoas\HateoasBuilder;
 use Hateoas\Helper\LinkHelper;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
-use Hateoas\Tests\Fixtures\Post;
 use Hateoas\Tests\Fixtures\Will;
 
 class LinkHelperTest extends \PHPUnit_Framework_TestCase
@@ -64,11 +63,6 @@ class LinkHelperTest extends \PHPUnit_Framework_TestCase
         $linkHelper = new LinkHelper($this->getLinkFactoryMock($this->never()), $this->getRelationsRepositoryMock());
 
         $this->assertNull($linkHelper->getLinkHref(new Will(123), 'unknown-rel'));
-    }
-
-    public function testGetLinkHrefWithFunctionExpression()
-    {
-        $this->assertEquals('{"id":123,"post":{"id":456,"_links":{"self":{"href":"\/posts\/456"}}},"_links":{"self":{"href":"\/users\/123"},"post":{"href":"http:\/\/example.com\/posts\/456"}}}', $this->hateoas->serialize(new Will(123, new Post(456)), 'json'));
     }
 
     private function getRelationsRepositoryMock()

@@ -555,11 +555,10 @@ Hateoas provides a set of helpers to ease the process of building APIs.
 
 #### LinkHelper
 
-The `LinkHelper` class provides two features:
-
-* The `getLinkHref($object, $rel, $absolute = false)` method allows you to get
-  the _href_ value of any object, for a given relation name. Basically, it is
-  able to generate an URI (either absolute or relative) from a relation:
+The `LinkHelper` class provides a `getLinkHref($object, $rel, $absolute = false)`
+method that allows you to get the _href_ value of any object, for any given
+relation name.  Basically, it is able to generate an URI (either absolute or
+relative) from any **link** relation:
 
 ```php
 $user = new User(123, 'William', 'Durand');
@@ -571,8 +570,11 @@ $linkHelper->getLinkHref($user, 'self', true);
 // http://example.com/api/users/123
 ```
 
-* The `link(object, rel, absolute)` **function** available in your expressions
-  (cf. [The Expression Language](#the-expression-language)):
+##### Expression Language
+
+The feature above is also available in your expressions (cf. [The Expression
+Language](#the-expression-language)) through the `link(object, rel, absolute)`
+**function**:
 
 ```php
 /**
@@ -613,6 +615,9 @@ class User
 }
 ```
 
+Pay attention to the `href` expressions for the `post` and `relative` relations,
+as well as their corresponding values in the following JSON content:
+
 ```json
 {
     "user": {
@@ -627,6 +632,13 @@ class User
     }
 }
 ```
+
+It is worth mentionning that you can **force** whether you want an absolute or
+relative URI by using the third argument in both the `getLinkHref()` method and
+the `link` function.
+
+**Important:** by default, all URIs will be **relative**, even those which are
+defined as **absolute** in their configuration.
 
 ```php
 $linkHelper->getLinkHref($user, 'post');

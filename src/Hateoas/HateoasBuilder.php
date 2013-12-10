@@ -16,6 +16,7 @@ use Hateoas\Configuration\Provider\Resolver\RelationProviderResolverInterface;
 use Hateoas\Configuration\Provider\Resolver\StaticMethodResolver;
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Expression\ExpressionEvaluator;
+use Hateoas\Expression\LinkExpressionFunction;
 use Hateoas\Factory\EmbedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
@@ -134,7 +135,7 @@ class HateoasBuilder
         $linkHelper          = new LinkHelper($linkFactory, $relationsRepository);
 
         // Register Hateoas core functions
-        $expressionEvaluator->registerFunction($linkHelper);
+        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelper));
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();

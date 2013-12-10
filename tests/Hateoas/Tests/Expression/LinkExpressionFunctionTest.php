@@ -1,12 +1,13 @@
 <?php
 
-namespace Hateoas\Tests;
+namespace Hateoas\Tests\Expression;
 
 use Hateoas\HateoasBuilder;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
+use Hateoas\Tests\Fixtures\Post;
 use Hateoas\Tests\Fixtures\Will;
 
-class HateoasTest extends \PHPUnit_Framework_TestCase
+class LinkExpressionFunctionTest extends \PHPUnit_Framework_TestCase
 {
     private $hateoas;
 
@@ -35,20 +36,8 @@ class HateoasTest extends \PHPUnit_Framework_TestCase
             ->build();
     }
 
-    public function testGetLinkHrefUrlWithUnknownRelShouldReturnNull()
+    public function testGetLinkHrefWithFunctionExpression()
     {
-        $this->assertNull($this->hateoas->getLinkHref(new Will(123), 'unknown-rel'));
-        $this->assertNull($this->hateoas->getLinkHref(new Will(123), 'unknown-rel', true));
-    }
-
-    public function testGetLinkHrefUrl()
-    {
-        $this->assertEquals('/users/123', $this->hateoas->getLinkHref(new Will(123), 'self'));
-        $this->assertEquals('/users/123', $this->hateoas->getLinkHref(new Will(123), 'self', false));
-    }
-
-    public function testGetLinkHrefUrlWithAbsoluteTrue()
-    {
-        $this->assertEquals('http://example.com/users/123', $this->hateoas->getLinkHref(new Will(123), 'self', true));
+        $this->assertEquals('{"id":123,"post":{"id":456,"_links":{"self":{"href":"\/posts\/456"}}},"_links":{"self":{"href":"\/users\/123"},"post":{"href":"http:\/\/example.com\/posts\/456"}}}', $this->hateoas->serialize(new Will(123, new Post(456)), 'json'));
     }
 }
