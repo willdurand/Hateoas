@@ -36,7 +36,7 @@ class LinkExpressionFunction implements ExpressionFunctionInterface
     public function getCompiler()
     {
         return function ($object, $rel, $absolute = false) {
-            return sprintf('$link_helper->getLinkHref(%s, $s, $s)', $object, $rel, $absolute);
+            return sprintf('$link_helper->getLinkHref(%s, %s, %s)', $object, $rel, $absolute);
         };
     }
 

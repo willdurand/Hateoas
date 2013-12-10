@@ -12,6 +12,38 @@ class LinkExpressionFunctionTest extends \PHPUnit_Framework_TestCase
     {
         $object = new \StdClass();
 
+        $linkHelperMock = $this->mockHelper('/foo', $object, 'self', false);
+
+        $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
+        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelperMock));
+
+        $this->assertEquals(
+            '/foo',
+            $expressionEvaluator->evaluate('expr(link(object, "self", false))', $object)
+        );
+    }
+
+    public function testCompile()
+    {
+        $object = new \StdClass();
+
+        $linkHelperMock = $this->mockHelper('/foo', $object, 'self', false);
+
+        $expressionLanguage = new ExpressionLanguage();
+        $expressionEvaluator = new ExpressionEvaluator($expressionLanguage);
+        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelperMock));
+
+        $compiledExpression = $expressionLanguage->compile('link(object, "self", false)', array('object', 'link_helper'));
+
+        // setup variables for expression eval
+        $object = $object;
+        $link_helper = $linkHelperMock;
+
+        $this->assertEquals('/foo', eval(sprintf('return %s;', $compiledExpression)));
+    }
+
+    private function mockHelper($result, $expectedObject, $expectedRel, $expectedAbsolute)
+    {
         $linkHelperMock = $this
             ->getMockBuilder('Hateoas\Helper\LinkHelper')
             ->disableOriginalConstructor()
@@ -22,15 +54,9 @@ class LinkExpressionFunctionTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('getLinkHref')
             ->will($this->returnValue('/foo'))
-            ->with($object, 'self', false)
+            ->with($expectedObject, $expectedRel, $expectedAbsolute)
         ;
 
-        $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
-        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelperMock));
-
-        $this->assertEquals(
-            '/foo',
-            $expressionEvaluator->evaluate('expr(link(object, "self", false))', $object)
-        );
+        return $linkHelperMock;
     }
 }
