@@ -2,42 +2,61 @@
 
 namespace Hateoas\Tests\Expression;
 
-use Hateoas\HateoasBuilder;
-use Hateoas\UrlGenerator\CallableUrlGenerator;
-use Hateoas\Tests\Fixtures\Post;
-use Hateoas\Tests\Fixtures\Will;
+use Hateoas\Expression\ExpressionEvaluator;
+use Hateoas\Expression\LinkExpressionFunction;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class LinkExpressionFunctionTest extends \PHPUnit_Framework_TestCase
 {
-    private $hateoas;
-
-    protected function setUp()
+    public function testEvaluate()
     {
-        $this->hateoas = HateoasBuilder::create()
-            ->setUrlGenerator(null, new CallableUrlGenerator(function ($name, $parameters, $absolute) {
-                if ($name === 'user_get') {
-                    return sprintf(
-                        '%s%s',
-                        $absolute ? 'http://example.com' : '',
-                        strtr('/users/id', $parameters)
-                    );
-                }
+        $object = new \StdClass();
 
-                if ($name === 'post_get') {
-                    return sprintf(
-                        '%s%s',
-                        $absolute ? 'http://example.com' : '',
-                        strtr('/posts/id', $parameters)
-                    );
-                }
+        $linkHelperMock = $this->mockHelper('/foo', $object, 'self', false);
 
-                throw new \RuntimeException('Cannot generate URL');
-            }))
-            ->build();
+        $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
+        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelperMock));
+
+        $this->assertEquals(
+            '/foo',
+            $expressionEvaluator->evaluate('expr(link(object, "self", false))', $object)
+        );
     }
 
-    public function testGetLinkHrefWithFunctionExpression()
+    public function testCompile()
     {
-        $this->assertEquals('{"id":123,"post":{"id":456,"_links":{"self":{"href":"\/posts\/456"}}},"_links":{"self":{"href":"\/users\/123"},"post":{"href":"http:\/\/example.com\/posts\/456"}}}', $this->hateoas->serialize(new Will(123, new Post(456)), 'json'));
+        $object = new \StdClass();
+
+        $linkHelperMock = $this->mockHelper('/foo', $object, 'self', false);
+
+        $expressionLanguage = new ExpressionLanguage();
+        $expressionEvaluator = new ExpressionEvaluator($expressionLanguage);
+        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelperMock));
+
+        $compiledExpression = $expressionLanguage->compile('link(object, "self", false)', array('object', 'link_helper'));
+
+        // setup variables for expression eval
+        $object = $object;
+        $link_helper = $linkHelperMock;
+
+        $this->assertEquals('/foo', eval(sprintf('return %s;', $compiledExpression)));
+    }
+
+    private function mockHelper($result, $expectedObject, $expectedRel, $expectedAbsolute)
+    {
+        $linkHelperMock = $this
+            ->getMockBuilder('Hateoas\Helper\LinkHelper')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $linkHelperMock
+            ->expects($this->once())
+            ->method('getLinkHref')
+            ->will($this->returnValue('/foo'))
+            ->with($expectedObject, $expectedRel, $expectedAbsolute)
+        ;
+
+        return $linkHelperMock;
     }
 }
