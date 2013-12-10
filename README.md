@@ -39,6 +39,8 @@ services.
     - [@Embed](#embed)
     - [@Exclusion](#exclusion)
     - [@RelationProvider](#relationprovider)
+* [Internals](#internals)
+  - [Expression Functions](#expression-functions)
 
 
 Installation
@@ -570,7 +572,7 @@ $linkHelper->getLinkHref($user, 'self', true);
 // http://example.com/api/users/123
 ```
 
-##### Expression Language
+##### The `link` Function
 
 The feature above is also available in your expressions (cf. [The Expression
 Language](#the-expression-language)) through the `link(object, rel, absolute)`
@@ -871,6 +873,30 @@ class MyRelationProvider
     }
 }
 ```
+
+
+Internals
+---------
+
+This section refers to the Hateoas internals, providing documentation about
+hidden parts of this library, not always relevant for end users, but interesting
+for developers or people interested in learning how things work under the hood.
+
+### Expression Functions
+
+**Expression Functions** are custom functions used to extend the [Expression
+Language](#the-expression-language) as explained in chapter [Extending the
+ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/extending.html),
+part of the Symfony documentation.
+
+By now, Hateoas does not let users add their own custom functions. Only core
+functions are registered, such as the `LinkExpressionFunction` described in
+[LinkHelper - The `link` Function](#the-link-function).
+
+The `ExpressionFunctionInterface` is designed to represent an expression
+function. Adding a new expression function is a matter of implementing this
+interface and registering it into the `ExpressionEvaluator` through the
+`registerFunction()` method.
 
 
 Contributing
