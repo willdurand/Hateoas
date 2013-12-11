@@ -28,7 +28,7 @@ class ExpressionEvaluator
         $this->context = array();
     }
 
-    public function setContextValue($name, $value)
+    public function setContextVariable($name, $value)
     {
         $this->context[$name] = $value;
     }
@@ -83,8 +83,8 @@ class ExpressionEvaluator
             $function->getEvaluator()
         );
 
-        foreach ($function->getContextValues() as $name => $value) {
-            $this->setContextValue($name, $value);
+        foreach ($function->getContextVariables() as $name => $value) {
+            $this->setContextVariable($name, $value);
         }
 
         return $this;

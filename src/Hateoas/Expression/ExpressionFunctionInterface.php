@@ -29,9 +29,9 @@ interface ExpressionFunctionInterface
     public function getEvaluator();
 
     /**
-     * Return context values as an array.
+     * Return context variables as an array.
      *
      * @return array
      */
-    public function getContextValues();
+    public function getContextVariables();
 }

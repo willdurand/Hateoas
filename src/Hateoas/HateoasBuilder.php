@@ -189,7 +189,7 @@ class HateoasBuilder
     }
 
     /**
-     * Sets the default XML serializer (`XmlSerializer`).
+     * Set the default XML serializer (`XmlSerializer`).
      *
      * @return HateoasBuilder
      */
@@ -211,7 +211,7 @@ class HateoasBuilder
     }
 
     /**
-     * Sets the default JSON serializer (`JsonHalSerializer`).
+     * Set the default JSON serializer (`JsonHalSerializer`).
      *
      * @return HateoasBuilder
      */
@@ -221,7 +221,7 @@ class HateoasBuilder
     }
 
     /**
-     * Adds a new URL generator. If you pass `null` as name, it will be the
+     * Add a new URL generator. If you pass `null` as name, it will be the
      * default URL generator.
      *
      * @param string|null           $name
@@ -237,16 +237,16 @@ class HateoasBuilder
     }
 
     /**
-     * Adds a new expression context value.
+     * Add a new expression context variable.
      *
      * @param string $name
      * @param mixed  $value
      *
      * @return HateoasBuilder
      */
-    public function setExpressionContextValue($name, $value)
+    public function setExpressionContextVariable($name, $value)
     {
-        $this->getExpressionLanguage()->setContextValue($name, $value);
+        $this->getExpressionLanguage()->setContextVariable($name, $value);
 
         return $this;
     }
@@ -264,7 +264,7 @@ class HateoasBuilder
     }
 
     /**
-     * Adds a new relation provider resolver.
+     * Add a new relation provider resolver.
      *
      * @param RelationProviderResolverInterface $resolver
      *
@@ -334,7 +334,7 @@ class HateoasBuilder
     }
 
     /**
-     * Sets a map of namespace prefixes to directories.
+     * Set a map of namespace prefixes to directories.
      *
      * This method overrides any previously defined directories.
      *
@@ -356,7 +356,7 @@ class HateoasBuilder
     }
 
     /**
-     * Adds a directory where the serializer will look for class metadata.
+     * Add a directory where the serializer will look for class metadata.
      *
      * The namespace prefix will make the names of the actual metadata files a bit shorter. For example, let's assume
      * that you have a directory where you only store metadata files for the ``MyApplication\Entity`` namespace.
@@ -394,7 +394,7 @@ class HateoasBuilder
     }
 
     /**
-     * Adds a map of namespace prefixes to directories.
+     * Add a map of namespace prefixes to directories.
      *
      * @param array $namespacePrefixToDirMap
      *

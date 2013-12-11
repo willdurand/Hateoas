@@ -53,7 +53,7 @@ class LinkExpressionFunction implements ExpressionFunctionInterface
     /**
      * {@inheritDoc}
      */
-    public function getContextValues()
+    public function getContextVariables()
     {
         return array('link_helper' => $this->linkHelper);
     }

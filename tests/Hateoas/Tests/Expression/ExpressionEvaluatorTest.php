@@ -82,7 +82,7 @@ class ExpressionEvaluatorTest extends TestCase
         ;
     }
 
-    public function testSetContextValue()
+    public function testSetContextVariable()
     {
         $data = new \StdClass();
 
@@ -99,7 +99,7 @@ class ExpressionEvaluatorTest extends TestCase
         ;
 
         $expressionEvaluator = new ExpressionEvaluator($expressionLanguageProphecy->reveal());
-        $expressionEvaluator->setContextValue('name', 'Adrien');
+        $expressionEvaluator->setContextVariable('name', 'Adrien');
 
         $this
             ->string($expressionEvaluator->evaluate('expr(name)', $data))
@@ -140,7 +140,7 @@ class HelloExpressionFunction implements ExpressionFunctionInterface
         };
     }
 
-    public function getContextValues()
+    public function getContextVariables()
     {
         return array('hello_helper' => $this);
     }

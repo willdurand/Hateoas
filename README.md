@@ -19,7 +19,7 @@ services.
   - [Dealing With Collections](#dealing-with-collections)
   - [The Expression Language](#the-expression-language)
     - [Context](#context)
-    - [Adding Your Own Context Values](#adding-your-own-context-values)
+    - [Adding Your Own Context Variables](#adding-your-own-context-variables)
   - [The HateoasBuilder](#the-hateoasbuilder)
     - [XML Serializer](#xml-serializer)
     - [JSON Serializer](#json-serializer)
@@ -445,10 +445,10 @@ represents the current object:
 expr(object.getId())
 ```
 
-We call such a variable a **context value**.
+We call such a variable a **context variable**.
 
-You can add your own context values to the Expression Language context by adding
-them to the `ExpressionEvaluator`. For instance, the
+You can add your own context variables to the Expression Language context by
+adding them to the `ExpressionEvaluator`. For instance, the
 [BazingaHateoasBundle](https://github.com/willdurand/BazingaHateoasBundle) adds
 the `request` and the `container` to the context: [BazingaHateoasBundle's
 configuration](https://github.com/willdurand/BazingaHateoasBundle/blob/master/Resources/config/serializer.xml#L52-L59).
@@ -461,20 +461,20 @@ expr(request.method !== 'GET')
 expr(container.get('my-service').foo())
 ```
 
-##### Adding Your Own Context Values
+##### Adding Your Own Context Variables
 
-Using the `HateoasBuilder`, call the `setExpressionContextValue()` method to add
-new context values:
+Using the `HateoasBuilder`, call the `setExpressionContextVariable()` method to add
+new context variables:
 
 ```php
 use Hateoas\HateoasBuilder;
 
 $hateoas = HateoasBuilder::create()
-    ->setExpressionContextValue('foo', new Foo())
+    ->setExpressionContextVariable('foo', new Foo())
     ->build();
 ```
 
-The `foo` variables is now available:
+The `foo` variable is now available:
 
 ```
 expr(foo !== null)
@@ -520,8 +520,8 @@ All the methods below return the current builder, so that you can chain them.
 
 #### Expression Evaluator/Expression Language
 
-* `setExpressionContextValue($name, $value)`: adds a new expression context
-  value;
+* `setExpressionContextVariable($name, $value)`: adds a new expression context
+  variable;
 * `setExpressionLanguage(ExpressionLanguage $expressionLanguage)`.
 
 #### Relation Provider
