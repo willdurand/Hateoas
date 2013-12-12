@@ -817,7 +817,7 @@ under some circumstances:
  *     href = @Hateoas\Route(
  *         "user_get",
  *         parameters = { "id" = "expr(object.getManager().getId())" }
- *     )
+ *     ),
  *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(null === object.getManager())")
  * )
  */
