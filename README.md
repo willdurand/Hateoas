@@ -60,6 +60,12 @@ into your `composer.json` file:
 
 Otherwise, install the library and setup the autoloader yourself.
 
+### Working With Symfony2
+
+There is a bundle for that! Install the
+[BazingaHateoasBundle](https://github.com/willdurand/BazingaHateoasBundle), and
+enjoy!
+
 
 Usage
 -----
