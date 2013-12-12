@@ -448,18 +448,7 @@ expr(object.getId())
 We call such a variable a **context variable**.
 
 You can add your own context variables to the Expression Language context by
-adding them to the `ExpressionEvaluator`. For instance, the
-[BazingaHateoasBundle](https://github.com/willdurand/BazingaHateoasBundle) adds
-the `request` and the `container` to the context: [BazingaHateoasBundle's
-configuration](https://github.com/willdurand/BazingaHateoasBundle/blob/master/Resources/config/serializer.xml#L52-L59).
-
-You would be able to write the following expressions:
-
-```
-expr(request.method !== 'GET')
-
-expr(container.get('my-service').foo())
-```
+adding them to the `ExpressionEvaluator`.
 
 ##### Adding Your Own Context Variables
 
