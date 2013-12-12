@@ -11,6 +11,7 @@ services.
 
 
 * [Installation](#installation)
+  - [Working With Symfony2](#working-with-symfony2)
 * [Usage](#usage)
   - [Introduction](#introduction)
   - [Configuring Links](#configuring-links)
