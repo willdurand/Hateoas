@@ -311,6 +311,11 @@ In XML, serializing `embed` relations will create new elements:
 </user>
 ```
 
+The tag name of an embedded resource is inferred from the
+[`@XmlRoot`](http://jmsyst.com/libs/serializer/master/reference/annotations#xmlroot)
+annotation (`xml_root_name` in YAML, `xml-root-name` in XML) coming from the
+Serializer configuration.
+
 ### Dealing With Collections
 
 The library provides the several classes in the `Hateoas\Representation\*`
