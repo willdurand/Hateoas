@@ -16,11 +16,15 @@ services.
   - [Introduction](#introduction)
   - [Configuring Links](#configuring-links)
   - [Embedding Resources](#embedding-resources)
-  - [URL Generators](#url-generators)
   - [Dealing With Collections](#dealing-with-collections)
   - [The Expression Language](#the-expression-language)
     - [Context](#context)
     - [Adding Your Own Context Variables](#adding-your-own-context-variables)
+  - [URL Generators](#url-generators)
+  - [Helpers](#helpers)
+    - [LinkHelper](#linkhelper)
+  - [Serializers & Formats](#serializers-formats)
+    - [Adding New Serializers](#adding-new-serializers)
   - [The HateoasBuilder](#the-hateoasbuilder)
     - [XML Serializer](#xml-serializer)
     - [JSON Serializer](#json-serializer)
@@ -30,8 +34,6 @@ services.
     - [(JMS) Serializer Specific](#jms-serializer-specific)
     - [Others](#others)
   - [Configuring a Cache Directory](#configuring-a-cache-directory)
-  - [Helpers](#helpers)
-    - [LinkHelper](#linkhelper)
 * [Reference](#reference)
   - [XML](#xml)
   - [YAML](#yaml)
@@ -177,10 +179,10 @@ $xml  = $hateoas->serialize($user, 'xml');
 ```
 
 The `$hateoas` object is an instance of `JMS\Serializer\SerializerInterface`,
-part of the Serializer library. Hateoas does not come with its own serializer,
-it simply hooks into the JMS Serializer one.
+coming from the Serializer library. Hateoas does not come with its own
+serializer, it simply hooks into the JMS Serializer one.
 
-Hateoas uses the [Hypertext Application
+By default, Hateoas uses the [Hypertext Application
 Language](http://stateless.co/hal_specification.html) (HAL) for JSON
 serialization:
 
@@ -197,8 +199,8 @@ serialization:
 }
 ```
 
-And, [Atom links](http://tools.ietf.org/search/rfc4287#section-4.2.7) are used
-for XML serialization:
+And, [Atom Links](http://tools.ietf.org/search/rfc4287#section-4.2.7) are used
+by default for XML serialization:
 
 ```xml
 <user id="42">
@@ -207,6 +209,10 @@ for XML serialization:
     <link rel="self" href="/api/users/42"/>
 </user>
 ```
+
+It is worth mentionning that these formats are the **default ones**, not the
+only available ones. You can use [different formats and even add your
+owns]().
 
 Now that you know how to add **links**, let's see how to add **embedded
 resources**.
@@ -300,75 +306,6 @@ In XML, serializing `embed` relations will create new elements:
         <link rel="self" href="/api/users/23"/>
     </manager>
 </user>
-```
-
-### URL Generators
-
-Since you can use the [Expression Language](#the-expression-language) to define
-the relations links (`href` key), you can do a lot by default. However if you
-are using a framework, chances are that you will want to use routes to build
-links.
-
-You will first need to configure an `UrlGenerator` on the builder. You can
-either implement the `Hateoas\UrlGenerator\UrlGeneratorInterface`, or use the
-`Hateoas\UrlGenerator\CallableUrlGenerator`:
-
-```php
-use Hateoas\UrlGenerator\CallableUrlGenerator;
-
-$hateoas = HateoasBuilder::create()
-    ->setUrlGenerator(
-        null, // By default all links uses the generator configured with the null name
-        new CallableUrlGenerator(function ($route, array $parameters, $absolute) use ($myFramework) {
-            return $myFramework->generateTheUrl($route, $parameters, $absolute);
-        })
-    )
-    ->build()
-;
-```
-
-You will then be able to use the [@Route](#route) annotation:
-
-```php
-use Hateoas\Configuration\Annotation as Hateoas;
-
-/**
- * @Hateoas\Relation(
- *      "self",
- *      href = @Hateoas\Route(
- *          "user_get",
- *          parameters = {
- *              "id" = "expr(object.getId())"
- *          }
- *      )
- * )
- */
-class User
-```
-
-```json
-{
-    "id": 42,
-    "first_name": "Adrien",
-    "last_name": "Brault",
-    "_links": {
-        "self": {
-            "href": "/api/users/42"
-        }
-    }
-}
-```
-
-Note that the library comes with a `SymfonyUrlGenerator`. For example to use it
-in Silex:
-
-```php
-use Hateoas\UrlGenerator\SymfonyUrlGenerator;
-
-$hateoas = HateoasBuilder::create()
-    ->setUrlGenerator(null, new SymfonyUrlGenerator($app['url_generator']))
-    ->build()
-;
 ```
 
 ### Dealing With Collections
@@ -477,90 +414,73 @@ The `foo` variable is now available:
 expr(foo !== null)
 ```
 
-### The HateoasBuilder
+### URL Generators
 
-The `HateoasBuilder` class is used to easily configure Hateoas thanks to a
-powerful and fluent API.
+Since you can use the [Expression Language](#the-expression-language) to define
+the relations links (`href` key), you can do a lot by default. However if you
+are using a framework, chances are that you will want to use routes to build
+links.
+
+You will first need to configure an `UrlGenerator` on the builder. You can
+either implement the `Hateoas\UrlGenerator\UrlGeneratorInterface`, or use the
+`Hateoas\UrlGenerator\CallableUrlGenerator`:
 
 ```php
-use Hateoas\HateoasBuilder;
+use Hateoas\UrlGenerator\CallableUrlGenerator;
 
 $hateoas = HateoasBuilder::create()
-    ->setCacheDir('/path/to/cache/dir')
-    ->setDebug($trueOrFalse)
-    ->setDefaultXmlSerializer()
-    ...
-    ->build();
+    ->setUrlGenerator(
+        null, // By default all links uses the generator configured with the null name
+        new CallableUrlGenerator(function ($route, array $parameters, $absolute) use ($myFramework) {
+            return $myFramework->generateTheUrl($route, $parameters, $absolute);
+        })
+    )
+    ->build()
+;
 ```
 
-All the methods below return the current builder, so that you can chain them.
-
-#### XML Serializer
-
-* `setXmlSerializer(XmlSerializerInterface $xmlSerializer)`: sets the XML
-  serializer to use. Default is: `XmlSerializer`;
-* `setDefaultXmlSerializer()`: sets the default XML serializer
-  (`XmlSerializer`).
-
-#### JSON Serializer
-
-* `setJsonSerializer(JsonSerializerInterface $jsonSerializer)`: sets the JSON
-  serializer to use. Default is: `JsonHalSerializer`;
-* `setDefaultJsonSerializer()`: sets the default JSON serializer
-  (`JsonHalSerializer`).
-
-#### URL Generator
-
-* `setUrlGenerator($name = null, UrlGeneratorInterface $urlGenerator)`: adds a
-  new named URL generator. If `$name` is `null`, the URL generator will be the
-  default one.
-
-#### Expression Evaluator/Expression Language
-
-* `setExpressionContextVariable($name, $value)`: adds a new expression context
-  variable;
-* `setExpressionLanguage(ExpressionLanguage $expressionLanguage)`.
-
-#### Relation Provider
-
-* `addRelationProviderResolver(RelationProviderResolverInterface $resolver)`:
-  adds a new relation provider resolver.
-
-#### (JMS) Serializer Specific
-
-* `includeInterfaceMetadata($include)`: whether to include the metadata from the
-  interfaces;
-* `setMetadataDirs(array $namespacePrefixToDirMap)`: sets a map of namespace
-  prefixes to directories. This method overrides any previously defined
-  directories;
-* `addMetadataDir($dir, $namespacePrefix = '')`: adds a directory where the
-  serializer will look for class metadata;
-* `addMetadataDirs(array $namespacePrefixToDirMap)`: adds a map of namespace
-  prefixes to directories;
-* `replaceMetadataDir($dir, $namespacePrefix = '')`: similar to
-  `addMetadataDir()`, but overrides an existing entry.
-
-Please read the official [Serializer
-documentation](http://jmsyst.com/libs/serializer) for more details.
-
-#### Others
-
-* `setDebug($debug)`: enables or disables the debug mode;
-* `setCacheDir($dir)`: sets the cache directory.
-
-### Configuring a Cache Directory
-
-Both the serializer and the Hateoas library collects several metadata about your
-objects from various sources such as YML, XML, or annotations. In order to make
-this process as efficient as possible, it is encourage to let them cache that
-information. For that, you can configure a cache directory:
+You will then be able to use the [@Route](#route) annotation:
 
 ```php
-$builder = \Hateoas\HateoasBuilder::create();
+use Hateoas\Configuration\Annotation as Hateoas;
 
-$hateoas = $builder
-    ->setCacheDir($someWritableDir)
-    ->build();
+/**
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "user_get",
+ *          parameters = {
+ *              "id" = "expr(object.getId())"
+ *          }
+ *      )
+ * )
+ */
+class User
+```
+
+```json
+{
+    "id": 42,
+    "first_name": "Adrien",
+    "last_name": "Brault",
+    "_links": {
+        "self": {
+            "href": "/api/users/42"
+        }
+    }
+}
+```
+
+Note that the library comes with a `SymfonyUrlGenerator`. For example to use it
+in Silex:
+
+```php
+use Hateoas\UrlGenerator\SymfonyUrlGenerator;
+
+$hateoas = HateoasBuilder::create()
+    ->setUrlGenerator(null, new SymfonyUrlGenerator($app['url_generator']))
+    ->build()
+;
 ```
 
 ### Helpers
@@ -666,6 +586,123 @@ $linkHelper->getLinkHref($user, 'relative');
 
 $linkHelper->getLinkHref($user, 'relative', true);
 // http://example.com/api/posts/789
+```
+
+### Serializers & Formats
+
+Hateoas provides a set of **serializers**. Each **serializer** allows you to
+generate either XML or JSON content following a specific **format**, such as
+[HAL](http://stateless.co/hal_specification.html), or [Atom
+Links](http://tools.ietf.org/search/rfc4287#section-4.2.7) for instance.
+
+#### The JsonHalSerializer
+
+The `JsonHalSerializer` allows you to generate HAL compliant relations. It is
+the default JSON serializer in Hateoas.
+
+![](http://stateless.co/info-model.png)
+
+#### The XmlSerializer
+
+...
+
+#### The XmlHalSerializer
+
+...
+
+#### Adding New Serializers
+
+For JSON related formats, you must implement the `JsonSerializerInterface`
+interface, and for XML related formats, you must implement the
+`XmlSerializerInterface`.
+
+Both interfaces describe two methods to serialize **links** and **embedded**
+relations.
+
+### The HateoasBuilder
+
+The `HateoasBuilder` class is used to easily configure Hateoas thanks to a
+powerful and fluent API.
+
+```php
+use Hateoas\HateoasBuilder;
+
+$hateoas = HateoasBuilder::create()
+    ->setCacheDir('/path/to/cache/dir')
+    ->setDebug($trueOrFalse)
+    ->setDefaultXmlSerializer()
+    ...
+    ->build();
+```
+
+All the methods below return the current builder, so that you can chain them.
+
+#### XML Serializer
+
+* `setXmlSerializer(XmlSerializerInterface $xmlSerializer)`: sets the XML
+  serializer to use. Default is: `XmlSerializer`;
+* `setDefaultXmlSerializer()`: sets the default XML serializer
+  (`XmlSerializer`).
+
+#### JSON Serializer
+
+* `setJsonSerializer(JsonSerializerInterface $jsonSerializer)`: sets the JSON
+  serializer to use. Default is: `JsonHalSerializer`;
+* `setDefaultJsonSerializer()`: sets the default JSON serializer
+  (`JsonHalSerializer`).
+
+#### URL Generator
+
+* `setUrlGenerator($name = null, UrlGeneratorInterface $urlGenerator)`: adds a
+  new named URL generator. If `$name` is `null`, the URL generator will be the
+  default one.
+
+#### Expression Evaluator/Expression Language
+
+* `setExpressionContextVariable($name, $value)`: adds a new expression context
+  variable;
+* `setExpressionLanguage(ExpressionLanguage $expressionLanguage)`.
+
+#### Relation Provider
+
+* `addRelationProviderResolver(RelationProviderResolverInterface $resolver)`:
+  adds a new relation provider resolver.
+
+#### (JMS) Serializer Specific
+
+* `includeInterfaceMetadata($include)`: whether to include the metadata from the
+  interfaces;
+* `setMetadataDirs(array $namespacePrefixToDirMap)`: sets a map of namespace
+  prefixes to directories. This method overrides any previously defined
+  directories;
+* `addMetadataDir($dir, $namespacePrefix = '')`: adds a directory where the
+  serializer will look for class metadata;
+* `addMetadataDirs(array $namespacePrefixToDirMap)`: adds a map of namespace
+  prefixes to directories;
+* `replaceMetadataDir($dir, $namespacePrefix = '')`: similar to
+  `addMetadataDir()`, but overrides an existing entry.
+
+Please read the official [Serializer
+documentation](http://jmsyst.com/libs/serializer) for more details.
+
+#### Others
+
+* `setDebug($debug)`: enables or disables the debug mode;
+* `setCacheDir($dir)`: sets the cache directory.
+
+### Configuring a Cache Directory
+
+Both the serializer and the Hateoas library collects several metadata about your
+objects from various sources such as YML, XML, or annotations. In order to make
+this process as efficient as possible, it is encourage to let them cache that
+information. For that, you can configure a cache directory:
+
+```php
+$builder = \Hateoas\HateoasBuilder::create();
+
+$hateoas = $builder
+    ->setCacheDir($someWritableDir)
+    ->build();
 ```
 
 
