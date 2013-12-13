@@ -29,6 +29,7 @@ services.
     - [Relation Provider](#relation-provider)
     - [(JMS) Serializer Specific](#jms-serializer-specific)
     - [Others](#others)
+  - [Configuring a Cache Directory](#configuring-a-cache-directory)
   - [Helpers](#helpers)
     - [LinkHelper](#linkhelper)
 * [Reference](#reference)
@@ -546,6 +547,21 @@ documentation](http://jmsyst.com/libs/serializer) for more details.
 
 * `setDebug($debug)`: enables or disables the debug mode;
 * `setCacheDir($dir)`: sets the cache directory.
+
+### Configuring a Cache Directory
+
+Both the serializer and the Hateoas library collects several metadata about your
+objects from various sources such as YML, XML, or annotations. In order to make
+this process as efficient as possible, it is encourage to let them cache that
+information. For that, you can configure a cache directory:
+
+```php
+$builder = \Hateoas\HateoasBuilder::create();
+
+$hateoas = $builder
+    ->setCacheDir($someWritableDir)
+    ->build();
+```
 
 ### Helpers
 
