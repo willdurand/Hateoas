@@ -600,18 +600,80 @@ Links](http://tools.ietf.org/search/rfc4287#section-4.2.7) for instance.
 
 #### The JsonHalSerializer
 
-The `JsonHalSerializer` allows you to generate HAL compliant relations. It is
-the default JSON serializer in Hateoas.
+The `JsonHalSerializer` allows you to generate HAL compliant relations in JSON.
+It is the default JSON serializer in Hateoas.
+
+HAL provides its linking capability with a convention which says that a resource
+object has a reserved property called `_links`. This property is an object that
+contains links. These links are key'ed by their link relation.
+
+HAL also describes another convention which says that a resource may have
+another reserved property named `_embedded`. This property is similar to `_links`
+in that embedded resources are key'ed by relation name. The main difference is
+that rather than being links, the values are resource objects.
 
 ![](http://stateless.co/info-model.png)
 
+```json
+{
+    "message": "Hello, World!",
+    "_links": {
+        "self": {
+            "href": "/notes/0"
+        }
+    },
+    "_embedded": {
+        "associated_events": [
+            {
+                "name": "SymfonyCon",
+                "date": "2013-12-12T00:00:00+0100"
+            }
+        ]
+    }
+}
+```
+
 #### The XmlSerializer
 
-...
+The `XmlHalSerializer` allows you to generate [Atom
+Links](http://tools.ietf.org/search/rfc4287#section-4.2.7) into your XML
+documents. It is the default XML serializer.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<note>
+    <message><![CDATA[Hello, World!]]></message>
+    <link rel="self" href="/notes/0" />
+    <events rel="associated_events">
+        <event>
+            <name><![CDATA[SymfonyCon]]></name>
+            <date><![CDATA[2013-12-12T00:00:00+0100]]></date>
+        </event>
+    </events>
+</note>
+```
 
 #### The XmlHalSerializer
 
-...
+The `XmlHalSerializer` allows you to generate HAL compliant relations in XML.
+
+HAL in XML is similar to [HAL in JSON](#the-jsonhalserializer) in the sense that
+it describes `link` tags and `resource` tags.
+
+**Note:** the `self` relation will actually become an attribute of the resource
+instead of being a `link` tag.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<note href="/notes/0">
+    <message><![CDATA[Hello, World!]]></message>
+
+    <resource rel="associated_events">
+        <name><![CDATA[SymfonyCon]]></name>
+        <date><![CDATA[2013-12-12T00:00:00+0100]]></date>
+    </resource>
+</note>
+```
 
 #### Adding New Serializers
 
