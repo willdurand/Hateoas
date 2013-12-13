@@ -323,15 +323,15 @@ The library provides the several classes in the `Hateoas\Representation\*`
 namespace to help you with common tasks. These are simple classes configured
 with the library's annotations.
 
-The `PaginatedCollection` and `Collection` classes are probably the most
+The `PaginatedCollection` and `SimpleCollection` classes are probably the most
 interesting ones:
 
 ```php
 use Hateoas\Representation\PaginatedCollection;
-use Hateoas\Representation\Collection;
+use Hateoas\Representation\SimpleCollection;
 
 $paginatedCollection = new PaginatedCollection(
-    new Collection(
+    new SimpleCollection(
         array($user1, $user2, ...),
         'users', // embed rel
         'users' // xml element name
@@ -349,9 +349,10 @@ $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
-The `Collection` class allows you to dynamically configure the collection
+The `SimpleCollection` class allows you to dynamically configure the collection
 resources rel, and the xml root element name.
-`PaginatedCollection` is configured to add `self`, `first`, and when possible
+
+The `PaginatedCollection` is designed to add `self`, `first`, and when possible
 `last`, `next`, `previous` links.
 
 We also provide a `PagerfantaFactory` to easily build PaginatedCollection
