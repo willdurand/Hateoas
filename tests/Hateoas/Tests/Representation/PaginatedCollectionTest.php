@@ -133,7 +133,7 @@ XML
         $collection = $factory->create($pagerfanta, 'my_route');
 
         $this
-            ->string($hateoas->serialize($collection, 'json'))
+            ->string($hateoas->serialize($collection, 'xml'))
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
