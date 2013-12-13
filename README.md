@@ -214,8 +214,8 @@ by default for XML serialization:
 ```
 
 It is worth mentionning that these formats are the **default ones**, not the
-only available ones. You can use [different formats and even add your
-owns]().
+only available ones. You can use [different formats through different
+serializers, and even add your owns](#serializers--formats).
 
 Now that you know how to add **links**, let's see how to add **embedded
 resources**.
