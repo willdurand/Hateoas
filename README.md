@@ -127,7 +127,7 @@ Let's dig into Hateoas now.
 ### Configuring Links
 
 In Hateoas terminology, **links** are seen as **relations** added to resources.
-It is worth mentionning that **relations** also refer to **embedded resources**
+It is worth mentioning that **relations** also refer to **embedded resources**
 too, but this topic will be covered in the [Embedding
 Resources](#embedding-resources) section.
 
@@ -213,7 +213,7 @@ by default for XML serialization:
 </user>
 ```
 
-It is worth mentionning that these formats are the **default ones**, not the
+It is worth mentioning that these formats are the **default ones**, not the
 only available ones. You can use [different formats through different
 serializers, and even add your owns](#serializers--formats).
 
@@ -570,7 +570,7 @@ as well as their corresponding values in the following JSON content:
 }
 ```
 
-It is worth mentionning that you can **force** whether you want an absolute or
+It is worth mentioning that you can **force** whether you want an absolute or
 relative URI by using the third argument in both the `getLinkHref()` method and
 the `link` function.
 
@@ -660,8 +660,9 @@ The `XmlHalSerializer` allows you to generate HAL compliant relations in XML.
 HAL in XML is similar to [HAL in JSON](#the-jsonhalserializer) in the sense that
 it describes `link` tags and `resource` tags.
 
-**Note:** the `self` relation will actually become an attribute of the resource
-instead of being a `link` tag.
+**Note:** the `self` relation will actually become an attribute of the main
+resource instead of being a `link` tag. Other links will be generated as `link`
+tags.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -679,10 +680,8 @@ instead of being a `link` tag.
 
 For JSON related formats, you must implement the `JsonSerializerInterface`
 interface, and for XML related formats, you must implement the
-`XmlSerializerInterface`.
-
-Both interfaces describe two methods to serialize **links** and **embedded**
-relations.
+`XmlSerializerInterface`. Both interfaces describe two methods to serialize
+**links** and **embedded** relations.
 
 ### The HateoasBuilder
 
