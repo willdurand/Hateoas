@@ -37,6 +37,7 @@ services.
     - [(JMS) Serializer Specific](#jms-serializer-specific)
     - [Others](#others)
   - [Configuring a Cache Directory](#configuring-a-cache-directory)
+  - [Configuring Metadata Locations](#configuring-metadata-locations)
 * [Reference](#reference)
   - [XML](#xml)
   - [YAML](#yaml)
@@ -773,6 +774,24 @@ $hateoas = $builder
     ->setCacheDir($someWritableDir)
     ->build();
 ```
+
+### Configuring Metadata Locations
+
+Hateoas supports several metadata sources. By default, it uses Doctrine
+annotations, but you may also store metadata in XML, or YAML files. For the
+latter, it is necessary to configure a metadata directory where those files are
+located:
+
+```php
+$hateoas = \Hateoas\HateoasBuilder::create()
+    ->addMetadataDir($someDir)
+    ->build();
+```
+
+Hateoas would expect the metadata files to be named like the fully qualified
+class names where all `\` are replaced with `.`. So, if you class would be
+named `Vendor\Package\Foo` the metadata file would need to be located at
+`$someDir/Vendor.Package.Foo.(xml|yml)`.
 
 
 Reference
