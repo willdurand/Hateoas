@@ -376,12 +376,10 @@ You would get the following JSON content:
 
 ```json
 {
-    {
-        "id": 123
-    },
-    {
-        "id": 456
-    },
+    "users": [
+        { "id": 123 },
+        { "id": 456 }
+    ],
     "page": 1,
     "limit": 10,
     "pages": 1,
