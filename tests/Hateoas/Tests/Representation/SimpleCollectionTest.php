@@ -7,7 +7,7 @@ use Hateoas\HateoasBuilder;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Tests\TestCase;
 
-class CollectionTest extends TestCase
+class SimpleCollectionTest extends TestCase
 {
     public function test()
     {
