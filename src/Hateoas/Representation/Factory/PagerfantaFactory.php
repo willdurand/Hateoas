@@ -22,7 +22,7 @@ class PagerfantaFactory
 
     public function __construct($pageParameterName = null, $limitParameterName = null)
     {
-        $this->pageParameterName = $pageParameterName;
+        $this->pageParameterName  = $pageParameterName;
         $this->limitParameterName = $limitParameterName;
     }
 

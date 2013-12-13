@@ -355,20 +355,63 @@ resources rel, and the xml root element name.
 The `PaginatedCollection` is designed to add `self`, `first`, and when possible
 `last`, `next`, `previous` links.
 
-We also provide a `PagerfantaFactory` to easily build PaginatedCollection
-from a **Pagerfanta** instance:
+The Hateoas library also provides a `PagerfantaFactory` to easily build
+`PaginatedCollection` from a **Pagerfanta** instance:
 
 ```php
 use Hateoas\Representation\Factory\PagerfantaFactory;
 
-$pagerfantaFactory = new PagerfantaFactory(); // you can pass the page and limit parameters name
+$pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page and limit parameters name
 $paginatedCollection = $pagerfantaFactory->create(
     $pager,
     'user_list',
     array() // route parameters
 );
+
 $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
+```
+
+You would get the following JSON content:
+
+```json
+{
+    {
+        "id": 123,
+        ...
+    },
+    {
+        "id": 456,
+        ...
+    },
+    "page": 1,
+    "limit": 10,
+    "pages": 1,
+    "_links": {
+        "self": {
+            "href": "/api/users?page=1&limit=10"
+        },
+        "first": {
+            "href": "/api/users?page=1&limit=10"
+        },
+        "last": {
+            "href": "/api/users?page=1&limit=10"
+        }
+    }
+}
+```
+
+And the following XML content:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<collection page="1" limit="10" pages="1">
+    <user id="123">...</user>
+    <user id="456">...</user>
+    <link rel="self" href="/api/users?page=1&amp;limit=10" />
+    <link rel="first" href="/api/users?page=1&amp;limit=10" />
+    <link rel="last" href="/api/users?page=1&amp;limit=10" />
+</collection>
 ```
 
 ### The Expression Language
