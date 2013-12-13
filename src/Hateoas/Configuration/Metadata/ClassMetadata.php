@@ -54,6 +54,9 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         $this->relations[] = $relation;
     }
 
+    /**
+     * @param RelationProvider $relationProvider
+     */
     public function addRelationProvider(RelationProvider $relationProvider)
     {
         $this->relationProviders[] = $relationProvider;

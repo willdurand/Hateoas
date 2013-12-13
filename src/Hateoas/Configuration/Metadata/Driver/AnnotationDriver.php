@@ -80,7 +80,7 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
-        if (0 === count($classMetadata->getRelations())) {
+        if (0 === count($classMetadata->getRelations()) && 0 === count($classMetadata->getRelationProviders())) {
             return null;
         }
 
