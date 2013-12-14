@@ -55,7 +55,7 @@ class XmlDriver extends AbstractFileDriver
 
             $href = null;
             if (isset($relation->href)) {
-                $href = $this->createHref($relation->href);
+                $href = $this->createHref($relation->href, $name);
             }
 
             $embed = null;
@@ -103,7 +103,7 @@ class XmlDriver extends AbstractFileDriver
         );
     }
 
-    private function createHref($href)
+    private function createHref($href, $name)
     {
         if (isset($href->attributes('')->uri) && isset($href->attributes('')->route)) {
             throw new \RuntimeException(sprintf(
