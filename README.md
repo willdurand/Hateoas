@@ -88,7 +88,7 @@ Usage
 **Hateoas** leverages the [Serializer](https://github.com/schmittjoh/serializer)
 library to provide a nice way to build HATEOAS REST web services. HATEOAS stands
 for **H**ypermedia **a**s **t**he **E**ngine **o**f **A**pplication **S**tate,
-and basically adds **hypermedia links** to your **representations** (ie. your
+and basically adds **hypermedia links** to your **representations** (i.e. your
 API responses). [HATEOAS is about the discoverability of actions on a
 resource](http://timelessrepo.com/haters-gonna-hateoas).
 
@@ -132,8 +132,8 @@ It is worth mentioning that **relations** also refer to **embedded resources**
 too, but this topic will be covered in the [Embedding
 Resources](#embedding-resources) section.
 
-A link is a relation which is identified by a `name` and that owns a `href`
-link:
+A link is a relation which is identified by a `name` (e.g. `self`) and that
+has an `href` parameter:
 
 ```php
 use JMS\Serializer\Annotation as Serializer;
@@ -158,18 +158,18 @@ class User
 In the example above, we configure a `self` relation that is a link because of
 the `href` parameter. Its value, which may look weird at first glance, will be
 extensively covered in [The Expression Language](#the-expression-language)
-section.
+section, but it basically generates a URI.
 
 In this section, [**annotations**](#annotations) are used to configure Hateoas.
 However, [**XML**](#xml) and [**YAML**](#yaml) formats are also supported. If
 you wish, you can use plain PHP too.
 
-**Important:** you must configure both Serializer and Hateoas the same way. E.g.
+**Important:** you must configure both the Serializer and Hateoas the same way. E.g.
 if you use YAML for configuring Serializer, use YAML for configuring Hateoas.
 
-The easiest way to give Hateoas a try is to use the `HateoasBuilder`. This
-builder has numerous methods to configure the Hateoas serializer, but we won't
-dig into it right now (see [The HateoasBuilder](#the-hateoasbuilder)).
+The easiest way to try HATEOAS is with the `HateoasBuilder`. The builder has
+numerous methods to configure the Hateoas serializer, but we won't dig into
+them right now (see [The HateoasBuilder](#the-hateoasbuilder)).
 Everything works fine out of the box:
 
 ```php
@@ -184,11 +184,12 @@ $xml  = $hateoas->serialize($user, 'xml');
 
 The `$hateoas` object is an instance of `JMS\Serializer\SerializerInterface`,
 coming from the Serializer library. Hateoas does not come with its own
-serializer, it simply hooks into the JMS Serializer one.
+serializer, it simply hooks into the JMS Serializer.
 
 By default, Hateoas uses the [Hypertext Application
 Language](http://stateless.co/hal_specification.html) (HAL) for JSON
-serialization:
+serialization. This specifies the *structure* of the response (e.g. that
+"links" should live under a `_links` key):
 
 ```json
 {
@@ -203,8 +204,8 @@ serialization:
 }
 ```
 
-And, [Atom Links](http://tools.ietf.org/search/rfc4287#section-4.2.7) are used
-by default for XML serialization:
+For XML, [Atom Links](http://tools.ietf.org/search/rfc4287#section-4.2.7)
+are used by default:
 
 ```xml
 <user id="42">
@@ -224,7 +225,8 @@ resources**.
 ### Embedding Resources
 
 Sometimes, it's more efficient to embed related resources rather than
-link to them, as it prevents clients from having to make extra round trips.
+link to them, as it prevents clients from having to make extra requests to
+fetch those resources.
 
 An **embedded resource** is a named **relation** that contains data, represented
 by the `embed` parameter.
@@ -258,6 +260,10 @@ You will also have to exclude the manager relation when the manager is `null`,
 because otherwise an error will occur when creating the `href` link (calling
 `getId()` on `null`).
 
+**Tip:** If the manager property is an object that already has a `_self`
+link, you can re-use that value for the `href` instead of repeating it here.
+See [LinkHelper](#linkhelper).
+
 ```php
 $hateoas = HateoasBuilder::create()->build();
 
@@ -266,7 +272,8 @@ $json = $hateoas->serialize($user, 'json');
 $xml  = $hateoas->serialize($user, 'xml');
 ```
 
-Serializing `embed` relations are also HAL compliant:
+For `json`, the HAL representation places these embedded relations inside
+an `_embedded` key:
 
 ```json
 {
@@ -319,12 +326,14 @@ Serializer configuration.
 
 ### Dealing With Collections
 
-The library provides the several classes in the `Hateoas\Representation\*`
+The library provides several classes in the `Hateoas\Representation\*`
 namespace to help you with common tasks. These are simple classes configured
 with the library's annotations.
 
 The `PaginatedCollection` and `SimpleCollection` classes are probably the most
-interesting ones:
+interesting ones. These are helpful when your resource is actually a collection
+of resources (e.g. ``/users`` is a collection of users). These help you represent
+the collection and add pagination and limits:
 
 ```php
 use Hateoas\Representation\PaginatedCollection;
@@ -353,10 +362,12 @@ The `SimpleCollection` class allows you to dynamically configure the collection
 resources rel, and the xml root element name.
 
 The `PaginatedCollection` is designed to add `self`, `first`, and when possible
-`last`, `next`, `previous` links.
+`last`, `next`, and `previous` links.
 
 The Hateoas library also provides a `PagerfantaFactory` to easily build
-`PaginatedCollection` from a **Pagerfanta** instance:
+`PaginatedCollection` from a [Pagerfanta](https://github.com/whiteoctober/Pagerfanta)
+instance. If you use the Pagerfanta library, this is an easier way to create
+the collection objects:
 
 ```php
 use Hateoas\Representation\Factory\PagerfantaFactory;
@@ -416,9 +427,9 @@ Hateoas relies on the powerful Symfony
 [ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/introduction.html)
 component to retrieve values such as links, ids or objects to embed.
 
-Basically, each time you can fill in a value, you can either pass an
-**hardcoded value** or an **expression**. In order to use the Expression
-Language, you have to use the `expr()` notation:
+Basically, each time you fill in a value (e.g. a Relation `href` in annotations
+or YAML), you can either pass a **hardcoded value** or an **expression**.
+In order to use the Expression Language, you have to use the `expr()` notation:
 
 ```php
 /**
@@ -520,7 +531,7 @@ class User
 }
 ```
 
-Note that the library comes with a `SymfonyUrlGenerator`. For example to use it
+Note that the library comes with a `SymfonyUrlGenerator`. For example, to use it
 in Silex:
 
 ```php
@@ -540,7 +551,7 @@ Hateoas provides a set of helpers to ease the process of building APIs.
 
 The `LinkHelper` class provides a `getLinkHref($object, $rel, $absolute = false)`
 method that allows you to get the _href_ value of any object, for any given
-relation name.  Basically, it is able to generate an URI (either absolute or
+relation name.  Basically, it is able to generate a URI (either absolute or
 relative) from any **link** relation:
 
 ```php
@@ -802,10 +813,11 @@ documentation](http://jmsyst.com/libs/serializer) for more details.
 
 ### Configuring a Cache Directory
 
-Both the serializer and the Hateoas library collects several metadata about your
+Both the serializer and the Hateoas libraries collect metadata about your
 objects from various sources such as YML, XML, or annotations. In order to make
-this process as efficient as possible, it is encourage to let them cache that
-information. For that, you can configure a cache directory:
+this process as efficient as possible, it is recommended that you allow the
+Hateoas library to cache this information. To do that, just configure a
+cache directory:
 
 ```php
 $builder = \Hateoas\HateoasBuilder::create();
@@ -938,7 +950,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
 ```
 
 This annotation can be defined in the **href** property of the
-[@Relation](#relation) annotation.
+[@Relation](#relation) annotation. This is allows you to your URL generator,
+if you have configured one.
 
 | Property   | Required            | Content        | Expression language             |
 |------------|---------------------|----------------|---------------------------------|
@@ -965,7 +978,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
 ```
 
 This annotation can be defined in the **embed** property of the
-[@Relation](#relation) annotation.
+[@Relation](#relation) annotation. It is useful if you need configure the
+`exclusion` or `xmlElementName` options for the embedded resource.
 
 | Property       | Required            | Content                  | Expression language    |
 |----------------|---------------------|--------------------------|------------------------|
@@ -986,11 +1000,12 @@ This annotation can be defined in the **exclusion** property of both the
 | maxDepth     | No       | integer          | No                     |
 | excludeIf    | No       | string / boolean | Yes                    |
 
-All values exception `excludeIf` as if it was defined on regular properties with
-the serializer.
+All values except `excludeIf` act the same way as when they are used directly
+on the regular properties with the serializer.
 
-`excludeIf` expects a boolean; and is helpful when an other expression would fail
-under some circumstances:
+`excludeIf` expects a boolean and is helpful when another expression would fail
+under some circumstances. In this example, if the `getManager` method is `null`,
+you should exclude it to prevent the URL generation from failing:
 
 ```php
 /**
@@ -1056,13 +1071,14 @@ Internals
 ---------
 
 This section refers to the Hateoas internals, providing documentation about
-hidden parts of this library, not always relevant for end users, but interesting
-for developers or people interested in learning how things work under the hood.
+hidden parts of this library. This is not always relevant for end users, but
+interesting for developers or people interested in learning how things work
+under the hood.
 
 ### Expression Functions
 
 **Expression Functions** are custom functions used to extend the [Expression
-Language](#the-expression-language) as explained in chapter [Extending the
+Language](#the-expression-language) as explained in the [Extending the
 ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/extending.html),
 part of the Symfony documentation.
 
