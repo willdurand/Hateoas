@@ -11,6 +11,8 @@ class XmlSerializerTest extends TestCase
 {
     public function testSerializeLinks()
     {
+        $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+
         $xmlSerializer = new XmlSerializer();
         $xmlSerializationVisitor = $this->createXmlSerializationVisitor();
 
@@ -19,7 +21,11 @@ class XmlSerializerTest extends TestCase
             new Link('foo', '/bar', array('type' => 'magic')),
         );
 
-        $xmlSerializer->serializeLinks($links, $xmlSerializationVisitor);
+        $xmlSerializer->serializeLinks(
+            $links,
+            $xmlSerializationVisitor,
+            $contextProphecy->reveal()
+        );
 
         $this
             ->string($xmlSerializationVisitor->getResult())

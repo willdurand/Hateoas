@@ -14,7 +14,7 @@ class XmlHalSerializer implements XmlSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor)
+    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($links as $link) {
             if ('self' === $link->getRel()) {

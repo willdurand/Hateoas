@@ -25,7 +25,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
             ->shouldBeCalledTimes(1)
         ;
         $serializerProphecy
-            ->serializeLinks($links, $serializationVisitor)
+            ->serializeLinks($links, $serializationVisitor, $context)
             ->shouldBeCalledTimes(1)
         ;
 

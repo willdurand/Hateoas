@@ -15,8 +15,9 @@ interface XmlSerializerInterface
     /**
      * @param Link[]                  $links
      * @param XmlSerializationVisitor $visitor
+     * @param SerializationContext    $context
      */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor);
+    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context);
 
     /**
      * @param Embed[]                 $embeds

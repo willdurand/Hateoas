@@ -29,7 +29,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     /**
      * {@inheritdoc}
      */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor)
+    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($links as $link) {
             $linkNode = $visitor->getDocument()->createElement('link');

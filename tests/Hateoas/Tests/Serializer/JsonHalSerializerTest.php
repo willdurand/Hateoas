@@ -36,6 +36,8 @@ class JsonHalSerializerTest extends TestCase
             ),
         );
 
+        $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+
         $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
         $jsonSerializationVisitorProphecy
             ->addData('_links', $expectedSerializedLinks)
@@ -43,7 +45,11 @@ class JsonHalSerializerTest extends TestCase
         ;
 
         $jsonHalSerializer = new JsonHalSerializer();
-        $jsonHalSerializer->serializeLinks($links, $jsonSerializationVisitorProphecy->reveal());
+        $jsonHalSerializer->serializeLinks(
+            $links,
+            $jsonSerializationVisitorProphecy->reveal(),
+            $contextProphecy->reveal()
+        );
     }
 
     public function testSerializeEmbedded()
