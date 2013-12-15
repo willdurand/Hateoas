@@ -874,6 +874,46 @@ class names where all `\` are replaced with `.`. So, if you class would be
 named `Vendor\Package\Foo` the metadata file would need to be located at
 `$someDir/Vendor.Package.Foo.(xml|yml)`.
 
+### Extending the library
+
+Hateoas allows frameworks to dynamically add relations to classes.
+
+The `ConfigurationExtensionInterface` has to be implemented:
+
+```php
+use Hateoas\Configuration\Metadata\ConfigurationExtensionInterface;
+use Hateoas\Configuration\Metadata\ClassMetadataInterface;
+use Hateoas\Configuration\Relation;
+
+class AcmeFooHateoasExtension implements ConfigurationExtensionInterface
+{
+    public function decorate(ClassMetadataInterface $classMetadata)
+    {
+        if (0 === strpos('Acme\Foo\Model', $classMetadata->getName())) {
+            // Add a "root" relation to all classes in the Acme\Foo\Model namespace
+            $classMetadata->addRelation(
+                new Relation(
+                    'root',
+                    '/'
+                )
+            );
+        }
+    }
+}
+```
+
+You will have access to the existing relations loaded from annotations, xml,
+or yaml with `$classMetadata->getRelations()`.
+
+If the $classMetadata has relations, or if you add relations to it, its
+relations will be cached. So if you read configuration files (xml,
+annotations), make sure to reference them on the class metadata:
+
+```php
+$classMetadata->addRelation(...);
+$classMetadata->fileResources[] = $file;
+```
+
 
 Reference
 ---------
