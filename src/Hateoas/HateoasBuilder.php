@@ -131,7 +131,7 @@ class HateoasBuilder
         $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGeneratorRegistry);
         $exclusionManager    = new ExclusionManager($expressionEvaluator);
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
-        $embeddedMapFactory  = new EmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
+        $embedsFactory       = new EmbedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
         $linkHelper          = new LinkHelper($linkFactory, $relationsRepository);
 
         // Register Hateoas core functions
@@ -147,11 +147,11 @@ class HateoasBuilder
 
         $inlineDeferrers  = array();
         $eventSubscribers = array(
-            new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedMapFactory),
+            new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embedsFactory),
             new JsonEventSubscriber(
                 $this->jsonSerializer,
                 $linksFactory,
-                $embeddedMapFactory,
+                $embedsFactory,
                 $inlineDeferrers[] = new InlineDeferrer(),
                 $inlineDeferrers[] = new InlineDeferrer()
             ),

@@ -91,7 +91,7 @@ class JsonEventSubscriber implements EventSubscriberInterface
         }
 
         if (count($embeds) > 0) {
-            $this->jsonSerializer->serializeEmbedded($embeds, $event->getVisitor(), $context);
+            $this->jsonSerializer->serializeEmbeds($embeds, $event->getVisitor(), $context);
         }
     }
 }

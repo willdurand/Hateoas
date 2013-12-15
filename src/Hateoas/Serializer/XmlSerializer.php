@@ -47,7 +47,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeds(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($embeds as $embed) {
             $entryNode = $visitor->getDocument()->createElement($this->getElementName($embed->getData(), $embed));

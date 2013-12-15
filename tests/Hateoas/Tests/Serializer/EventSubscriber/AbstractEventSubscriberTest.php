@@ -21,7 +21,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
 
         $serializerProphecy = $this->prophesizeSerializer();
         $serializerProphecy
-            ->serializeEmbedded($embeds, $serializationVisitor, $context)
+            ->serializeEmbeds($embeds, $serializationVisitor, $context)
             ->shouldBeCalledTimes(1)
         ;
         $serializerProphecy
@@ -64,7 +64,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
 
         $serializerProphecy = $this->prophesizeSerializer();
         $serializerProphecy
-            ->serializeEmbedded($embeds, $serializationVisitor, $context)
+            ->serializeEmbeds($embeds, $serializationVisitor, $context)
             ->shouldNotBeCalled()
         ;
         $serializerProphecy
@@ -96,7 +96,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
         $embedEventSubscriber->onPostSerialize($eventProphecy->reveal());
     }
 
-    abstract protected function createEventSubscriber($serializer, $linksFactory, $embeddedMapFactory);
+    abstract protected function createEventSubscriber($serializer, $linksFactory, $embedsFactory);
     abstract protected function prophesizeSerializer();
     abstract protected function mockSerializationVisitor();
 

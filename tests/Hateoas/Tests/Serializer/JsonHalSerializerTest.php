@@ -52,7 +52,7 @@ class JsonHalSerializerTest extends TestCase
         );
     }
 
-    public function testSerializeEmbedded()
+    public function testSerializeEmbeds()
     {
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
         $contextProphecy
@@ -75,7 +75,7 @@ class JsonHalSerializerTest extends TestCase
         ;
 
         $jsonHalSerializer = new JsonHalSerializer();
-        $jsonHalSerializer->serializeEmbedded(
+        $jsonHalSerializer->serializeEmbeds(
             $embeds,
             $jsonSerializationVisitorProphecy->reveal(),
             $contextProphecy->reveal()

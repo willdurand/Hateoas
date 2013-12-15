@@ -41,7 +41,7 @@ XML
         ;
     }
 
-    public function testSerializeEmbedded()
+    public function testSerializeEmbeds()
     {
         // TODO ... seemed hard to test :(
     }

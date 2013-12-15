@@ -66,7 +66,7 @@ class XmlEventSubscriber implements EventSubscriberInterface
         }
 
         if (count($embeds) > 0) {
-            $this->xmlSerializer->serializeEmbedded($embeds, $event->getVisitor(), $context);
+            $this->xmlSerializer->serializeEmbeds($embeds, $event->getVisitor(), $context);
         }
     }
 }
