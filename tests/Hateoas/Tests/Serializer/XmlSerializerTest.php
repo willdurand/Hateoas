@@ -3,6 +3,7 @@
 namespace Hateoas\Tests\Serializer;
 
 use Hateoas\Tests\TestCase;
+use Hateoas\Model\Embed;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\XmlSerializer;
 use JMS\Serializer\XmlSerializationVisitor;
@@ -43,7 +44,33 @@ XML
 
     public function testSerializeEmbeds()
     {
-        // TODO ... seemed hard to test :(
+        $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+
+        $embeds = array(
+            new Embed('friend', array('name' => 'John'), 'person'),
+        );
+
+        $xmlSerializationVisitor = $this->createXmlSerializationVisitor();
+
+        $xmlSerializer = new XmlSerializer();
+        $xmlSerializer->serializeEmbeds(
+            $embeds,
+            $xmlSerializationVisitor,
+            $contextProphecy->reveal()
+        );
+
+        $this
+            ->string($xmlSerializationVisitor->getResult())
+            ->isEqualTo(<<<EXPECTED
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <person rel="friend">
+    <entry/>
+  </person>
+</root>
+
+EXPECTED
+        );
     }
 
     private function createXmlSerializationVisitor()
