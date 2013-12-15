@@ -31,7 +31,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
 
         $linksFactoryProphecy = $this->prophesize('Hateoas\Factory\LinksFactory');
         $linksFactoryProphecy
-            ->createLinks($object, $context)
+            ->create($object, $context)
             ->willReturn($links)
             ->shouldBeCalledTimes(1)
         ;
@@ -74,7 +74,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
 
         $linksFactoryProphecy = $this->prophesize('Hateoas\Factory\LinksFactory');
         $linksFactoryProphecy
-            ->createLinks($object, $context)
+            ->create($object, $context)
             ->willReturn($links)
             ->shouldBeCalledTimes(1)
         ;

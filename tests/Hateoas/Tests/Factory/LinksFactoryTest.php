@@ -51,7 +51,7 @@ class LinksFactoryTest extends TestCase
             $exclusionManagerProphecy->reveal()
         );
 
-        $links = $linksFactory->createLinks($object, $context);
+        $links = $linksFactory->create($object, $context);
 
         $this
             ->array($links)

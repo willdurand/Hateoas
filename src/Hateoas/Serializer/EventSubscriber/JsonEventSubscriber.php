@@ -81,7 +81,7 @@ class JsonEventSubscriber implements EventSubscriberInterface
         $context = $event->getContext();
 
         $embeds = $this->embedsFactory->create($object, $context);
-        $links  = $this->linksFactory->createLinks($object, $context);
+        $links  = $this->linksFactory->create($object, $context);
 
         $embeds = $this->embedsInlineDeferrer->handleItems($object, $embeds, $context);
         $links  = $this->linksInlineDeferrer->handleItems($object, $links, $context);

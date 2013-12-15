@@ -59,7 +59,7 @@ class XmlEventSubscriber implements EventSubscriberInterface
     {
         $context = $event->getContext();
         $embeds  = $this->embedsFactory->create($event->getObject(), $event->getContext());
-        $links   = $this->linksFactory->createLinks($event->getObject(), $event->getContext());
+        $links   = $this->linksFactory->create($event->getObject(), $event->getContext());
 
         if (count($links) > 0) {
             $this->xmlSerializer->serializeLinks($links, $event->getVisitor(), $context);
