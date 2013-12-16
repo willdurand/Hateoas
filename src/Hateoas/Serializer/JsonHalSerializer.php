@@ -13,7 +13,7 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeLinks(array $links, JsonSerializationVisitor $visitor)
+    public function serializeLinks(array $links, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
         $serializedLinks = array();
         foreach ($links as $link) {
@@ -39,7 +39,7 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbedded(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeds(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
         $serializedEmbeds = array();
         foreach ($embeds as $embed) {

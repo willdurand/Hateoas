@@ -14,7 +14,7 @@ class XmlHalSerializer implements XmlSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor)
+    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($links as $link) {
             if ('self' === $link->getRel()) {
@@ -42,7 +42,7 @@ class XmlHalSerializer implements XmlSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeds(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($embeds as $embed) {
             if ($embed->getData() instanceof \Traversable || is_array($embed->getData())) {

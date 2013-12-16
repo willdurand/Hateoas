@@ -81,17 +81,17 @@ class JsonEventSubscriber implements EventSubscriberInterface
         $context = $event->getContext();
 
         $embeds = $this->embedsFactory->create($object, $context);
-        $links  = $this->linksFactory->createLinks($object, $context);
+        $links  = $this->linksFactory->create($object, $context);
 
         $embeds = $this->embedsInlineDeferrer->handleItems($object, $embeds, $context);
         $links  = $this->linksInlineDeferrer->handleItems($object, $links, $context);
 
         if (count($links) > 0) {
-            $this->jsonSerializer->serializeLinks($links, $event->getVisitor());
+            $this->jsonSerializer->serializeLinks($links, $event->getVisitor(), $context);
         }
 
         if (count($embeds) > 0) {
-            $this->jsonSerializer->serializeEmbedded($embeds, $event->getVisitor(), $context);
+            $this->jsonSerializer->serializeEmbeds($embeds, $event->getVisitor(), $context);
         }
     }
 }

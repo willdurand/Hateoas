@@ -57,15 +57,16 @@ class XmlEventSubscriber implements EventSubscriberInterface
 
     public function onPostSerialize(ObjectEvent $event)
     {
-        $embeds = $this->embedsFactory->create($event->getObject(), $event->getContext());
-        $links  = $this->linksFactory->createLinks($event->getObject(), $event->getContext());
+        $context = $event->getContext();
+        $embeds  = $this->embedsFactory->create($event->getObject(), $event->getContext());
+        $links   = $this->linksFactory->create($event->getObject(), $event->getContext());
 
         if (count($links) > 0) {
-            $this->xmlSerializer->serializeLinks($links, $event->getVisitor());
+            $this->xmlSerializer->serializeLinks($links, $event->getVisitor(), $context);
         }
 
         if (count($embeds) > 0) {
-            $this->xmlSerializer->serializeEmbedded($embeds, $event->getVisitor(), $event->getContext());
+            $this->xmlSerializer->serializeEmbeds($embeds, $event->getVisitor(), $context);
         }
     }
 }

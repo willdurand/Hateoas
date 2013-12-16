@@ -15,13 +15,14 @@ interface JsonSerializerInterface
     /**
      * @param Link[]                   $links
      * @param JsonSerializationVisitor $visitor
+     * @param SerializationContext     $context
      */
-    public function serializeLinks(array $links, JsonSerializationVisitor $visitor);
+    public function serializeLinks(array $links, JsonSerializationVisitor $visitor, SerializationContext $context);
 
     /**
      * @param Embed[]                  $embeds
      * @param JsonSerializationVisitor $visitor
      * @param SerializationContext     $context
      */
-    public function serializeEmbedded(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbeds(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context);
 }

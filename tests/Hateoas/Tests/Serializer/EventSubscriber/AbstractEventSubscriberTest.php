@@ -21,17 +21,17 @@ abstract class AbstractEventSubscriberTest extends TestCase
 
         $serializerProphecy = $this->prophesizeSerializer();
         $serializerProphecy
-            ->serializeEmbedded($embeds, $serializationVisitor, $context)
+            ->serializeEmbeds($embeds, $serializationVisitor, $context)
             ->shouldBeCalledTimes(1)
         ;
         $serializerProphecy
-            ->serializeLinks($links, $serializationVisitor)
+            ->serializeLinks($links, $serializationVisitor, $context)
             ->shouldBeCalledTimes(1)
         ;
 
         $linksFactoryProphecy = $this->prophesize('Hateoas\Factory\LinksFactory');
         $linksFactoryProphecy
-            ->createLinks($object, $context)
+            ->create($object, $context)
             ->willReturn($links)
             ->shouldBeCalledTimes(1)
         ;
@@ -64,7 +64,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
 
         $serializerProphecy = $this->prophesizeSerializer();
         $serializerProphecy
-            ->serializeEmbedded($embeds, $serializationVisitor, $context)
+            ->serializeEmbeds($embeds, $serializationVisitor, $context)
             ->shouldNotBeCalled()
         ;
         $serializerProphecy
@@ -74,7 +74,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
 
         $linksFactoryProphecy = $this->prophesize('Hateoas\Factory\LinksFactory');
         $linksFactoryProphecy
-            ->createLinks($object, $context)
+            ->create($object, $context)
             ->willReturn($links)
             ->shouldBeCalledTimes(1)
         ;
@@ -96,7 +96,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
         $embedEventSubscriber->onPostSerialize($eventProphecy->reveal());
     }
 
-    abstract protected function createEventSubscriber($serializer, $linksFactory, $embeddedMapFactory);
+    abstract protected function createEventSubscriber($serializer, $linksFactory, $embedsFactory);
     abstract protected function prophesizeSerializer();
     abstract protected function mockSerializationVisitor();
 

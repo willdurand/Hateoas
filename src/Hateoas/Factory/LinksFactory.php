@@ -45,7 +45,7 @@ class LinksFactory
      *
      * @return Link[]
      */
-    public function createLinks($object, SerializationContext $context)
+    public function create($object, SerializationContext $context)
     {
         $links = array();
         foreach ($this->relationsRepository->getRelations($object) as $relation) {

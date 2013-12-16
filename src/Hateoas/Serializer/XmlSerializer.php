@@ -29,7 +29,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     /**
      * {@inheritdoc}
      */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor)
+    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($links as $link) {
             $linkNode = $visitor->getDocument()->createElement('link');
@@ -47,7 +47,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeds(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         foreach ($embeds as $embed) {
             $entryNode = $visitor->getDocument()->createElement($this->getElementName($embed->getData(), $embed));

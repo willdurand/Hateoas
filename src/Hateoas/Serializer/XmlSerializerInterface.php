@@ -15,13 +15,14 @@ interface XmlSerializerInterface
     /**
      * @param Link[]                  $links
      * @param XmlSerializationVisitor $visitor
+     * @param SerializationContext    $context
      */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor);
+    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context);
 
     /**
      * @param Embed[]                 $embeds
      * @param XmlSerializationVisitor $visitor
      * @param SerializationContext    $context
      */
-    public function serializeEmbedded(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbeds(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context);
 }
