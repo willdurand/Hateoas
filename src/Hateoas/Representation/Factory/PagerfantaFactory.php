@@ -26,10 +26,10 @@ class PagerfantaFactory
         $this->limitParameterName = $limitParameterName;
     }
 
-    public function create(Pagerfanta $pager, $route, array $routeParameters = array())
+    public function create(Pagerfanta $pager, $route, array $routeParameters = array(), $inline = null)
     {
         return new PaginatedCollection(
-            $pager->getCurrentPageResults(),
+            $inline ?: $pager->getCurrentPageResults(),
             $route,
             $routeParameters,
             $pager->getCurrentPage(),

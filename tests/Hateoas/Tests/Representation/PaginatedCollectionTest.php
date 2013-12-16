@@ -6,11 +6,8 @@ use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\Representation\SimpleCollection;
 use Hateoas\Representation\PaginatedCollection;
-use Hateoas\Representation\Factory\PagerfantaFactory;
 use Hateoas\HateoasBuilder;
 use Hateoas\Serializer\XmlHalSerializer;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
 
 class PaginatedCollectionTest extends TestCase
 {
@@ -113,40 +110,5 @@ XML
                 .'}'
             )
         ;
-    }
-
-    public function testWithPagerfanta()
-    {
-        $hateoas = HateoasBuilder::create()
-            ->setUrlGenerator(null, new CallableUrlGenerator(function ($route, array $parameters) {
-                return $route . '?' . http_build_query($parameters);
-            }))
-            ->build();
-
-        $factory    = new PagerfantaFactory();
-        $pagerfanta = new Pagerfanta(new ArrayAdapter(array(
-            'bim',
-            'bam',
-            'boom'
-        )));
-
-        $collection = $factory->create($pagerfanta, 'my_route');
-
-        $this
-            ->string($hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<collection page="1" limit="10" pages="1">
-  <entry><![CDATA[bim]]></entry>
-  <entry><![CDATA[bam]]></entry>
-  <entry><![CDATA[boom]]></entry>
-  <link rel="self" href="my_route?page=1&amp;limit=10"/>
-  <link rel="first" href="my_route?page=1&amp;limit=10"/>
-  <link rel="last" href="my_route?page=1&amp;limit=10"/>
-</collection>
-
-XML
-        );
     }
 }
