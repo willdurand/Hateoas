@@ -2,7 +2,7 @@
 
 namespace Hateoas\Configuration\Metadata\Driver;
 
-use Hateoas\Configuration\Embed;
+use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
@@ -58,9 +58,9 @@ class XmlDriver extends AbstractFileDriver
                 $href = $this->createHref($relation->href, $name);
             }
 
-            $embed = null;
+            $embedded = null;
             if (isset($relation->embed)) {
-                $embed = $this->createEmbed($relation->embed);
+                $embedded = $this->createEmbedded($relation->embed);
             }
 
             $attributes = array();
@@ -74,7 +74,7 @@ class XmlDriver extends AbstractFileDriver
                 new Relation(
                     $name,
                     $href,
-                    $embed,
+                    $embedded,
                     $attributes,
                     $exclusion
                 )
@@ -129,15 +129,15 @@ class XmlDriver extends AbstractFileDriver
         return $href;
     }
 
-    private function createEmbed($embed)
+    private function createEmbedded($embedded)
     {
-        $embedExclusion = isset($embed->exclusion) ? $this->parseExclusion($embed->exclusion) : null;
-        $xmlElementName = isset($embed->attributes('')->{'xml-element-name'}) ? (string) $embed->attributes('')->{'xml-element-name'} : null;
+        $embeddedExclusion = isset($embedded->exclusion) ? $this->parseExclusion($embedded->exclusion) : null;
+        $xmlElementName = isset($embedded->attributes('')->{'xml-element-name'}) ? (string) $embedded->attributes('')->{'xml-element-name'} : null;
 
-        return new Embed(
-            (string) $embed->content,
+        return new Embedded(
+            (string) $embedded->content,
             $xmlElementName,
-            $embedExclusion
+            $embeddedExclusion
         );
     }
 }

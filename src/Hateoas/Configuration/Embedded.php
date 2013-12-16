@@ -5,7 +5,7 @@ namespace Hateoas\Configuration;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class Embed
+class Embedded
 {
     /**
      * @var string|mixed

@@ -2,7 +2,7 @@
 
 namespace Hateoas\Serializer\EventSubscriber;
 
-use Hateoas\Factory\EmbedsFactory;
+use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Serializer\JsonSerializerInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
@@ -40,14 +40,14 @@ class JsonEventSubscriber implements EventSubscriberInterface
     private $linksFactory;
 
     /**
-     * @var EmbedsFactory
+     * @var EmbeddedsFactory
      */
-    private $embedsFactory;
+    private $embeddedsFactory;
 
     /**
      * @var InlineDeferrer
      */
-    private $embedsInlineDeferrer;
+    private $embeddedsInlineDeferrer;
 
     /**
      * @var InlineDeferrer
@@ -57,22 +57,22 @@ class JsonEventSubscriber implements EventSubscriberInterface
     /**
      * @param JsonSerializerInterface $jsonSerializer
      * @param LinksFactory            $linksFactory
-     * @param EmbedsFactory           $embedsFactory
-     * @param InlineDeferrer          $embedsInlineDeferrer
+     * @param EmbeddedsFactory        $embeddedsFactory
+     * @param InlineDeferrer          $embeddedsInlineDeferrer
      * @param InlineDeferrer          $linksInleDeferrer
      */
     public function __construct(
         JsonSerializerInterface $jsonSerializer,
         LinksFactory $linksFactory,
-        EmbedsFactory $embedsFactory,
-        InlineDeferrer $embedsInlineDeferrer,
+        EmbeddedsFactory $embeddedsFactory,
+        InlineDeferrer $embeddedsInlineDeferrer,
         InlineDeferrer $linksInleDeferrer
     ) {
-        $this->jsonSerializer       = $jsonSerializer;
-        $this->linksFactory         = $linksFactory;
-        $this->embedsFactory        = $embedsFactory;
-        $this->embedsInlineDeferrer = $embedsInlineDeferrer;
-        $this->linksInlineDeferrer  = $linksInleDeferrer;
+        $this->jsonSerializer          = $jsonSerializer;
+        $this->linksFactory            = $linksFactory;
+        $this->embeddedsFactory        = $embeddedsFactory;
+        $this->embeddedsInlineDeferrer = $embeddedsInlineDeferrer;
+        $this->linksInlineDeferrer     = $linksInleDeferrer;
     }
 
     public function onPostSerialize(ObjectEvent $event)
@@ -80,18 +80,18 @@ class JsonEventSubscriber implements EventSubscriberInterface
         $object  = $event->getObject();
         $context = $event->getContext();
 
-        $embeds = $this->embedsFactory->create($object, $context);
-        $links  = $this->linksFactory->create($object, $context);
+        $embeddeds = $this->embeddedsFactory->create($object, $context);
+        $links     = $this->linksFactory->create($object, $context);
 
-        $embeds = $this->embedsInlineDeferrer->handleItems($object, $embeds, $context);
+        $embeddeds = $this->embeddedsInlineDeferrer->handleItems($object, $embeddeds, $context);
         $links  = $this->linksInlineDeferrer->handleItems($object, $links, $context);
 
         if (count($links) > 0) {
             $this->jsonSerializer->serializeLinks($links, $event->getVisitor(), $context);
         }
 
-        if (count($embeds) > 0) {
-            $this->jsonSerializer->serializeEmbeds($embeds, $event->getVisitor(), $context);
+        if (count($embeddeds) > 0) {
+            $this->jsonSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
         }
     }
 }

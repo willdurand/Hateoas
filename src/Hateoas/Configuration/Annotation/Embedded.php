@@ -8,7 +8,7 @@ namespace Hateoas\Configuration\Annotation;
  *
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class Embed
+class Embedded
 {
     /**
      * @Required

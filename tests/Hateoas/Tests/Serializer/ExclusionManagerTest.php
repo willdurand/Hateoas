@@ -11,7 +11,7 @@ use Hateoas\Tests\TestCase;
 
 class ExclusionManagerTest extends TestCase
 {
-    public function testDoesNotSkipNonNullEmbed()
+    public function testDoesNotSkipNonNullEmbedded()
     {
         $exclusionManager = new ExclusionManager($this->mockExpressionEvaluator());
 
@@ -20,12 +20,12 @@ class ExclusionManagerTest extends TestCase
         $context = SerializationContext::create();
 
         $this
-            ->boolean($exclusionManager->shouldSkipEmbed($object, $relation, $context))
+            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
                 ->isFalse()
         ;
     }
 
-    public function testSkipNullEmbed()
+    public function testSkipNullEmbedded()
     {
         $exclusionManager = new ExclusionManager($this->mockExpressionEvaluator());
 
@@ -34,7 +34,7 @@ class ExclusionManagerTest extends TestCase
         $context = SerializationContext::create();
 
         $this
-            ->boolean($exclusionManager->shouldSkipEmbed($object, $relation, $context))
+            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
                 ->isTrue()
         ;
     }
@@ -101,12 +101,12 @@ class ExclusionManagerTest extends TestCase
         $this
             ->boolean($exclusionManager->shouldSkipLink($object, $relation, $context))
                 ->isTrue()
-            ->boolean($exclusionManager->shouldSkipEmbed($object, $relation, $context))
+            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
                 ->isTrue()
         ;
     }
 
-    public function testSkipEmbed()
+    public function testSkipEmbedded()
     {
         $exclusionManager = new ExclusionManager($this->mockExpressionEvaluator());
 
@@ -117,7 +117,7 @@ class ExclusionManagerTest extends TestCase
         ;
 
         $this
-            ->boolean($exclusionManager->shouldSkipEmbed($object, $relation, $context))
+            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
                 ->isTrue()
         ;
     }
@@ -142,7 +142,7 @@ class ExclusionManagerTest extends TestCase
         $this
             ->boolean($exclusionManager->shouldSkipLink($object, $relation, $context))
                 ->isEqualTo($exclude)
-            ->boolean($exclusionManager->shouldSkipEmbed($object, $relation, $context))
+            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
                 ->isEqualTo($exclude)
         ;
     }

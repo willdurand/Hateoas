@@ -23,9 +23,9 @@ class Relation
     private $attributes;
 
     /**
-     * @var Embed|null
+     * @var Embedded|null
      */
-    private $embed;
+    private $embedded;
 
     /**
      * @var Exclusion|null
@@ -33,25 +33,25 @@ class Relation
     private $exclusion;
 
     /**
-     * @param string             $name
-     * @param string|Route       $href
-     * @param Embed|string|mixed $embed
-     * @param array              $attributes
-     * @param Exclusion          $exclusion
+     * @param string                $name
+     * @param string|Route          $href
+     * @param Embedded|string|mixed $embedded
+     * @param array                 $attributes
+     * @param Exclusion             $exclusion
      */
-    public function __construct($name, $href = null, $embed = null, array $attributes = array(), Exclusion $exclusion = null)
+    public function __construct($name, $href = null, $embedded = null, array $attributes = array(), Exclusion $exclusion = null)
     {
-        if (null !== $embed && !$embed instanceof Embed) {
-            $embed = new Embed($embed);
+        if (null !== $embedded && !$embedded instanceof Embedded) {
+            $embedded = new Embedded($embedded);
         }
 
-        if (null === !$href && null === $embed) {
-            throw new \InvalidArgumentException('$href and $embed cannot be both null.');
+        if (null === !$href && null === $embedded) {
+            throw new \InvalidArgumentException('$href and $embedded cannot be both null.');
         }
 
         $this->name       = $name;
         $this->href       = $href;
-        $this->embed      = $embed;
+        $this->embedded   = $embedded;
         $this->attributes = $attributes;
         $this->exclusion  = $exclusion;
     }
@@ -81,11 +81,11 @@ class Relation
     }
 
     /**
-     * @return Embed|null
+     * @return Embedded|null
      */
-    public function getEmbed()
+    public function getEmbedded()
     {
-        return $this->embed;
+        return $this->embedded;
     }
 
     /**

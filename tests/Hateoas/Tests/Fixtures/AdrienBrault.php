@@ -19,14 +19,14 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      "computer",
  *      href = "http://www.apple.com/macbook-pro/",
  *      exclusion = @Hateoas\Exclusion(groups = {"Default", "simple"}),
- *      embed = @Hateoas\Embed(
+ *      embedded = @Hateoas\Embedded(
  *          "expr(object.getMacbookPro())",
  *          exclusion = @Hateoas\Exclusion(groups = {"Default"})
  *      )
  * )
  * @Hateoas\Relation(
  *      "broken-computer",
- *      embed = "expr(object.getWindowsComputer())"
+ *      embedded = "expr(object.getWindowsComputer())"
  * )
  *
  * @Hateoas\RelationProvider("getRelations")

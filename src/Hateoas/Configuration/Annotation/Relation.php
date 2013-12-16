@@ -19,7 +19,7 @@ final class Relation
 
     public $href = null;
 
-    public $embed = null;
+    public $embedded = null;
 
     /**
      * @var array

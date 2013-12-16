@@ -39,13 +39,13 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbeds(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
-        $serializedEmbeds = array();
-        foreach ($embeds as $embed) {
-            $serializedEmbeds[$embed->getRel()] = $context->accept($embed->getData());
+        $serializedEmbeddeds = array();
+        foreach ($embeddeds as $embedded) {
+            $serializedEmbeddeds[$embedded->getRel()] = $context->accept($embedded->getData());
         }
 
-        $visitor->addData('_embedded', $serializedEmbeds);
+        $visitor->addData('_embedded', $serializedEmbeddeds);
     }
 }

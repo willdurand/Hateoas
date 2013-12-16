@@ -44,7 +44,7 @@ services.
   - [Annotations](#annotations)
     - [@Relation](#relation)
     - [@Route](#route)
-    - [@Embed](#embed)
+    - [@Embedded](#embedded)
     - [@Exclusion](#exclusion)
     - [@RelationProvider](#relationprovider)
 * [Internals](#internals)
@@ -229,7 +229,7 @@ link to them, as it prevents clients from having to make extra requests to
 fetch those resources.
 
 An **embedded resource** is a named **relation** that contains data, represented
-by the `embed` parameter.
+by the `embedded` parameter.
 
 ```php
 use JMS\Serializer\Annotation as Serializer;
@@ -241,7 +241,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * @Hateoas\Relation(
  *     "manager",
  *     href = "expr('/api/users/' ~ object.getManager().getId())",
- *     embed = "expr(object.getManager())",
+ *     embedded = "expr(object.getManager())",
  *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getManager() === null)")
  * )
  */
@@ -303,7 +303,7 @@ an `_embedded` key:
 }
 ```
 
-In XML, serializing `embed` relations will create new elements:
+In XML, serializing `embedded` relations will create new elements:
 
 ```xml
 <user id="42">
@@ -342,7 +342,7 @@ use Hateoas\Representation\SimpleCollection;
 $paginatedCollection = new PaginatedCollection(
     new SimpleCollection(
         array($user1, $user2, ...),
-        'users', // embed rel
+        'users', // embedded rel
         'users' // xml element name
     ),
     'user_list', // route
@@ -863,10 +863,10 @@ Reference
                 <h:parameter name="id" value="expr(object.getId())" />
                 <h:parameter name="page" value="1" />
             </h:ref>
-            <h:embed xml-element-name="users">
+            <h:embedded xml-element-name="users">
                 <h:content>expr(object.getFriends())</h:content>
                 <h:exclusion ... />
-            </h:embed>
+            </h:embedded>
             <h:exclusion groups="Default, user_full" since-version="1.0" until-version="2.2" exclude-if="expr(object.getFriends() === null)" />
         </h:relation>
     </class>
@@ -890,7 +890,7 @@ Acme\Demo\Representation\User:
                     id: expr(object.getId())
                     page: 1
                 generator: my_custom_generator
-            embed:
+            embedded:
                 content: expr(object.getFriends())
                 xmlElementName: users
                 exclusion: ...
@@ -923,13 +923,13 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 ```
 
-| Property   | Required            | Content                   | Expression language   |
-|------------|---------------------|---------------------------|-----------------------|
-| name       | Yes                 | string                    | Yes                   |
-| href       | If embed is not set | string / [@Route](#route) | Yes                   |
-| embed      | If href is not set  | string / [@Embed](#embed) | Yes                   |
-| attributes | No                  | array                     | Yes on key and values |
-| exclusion  | No                  | [@Exclusion](#exclusion)  | N/A                   |
+| Property   | Required               | Content                         | Expression language   |
+|------------|------------------------|---------------------------------|-----------------------|
+| name       | Yes                    | string                          | Yes                   |
+| href       | If embedded is not set | string / [@Route](#route)       | Yes                   |
+| embedded   | If href is not set     | string / [@Embedded](#embedded) | Yes                   |
+| attributes | No                     | array                           | Yes on key and values |
+| exclusion  | No                     | [@Exclusion](#exclusion)        | N/A                   |
 
 #### @Route
 
@@ -960,7 +960,7 @@ if you have configured one.
 | absolute   | Defaults to false   | boolean        | No                              |
 | generator  | No                  | string / null  | No                              |
 
-#### @Embed
+#### @Embedded
 
 ```php
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -968,7 +968,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
 /**
  * @Hateoas\Relation(
  *     name = "friends",
- *     embed = @Hateoas\Embed(
+ *     embedded = @Hateoas\Embedded(
  *         "expr(object.getFriends())",
  *         exclusion = ...,
  *         xmlElementName = "users"
@@ -977,7 +977,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 ```
 
-This annotation can be defined in the **embed** property of the
+This annotation can be defined in the **embedded** property of the
 [@Relation](#relation) annotation. It is useful if you need configure the
 `exclusion` or `xmlElementName` options for the embedded resource.
 
@@ -990,7 +990,7 @@ This annotation can be defined in the **embed** property of the
 #### @Exclusion
 
 This annotation can be defined in the **exclusion** property of both the
-[@Relation](#relation) and [@Embed](#embed) annotations.
+[@Relation](#relation) and [@Embedded](#embedded) annotations.
 
 | Property     | Required | Content          | Expression language    |
 |--------------|----------|------------------|------------------------|

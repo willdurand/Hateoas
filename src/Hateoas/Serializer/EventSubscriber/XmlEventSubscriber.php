@@ -2,7 +2,7 @@
 
 namespace Hateoas\Serializer\EventSubscriber;
 
-use Hateoas\Factory\EmbedsFactory;
+use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\EventDispatcher\Events;
@@ -39,34 +39,34 @@ class XmlEventSubscriber implements EventSubscriberInterface
     private $linksFactory;
 
     /**
-     * @var EmbedsFactory
+     * @var EmbeddedsFactory
      */
-    private $embedsFactory;
+    private $embeddedsFactory;
 
     /**
      * @param XmlSerializerInterface $xmlSerializer
      * @param LinksFactory           $linksFactory
-     * @param EmbedsFactory          $embedsFactory
+     * @param EmbeddedsFactory       $embeddedsFactory
      */
-    public function __construct(XmlSerializerInterface $xmlSerializer, LinksFactory $linksFactory, EmbedsFactory $embedsFactory)
+    public function __construct(XmlSerializerInterface $xmlSerializer, LinksFactory $linksFactory, EmbeddedsFactory $embeddedsFactory)
     {
-        $this->xmlSerializer = $xmlSerializer;
-        $this->linksFactory  = $linksFactory;
-        $this->embedsFactory = $embedsFactory;
+        $this->xmlSerializer    = $xmlSerializer;
+        $this->linksFactory     = $linksFactory;
+        $this->embeddedsFactory = $embeddedsFactory;
     }
 
     public function onPostSerialize(ObjectEvent $event)
     {
-        $context = $event->getContext();
-        $embeds  = $this->embedsFactory->create($event->getObject(), $event->getContext());
-        $links   = $this->linksFactory->create($event->getObject(), $event->getContext());
+        $context   = $event->getContext();
+        $embeddeds = $this->embeddedsFactory->create($event->getObject(), $event->getContext());
+        $links     = $this->linksFactory->create($event->getObject(), $event->getContext());
 
         if (count($links) > 0) {
             $this->xmlSerializer->serializeLinks($links, $event->getVisitor(), $context);
         }
 
-        if (count($embeds) > 0) {
-            $this->xmlSerializer->serializeEmbeds($embeds, $event->getVisitor(), $context);
+        if (count($embeddeds) > 0) {
+            $this->xmlSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
         }
     }
 }

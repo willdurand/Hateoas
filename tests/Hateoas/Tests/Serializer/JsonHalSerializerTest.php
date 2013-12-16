@@ -2,7 +2,7 @@
 
 namespace Hateoas\Tests\Serializer;
 
-use Hateoas\Model\Embed;
+use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Tests\TestCase;
@@ -52,7 +52,7 @@ class JsonHalSerializerTest extends TestCase
         );
     }
 
-    public function testSerializeEmbeds()
+    public function testSerializeEmbeddeds()
     {
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
         $contextProphecy
@@ -60,23 +60,23 @@ class JsonHalSerializerTest extends TestCase
             ->willReturnArgument()
         ;
 
-        $embeds = array(
-            new Embed('friend', array('name' => 'John')),
+        $embeddeds = array(
+            new Embedded('friend', array('name' => 'John')),
         );
 
-        $expectedEmbedded = array(
+        $expectedEmbeddedded = array(
             'friend' => array('name' => 'John'),
         );
 
         $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
         $jsonSerializationVisitorProphecy
-            ->addData('_embedded', $expectedEmbedded)
+            ->addData('_embedded', $expectedEmbeddedded)
             ->shouldBeCalledTimes(1)
         ;
 
         $jsonHalSerializer = new JsonHalSerializer();
-        $jsonHalSerializer->serializeEmbeds(
-            $embeds,
+        $jsonHalSerializer->serializeEmbeddeds(
+            $embeddeds,
             $jsonSerializationVisitorProphecy->reveal(),
             $contextProphecy->reveal()
         );

@@ -2,7 +2,7 @@
 
 namespace Hateoas\Configuration\Metadata\Driver;
 
-use Hateoas\Configuration\Embed;
+use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
@@ -46,18 +46,18 @@ class YamlDriver extends AbstractFileDriver
                     );
                 }
 
-                $embed = null;
+                $embedded = null;
                 if (isset($relation['embed'])) {
-                    $embed = $relation['embed'];
+                    $embedded = $relation['embed'];
 
-                    if (is_array($embed)) {
-                        $embedExclusion = null;
-                        if (isset($embed['exclusion'])) {
-                            $embedExclusion = $this->parseExclusion($embed['exclusion']);
+                    if (is_array($embedded)) {
+                        $embeddedExclusion = null;
+                        if (isset($embedded['exclusion'])) {
+                            $embeddedExclusion = $this->parseExclusion($embedded['exclusion']);
                         }
 
-                        $xmlElementName = isset($embed['xmlElementName']) ? $embed['xmlElementName'] : null;
-                        $embed          = new Embed($embed['content'], $xmlElementName, $embedExclusion);
+                        $xmlElementName = isset($embedded['xmlElementName']) ? $embedded['xmlElementName'] : null;
+                        $embedded       = new Embedded($embedded['content'], $xmlElementName, $embeddedExclusion);
                     }
                 }
 
@@ -71,7 +71,7 @@ class YamlDriver extends AbstractFileDriver
                 $classMetadata->addRelation(new Relation(
                     $name,
                     $href,
-                    $embed,
+                    $embedded,
                     $attributes,
                     $exclusion
                 ));

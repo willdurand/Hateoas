@@ -2,7 +2,7 @@
 
 namespace Hateoas\Serializer;
 
-use Hateoas\Model\Embed;
+use Hateoas\Model\Embedded;
 use Hateoas\Util\ClassUtils;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
@@ -47,17 +47,17 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbeds(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
-        foreach ($embeds as $embed) {
-            $entryNode = $visitor->getDocument()->createElement($this->getElementName($embed->getData(), $embed));
+        foreach ($embeddeds as $embedded) {
+            $entryNode = $visitor->getDocument()->createElement($this->getElementName($embedded->getData(), $embedded));
 
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
-            $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
+            $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
-            if ($embed->getData() instanceof \Traversable || is_array($embed->getData())) {
-                foreach ($embed->getData() as $entry) {
+            if ($embedded->getData() instanceof \Traversable || is_array($embedded->getData())) {
+                foreach ($embedded->getData() as $entry) {
                     $entryNode = $visitor->getDocument()->createElement($this->getElementName($entry));
 
                     $visitor->getCurrentNode()->appendChild($entryNode);
@@ -69,7 +69,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
 
                     $visitor->revertCurrentNode();
                 }
-            } elseif (null !== $node = $context->accept($embed->getData())) {
+            } elseif (null !== $node = $context->accept($embedded->getData())) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 
@@ -77,12 +77,12 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
         }
     }
 
-    private function getElementName($data, Embed $embed = null)
+    private function getElementName($data, Embedded $embedded = null)
     {
         $elementName = null;
 
-        if (null !== $embed) {
-            $elementName = $embed->getXmlElementName();
+        if (null !== $embedded) {
+            $elementName = $embedded->getXmlElementName();
         }
 
         if (null == $elementName && is_object($data)) {
