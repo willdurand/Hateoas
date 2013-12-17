@@ -3,7 +3,7 @@
 namespace Hateoas\Representation;
 
 use Hateoas\Configuration\Annotation as Hateoas;
-use Hateoas\Configuration\Embed;
+use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadataInterface;
 use Hateoas\Configuration\Relation;
@@ -109,7 +109,7 @@ class SimpleCollection
             new Relation(
                 $this->rel,
                 null,
-                new Embed(
+                new Embedded(
                     'expr(object.getResources())',
                     $this->xmlElementName,
                     $this->embedExclusion

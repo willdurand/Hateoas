@@ -5,7 +5,7 @@ namespace Hateoas\Model;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class Embed
+class Embedded
 {
     /**
      * @var string

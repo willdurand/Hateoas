@@ -70,7 +70,7 @@ class LinkHelper
         return new Relation(
             $relation->getName(),
             $href,
-            $relation->getEmbed(),
+            $relation->getEmbedded(),
             $relation->getAttributes(),
             $relation->getExclusion()
         );

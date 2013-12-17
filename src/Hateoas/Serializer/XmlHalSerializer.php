@@ -42,16 +42,16 @@ class XmlHalSerializer implements XmlSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbeds(array $embeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
-        foreach ($embeds as $embed) {
-            if ($embed->getData() instanceof \Traversable || is_array($embed->getData())) {
-                foreach ($embed->getData() as $data) {
+        foreach ($embeddeds as $embedded) {
+            if ($embedded->getData() instanceof \Traversable || is_array($embedded->getData())) {
+                foreach ($embedded->getData() as $data) {
                     $entryNode = $visitor->getDocument()->createElement('resource');
 
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
-                    $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
+                    $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
                     if (null !== $node = $context->accept($data)) {
                         $visitor->getCurrentNode()->appendChild($node);
@@ -67,9 +67,9 @@ class XmlHalSerializer implements XmlSerializerInterface
 
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
-            $visitor->getCurrentNode()->setAttribute('rel', $embed->getRel());
+            $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
-            if (null !== $node = $context->accept($embed->getData())) {
+            if (null !== $node = $context->accept($embedded->getData())) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 

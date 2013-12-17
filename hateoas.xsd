@@ -18,7 +18,7 @@
     <complexType name="relation">
         <sequence>
             <element name="href" type="h:href" minOccurs="0"/>
-            <element name="embed" type="h:embed" minOccurs="0"/>
+            <element name="embedded" type="h:embedded" minOccurs="0"/>
             <element name="exclusion" type="h:exclusion" minOccurs="0" maxOccurs="unbounded"/>
             <element name="attribute" type="h:attribute" minOccurs="0" maxOccurs="unbounded"/>
         </sequence>
@@ -40,7 +40,7 @@
         <attribute name="generator" type="normalizedString" use="optional"/>
     </complexType>
 
-    <complexType name="embed">
+    <complexType name="embedded">
         <sequence>
             <element name="content" type="normalizedString"/>
             <element name="exclusion" type="h:exclusion" minOccurs="0" maxOccurs="unbounded"/>

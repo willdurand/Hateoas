@@ -9,7 +9,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * @Hateoas\Relation(
  *     "self2",
  *     href = "foo2",
- *     embed = "foo2"
+ *     embedded = "foo2"
  * )
  */
 class Foo2

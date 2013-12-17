@@ -4,14 +4,14 @@ namespace Hateoas\Factory;
 
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Expression\ExpressionEvaluator;
-use Hateoas\Model\Embed;
+use Hateoas\Model\Embedded;
 use Hateoas\Serializer\ExclusionManager;
 use JMS\Serializer\SerializationContext;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class EmbedsFactory
+class EmbeddedsFactory
 {
     /**
      * @var RelationsRepository
@@ -45,23 +45,23 @@ class EmbedsFactory
     /**
      * @param  object               $object
      * @param  SerializationContext $context
-     * @return Embed[]
+     * @return Embedded[]
      */
     public function create($object, SerializationContext $context)
     {
-        $embeds = array();
+        $embeddeds = array();
         foreach ($this->relationsRepository->getRelations($object) as $relation) {
-            if ($this->exclusionManager->shouldSkipEmbed($object, $relation, $context)) {
+            if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
                 continue;
             }
 
             $rel  = $this->expressionEvaluator->evaluate($relation->getName(), $object);
-            $data = $this->expressionEvaluator->evaluate($relation->getEmbed()->getContent(), $object);
-            $xmlElementName = $this->expressionEvaluator->evaluate($relation->getEmbed()->getXmlElementName(), $object);
+            $data = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getContent(), $object);
+            $xmlElementName = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getXmlElementName(), $object);
 
-            $embeds[] = new Embed($rel, $data, $xmlElementName);
+            $embeddeds[] = new Embedded($rel, $data, $xmlElementName);
         }
 
-        return $embeds;
+        return $embeddeds;
     }
 }

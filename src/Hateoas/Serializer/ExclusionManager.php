@@ -35,17 +35,17 @@ class ExclusionManager
         return false;
     }
 
-    public function shouldSkipEmbed($object, Relation $relation, SerializationContext $context)
+    public function shouldSkipEmbedded($object, Relation $relation, SerializationContext $context)
     {
         if ($this->shouldSkipRelation($object, $relation, $context)) {
             return true;
         }
 
-        if (null === $relation->getEmbed()) {
+        if (null === $relation->getEmbedded()) {
             return true;
         }
 
-        return $this->shouldSkip($object, $relation->getEmbed()->getExclusion(), $context);
+        return $this->shouldSkip($object, $relation->getEmbedded()->getExclusion(), $context);
     }
 
     private function shouldSkipRelation($object, Relation $relation, SerializationContext $context)

@@ -2,7 +2,7 @@
 
 namespace Hateoas\Serializer;
 
-use Hateoas\Model\Embed;
+use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationContext;
@@ -20,9 +20,9 @@ interface JsonSerializerInterface
     public function serializeLinks(array $links, JsonSerializationVisitor $visitor, SerializationContext $context);
 
     /**
-     * @param Embed[]                  $embeds
+     * @param Embedded[]               $embeddeds
      * @param JsonSerializationVisitor $visitor
      * @param SerializationContext     $context
      */
-    public function serializeEmbeds(array $embeds, JsonSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, SerializationContext $context);
 }
