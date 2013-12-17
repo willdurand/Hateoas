@@ -2,12 +2,12 @@
 
 namespace Hateoas\Tests\Representation;
 
-use Hateoas\Representation\SimpleCollection;
+use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\HateoasBuilder;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Tests\TestCase;
 
-class SimpleCollectionTest extends TestCase
+class CollectionRepresentationTest extends TestCase
 {
     public function test()
     {
@@ -16,7 +16,7 @@ class SimpleCollectionTest extends TestCase
             ->setXmlSerializer(new XmlHalSerializer())
             ->build();
 
-        $collection = new SimpleCollection(
+        $collection = new CollectionRepresentation(
             array(
                 'Adrien',
                 'William',

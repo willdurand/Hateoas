@@ -4,7 +4,7 @@ namespace Hateoas\Tests\Representation;
 
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
-use Hateoas\Representation\SimpleCollection;
+use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\PaginatedCollection;
 use Hateoas\HateoasBuilder;
 use Hateoas\Serializer\XmlHalSerializer;
@@ -27,7 +27,7 @@ class PaginatedCollectionTest extends TestCase
         ;
 
         $collection = new PaginatedCollection(
-            new SimpleCollection(
+            new CollectionRepresentation(
                 array(
                     'Adrien',
                     'William',

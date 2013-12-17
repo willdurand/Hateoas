@@ -330,17 +330,17 @@ The library provides several classes in the `Hateoas\Representation\*`
 namespace to help you with common tasks. These are simple classes configured
 with the library's annotations.
 
-The `PaginatedCollection` and `SimpleCollection` classes are probably the most
-interesting ones. These are helpful when your resource is actually a collection
-of resources (e.g. ``/users`` is a collection of users). These help you represent
-the collection and add pagination and limits:
+The `PaginatedCollection` and `CollectionRepresentation` classes are probably
+the most interesting ones. These are helpful when your resource is actually a
+collection of resources (e.g. ``/users`` is a collection of users). These help
+you represent the collection and add pagination and limits:
 
 ```php
 use Hateoas\Representation\PaginatedCollection;
-use Hateoas\Representation\SimpleCollection;
+use Hateoas\Representation\CollectionRepresentation;
 
 $paginatedCollection = new PaginatedCollection(
-    new SimpleCollection(
+    new CollectionRepresentation(
         array($user1, $user2, ...),
         'users', // embedded rel
         'users' // xml element name
@@ -358,8 +358,8 @@ $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
-The `SimpleCollection` class allows you to dynamically configure the collection
-resources rel, and the xml root element name.
+The `CollectionRepresentation` class allows you to dynamically configure the
+collection resources rel, and the xml root element name.
 
 The `PaginatedCollection` is designed to add `self`, `first`, and when possible
 `last`, `next`, and `previous` links.

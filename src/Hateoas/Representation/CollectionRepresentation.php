@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class SimpleCollection
+class CollectionRepresentation
 {
     /**
      * @var string
