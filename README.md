@@ -61,10 +61,14 @@ into your `composer.json` file:
 ```json
 {
     "require": {
-        "willdurand/hateoas": "2.0.*@dev"
+        "willdurand/hateoas": "@stable"
     }
 }
 ```
+
+**Protip:** you should browse the
+[`willdurand/hateoas`](https://packagist.org/packages/willdurand/hateoas)
+page to choose a stable version to use, avoid the `@stable` meta constraint.
 
 Otherwise, install the library and setup the autoloader yourself.
 
@@ -81,7 +85,7 @@ Usage
 > **Important:** For those who use the `1.0` version, you can [jump to this
 > documentation
 > page](https://github.com/willdurand/Hateoas/blob/1.0/README.md#readme) as the
-> following documentation has been written for Hateoas 2.0 and above.
+> following documentation has been written for **Hateoas 2.0** and above.
 
 ### Introduction
 
