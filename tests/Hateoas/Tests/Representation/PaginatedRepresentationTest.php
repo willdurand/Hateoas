@@ -5,11 +5,11 @@ namespace Hateoas\Tests\Representation;
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\Representation\CollectionRepresentation;
-use Hateoas\Representation\PaginatedCollection;
+use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\HateoasBuilder;
 use Hateoas\Serializer\XmlHalSerializer;
 
-class PaginatedCollectionTest extends TestCase
+class PaginatedRepresentationTest extends TestCase
 {
     public function test()
     {
@@ -26,7 +26,7 @@ class PaginatedCollectionTest extends TestCase
             ->build()
         ;
 
-        $collection = new PaginatedCollection(
+        $collection = new PaginatedRepresentation(
             new CollectionRepresentation(
                 array(
                     'Adrien',

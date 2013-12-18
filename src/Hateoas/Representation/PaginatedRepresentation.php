@@ -49,7 +49,7 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class PaginatedCollection extends RouteAwareRepresentation
+class PaginatedRepresentation extends RouteAwareRepresentation
 {
     /**
      * @var int
