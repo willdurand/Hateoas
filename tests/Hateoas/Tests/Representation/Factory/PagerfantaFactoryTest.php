@@ -44,7 +44,7 @@ class PagerfantaFactoryTest extends TestCase
         foreach (array($representation1, $representation2) as $representation) {
             $this
                 ->object($representation)
-                    ->isInstanceOf('Hateoas\Representation\PaginatedCollection')
+                    ->isInstanceOf('Hateoas\Representation\PaginatedRepresentation')
                 ->variable($representation->getPage())
                     ->isEqualTo(2)
                 ->variable($representation->getLimit())

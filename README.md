@@ -330,16 +330,16 @@ The library provides several classes in the `Hateoas\Representation\*`
 namespace to help you with common tasks. These are simple classes configured
 with the library's annotations.
 
-The `PaginatedCollection` and `CollectionRepresentation` classes are probably
-the most interesting ones. These are helpful when your resource is actually a
-collection of resources (e.g. ``/users`` is a collection of users). These help
-you represent the collection and add pagination and limits:
+The `PaginatedRepresentation` and `CollectionRepresentation` classes are
+probably the most interesting ones. These are helpful when your resource is
+actually a collection of resources (e.g. ``/users`` is a collection of users).
+These help you represent the collection and add pagination and limits:
 
 ```php
-use Hateoas\Representation\PaginatedCollection;
+use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 
-$paginatedCollection = new PaginatedCollection(
+$paginatedCollection = new PaginatedRepresentation(
     new CollectionRepresentation(
         array($user1, $user2, ...),
         'users', // embedded rel
@@ -361,13 +361,13 @@ $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 The `CollectionRepresentation` class allows you to dynamically configure the
 collection resources rel, and the xml root element name.
 
-The `PaginatedCollection` is designed to add `self`, `first`, and when possible
-`last`, `next`, and `previous` links.
+The `PaginatedRepresentation` is designed to add `self`, `first`, and when
+possible `last`, `next`, and `previous` links.
 
 The Hateoas library also provides a `PagerfantaFactory` to easily build
-`PaginatedCollection` from a [Pagerfanta](https://github.com/whiteoctober/Pagerfanta)
-instance. If you use the Pagerfanta library, this is an easier way to create
-the collection objects:
+`PaginatedRepresentation` from a
+[Pagerfanta](https://github.com/whiteoctober/Pagerfanta) instance. If you use
+the Pagerfanta library, this is an easier way to create the collection objects:
 
 ```php
 use Hateoas\Representation\Factory\PagerfantaFactory;

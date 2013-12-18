@@ -2,7 +2,7 @@
 
 namespace Hateoas\Representation\Factory;
 
-use Hateoas\Representation\PaginatedCollection;
+use Hateoas\Representation\PaginatedRepresentation;
 use Pagerfanta\Pagerfanta;
 
 /**
@@ -28,7 +28,7 @@ class PagerfantaFactory
 
     public function create(Pagerfanta $pager, $route, array $routeParameters = array(), $inline = null)
     {
-        return new PaginatedCollection(
+        return new PaginatedRepresentation(
             $inline ?: $pager->getCurrentPageResults(),
             $route,
             $routeParameters,
