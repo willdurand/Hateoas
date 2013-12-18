@@ -46,34 +46,12 @@ class AnnotationDriver implements DriverInterface
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof Annotation\Relation) {
-                $href = $annotation->href;
-
-                if ($href instanceof Annotation\Route) {
-                    $href = new Route($href->name, $href->parameters, $href->absolute, $href->generator);
-                }
-
-                $embedded = $annotation->embedded;
-
-                if ($embedded instanceof Annotation\Embedded) {
-                    $embeddedExclusion = $embedded->exclusion;
-                    if (null !== $embeddedExclusion) {
-                        $embeddedExclusion = $this->parseExclusion($embeddedExclusion);
-                    }
-
-                    $embedded = new Embedded($embedded->content, $embedded->xmlElementName, $embeddedExclusion);
-                }
-
-                $exclusion = $annotation->exclusion;
-                if (null !== $exclusion) {
-                    $exclusion = $this->parseExclusion($exclusion);
-                }
-
                 $classMetadata->addRelation(new Relation(
                     $annotation->name,
-                    $href,
-                    $embedded,
+                    $this->createHref($annotation->href),
+                    $this->createEmbedded($annotation->embedded),
                     $annotation->attributes ?: array(),
-                    $exclusion
+                    $this->createExclusion($annotation->exclusion)
                 ));
             } elseif ($annotation instanceof Annotation\RelationProvider) {
                 $classMetadata->addRelationProvider(new RelationProvider($annotation->name));
@@ -96,5 +74,38 @@ class AnnotationDriver implements DriverInterface
             $exclusion->maxDepth,
             $exclusion->excludeIf
         );
+    }
+
+    private function createHref($href)
+    {
+        if ($href instanceof Annotation\Route) {
+            $href = new Route($href->name, $href->parameters, $href->absolute, $href->generator);
+        }
+
+        return $href;
+    }
+
+    private function createEmbedded($embedded)
+    {
+        if ($embedded instanceof Annotation\Embedded) {
+            $embeddedExclusion = $embedded->exclusion;
+
+            if (null !== $embeddedExclusion) {
+                $embeddedExclusion = $this->parseExclusion($embeddedExclusion);
+            }
+
+            $embedded = new Embedded($embedded->content, $embedded->xmlElementName, $embeddedExclusion);
+        }
+
+        return $embedded;
+    }
+
+    private function createExclusion($exclusion)
+    {
+        if (null !== $exclusion) {
+            $exclusion = $this->parseExclusion($exclusion);
+        }
+
+        return $exclusion;
     }
 }

@@ -34,33 +34,9 @@ class YamlDriver extends AbstractFileDriver
 
         if (isset($config['relations'])) {
             foreach ($config['relations'] as $relation) {
-                $name = $relation['rel'];
-                $href = null;
-
-                if (isset($relation['href']) && is_array($href = $relation['href']) && isset($href['route'])) {
-                    $href = new Route(
-                        $href['route'],
-                        isset($href['parameters']) ? $href['parameters'] : array(),
-                        isset($href['absolute']) ? $href['absolute'] : false,
-                        isset($href['generator']) ? $href['generator'] : null
-                    );
-                }
-
-                $embedded = null;
-                if (isset($relation['embed'])) {
-                    $embedded = $relation['embed'];
-
-                    if (is_array($embedded)) {
-                        $embeddedExclusion = null;
-                        if (isset($embedded['exclusion'])) {
-                            $embeddedExclusion = $this->parseExclusion($embedded['exclusion']);
-                        }
-
-                        $xmlElementName = isset($embedded['xmlElementName']) ? $embedded['xmlElementName'] : null;
-                        $embedded       = new Embedded($embedded['content'], $xmlElementName, $embeddedExclusion);
-                    }
-                }
-
+                $name       = $relation['rel'];
+                $href       = $this->createHref($relation);
+                $embedded   = $this->createEmbedded($relation);;
                 $attributes = isset($relation['attributes']) ? $relation['attributes'] : array();
 
                 $exclusion = null;
@@ -104,5 +80,42 @@ class YamlDriver extends AbstractFileDriver
             isset($exclusion['max_depth']) ? $exclusion['max_depth'] : null,
             isset($exclusion['exclude_if']) ? $exclusion['exclude_if'] : null
         );
+    }
+
+    private function createHref($relation)
+    {
+        $href = null;
+
+        if (isset($relation['href']) && is_array($href = $relation['href']) && isset($href['route'])) {
+            $href = new Route(
+                $href['route'],
+                isset($href['parameters']) ? $href['parameters'] : array(),
+                isset($href['absolute'])   ? $href['absolute'] : false,
+                isset($href['generator'])  ? $href['generator'] : null
+            );
+        }
+
+        return $href;
+    }
+
+    private function createEmbedded($relation)
+    {
+        $embedded = null;
+
+        if (isset($relation['embed'])) {
+            $embedded = $relation['embed'];
+
+            if (is_array($embedded)) {
+                $embeddedExclusion = null;
+                if (isset($embedded['exclusion'])) {
+                    $embeddedExclusion = $this->parseExclusion($embedded['exclusion']);
+                }
+
+                $xmlElementName = isset($embedded['xmlElementName']) ? $embedded['xmlElementName'] : null;
+                $embedded       = new Embedded($embedded['content'], $xmlElementName, $embeddedExclusion);
+            }
+        }
+
+        return $embedded;
     }
 }
