@@ -34,22 +34,12 @@ class YamlDriver extends AbstractFileDriver
 
         if (isset($config['relations'])) {
             foreach ($config['relations'] as $relation) {
-                $name       = $relation['rel'];
-                $href       = $this->createHref($relation);
-                $embedded   = $this->createEmbedded($relation);;
-                $attributes = isset($relation['attributes']) ? $relation['attributes'] : array();
-
-                $exclusion = null;
-                if (isset($relation['exclusion'])) {
-                    $exclusion = $this->parseExclusion($relation['exclusion']);
-                }
-
                 $classMetadata->addRelation(new Relation(
-                    $name,
-                    $href,
-                    $embedded,
-                    $attributes,
-                    $exclusion
+                    $relation['rel'],
+                    $this->createHref($relation),
+                    $this->createEmbedded($relation),
+                    isset($relation['attributes']) ? $relation['attributes'] : array(),
+                    $this->createExclusion($relation)
                 ));
             }
         }
@@ -85,7 +75,6 @@ class YamlDriver extends AbstractFileDriver
     private function createHref($relation)
     {
         $href = null;
-
         if (isset($relation['href']) && is_array($href = $relation['href']) && isset($href['route'])) {
             $href = new Route(
                 $href['route'],
@@ -101,7 +90,6 @@ class YamlDriver extends AbstractFileDriver
     private function createEmbedded($relation)
     {
         $embedded = null;
-
         if (isset($relation['embed'])) {
             $embedded = $relation['embed'];
 
@@ -117,5 +105,15 @@ class YamlDriver extends AbstractFileDriver
         }
 
         return $embedded;
+    }
+
+    private function createExclusion($relation)
+    {
+        $exclusion = null;
+        if (isset($relation['exclusion'])) {
+            $exclusion = $this->parseExclusion($relation['exclusion']);
+        }
+
+        return $exclusion;
     }
 }
