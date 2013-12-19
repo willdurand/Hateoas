@@ -1,8 +1,1324 @@
-<h2>So yes, it works!</h2>
-<p>
-    You are probably looking for the Hateoas website, but it is not ready yet.
-</p>
-<p>
-    Please look at: <a href="https://github.com/willdurand/Hateoas">https://github.com/willdurand/Hateoas</a> instead.
-    Thank you.
-</p>
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Hateoas by willdurand</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Hateoas</h1>
+        <p class="header">A PHP library to support implementing representations for HATEOAS REST web services.</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/willdurand/Hateoas/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/willdurand/Hateoas/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/willdurand/Hateoas">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/willdurand">willdurand</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a name="hateoas" class="anchor" href="#hateoas"><span class="octicon octicon-link"></span></a>Hateoas</h1>
+
+<p><a href="http://travis-ci.org/willdurand/Hateoas"><img src="https://secure.travis-ci.org/willdurand/Hateoas.png" alt="Build
+Status"></a>
+<a href="https://scrutinizer-ci.com/g/willdurand/Hateoas/"><img src="https://scrutinizer-ci.com/g/willdurand/Hateoas/badges/quality-score.png?s=45b5a825f99de4d29c98b5103f59e060139cf354" alt="Scrutinizer Quality
+Score"></a></p>
+
+<ul>
+<li>
+<a href="#installation">Installation</a>
+
+<ul>
+<li><a href="#working-with-symfony2">Working With Symfony2</a></li>
+</ul>
+</li>
+<li>
+<a href="#usage">Usage</a>
+
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#configuring-links">Configuring Links</a></li>
+<li><a href="#embedding-resources">Embedding Resources</a></li>
+<li><a href="#dealing-with-collections">Dealing With Collections</a></li>
+<li>
+<a href="#the-expression-language">The Expression Language</a>
+
+<ul>
+<li><a href="#context">Context</a></li>
+<li><a href="#adding-your-own-context-variables">Adding Your Own Context Variables</a></li>
+</ul>
+</li>
+<li><a href="#url-generators">URL Generators</a></li>
+<li>
+<a href="#helpers">Helpers</a>
+
+<ul>
+<li><a href="#linkhelper">LinkHelper</a></li>
+</ul>
+</li>
+<li>
+<a href="#serializers--formats">Serializers &amp; Formats</a>
+
+<ul>
+<li><a href="#the-jsonhalserializer">The JsonHalSerializer</a></li>
+<li><a href="#the-xmlserializer">The XmlSerializer</a></li>
+<li><a href="#the-xmlhalserializer">The XmlHalSerializer</a></li>
+<li><a href="#adding-new-serializers">Adding New Serializers</a></li>
+</ul>
+</li>
+<li>
+<a href="#the-hateoasbuilder">The HateoasBuilder</a>
+
+<ul>
+<li><a href="#xml-serializer">XML Serializer</a></li>
+<li><a href="#json-serializer">JSON Serializer</a></li>
+<li><a href="#url-generator">URL Generator</a></li>
+<li><a href="#expression-evaluatorexpression-language">Expression Evaluator/Expression Language</a></li>
+<li><a href="#relation-provider">Relation Provider</a></li>
+<li><a href="#jms-serializer-specific">(JMS) Serializer Specific</a></li>
+<li><a href="#others">Others</a></li>
+</ul>
+</li>
+<li><a href="#configuring-a-cache-directory">Configuring a Cache Directory</a></li>
+<li><a href="#configuring-metadata-locations">Configuring Metadata Locations</a></li>
+</ul>
+</li>
+<li>
+<a href="#reference">Reference</a>
+
+<ul>
+<li><a href="#xml">XML</a></li>
+<li><a href="#yaml">YAML</a></li>
+<li>
+<a href="#annotations">Annotations</a>
+
+<ul>
+<li><a href="#relation">@Relation</a></li>
+<li><a href="#route">@Route</a></li>
+<li><a href="#embedded">@Embedded</a></li>
+<li><a href="#exclusion">@Exclusion</a></li>
+<li><a href="#relationprovider">@RelationProvider</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#internals">Internals</a>
+
+<ul>
+<li><a href="#expression-functions">Expression Functions</a></li>
+</ul>
+</li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>The recommended way to install Hateoas is through
+<a href="http://getcomposer.org/">Composer</a>. Require the <code>willdurand/hateoas</code> package
+into your <code>composer.json</code> file:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"willdurand/hateoas"</span><span class="p">:</span> <span class="s2">"@stable"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Protip:</strong> you should browse the
+<a href="https://packagist.org/packages/willdurand/hateoas"><code>willdurand/hateoas</code></a>
+page to choose a stable version to use, avoid the <code>@stable</code> meta constraint.</p>
+
+<p>Otherwise, install the library and setup the autoloader yourself.</p>
+
+<h3>
+<a name="working-with-symfony2" class="anchor" href="#working-with-symfony2"><span class="octicon octicon-link"></span></a>Working With Symfony2</h3>
+
+<p>There is a bundle for that! Install the
+<a href="https://github.com/willdurand/BazingaHateoasBundle">BazingaHateoasBundle</a>, and
+enjoy!</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<blockquote>
+<p><strong>Important:</strong> For those who use the <code>1.0</code> version, you can <a href="https://github.com/willdurand/Hateoas/blob/1.0/README.md#readme">jump to this
+documentation
+page</a> as the
+following documentation has been written for <strong>Hateoas 2.0</strong> and above.</p>
+</blockquote>
+
+<h3>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h3>
+
+<p><strong>Hateoas</strong> leverages the <a href="https://github.com/schmittjoh/serializer">Serializer</a>
+library to provide a nice way to build HATEOAS REST web services. HATEOAS stands
+for <strong>H</strong>ypermedia <strong>a</strong>s <strong>t</strong>he <strong>E</strong>ngine <strong>o</strong>f <strong>A</strong>pplication <strong>S</strong>tate,
+and basically adds <strong>hypermedia links</strong> to your <strong>representations</strong> (i.e. your
+API responses). <a href="http://timelessrepo.com/haters-gonna-hateoas">HATEOAS is about the discoverability of actions on a
+resource</a>.</p>
+
+<p>For instance, let's say you have a User API which returns a <strong>representation</strong>
+of a single <em>user</em> as follow:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"user"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"id"</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+        <span class="nt">"first_name"</span><span class="p">:</span> <span class="s2">"John"</span><span class="p">,</span>
+        <span class="nt">"last_name"</span><span class="p">:</span> <span class="s2">"Doe"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>In order to tell your API consumers how to retrieve the data for this specific
+user, you have to add your very first <strong>link</strong> to this representation, let's
+call it <code>self</code> as it is the URI for this particular user:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"user"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"id"</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+        <span class="nt">"first_name"</span><span class="p">:</span> <span class="s2">"John"</span><span class="p">,</span>
+        <span class="nt">"last_name"</span><span class="p">:</span> <span class="s2">"Doe"</span><span class="p">,</span>
+        <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"self"</span><span class="p">:</span> <span class="p">{</span> <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"http://example.com/api/users/123"</span> <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Let's dig into Hateoas now.</p>
+
+<h3>
+<a name="configuring-links" class="anchor" href="#configuring-links"><span class="octicon octicon-link"></span></a>Configuring Links</h3>
+
+<p>In Hateoas terminology, <strong>links</strong> are seen as <strong>relations</strong> added to resources.
+It is worth mentioning that <strong>relations</strong> also refer to <strong>embedded resources</strong>
+too, but this topic will be covered in the <a href="#embedding-resources">Embedding
+Resources</a> section.</p>
+
+<p>A link is a relation which is identified by a <code>name</code> (e.g. <code>self</code>) and that
+has an <code>href</code> parameter:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">JMS\Serializer\Annotation</span> <span class="k">as</span> <span class="nx">Serializer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Hateoas\Configuration\Annotation</span> <span class="k">as</span> <span class="nx">Hateoas</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @Serializer\XmlRoot("user")</span>
+<span class="sd"> *</span>
+<span class="sd"> * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="sd">/** @Serializer\XmlAttribute */</span>
+    <span class="k">private</span> <span class="nv">$id</span><span class="p">;</span>
+    <span class="k">private</span> <span class="nv">$firstName</span><span class="p">;</span>
+    <span class="k">private</span> <span class="nv">$lastName</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getId</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>In the example above, we configure a <code>self</code> relation that is a link because of
+the <code>href</code> parameter. Its value, which may look weird at first glance, will be
+extensively covered in <a href="#the-expression-language">The Expression Language</a>
+section, but it basically generates a URI.</p>
+
+<p>In this section, <a href="#annotations"><strong>annotations</strong></a> are used to configure Hateoas.
+However, <a href="#xml"><strong>XML</strong></a> and <a href="#yaml"><strong>YAML</strong></a> formats are also supported. If
+you wish, you can use plain PHP too.</p>
+
+<p><strong>Important:</strong> you must configure both the Serializer and Hateoas the same way. E.g.
+if you use YAML for configuring Serializer, use YAML for configuring Hateoas.</p>
+
+<p>The easiest way to try HATEOAS is with the <code>HateoasBuilder</code>. The builder has
+numerous methods to configure the Hateoas serializer, but we won't dig into
+them right now (see <a href="#the-hateoasbuilder">The HateoasBuilder</a>).
+Everything works fine out of the box:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\HateoasBuilder</span><span class="p">;</span>
+
+<span class="nv">$hateoas</span> <span class="o">=</span> <span class="nx">HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">build</span><span class="p">();</span>
+
+<span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="s1">'Adrien'</span><span class="p">,</span> <span class="s1">'Brault'</span><span class="p">);</span>
+<span class="nv">$json</span> <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">);</span>
+<span class="nv">$xml</span>  <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'xml'</span><span class="p">);</span>
+</pre></div>
+
+<p>The <code>$hateoas</code> object is an instance of <code>JMS\Serializer\SerializerInterface</code>,
+coming from the Serializer library. Hateoas does not come with its own
+serializer, it simply hooks into the JMS Serializer.</p>
+
+<p>By default, Hateoas uses the <a href="http://stateless.co/hal_specification.html">Hypertext Application
+Language</a> (HAL) for JSON
+serialization. This specifies the <em>structure</em> of the response (e.g. that
+"links" should live under a <code>_links</code> key):</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"id"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="nt">"first_name"</span><span class="p">:</span> <span class="s2">"Adrien"</span><span class="p">,</span>
+    <span class="nt">"last_name"</span><span class="p">:</span> <span class="s2">"Brault"</span><span class="p">,</span>
+    <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"self"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users/42"</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>For XML, <a href="http://tools.ietf.org/search/rfc4287#section-4.2.7">Atom Links</a>
+are used by default:</p>
+
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;user</span> <span class="na">id=</span><span class="s">"42"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;first_name&gt;</span><span class="cp">&lt;![CDATA[Adrien]]&gt;</span><span class="nt">&lt;/first_name&gt;</span>
+    <span class="nt">&lt;last_name&gt;</span><span class="cp">&lt;![CDATA[Brault]]&gt;</span><span class="nt">&lt;/last_name&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"self"</span> <span class="na">href=</span><span class="s">"/api/users/42"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/user&gt;</span>
+</pre></div>
+
+<p>It is worth mentioning that these formats are the <strong>default ones</strong>, not the
+only available ones. You can use <a href="#serializers--formats">different formats through different
+serializers, and even add your owns</a>.</p>
+
+<p>Now that you know how to add <strong>links</strong>, let's see how to add <strong>embedded
+resources</strong>.</p>
+
+<h3>
+<a name="embedding-resources" class="anchor" href="#embedding-resources"><span class="octicon octicon-link"></span></a>Embedding Resources</h3>
+
+<p>Sometimes, it's more efficient to embed related resources rather than
+link to them, as it prevents clients from having to make extra requests to
+fetch those resources.</p>
+
+<p>An <strong>embedded resource</strong> is a named <strong>relation</strong> that contains data, represented
+by the <code>embedded</code> parameter.</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">JMS\Serializer\Annotation</span> <span class="k">as</span> <span class="nx">Serializer</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Hateoas\Configuration\Annotation</span> <span class="k">as</span> <span class="nx">Hateoas</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * ...</span>
+<span class="sd"> *</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     "manager",</span>
+<span class="sd"> *     href = "expr('/api/users/' ~ object.getManager().getId())",</span>
+<span class="sd"> *     embedded = "expr(object.getManager())",</span>
+<span class="sd"> *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getManager() === null)")</span>
+<span class="sd"> * )</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="o">...</span>
+
+    <span class="sd">/** @Serializer\Exclude */</span>
+    <span class="k">private</span> <span class="nv">$manager</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Note:</strong> You will need to exclude the manager property from the serialization,
+otherwise both the serializer and Hateoas will serialize it.
+You will also have to exclude the manager relation when the manager is <code>null</code>,
+because otherwise an error will occur when creating the <code>href</code> link (calling
+<code>getId()</code> on <code>null</code>).</p>
+
+<p><strong>Tip:</strong> If the manager property is an object that already has a <code>_self</code>
+link, you can re-use that value for the <code>href</code> instead of repeating it here.
+See <a href="#linkhelper">LinkHelper</a>.</p>
+
+<div class="highlight highlight-php"><pre><span class="nv">$hateoas</span> <span class="o">=</span> <span class="nx">HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">build</span><span class="p">();</span>
+
+<span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="s1">'Adrien'</span><span class="p">,</span> <span class="s1">'Brault'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">User</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="s1">'Will'</span><span class="p">,</span> <span class="s1">'Durand'</span><span class="p">));</span>
+<span class="nv">$json</span> <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">);</span>
+<span class="nv">$xml</span>  <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'xml'</span><span class="p">);</span>
+</pre></div>
+
+<p>For <code>json</code>, the HAL representation places these embedded relations inside
+an <code>_embedded</code> key:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"id"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="nt">"first_name"</span><span class="p">:</span> <span class="s2">"Adrien"</span><span class="p">,</span>
+    <span class="nt">"last_name"</span><span class="p">:</span> <span class="s2">"Brault"</span><span class="p">,</span>
+    <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"self"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users/42"</span>
+        <span class="p">},</span>
+        <span class="nt">"manager"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users/23"</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="nt">"_embedded"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"manager"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"id"</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span>
+            <span class="nt">"first_name"</span><span class="p">:</span> <span class="s2">"Will"</span><span class="p">,</span>
+            <span class="nt">"last_name"</span><span class="p">:</span> <span class="s2">"Durand"</span><span class="p">,</span>
+            <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">"self"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users/23"</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>In XML, serializing <code>embedded</code> relations will create new elements:</p>
+
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;user</span> <span class="na">id=</span><span class="s">"42"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;first_name&gt;</span><span class="cp">&lt;![CDATA[Adrien]]&gt;</span><span class="nt">&lt;/first_name&gt;</span>
+    <span class="nt">&lt;last_name&gt;</span><span class="cp">&lt;![CDATA[Brault]]&gt;</span><span class="nt">&lt;/last_name&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"self"</span> <span class="na">href=</span><span class="s">"/api/users/42"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"manager"</span> <span class="na">href=</span><span class="s">"/api/users/23"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;manager</span> <span class="na">rel=</span><span class="s">"manager"</span> <span class="na">id=</span><span class="s">"23"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;first_name&gt;</span><span class="cp">&lt;![CDATA[Will]]&gt;</span><span class="nt">&lt;/first_name&gt;</span>
+        <span class="nt">&lt;last_name&gt;</span><span class="cp">&lt;![CDATA[Durand]]&gt;</span><span class="nt">&lt;/last_name&gt;</span>
+        <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"self"</span> <span class="na">href=</span><span class="s">"/api/users/23"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/manager&gt;</span>
+<span class="nt">&lt;/user&gt;</span>
+</pre></div>
+
+<p>The tag name of an embedded resource is inferred from the
+<a href="http://jmsyst.com/libs/serializer/master/reference/annotations#xmlroot"><code>@XmlRoot</code></a>
+annotation (<code>xml_root_name</code> in YAML, <code>xml-root-name</code> in XML) coming from the
+Serializer configuration.</p>
+
+<h3>
+<a name="dealing-with-collections" class="anchor" href="#dealing-with-collections"><span class="octicon octicon-link"></span></a>Dealing With Collections</h3>
+
+<p>The library provides several classes in the <code>Hateoas\Representation\*</code>
+namespace to help you with common tasks. These are simple classes configured
+with the library's annotations.</p>
+
+<p>The <code>PaginatedRepresentation</code> and <code>CollectionRepresentation</code> classes are
+probably the most interesting ones. These are helpful when your resource is
+actually a collection of resources (e.g. <code>/users</code> is a collection of users).
+These help you represent the collection and add pagination and limits:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Representation\PaginatedRepresentation</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Hateoas\Representation\CollectionRepresentation</span><span class="p">;</span>
+
+<span class="nv">$paginatedCollection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PaginatedRepresentation</span><span class="p">(</span>
+    <span class="k">new</span> <span class="nx">CollectionRepresentation</span><span class="p">(</span>
+        <span class="k">array</span><span class="p">(</span><span class="nv">$user1</span><span class="p">,</span> <span class="nv">$user2</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span>
+        <span class="s1">'users'</span><span class="p">,</span> <span class="c1">// embedded rel</span>
+        <span class="s1">'users'</span> <span class="c1">// xml element name</span>
+    <span class="p">),</span>
+    <span class="s1">'user_list'</span><span class="p">,</span> <span class="c1">// route</span>
+    <span class="k">array</span><span class="p">(),</span> <span class="c1">// route parameters</span>
+    <span class="mi">1</span><span class="p">,</span> <span class="c1">// page</span>
+    <span class="mi">20</span><span class="p">,</span> <span class="c1">// limit</span>
+    <span class="mi">4</span><span class="p">,</span> <span class="c1">// total pages</span>
+    <span class="s1">'page'</span><span class="p">,</span> <span class="c1">// page route parameter name, optional, defaults to 'page'</span>
+    <span class="s1">'limit'</span> <span class="c1">// limit route parameter name, optional, defaults to 'limit'</span>
+<span class="p">);</span>
+
+<span class="nv">$json</span> <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$paginatedCollection</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">);</span>
+<span class="nv">$xml</span>  <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$paginatedCollection</span><span class="p">,</span> <span class="s1">'xml'</span><span class="p">);</span>
+</pre></div>
+
+<p>The <code>CollectionRepresentation</code> class allows you to dynamically configure the
+collection resources rel, and the xml root element name.</p>
+
+<p>The <code>PaginatedRepresentation</code> is designed to add <code>self</code>, <code>first</code>, and when
+possible <code>last</code>, <code>next</code>, and <code>previous</code> links.</p>
+
+<p>The Hateoas library also provides a <code>PagerfantaFactory</code> to easily build
+<code>PaginatedRepresentation</code> from a
+<a href="https://github.com/whiteoctober/Pagerfanta">Pagerfanta</a> instance. If you use
+the Pagerfanta library, this is an easier way to create the collection objects:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Representation\Factory\PagerfantaFactory</span><span class="p">;</span>
+
+<span class="nv">$pagerfantaFactory</span>   <span class="o">=</span> <span class="k">new</span> <span class="nx">PagerfantaFactory</span><span class="p">();</span> <span class="c1">// you can pass the page and limit parameters name</span>
+<span class="nv">$paginatedCollection</span> <span class="o">=</span> <span class="nv">$pagerfantaFactory</span><span class="o">-&gt;</span><span class="na">create</span><span class="p">(</span>
+    <span class="nv">$pager</span><span class="p">,</span>
+    <span class="s1">'user_list'</span><span class="p">,</span>
+    <span class="k">array</span><span class="p">()</span> <span class="c1">// route parameters</span>
+<span class="p">);</span>
+
+<span class="nv">$json</span> <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$paginatedCollection</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">);</span>
+<span class="nv">$xml</span>  <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$paginatedCollection</span><span class="p">,</span> <span class="s1">'xml'</span><span class="p">);</span>
+</pre></div>
+
+<p>You would get the following JSON content:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"users"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="nt">"id"</span><span class="p">:</span> <span class="mi">123</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="nt">"id"</span><span class="p">:</span> <span class="mi">456</span> <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">"page"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">"limit"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="nt">"pages"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"self"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users?page=1&amp;limit=10"</span>
+        <span class="p">},</span>
+        <span class="nt">"first"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users?page=1&amp;limit=10"</span>
+        <span class="p">},</span>
+        <span class="nt">"last"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users?page=1&amp;limit=10"</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>And the following XML content:</p>
+
+<div class="highlight highlight-xml"><pre><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;collection</span> <span class="na">page=</span><span class="s">"1"</span> <span class="na">limit=</span><span class="s">"10"</span> <span class="na">pages=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;user</span> <span class="na">id=</span><span class="s">"123"</span><span class="nt">&gt;&lt;/user&gt;</span>
+    <span class="nt">&lt;user</span> <span class="na">id=</span><span class="s">"456"</span><span class="nt">&gt;&lt;/user&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"self"</span> <span class="na">href=</span><span class="s">"/api/users?page=1&amp;amp;limit=10"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"first"</span> <span class="na">href=</span><span class="s">"/api/users?page=1&amp;amp;limit=10"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"last"</span> <span class="na">href=</span><span class="s">"/api/users?page=1&amp;amp;limit=10"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/collection&gt;</span>
+</pre></div>
+
+<h3>
+<a name="the-expression-language" class="anchor" href="#the-expression-language"><span class="octicon octicon-link"></span></a>The Expression Language</h3>
+
+<p>Hateoas relies on the powerful Symfony
+<a href="http://symfony.com/doc/current/components/expression_language/introduction.html">ExpressionLanguage</a>
+component to retrieve values such as links, ids or objects to embed.</p>
+
+<p>Basically, each time you fill in a value (e.g. a Relation <code>href</code> in annotations
+or YAML), you can either pass a <strong>hardcoded value</strong> or an <strong>expression</strong>.
+In order to use the Expression Language, you have to use the <code>expr()</code> notation:</p>
+
+<div class="highlight highlight-php"><pre><span class="sd">/**</span>
+<span class="sd"> * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")</span>
+<span class="sd"> */</span>
+</pre></div>
+
+<p>You can learn more about the Expression Syntax by reading the official
+documentation: <a href="http://symfony.com/doc/current/components/expression_language/syntax.html">The Expression
+Syntax</a>.</p>
+
+<h4>
+<a name="context" class="anchor" href="#context"><span class="octicon octicon-link"></span></a>Context</h4>
+
+<p>Natively, a special variable named <code>object</code> is available in each expression, and
+represents the current object:</p>
+
+<pre><code>expr(object.getId())
+</code></pre>
+
+<p>We call such a variable a <strong>context variable</strong>.</p>
+
+<p>You can add your own context variables to the Expression Language context by
+adding them to the <code>ExpressionEvaluator</code>.</p>
+
+<h5>
+<a name="adding-your-own-context-variables" class="anchor" href="#adding-your-own-context-variables"><span class="octicon octicon-link"></span></a>Adding Your Own Context Variables</h5>
+
+<p>Using the <code>HateoasBuilder</code>, call the <code>setExpressionContextVariable()</code> method to add
+new context variables:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\HateoasBuilder</span><span class="p">;</span>
+
+<span class="nv">$hateoas</span> <span class="o">=</span> <span class="nx">HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">setExpressionContextVariable</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">())</span>
+    <span class="o">-&gt;</span><span class="na">build</span><span class="p">();</span>
+</pre></div>
+
+<p>The <code>foo</code> variable is now available:</p>
+
+<pre><code>expr(foo !== null)
+</code></pre>
+
+<h3>
+<a name="url-generators" class="anchor" href="#url-generators"><span class="octicon octicon-link"></span></a>URL Generators</h3>
+
+<p>Since you can use the <a href="#the-expression-language">Expression Language</a> to define
+the relations links (<code>href</code> key), you can do a lot by default. However if you
+are using a framework, chances are that you will want to use routes to build
+links.</p>
+
+<p>You will first need to configure an <code>UrlGenerator</code> on the builder. You can
+either implement the <code>Hateoas\UrlGenerator\UrlGeneratorInterface</code>, or use the
+<code>Hateoas\UrlGenerator\CallableUrlGenerator</code>:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\UrlGenerator\CallableUrlGenerator</span><span class="p">;</span>
+
+<span class="nv">$hateoas</span> <span class="o">=</span> <span class="nx">HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">setUrlGenerator</span><span class="p">(</span>
+        <span class="k">null</span><span class="p">,</span> <span class="c1">// By default all links uses the generator configured with the null name</span>
+        <span class="k">new</span> <span class="nx">CallableUrlGenerator</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="nv">$route</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$parameters</span><span class="p">,</span> <span class="nv">$absolute</span><span class="p">)</span> <span class="k">use</span> <span class="p">(</span><span class="nv">$myFramework</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nv">$myFramework</span><span class="o">-&gt;</span><span class="na">generateTheUrl</span><span class="p">(</span><span class="nv">$route</span><span class="p">,</span> <span class="nv">$parameters</span><span class="p">,</span> <span class="nv">$absolute</span><span class="p">);</span>
+        <span class="p">})</span>
+    <span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">build</span><span class="p">()</span>
+<span class="p">;</span>
+</pre></div>
+
+<p>You will then be able to use the <a href="#route">@Route</a> annotation:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Configuration\Annotation</span> <span class="k">as</span> <span class="nx">Hateoas</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *      "self",</span>
+<span class="sd"> *      href = @Hateoas\Route(</span>
+<span class="sd"> *          "user_get",</span>
+<span class="sd"> *          parameters = {</span>
+<span class="sd"> *              "id" = "expr(object.getId())"</span>
+<span class="sd"> *          }</span>
+<span class="sd"> *      )</span>
+<span class="sd"> * )</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">User</span>
+</pre></div>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"id"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="nt">"first_name"</span><span class="p">:</span> <span class="s2">"Adrien"</span><span class="p">,</span>
+    <span class="nt">"last_name"</span><span class="p">:</span> <span class="s2">"Brault"</span><span class="p">,</span>
+    <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"self"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users/42"</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Note that the library comes with a <code>SymfonyUrlGenerator</code>. For example, to use it
+in Silex:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\UrlGenerator\SymfonyUrlGenerator</span><span class="p">;</span>
+
+<span class="nv">$hateoas</span> <span class="o">=</span> <span class="nx">HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">setUrlGenerator</span><span class="p">(</span><span class="k">null</span><span class="p">,</span> <span class="k">new</span> <span class="nx">SymfonyUrlGenerator</span><span class="p">(</span><span class="nv">$app</span><span class="p">[</span><span class="s1">'url_generator'</span><span class="p">]))</span>
+    <span class="o">-&gt;</span><span class="na">build</span><span class="p">()</span>
+<span class="p">;</span>
+</pre></div>
+
+<h3>
+<a name="helpers" class="anchor" href="#helpers"><span class="octicon octicon-link"></span></a>Helpers</h3>
+
+<p>Hateoas provides a set of helpers to ease the process of building APIs.</p>
+
+<h4>
+<a name="linkhelper" class="anchor" href="#linkhelper"><span class="octicon octicon-link"></span></a>LinkHelper</h4>
+
+<p>The <code>LinkHelper</code> class provides a <code>getLinkHref($object, $rel, $absolute = false)</code>
+method that allows you to get the <em>href</em> value of any object, for any given
+relation name.  Basically, it is able to generate a URI (either absolute or
+relative) from any <strong>link</strong> relation:</p>
+
+<div class="highlight highlight-php"><pre><span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="s1">'William'</span><span class="p">,</span> <span class="s1">'Durand'</span><span class="p">);</span>
+
+<span class="nv">$linkHelper</span><span class="o">-&gt;</span><span class="na">getLinkHref</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'self'</span><span class="p">);</span>
+<span class="c1">// /api/users/123</span>
+
+<span class="nv">$linkHelper</span><span class="o">-&gt;</span><span class="na">getLinkHref</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'self'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+<span class="c1">// http://example.com/api/users/123</span>
+</pre></div>
+
+<h5>
+<a name="the-link-function" class="anchor" href="#the-link-function"><span class="octicon octicon-link"></span></a>The <code>link</code> Function</h5>
+
+<p>The feature above is also available in your expressions (cf. <a href="#the-expression-language">The Expression
+Language</a>) through the <code>link(object, rel, absolute)</code>
+<strong>function</strong>:</p>
+
+<div class="highlight highlight-php"><pre><span class="sd">/**</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     "self",</span>
+<span class="sd"> *     href = @Hateoas\Route("post_get", parameters = {"id" = "expr(object.getId())"})</span>
+<span class="sd"> * )</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">Post</span> <span class="p">{}</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     "self",</span>
+<span class="sd"> *     href = @Hateoas\Route("user_get", parameters = {"id" = "expr(object.getId())"})</span>
+<span class="sd"> * )</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     "post",</span>
+<span class="sd"> *     href = "expr(link(object.getPost(), 'self', true))"</span>
+<span class="sd"> * )</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     "relative",</span>
+<span class="sd"> *     href = "expr(link(object.getRelativePost(), 'self'))"</span>
+<span class="sd"> * )</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="o">...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getPost</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Post</span><span class="p">(</span><span class="mi">456</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getRelativePost</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Post</span><span class="p">(</span><span class="mi">789</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Pay attention to the <code>href</code> expressions for the <code>post</code> and <code>relative</code> relations,
+as well as their corresponding values in the following JSON content:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"user"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"id"</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+        <span class="nt">"first_name"</span><span class="p">:</span> <span class="s2">"William"</span><span class="p">,</span>
+        <span class="nt">"last_name"</span><span class="p">:</span> <span class="s2">"Durand"</span><span class="p">,</span>
+        <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"self"</span><span class="p">:</span> <span class="p">{</span> <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"http://example.com/api/users/123"</span> <span class="p">},</span>
+            <span class="nt">"post"</span><span class="p">:</span> <span class="p">{</span> <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"http://example.com/api/posts/456"</span> <span class="p">},</span>
+            <span class="nt">"relative"</span><span class="p">:</span> <span class="p">{</span> <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/posts/789"</span> <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>It is worth mentioning that you can <strong>force</strong> whether you want an absolute or
+relative URI by using the third argument in both the <code>getLinkHref()</code> method and
+the <code>link</code> function.</p>
+
+<p><strong>Important:</strong> by default, all URIs will be <strong>relative</strong>, even those which are
+defined as <strong>absolute</strong> in their configuration.</p>
+
+<div class="highlight highlight-php"><pre><span class="nv">$linkHelper</span><span class="o">-&gt;</span><span class="na">getLinkHref</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'post'</span><span class="p">);</span>
+<span class="c1">// /api/posts/456</span>
+
+<span class="nv">$linkHelper</span><span class="o">-&gt;</span><span class="na">getLinkHref</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'post'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+<span class="c1">// http://example.com/api/posts/456</span>
+
+<span class="nv">$linkHelper</span><span class="o">-&gt;</span><span class="na">getLinkHref</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'relative'</span><span class="p">);</span>
+<span class="c1">// /api/posts/789</span>
+
+<span class="nv">$linkHelper</span><span class="o">-&gt;</span><span class="na">getLinkHref</span><span class="p">(</span><span class="nv">$user</span><span class="p">,</span> <span class="s1">'relative'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+<span class="c1">// http://example.com/api/posts/789</span>
+</pre></div>
+
+<h3>
+<a name="serializers--formats" class="anchor" href="#serializers--formats"><span class="octicon octicon-link"></span></a>Serializers &amp; Formats</h3>
+
+<p>Hateoas provides a set of <strong>serializers</strong>. Each <strong>serializer</strong> allows you to
+generate either XML or JSON content following a specific <strong>format</strong>, such as
+<a href="http://stateless.co/hal_specification.html">HAL</a>, or <a href="http://tools.ietf.org/search/rfc4287#section-4.2.7">Atom
+Links</a> for instance.</p>
+
+<h4>
+<a name="the-jsonhalserializer" class="anchor" href="#the-jsonhalserializer"><span class="octicon octicon-link"></span></a>The JsonHalSerializer</h4>
+
+<p>The <code>JsonHalSerializer</code> allows you to generate HAL compliant relations in JSON.
+It is the default JSON serializer in Hateoas.</p>
+
+<p>HAL provides its linking capability with a convention which says that a resource
+object has a reserved property called <code>_links</code>. This property is an object that
+contains links. These links are key'ed by their link relation.</p>
+
+<p>HAL also describes another convention which says that a resource may have
+another reserved property named <code>_embedded</code>. This property is similar to <code>_links</code>
+in that embedded resources are key'ed by relation name. The main difference is
+that rather than being links, the values are resource objects.</p>
+
+<p><img src="http://stateless.co/info-model.png" alt=""></p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"message"</span><span class="p">:</span> <span class="s2">"Hello, World!"</span><span class="p">,</span>
+    <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"self"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/notes/0"</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">"_embedded"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"associated_events"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"SymfonyCon"</span><span class="p">,</span>
+                <span class="nt">"date"</span><span class="p">:</span> <span class="s2">"2013-12-12T00:00:00+0100"</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>
+<a name="the-xmlserializer" class="anchor" href="#the-xmlserializer"><span class="octicon octicon-link"></span></a> The XmlSerializer</h4>
+
+<p>The <code>XmlHalSerializer</code> allows you to generate <a href="http://tools.ietf.org/search/rfc4287#section-4.2.7">Atom
+Links</a> into your XML
+documents. It is the default XML serializer.</p>
+
+<div class="highlight highlight-xml"><pre><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;note&gt;</span>
+    <span class="nt">&lt;message&gt;</span><span class="cp">&lt;![CDATA[Hello, World!]]&gt;</span><span class="nt">&lt;/message&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"self"</span> <span class="na">href=</span><span class="s">"/notes/0"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;events</span> <span class="na">rel=</span><span class="s">"associated_events"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;event&gt;</span>
+            <span class="nt">&lt;name&gt;</span><span class="cp">&lt;![CDATA[SymfonyCon]]&gt;</span><span class="nt">&lt;/name&gt;</span>
+            <span class="nt">&lt;date&gt;</span><span class="cp">&lt;![CDATA[2013-12-12T00:00:00+0100]]&gt;</span><span class="nt">&lt;/date&gt;</span>
+        <span class="nt">&lt;/event&gt;</span>
+    <span class="nt">&lt;/events&gt;</span>
+<span class="nt">&lt;/note&gt;</span>
+</pre></div>
+
+<h4>
+<a name="the-xmlhalserializer" class="anchor" href="#the-xmlhalserializer"><span class="octicon octicon-link"></span></a>The XmlHalSerializer</h4>
+
+<p>The <code>XmlHalSerializer</code> allows you to generate HAL compliant relations in XML.</p>
+
+<p>HAL in XML is similar to <a href="#the-jsonhalserializer">HAL in JSON</a> in the sense that
+it describes <code>link</code> tags and <code>resource</code> tags.</p>
+
+<p><strong>Note:</strong> the <code>self</code> relation will actually become an attribute of the main
+resource instead of being a <code>link</code> tag. Other links will be generated as <code>link</code>
+tags.</p>
+
+<div class="highlight highlight-xml"><pre><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;note</span> <span class="na">href=</span><span class="s">"/notes/0"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;message&gt;</span><span class="cp">&lt;![CDATA[Hello, World!]]&gt;</span><span class="nt">&lt;/message&gt;</span>
+
+    <span class="nt">&lt;resource</span> <span class="na">rel=</span><span class="s">"associated_events"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;name&gt;</span><span class="cp">&lt;![CDATA[SymfonyCon]]&gt;</span><span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;date&gt;</span><span class="cp">&lt;![CDATA[2013-12-12T00:00:00+0100]]&gt;</span><span class="nt">&lt;/date&gt;</span>
+    <span class="nt">&lt;/resource&gt;</span>
+<span class="nt">&lt;/note&gt;</span>
+</pre></div>
+
+<h4>
+<a name="adding-new-serializers" class="anchor" href="#adding-new-serializers"><span class="octicon octicon-link"></span></a>Adding New Serializers</h4>
+
+<p>For JSON related formats, you must implement the <code>JsonSerializerInterface</code>
+interface, and for XML related formats, you must implement the
+<code>XmlSerializerInterface</code>. Both interfaces describe two methods to serialize
+<strong>links</strong> and <strong>embedded</strong> relations.</p>
+
+<h3>
+<a name="the-hateoasbuilder" class="anchor" href="#the-hateoasbuilder"><span class="octicon octicon-link"></span></a>The HateoasBuilder</h3>
+
+<p>The <code>HateoasBuilder</code> class is used to easily configure Hateoas thanks to a
+powerful and fluent API.</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\HateoasBuilder</span><span class="p">;</span>
+
+<span class="nv">$hateoas</span> <span class="o">=</span> <span class="nx">HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">setCacheDir</span><span class="p">(</span><span class="s1">'/path/to/cache/dir'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">setDebug</span><span class="p">(</span><span class="nv">$trueOrFalse</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">setDefaultXmlSerializer</span><span class="p">()</span>
+    <span class="o">...</span>
+    <span class="o">-&gt;</span><span class="na">build</span><span class="p">();</span>
+</pre></div>
+
+<p>All the methods below return the current builder, so that you can chain them.</p>
+
+<h4>
+<a name="xml-serializer" class="anchor" href="#xml-serializer"><span class="octicon octicon-link"></span></a>XML Serializer</h4>
+
+<ul>
+<li>
+<code>setXmlSerializer(XmlSerializerInterface $xmlSerializer)</code>: sets the XML
+serializer to use. Default is: <code>XmlSerializer</code>;</li>
+<li>
+<code>setDefaultXmlSerializer()</code>: sets the default XML serializer
+(<code>XmlSerializer</code>).</li>
+</ul><h4>
+<a name="json-serializer" class="anchor" href="#json-serializer"><span class="octicon octicon-link"></span></a>JSON Serializer</h4>
+
+<ul>
+<li>
+<code>setJsonSerializer(JsonSerializerInterface $jsonSerializer)</code>: sets the JSON
+serializer to use. Default is: <code>JsonHalSerializer</code>;</li>
+<li>
+<code>setDefaultJsonSerializer()</code>: sets the default JSON serializer
+(<code>JsonHalSerializer</code>).</li>
+</ul><h4>
+<a name="url-generator" class="anchor" href="#url-generator"><span class="octicon octicon-link"></span></a>URL Generator</h4>
+
+<ul>
+<li>
+<code>setUrlGenerator($name = null, UrlGeneratorInterface $urlGenerator)</code>: adds a
+new named URL generator. If <code>$name</code> is <code>null</code>, the URL generator will be the
+default one.</li>
+</ul><h4>
+<a name="expression-evaluatorexpression-language" class="anchor" href="#expression-evaluatorexpression-language"><span class="octicon octicon-link"></span></a>Expression Evaluator/Expression Language</h4>
+
+<ul>
+<li>
+<code>setExpressionContextVariable($name, $value)</code>: adds a new expression context
+variable;</li>
+<li>
+<code>setExpressionLanguage(ExpressionLanguage $expressionLanguage)</code>.</li>
+</ul><h4>
+<a name="relation-provider" class="anchor" href="#relation-provider"><span class="octicon octicon-link"></span></a>Relation Provider</h4>
+
+<ul>
+<li>
+<code>addRelationProviderResolver(RelationProviderResolverInterface $resolver)</code>:
+adds a new relation provider resolver.</li>
+</ul><h4>
+<a name="jms-serializer-specific" class="anchor" href="#jms-serializer-specific"><span class="octicon octicon-link"></span></a>(JMS) Serializer Specific</h4>
+
+<ul>
+<li>
+<code>includeInterfaceMetadata($include)</code>: whether to include the metadata from the
+interfaces;</li>
+<li>
+<code>setMetadataDirs(array $namespacePrefixToDirMap)</code>: sets a map of namespace
+prefixes to directories. This method overrides any previously defined
+directories;</li>
+<li>
+<code>addMetadataDir($dir, $namespacePrefix = '')</code>: adds a directory where the
+serializer will look for class metadata;</li>
+<li>
+<code>addMetadataDirs(array $namespacePrefixToDirMap)</code>: adds a map of namespace
+prefixes to directories;</li>
+<li>
+<code>replaceMetadataDir($dir, $namespacePrefix = '')</code>: similar to
+<code>addMetadataDir()</code>, but overrides an existing entry.</li>
+</ul><p>Please read the official <a href="http://jmsyst.com/libs/serializer">Serializer
+documentation</a> for more details.</p>
+
+<h4>
+<a name="others" class="anchor" href="#others"><span class="octicon octicon-link"></span></a>Others</h4>
+
+<ul>
+<li>
+<code>setDebug($debug)</code>: enables or disables the debug mode;</li>
+<li>
+<code>setCacheDir($dir)</code>: sets the cache directory.</li>
+</ul><h3>
+<a name="configuring-a-cache-directory" class="anchor" href="#configuring-a-cache-directory"><span class="octicon octicon-link"></span></a>Configuring a Cache Directory</h3>
+
+<p>Both the serializer and the Hateoas libraries collect metadata about your
+objects from various sources such as YML, XML, or annotations. In order to make
+this process as efficient as possible, it is recommended that you allow the
+Hateoas library to cache this information. To do that, just configure a
+cache directory:</p>
+
+<div class="highlight highlight-php"><pre><span class="nv">$builder</span> <span class="o">=</span> <span class="nx">\Hateoas\HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">();</span>
+
+<span class="nv">$hateoas</span> <span class="o">=</span> <span class="nv">$builder</span>
+    <span class="o">-&gt;</span><span class="na">setCacheDir</span><span class="p">(</span><span class="nv">$someWritableDir</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">build</span><span class="p">();</span>
+</pre></div>
+
+<h3>
+<a name="configuring-metadata-locations" class="anchor" href="#configuring-metadata-locations"><span class="octicon octicon-link"></span></a>Configuring Metadata Locations</h3>
+
+<p>Hateoas supports several metadata sources. By default, it uses Doctrine
+annotations, but you may also store metadata in XML, or YAML files. For the
+latter, it is necessary to configure a metadata directory where those files are
+located:</p>
+
+<div class="highlight highlight-php"><pre><span class="nv">$hateoas</span> <span class="o">=</span> <span class="nx">\Hateoas\HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">()</span>
+    <span class="o">-&gt;</span><span class="na">addMetadataDir</span><span class="p">(</span><span class="nv">$someDir</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">build</span><span class="p">();</span>
+</pre></div>
+
+<p>Hateoas would expect the metadata files to be named like the fully qualified
+class names where all <code>\</code> are replaced with <code>.</code>. So, if you class would be
+named <code>Vendor\Package\Foo</code> the metadata file would need to be located at
+<code>$someDir/Vendor.Package.Foo.(xml|yml)</code>.</p>
+
+<h2>
+<a name="reference" class="anchor" href="#reference"><span class="octicon octicon-link"></span></a>Reference</h2>
+
+<h3>
+<a name="xml" class="anchor" href="#xml"><span class="octicon octicon-link"></span></a>XML</h3>
+
+<div class="highlight highlight-xml"><pre><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;serializer&gt;</span>
+<span class="nt">&lt;class</span> <span class="na">name=</span><span class="s">"Acme\Demo\Representation\User"</span> <span class="na">h:providers=</span><span class="s">"Class::getRelations, getRelations"</span> <span class="na">xmlns:h=</span><span class="s">"https://github.com/willdurand/Hateoas"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;h:relation</span> <span class="na">rel=</span><span class="s">"self"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;h:href</span> <span class="na">uri=</span><span class="s">"http://acme.com/foo/1"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/h:relation&gt;</span>
+        <span class="nt">&lt;h:relation</span> <span class="na">rel=</span><span class="s">"expr(object.getFriendsDynamicRel())"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;h:href</span> <span class="na">router=</span><span class="s">"user_friends"</span> <span class="na">generator=</span><span class="s">"my_custom_generator"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;h:parameter</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"expr(object.getId())"</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;h:parameter</span> <span class="na">name=</span><span class="s">"page"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/h:ref&gt;</span>
+            <span class="nt">&lt;h:embedded</span> <span class="na">xml-element-name=</span><span class="s">"users"</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;h:content&gt;</span>expr(object.getFriends())<span class="nt">&lt;/h:content&gt;</span>
+                <span class="nt">&lt;h:exclusion</span> <span class="err">...</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/h:embedded&gt;</span>
+            <span class="nt">&lt;h:exclusion</span> <span class="na">groups=</span><span class="s">"Default, user_full"</span> <span class="na">since-version=</span><span class="s">"1.0"</span> <span class="na">until-version=</span><span class="s">"2.2"</span> <span class="na">exclude-if=</span><span class="s">"expr(object.getFriends() === null)"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/h:relation&gt;</span>
+    <span class="nt">&lt;/class&gt;</span>
+<span class="nt">&lt;/serializer&gt;</span>
+</pre></div>
+
+<p>See the
+<a href="https://github.com/willdurand/Hateoas/blob/master/hateoas.xsd"><code>hateoas.xsd</code></a>
+file for more details.</p>
+
+<h3>
+<a name="yaml" class="anchor" href="#yaml"><span class="octicon octicon-link"></span></a>YAML</h3>
+
+<div class="highlight highlight-yaml"><pre><span class="l-Scalar-Plain">Acme\Demo\Representation\User</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">relations</span><span class="p-Indicator">:</span>
+        <span class="p-Indicator">-</span>   <span class="l-Scalar-Plain">rel</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">self</span>
+            <span class="l-Scalar-Plain">href</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://acme.com/foo/1</span>
+        <span class="p-Indicator">-</span>   <span class="l-Scalar-Plain">rel</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">expr(object.getFriendsDynamicRel())</span>
+            <span class="l-Scalar-Plain">href</span><span class="p-Indicator">:</span>
+                <span class="l-Scalar-Plain">route</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">user_friends</span>
+                <span class="l-Scalar-Plain">parameters</span><span class="p-Indicator">:</span>
+                    <span class="l-Scalar-Plain">id</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">expr(object.getId())</span>
+                    <span class="l-Scalar-Plain">page</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1</span>
+                <span class="l-Scalar-Plain">generator</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">my_custom_generator</span>
+            <span class="l-Scalar-Plain">embedded</span><span class="p-Indicator">:</span>
+                <span class="l-Scalar-Plain">content</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">expr(object.getFriends())</span>
+                <span class="l-Scalar-Plain">xmlElementName</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">users</span>
+                <span class="l-Scalar-Plain">exclusion</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">...</span>
+            <span class="l-Scalar-Plain">exclusion</span><span class="p-Indicator">:</span>
+                <span class="l-Scalar-Plain">groups</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">Default</span><span class="p-Indicator">,</span> <span class="nv">user_full</span><span class="p-Indicator">]</span>
+                <span class="l-Scalar-Plain">since_version</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1.0</span>
+                <span class="l-Scalar-Plain">until_version</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">2.2</span>
+                <span class="l-Scalar-Plain">exclude_if</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">expr(object.getFriends() === null)</span>
+
+    <span class="l-Scalar-Plain">relation_providers</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span> <span class="s">'Class::getRelations'</span><span class="p-Indicator">,</span> <span class="s">'getRelations'</span> <span class="p-Indicator">]</span>
+</pre></div>
+
+<h3>
+<a name="annotations" class="anchor" href="#annotations"><span class="octicon octicon-link"></span></a>Annotations</h3>
+
+<h4>
+<a name="relation" class="anchor" href="#relation"><span class="octicon octicon-link"></span></a><a href="https://github.com/Relation" class="user-mention">@Relation</a>
+</h4>
+
+<p>This annotation can be defined on a class.</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Configuration\Annotation</span> <span class="k">as</span> <span class="nx">Hateoas</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     name = "self",</span>
+<span class="sd"> *     href = "http://hello",</span>
+<span class="sd"> *     embed = "expr(object.getHello())",</span>
+<span class="sd"> *     attributes = { "foo" = "bar" },</span>
+<span class="sd"> *     exclusion = ...,</span>
+<span class="sd"> * )</span>
+<span class="sd"> */</span>
+</pre></div>
+
+<table>
+<thead><tr>
+<th>Property</th>
+<th>Required</th>
+<th>Content</th>
+<th>Expression language</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>Yes</td>
+<td>string</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>href</td>
+<td>If embedded is not set</td>
+<td>string / <a href="#route">@Route</a>
+</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>embedded</td>
+<td>If href is not set</td>
+<td>string / <a href="#embedded">@Embedded</a>
+</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>attributes</td>
+<td>No</td>
+<td>array</td>
+<td>Yes on key and values</td>
+</tr>
+<tr>
+<td>exclusion</td>
+<td>No</td>
+<td><a href="#exclusion">@Exclusion</a></td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table><h4>
+<a name="route" class="anchor" href="#route"><span class="octicon octicon-link"></span></a><a href="https://github.com/Route" class="user-mention">@Route</a>
+</h4>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Configuration\Annotation</span> <span class="k">as</span> <span class="nx">Hateoas</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     name = "self",</span>
+<span class="sd"> *     href = @Hateoas\Route(</span>
+<span class="sd"> *         "user_get",</span>
+<span class="sd"> *         parameters = { "id" = "expr(object.getId())" },</span>
+<span class="sd"> *         absolute = true,</span>
+<span class="sd"> *         generator = "my_custom_generator"</span>
+<span class="sd"> *     )</span>
+<span class="sd"> * )</span>
+<span class="sd"> */</span>
+</pre></div>
+
+<p>This annotation can be defined in the <strong>href</strong> property of the
+<a href="#relation">@Relation</a> annotation. This is allows you to your URL generator,
+if you have configured one.</p>
+
+<table>
+<thead><tr>
+<th>Property</th>
+<th>Required</th>
+<th>Content</th>
+<th>Expression language</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>Yes</td>
+<td>string</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>parameters</td>
+<td>Defaults to array()</td>
+<td>array / string</td>
+<td>Yes (string + array key/values)</td>
+</tr>
+<tr>
+<td>absolute</td>
+<td>Defaults to false</td>
+<td>boolean</td>
+<td>No</td>
+</tr>
+<tr>
+<td>generator</td>
+<td>No</td>
+<td>string / null</td>
+<td>No</td>
+</tr>
+</tbody>
+</table><h4>
+<a name="embedded" class="anchor" href="#embedded"><span class="octicon octicon-link"></span></a><a href="https://github.com/Embedded" class="user-mention">@Embedded</a>
+</h4>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Configuration\Annotation</span> <span class="k">as</span> <span class="nx">Hateoas</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     name = "friends",</span>
+<span class="sd"> *     embedded = @Hateoas\Embedded(</span>
+<span class="sd"> *         "expr(object.getFriends())",</span>
+<span class="sd"> *         exclusion = ...,</span>
+<span class="sd"> *         xmlElementName = "users"</span>
+<span class="sd"> *     )</span>
+<span class="sd"> * )</span>
+<span class="sd"> */</span>
+</pre></div>
+
+<p>This annotation can be defined in the <strong>embedded</strong> property of the
+<a href="#relation">@Relation</a> annotation. It is useful if you need configure the
+<code>exclusion</code> or <code>xmlElementName</code> options for the embedded resource.</p>
+
+<table>
+<thead><tr>
+<th>Property</th>
+<th>Required</th>
+<th>Content</th>
+<th>Expression language</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>content</td>
+<td>Yes</td>
+<td>string / array</td>
+<td>Yes (string)</td>
+</tr>
+<tr>
+<td>exclusion</td>
+<td>Defaults to array()</td>
+<td><a href="#exclusion">@Exclusion</a></td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>xmlElementName</td>
+<td>Defaults to array()</td>
+<td>string</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table><h4>
+<a name="exclusion" class="anchor" href="#exclusion"><span class="octicon octicon-link"></span></a><a href="https://github.com/Exclusion" class="user-mention">@Exclusion</a>
+</h4>
+
+<p>This annotation can be defined in the <strong>exclusion</strong> property of both the
+<a href="#relation">@Relation</a> and <a href="#embedded">@Embedded</a> annotations.</p>
+
+<table>
+<thead><tr>
+<th>Property</th>
+<th>Required</th>
+<th>Content</th>
+<th>Expression language</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>groups</td>
+<td>No</td>
+<td>array</td>
+<td>No</td>
+</tr>
+<tr>
+<td>sinceVersion</td>
+<td>No</td>
+<td>float / integer</td>
+<td>No</td>
+</tr>
+<tr>
+<td>untilVersion</td>
+<td>No</td>
+<td>float / integer</td>
+<td>No</td>
+</tr>
+<tr>
+<td>maxDepth</td>
+<td>No</td>
+<td>integer</td>
+<td>No</td>
+</tr>
+<tr>
+<td>excludeIf</td>
+<td>No</td>
+<td>string / boolean</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table><p>All values except <code>excludeIf</code> act the same way as when they are used directly
+on the regular properties with the serializer.</p>
+
+<p><code>excludeIf</code> expects a boolean and is helpful when another expression would fail
+under some circumstances. In this example, if the <code>getManager</code> method is <code>null</code>,
+you should exclude it to prevent the URL generation from failing:</p>
+
+<div class="highlight highlight-php"><pre><span class="sd">/**</span>
+<span class="sd"> * @Hateoas\Relation(</span>
+<span class="sd"> *     "manager",</span>
+<span class="sd"> *     href = @Hateoas\Route(</span>
+<span class="sd"> *         "user_get",</span>
+<span class="sd"> *         parameters = { "id" = "expr(object.getManager().getId())" }</span>
+<span class="sd"> *     ),</span>
+<span class="sd"> *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(null === object.getManager())")</span>
+<span class="sd"> * )</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">User</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getId</span><span class="p">()</span> <span class="p">{}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @return User|null</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getManager</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>
+<a name="relationprovider" class="anchor" href="#relationprovider"><span class="octicon octicon-link"></span></a>@RelationProvider</h4>
+
+<p>This annotation can be defined on a class.</p>
+
+<table>
+<thead><tr>
+<th>Property</th>
+<th>Required</th>
+<th>Content</th>
+<th>Expression language</th>
+</tr></thead>
+<tbody><tr>
+<td>name</td>
+<td>Yes</td>
+<td>string</td>
+<td>No</td>
+</tr></tbody>
+</table><p>The can be:</p>
+
+<ul>
+<li>A method: <code>addRelations</code>
+</li>
+<li>A static method: <code>Class::addRelations</code>
+</li>
+<li>A Symfony2 service method: <code>acme_foo.service:addRelations</code>
+</li>
+</ul><div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Configuration\Metadata\ClassMetadataInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Hateoas\Configuration</span> <span class="k">as</span> <span class="nx">Hateoas</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">MyRelationProvider</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">addRelations</span><span class="p">(</span><span class="nv">$object</span><span class="p">,</span> <span class="nx">ClassMetadataInterface</span> <span class="nv">$classMetadata</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// You need to return the relations</span>
+        <span class="c1">// Adding the relations to the $classMetadata won't work</span>
+        <span class="k">return</span> <span class="k">array</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nx">Hateoas\Relation</span><span class="p">(</span>
+                <span class="s1">'self'</span><span class="p">,</span>
+                <span class="k">new</span> <span class="nx">Hateoas\Route</span><span class="p">(</span>
+                    <span class="s1">'foo_get'</span><span class="p">,</span>
+                    <span class="k">array</span><span class="p">(</span><span class="s1">'id'</span> <span class="o">=&gt;</span> <span class="s1">'expr(object.getId())'</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="internals" class="anchor" href="#internals"><span class="octicon octicon-link"></span></a>Internals</h2>
+
+<p>This section refers to the Hateoas internals, providing documentation about
+hidden parts of this library. This is not always relevant for end users, but
+interesting for developers or people interested in learning how things work
+under the hood.</p>
+
+<h3>
+<a name="expression-functions" class="anchor" href="#expression-functions"><span class="octicon octicon-link"></span></a>Expression Functions</h3>
+
+<p><strong>Expression Functions</strong> are custom functions used to extend the <a href="#the-expression-language">Expression
+Language</a> as explained in the <a href="http://symfony.com/doc/current/components/expression_language/extending.html">Extending the
+ExpressionLanguage</a>,
+part of the Symfony documentation.</p>
+
+<p>By now, Hateoas does not let users add their own custom functions. Only core
+functions are registered, such as the <code>LinkExpressionFunction</code> described in
+<a href="#the-link-function">LinkHelper - The <code>link</code> Function</a>.</p>
+
+<p>The <code>ExpressionFunctionInterface</code> is designed to represent an expression
+function. Adding a new expression function is a matter of implementing this
+interface and registering it into the <code>ExpressionEvaluator</code> through the
+<code>registerFunction()</code> method.</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-46469869-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
