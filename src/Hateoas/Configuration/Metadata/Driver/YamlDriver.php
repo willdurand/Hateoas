@@ -90,8 +90,8 @@ class YamlDriver extends AbstractFileDriver
     private function createEmbedded($relation)
     {
         $embedded = null;
-        if (isset($relation['embed'])) {
-            $embedded = $relation['embed'];
+        if (isset($relation['embedded'])) {
+            $embedded = $relation['embedded'];
 
             if (is_array($embedded)) {
                 $embeddedExclusion = null;

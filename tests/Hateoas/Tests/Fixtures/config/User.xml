@@ -10,16 +10,16 @@
             <h:href route="user_get">
                 <h:parameter name="id" value="expr(object.getId())"/>
             </h:href>
-            <h:embed>
+            <h:embedded>
                 <h:content>expr(object.getFoo())</h:content>
-            </h:embed>
+            </h:embedded>
         </h:relation>
 
         <h:relation rel="bar">
             <h:href uri="foo"/>
-            <h:embed xml-element-name="barTag">
+            <h:embedded xml-element-name="barTag">
                 <h:content>data</h:content>
-            </h:embed>
+            </h:embedded>
         </h:relation>
 
         <h:relation rel="baz">
@@ -35,17 +35,17 @@
         </h:relation>
 
         <h:relation rel="badaboom">
-            <h:embed>
+            <h:embedded>
                 <h:content>expr(object.getFoo())</h:content>
-            </h:embed>
+            </h:embedded>
         </h:relation>
 
         <h:relation rel="hello">
             <h:href uri="/hello"/>
-            <h:embed>
+            <h:embedded>
                 <h:content>hello</h:content>
                 <h:exclusion groups="group3,group4" since-version="1.1" until-version="2.3" max-depth="43" exclude-if="bar"/>
-            </h:embed>
+            </h:embedded>
             <h:exclusion groups="group1, group2" since-version="1" until-version="2.2" max-depth="42" exclude-if="foo"/>
         </h:relation>
     </class>

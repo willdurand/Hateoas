@@ -59,8 +59,8 @@ class XmlDriver extends AbstractFileDriver
             }
 
             $embedded = null;
-            if (isset($relation->embed)) {
-                $embedded = $this->createEmbedded($relation->embed);
+            if (isset($relation->embedded)) {
+                $embedded = $this->createEmbedded($relation->embedded);
             }
 
             $attributes = array();

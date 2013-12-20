@@ -10,11 +10,11 @@ Hateoas\Tests\Fixtures\User:
             href:
                 route: user_get
                 parameters: { id: expr(object.getId()) }
-            embed: expr(object.getFoo())
+            embedded: expr(object.getFoo())
         -
             rel: bar
             href: foo
-            embed:
+            embedded:
                 content: data
                 xmlElementName: barTag
         -
@@ -31,7 +31,7 @@ Hateoas\Tests\Fixtures\User:
                 absolute: false
         -
             rel: badaboom
-            embed: expr(object.getFoo())
+            embedded: expr(object.getFoo())
         -
             rel: hello
             href: /hello
@@ -41,7 +41,7 @@ Hateoas\Tests\Fixtures\User:
                 until_version: 2.2
                 max_depth: 42
                 exclude_if: foo
-            embed:
+            embedded:
                 content: hello
                 exclusion:
                     groups: [group3, group4]

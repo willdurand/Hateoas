@@ -29,8 +29,8 @@ class RelationTest extends TestCase
             ->exception(function () {
                 new Relation('', null, null);
             })
-                ->isInstanceOf('InvalidArgumentException')
-                    ->hasMessage('$href and $embed cannot be both null.')
+            ->isInstanceOf('InvalidArgumentException')
+            ->hasMessage('$href and $embedded cannot be both null.')
         ;
     }
 

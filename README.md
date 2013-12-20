@@ -920,7 +920,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * @Hateoas\Relation(
  *     name = "self",
  *     href = "http://hello",
- *     embed = "expr(object.getHello())",
+ *     embedded = "expr(object.getHello())",
  *     attributes = { "foo" = "bar" },
  *     exclusion = ...,
  * )
