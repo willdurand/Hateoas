@@ -12,7 +12,8 @@ use JMS\Serializer\Annotation as Serializer;
  *      "self",
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters())"
+ *          parameters = "expr(object.getParameters())",
+ *          absolute = "expr(object.getAbsolute())"
  *      )
  * )
  *
@@ -36,11 +37,17 @@ class RouteAwareRepresentation
      */
     private $parameters;
 
-    public function __construct($inline, $route, array $parameters = array())
+    /**
+     * @var boolean
+     */
+    private $absolute;
+
+    public function __construct($inline, $route, array $parameters = array(), $absolute = false)
     {
-        $this->inline = $inline;
-        $this->route = $route;
+        $this->inline     = $inline;
+        $this->route      = $route;
         $this->parameters = $parameters;
+        $this->absolute   = $absolute;
     }
 
     /**
@@ -65,5 +72,13 @@ class RouteAwareRepresentation
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAbsolute()
+    {
+        return $this->absolute;
     }
 }

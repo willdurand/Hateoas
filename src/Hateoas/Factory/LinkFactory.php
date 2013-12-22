@@ -54,6 +54,7 @@ class LinkFactory
                 ? $this->expressionEvaluator->evaluateArray($href->getParameters(), $object)
                 : $this->expressionEvaluator->evaluate($href->getParameters(), $object)
             ;
+            $isAbsolute = $this->expressionEvaluator->evaluate($href->isAbsolute(), $object);
 
             if (!is_array($parameters)) {
                 throw new \RuntimeException(
@@ -66,7 +67,7 @@ class LinkFactory
 
             $href = $this->urlGeneratorRegistry
                 ->get($href->getGenerator())
-                ->generate($name, $parameters, $href->isAbsolute())
+                ->generate($name, $parameters, $isAbsolute)
             ;
         } else {
             $href = $this->expressionEvaluator->evaluate($href, $object);

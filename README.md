@@ -336,7 +336,7 @@ with the library's annotations.
 
 The `PaginatedRepresentation` and `CollectionRepresentation` classes are
 probably the most interesting ones. These are helpful when your resource is
-actually a collection of resources (e.g. ``/users`` is a collection of users).
+actually a collection of resources (e.g. `/users` is a collection of users).
 These help you represent the collection and add pagination and limits:
 
 ```php
@@ -354,8 +354,9 @@ $paginatedCollection = new PaginatedRepresentation(
     1, // page
     20, // limit
     4, // total pages
-    'page', // page route parameter name, optional, defaults to 'page'
-    'limit' // limit route parameter name, optional, defaults to 'limit'
+    'page',  // page route parameter name, optional, defaults to 'page'
+    'limit', // limit route parameter name, optional, defaults to 'limit'
+    false    // generate relative URIs
 );
 
 $json = $hateoas->serialize($paginatedCollection, 'json');
@@ -367,6 +368,8 @@ collection resources rel, and the xml root element name.
 
 The `PaginatedRepresentation` is designed to add `self`, `first`, and when
 possible `last`, `next`, and `previous` links.
+
+The `RouteAwareRepresentation` adds a `self` relation based on a given route.
 
 The Hateoas library also provides a `PagerfantaFactory` to easily build
 `PaginatedRepresentation` from a
@@ -424,6 +427,9 @@ And the following XML content:
     <link rel="last" href="/api/users?page=1&amp;limit=10" />
 </collection>
 ```
+
+You can generate **absolute URIs** by setting the `absolute` parameter to `true`
+in both the `PaginatedRepresentation` and the `RouteAwareRepresentation`.
 
 ### The Expression Language
 

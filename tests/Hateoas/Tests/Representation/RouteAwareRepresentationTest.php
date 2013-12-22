@@ -2,30 +2,13 @@
 
 namespace Hateoas\Tests\Representation;
 
-use Hateoas\HateoasBuilder;
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\RouteAwareRepresentation;
-use Hateoas\Serializer\XmlHalSerializer;
-use Hateoas\Tests\TestCase;
-use Hateoas\UrlGenerator\CallableUrlGenerator;
 
-class RouteAwareRepresentationTest extends TestCase
+class RouteAwareRepresentationTest extends RepresentationTestCase
 {
-    public function test()
+    public function testSerialize()
     {
-        $queryStringUrlGenerator = new CallableUrlGenerator(function ($route, array $parameters) {
-            return $route . '?' . http_build_query($parameters);
-        });
-        $hateoas = HateoasBuilder::create()
-            ->setUrlGenerator(null, $queryStringUrlGenerator)
-            ->build()
-        ;
-        $halHateoas = HateoasBuilder::create()
-            ->setUrlGenerator(null, $queryStringUrlGenerator)
-            ->setXmlSerializer(new XmlHalSerializer())
-            ->build()
-        ;
-
         $collection = new RouteAwareRepresentation(
             new CollectionRepresentation(
                 array(
@@ -42,7 +25,7 @@ class RouteAwareRepresentationTest extends TestCase
         );
 
         $this
-            ->string($hateoas->serialize($collection, 'xml'))
+            ->string($this->hateoas->serialize($collection, 'xml'))
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -56,7 +39,7 @@ class RouteAwareRepresentationTest extends TestCase
 
 XML
             )
-            ->string($halHateoas->serialize($collection, 'xml'))
+            ->string($this->halHateoas->serialize($collection, 'xml'))
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -67,12 +50,75 @@ XML
 
 XML
             )
-            ->string($halHateoas->serialize($collection, 'json'))
+            ->string($this->halHateoas->serialize($collection, 'json'))
             ->isEqualTo(
                 '{'
                     .'"_links":{'
                         .'"self":{'
                             .'"href":"\/authors?query=willdurand%2FHateoas"'
+                        .'}'
+                    .'},'
+                    .'"_embedded":{'
+                        .'"authors":['
+                            .'"Adrien",'
+                            .'"William"'
+                        .']'
+                    .'}'
+                .'}'
+            )
+        ;
+    }
+
+    public function testGenerateAbsoluteURIs()
+    {
+        $collection = new RouteAwareRepresentation(
+            new CollectionRepresentation(
+                array(
+                    'Adrien',
+                    'William',
+                ),
+                'authors',
+                'users'
+            ),
+            '/authors',
+            array(
+                'query' => 'willdurand/Hateoas',
+            ),
+            true // absolute
+        );
+
+        $this
+            ->string($this->hateoas->serialize($collection, 'xml'))
+            ->isEqualTo(
+                <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <users rel="authors">
+    <entry><![CDATA[Adrien]]></entry>
+    <entry><![CDATA[William]]></entry>
+  </users>
+  <link rel="self" href="http://example.com/authors?query=willdurand%2FHateoas"/>
+</result>
+
+XML
+            )
+            ->string($this->halHateoas->serialize($collection, 'xml'))
+            ->isEqualTo(
+                <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result href="http://example.com/authors?query=willdurand%2FHateoas">
+  <resource rel="authors"><![CDATA[Adrien]]></resource>
+  <resource rel="authors"><![CDATA[William]]></resource>
+</result>
+
+XML
+            )
+            ->string($this->halHateoas->serialize($collection, 'json'))
+            ->isEqualTo(
+                '{'
+                    .'"_links":{'
+                        .'"self":{'
+                            .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas"'
                         .'}'
                     .'},'
                     .'"_embedded":{'
