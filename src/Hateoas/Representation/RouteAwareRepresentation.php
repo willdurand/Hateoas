@@ -13,7 +13,7 @@ use JMS\Serializer\Annotation as Serializer;
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
  *          parameters = "expr(object.getParameters())",
- *          absolute = "expr(object.getAbsolute())"
+ *          absolute = "expr(object.isAbsolute())"
  *      )
  * )
  *
@@ -77,7 +77,7 @@ class RouteAwareRepresentation
     /**
      * @return boolean
      */
-    public function getAbsolute()
+    public function isAbsolute()
     {
         return $this->absolute;
     }

@@ -14,7 +14,7 @@ use JMS\Serializer\Annotation as Serializer;
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
  *          parameters = "expr(object.getParameters(1))",
- *          absolute = "expr(object.getAbsolute())"
+ *          absolute = "expr(object.isAbsolute())"
  *      )
  * )
  * @Hateoas\Relation(
@@ -22,7 +22,7 @@ use JMS\Serializer\Annotation as Serializer;
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
  *          parameters = "expr(object.getParameters(object.getPages()))",
- *          absolute = "expr(object.getAbsolute())"
+ *          absolute = "expr(object.isAbsolute())"
  *      ),
  *      exclusion = @Hateoas\Exclusion(
  *          excludeIf = "expr(object.getPages() === null)"
@@ -33,7 +33,7 @@ use JMS\Serializer\Annotation as Serializer;
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
  *          parameters = "expr(object.getParameters(object.getPage() + 1))",
- *          absolute = "expr(object.getAbsolute())"
+ *          absolute = "expr(object.isAbsolute())"
  *      ),
  *      exclusion = @Hateoas\Exclusion(
  *          excludeIf = "expr(object.getPages() !== null && (object.getPage() + 1) > object.getPages())"
@@ -44,7 +44,7 @@ use JMS\Serializer\Annotation as Serializer;
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
  *          parameters = "expr(object.getParameters(object.getPage() - 1))",
- *          absolute = "expr(object.getAbsolute())"
+ *          absolute = "expr(object.isAbsolute())"
  *      ),
  *      exclusion = @Hateoas\Exclusion(
  *          excludeIf = "expr((object.getPage() - 1) < 1)"
