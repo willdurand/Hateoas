@@ -49,14 +49,20 @@ class CollectionRepresentation
      */
     private $relations;
 
-    public function __construct($resources, $rel = null, $xmlElementName = null, Exclusion $exclusion = null, Exclusion $embedExclusion = null, array $relations = null)
-    {
-        $this->resources = $resources;
-        $this->rel = $rel ?: 'items';
+    public function __construct(
+        $resources,
+        $rel                      = null,
+        $xmlElementName           = null,
+        Exclusion $exclusion      = null,
+        Exclusion $embedExclusion = null,
+        array $relations          = null
+    ) {
+        $this->resources      = $resources;
+        $this->rel            = $rel ?: 'items';
         $this->xmlElementName = $xmlElementName;
-        $this->exclusion = $exclusion;
+        $this->exclusion      = $exclusion;
         $this->embedExclusion = $embedExclusion;
-        $this->relations = $relations;
+        $this->relations      = $relations;
     }
 
     /**

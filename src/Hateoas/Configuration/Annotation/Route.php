@@ -22,9 +22,6 @@ class Route
      */
     public $parameters = array();
 
-    /**
-     * @var boolean
-     */
     public $absolute = false;
 
     public $generator = null;

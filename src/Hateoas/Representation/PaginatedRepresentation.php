@@ -13,14 +13,16 @@ use JMS\Serializer\Annotation as Serializer;
  *      "first",
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters(1))"
+ *          parameters = "expr(object.getParameters(1))",
+ *          absolute = "expr(object.getAbsolute())"
  *      )
  * )
  * @Hateoas\Relation(
  *      "last",
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters(object.getPages()))"
+ *          parameters = "expr(object.getParameters(object.getPages()))",
+ *          absolute = "expr(object.getAbsolute())"
  *      ),
  *      exclusion = @Hateoas\Exclusion(
  *          excludeIf = "expr(object.getPages() === null)"
@@ -30,7 +32,8 @@ use JMS\Serializer\Annotation as Serializer;
  *      "next",
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters(object.getPage() + 1))"
+ *          parameters = "expr(object.getParameters(object.getPage() + 1))",
+ *          absolute = "expr(object.getAbsolute())"
  *      ),
  *      exclusion = @Hateoas\Exclusion(
  *          excludeIf = "expr(object.getPages() !== null && (object.getPage() + 1) > object.getPages())"
@@ -40,7 +43,8 @@ use JMS\Serializer\Annotation as Serializer;
  *      "previous",
  *      href = @Hateoas\Route(
  *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters(object.getPage() - 1))"
+ *          parameters = "expr(object.getParameters(object.getPage() - 1))",
+ *          absolute = "expr(object.getAbsolute())"
  *      ),
  *      exclusion = @Hateoas\Exclusion(
  *          excludeIf = "expr((object.getPage() - 1) < 1)"
@@ -88,19 +92,20 @@ class PaginatedRepresentation extends RouteAwareRepresentation
     public function __construct(
         $inline,
         $route,
-        array $parameters = array(),
+        array $parameters        = array(),
         $page,
         $limit,
         $pages,
-        $pageParameterName = null,
-        $limitParameterName = null
+        $pageParameterName       = null,
+        $limitParameterName      = null,
+        $absolute                = false
     ) {
-        parent::__construct($inline, $route, $parameters);
+        parent::__construct($inline, $route, $parameters, $absolute);
 
-        $this->page = $page;
-        $this->pages = $pages;
-        $this->limit = $limit;
-        $this->pageParameterName = $pageParameterName ?: 'page';
+        $this->page               = $page;
+        $this->pages              = $pages;
+        $this->limit              = $limit;
+        $this->pageParameterName  = $pageParameterName  ?: 'page';
         $this->limitParameterName = $limitParameterName ?: 'limit';
     }
 
@@ -129,7 +134,7 @@ class PaginatedRepresentation extends RouteAwareRepresentation
     {
         $parameters = parent::getParameters();
 
-        $parameters[$this->pageParameterName] = null === $page ? $this->getPage() : $page;
+        $parameters[$this->pageParameterName]  = null === $page ? $this->getPage() : $page;
         $parameters[$this->limitParameterName] = null === $limit ? $this->getLimit() : $limit;
 
         return $parameters;
