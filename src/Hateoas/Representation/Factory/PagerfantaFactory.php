@@ -26,7 +26,7 @@ class PagerfantaFactory
         $this->limitParameterName = $limitParameterName;
     }
 
-    public function create(Pagerfanta $pager, $route, array $routeParameters = array(), $inline = null)
+    public function create(Pagerfanta $pager, $route, array $routeParameters = array(), $inline = null, $absolute = false)
     {
         return new PaginatedRepresentation(
             $inline ?: $pager->getCurrentPageResults(),
@@ -36,7 +36,8 @@ class PagerfantaFactory
             $pager->getMaxPerPage(),
             $pager->getNbPages(),
             $this->pageParameterName,
-            $this->limitParameterName
+            $this->limitParameterName,
+            $absolute
         );
     }
 }
