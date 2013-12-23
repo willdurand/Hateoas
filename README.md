@@ -702,7 +702,7 @@ that rather than being links, the values are resource objects.
 
 #### The XmlSerializer
 
-The `XmlHalSerializer` allows you to generate [Atom
+The `XmlSerializer` allows you to generate [Atom
 Links](http://tools.ietf.org/search/rfc4287#section-4.2.7) into your XML
 documents. It is the default XML serializer.
 
