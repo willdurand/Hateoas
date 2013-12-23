@@ -963,12 +963,12 @@ This annotation can be defined in the **href** property of the
 [@Relation](#relation) annotation. This is allows you to your URL generator,
 if you have configured one.
 
-| Property   | Required            | Content        | Expression language             |
-|------------|---------------------|----------------|---------------------------------|
-| name       | Yes                 | string         | Yes                             |
-| parameters | Defaults to array() | array / string | Yes (string + array key/values) |
-| absolute   | Defaults to false   | boolean        | No                              |
-| generator  | No                  | string / null  | No                              |
+| Property   | Required            | Content          | Expression language             |
+|------------|---------------------|------------------|---------------------------------|
+| name       | Yes                 | string           | Yes                             |
+| parameters | Defaults to array() | array / string   | Yes (string + array key/values) |
+| absolute   | Defaults to false   | boolean / string | Yes                             |
+| generator  | No                  | string / null    | No                              |
 
 #### @Embedded
 
