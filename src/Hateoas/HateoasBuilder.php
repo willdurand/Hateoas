@@ -59,6 +59,11 @@ class HateoasBuilder
     private $expressionLanguage;
 
     /**
+     * @var array
+     */
+    private $contextVariables = array();
+
+    /**
      * @var XmlSerializerInterface
      */
     private $xmlSerializer;
@@ -136,6 +141,11 @@ class HateoasBuilder
 
         // Register Hateoas core functions
         $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelper));
+
+        // Add context variables
+        foreach ($this->contextVariables as $name => $value) {
+            $expressionEvaluator->setContextVariable($name, $value);
+        }
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -246,7 +256,7 @@ class HateoasBuilder
      */
     public function setExpressionContextVariable($name, $value)
     {
-        $this->getExpressionLanguage()->setContextVariable($name, $value);
+        $this->contextVariables[$name] = $value;
 
         return $this;
     }
