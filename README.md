@@ -5,6 +5,8 @@ Hateoas
 Status](https://secure.travis-ci.org/willdurand/Hateoas.png)](http://travis-ci.org/willdurand/Hateoas)
 [![Scrutinizer Quality
 Score](https://scrutinizer-ci.com/g/willdurand/Hateoas/badges/quality-score.png?s=45b5a825f99de4d29c98b5103f59e060139cf354)](https://scrutinizer-ci.com/g/willdurand/Hateoas/)
+[![Latest Stable
+Version](https://poser.pugx.org/willdurand/hateoas/v/stable.png)](https://packagist.org/packages/willdurand/hateoas)
 
 A PHP library to support implementing representations for HATEOAS REST web
 services.
