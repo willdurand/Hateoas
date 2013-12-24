@@ -55,7 +55,7 @@ class CollectionRepresentation
         $xmlElementName           = null,
         Exclusion $exclusion      = null,
         Exclusion $embedExclusion = null,
-        array $relations          = null
+        array $relations          = array()
     ) {
         $this->resources      = $resources;
         $this->rel            = $rel ?: 'items';
@@ -107,11 +107,7 @@ class CollectionRepresentation
 
     public function getRelations($object, ClassMetadataInterface $classMetadata)
     {
-        if (null !== $this->relations) {
-            return $this->relations;
-        }
-
-        return array(
+        return array_merge(array(
             new Relation(
                 $this->rel,
                 null,
@@ -123,6 +119,6 @@ class CollectionRepresentation
                 array(),
                 $this->exclusion
             )
-        );
+        ), $this->relations);
     }
 }

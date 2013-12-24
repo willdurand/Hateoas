@@ -2,20 +2,14 @@
 
 namespace Hateoas\Tests\Representation;
 
+use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\Route;
 use Hateoas\Representation\CollectionRepresentation;
-use Hateoas\HateoasBuilder;
-use Hateoas\Serializer\XmlHalSerializer;
-use Hateoas\Tests\TestCase;
 
-class CollectionRepresentationTest extends TestCase
+class CollectionRepresentationTest extends RepresentationTestCase
 {
-    public function test()
+    public function testSerialize()
     {
-        $hateoas    = HateoasBuilder::buildHateoas();
-        $halHateoas = HateoasBuilder::create()
-            ->setXmlSerializer(new XmlHalSerializer())
-            ->build();
-
         $collection = new CollectionRepresentation(
             array(
                 'Adrien',
@@ -26,7 +20,7 @@ class CollectionRepresentationTest extends TestCase
         $collection->setXmlElementName('users');
 
         $this
-            ->string($hateoas->serialize($collection, 'xml'))
+            ->string($this->hateoas->serialize($collection, 'xml'))
                 ->isEqualTo(
 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -39,7 +33,7 @@ class CollectionRepresentationTest extends TestCase
 
 XML
                 )
-            ->string($halHateoas->serialize($collection, 'xml'))
+            ->string($this->halHateoas->serialize($collection, 'xml'))
                 ->isEqualTo(
 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -50,9 +44,63 @@ XML
 
 XML
                 )
-            ->string($halHateoas->serialize($collection, 'json'))
+            ->string($this->halHateoas->serialize($collection, 'json'))
                 ->isEqualTo(
                     '{"_embedded":{"authors":["Adrien","William"]}}'
+                )
+        ;
+    }
+
+    public function testEmbeddedRelationIsMergedWithCustomRelations()
+    {
+        $collection = new CollectionRepresentation(
+            array(
+                'Adrien',
+                'William',
+            ),
+            'authors',
+            null,
+            null,
+            null,
+            array(
+                new Relation(
+                    'custom',
+                    new Route('/custom')
+                ),
+            )
+        );
+        $collection->setXmlElementName('users');
+
+        $this
+            ->string($this->hateoas->serialize($collection, 'xml'))
+                ->isEqualTo(
+<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<collection>
+  <link rel="custom" href="/custom"/>
+  <users rel="authors">
+    <entry><![CDATA[Adrien]]></entry>
+    <entry><![CDATA[William]]></entry>
+  </users>
+</collection>
+
+XML
+                )
+            ->string($this->halHateoas->serialize($collection, 'xml'))
+                ->isEqualTo(
+<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<collection>
+  <link rel="custom" href="/custom"/>
+  <resource rel="authors"><![CDATA[Adrien]]></resource>
+  <resource rel="authors"><![CDATA[William]]></resource>
+</collection>
+
+XML
+                )
+            ->string($this->halHateoas->serialize($collection, 'json'))
+                ->isEqualTo(
+                    '{"_links":{"custom":{"href":"\/custom"}},"_embedded":{"authors":["Adrien","William"]}}'
                 )
         ;
     }

@@ -20,7 +20,11 @@ abstract class RepresentationTestCase extends TestCase
         parent::setUp();
 
         $this->queryStringUrlGenerator = new CallableUrlGenerator(function ($route, array $parameters, $absolute) {
-            return ($absolute ? 'http://example.com' : '') . $route . '?' . http_build_query($parameters);
+            if ('' !== $queryString = http_build_query($parameters)) {
+                $queryString = '?' . $queryString;
+            }
+
+            return ($absolute ? 'http://example.com' : '') . $route . $queryString;
         });
 
         $this->hateoas = HateoasBuilder::create()
