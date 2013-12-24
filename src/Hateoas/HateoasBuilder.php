@@ -132,7 +132,7 @@ class HateoasBuilder
         $metadataFactory     = $this->buildMetadataFactory();
         $relationProvider    = new RelationProvider($metadataFactory, $this->chainResolver);
         $relationsRepository = new RelationsRepository($metadataFactory, $relationProvider);
-        $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage());
+        $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage(), $this->contextVariables);
         $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGeneratorRegistry);
         $exclusionManager    = new ExclusionManager($expressionEvaluator);
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
@@ -141,11 +141,6 @@ class HateoasBuilder
 
         // Register Hateoas core functions
         $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelper));
-
-        // Add context variables
-        foreach ($this->contextVariables as $name => $value) {
-            $expressionEvaluator->setContextVariable($name, $value);
-        }
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();

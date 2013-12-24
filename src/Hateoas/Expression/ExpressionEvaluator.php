@@ -20,11 +20,12 @@ class ExpressionEvaluator
     /**
      * @var array
      */
-    private $context = array();
+    private $context;
 
-    public function __construct(ExpressionLanguage $expressionLanguage)
+    public function __construct(ExpressionLanguage $expressionLanguage, array $context = array())
     {
         $this->expressionLanguage = $expressionLanguage;
+        $this->context            = $context;
     }
 
     /**
