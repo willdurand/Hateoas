@@ -23,7 +23,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     private $relationProviders = array();
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getName()
     {
@@ -31,7 +31,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getRelations()
     {
@@ -39,7 +39,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getRelationProviders()
     {
@@ -47,7 +47,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     }
 
     /**
-     * @param Relation $relation
+     * {@inheritDoc}
      */
     public function addRelation(Relation $relation)
     {
@@ -55,11 +55,26 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     }
 
     /**
-     * @param RelationProvider $relationProvider
+     * {@inheritDoc}
      */
     public function addRelationProvider(RelationProvider $relationProvider)
     {
         $this->relationProviders[] = $relationProvider;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function merge(MergeableInterface $object)
+    {
+        if (!$object instanceof self) {
+            throw new \InvalidArgumentException(sprintf('Object must be an instance of %s.', __CLASS__));
+        }
+
+        parent::merge($object);
+
+        $this->relations         = array_merge($this->relations, $object->getRelations());
+        $this->relationProviders = array_merge($this->relationProviders, $object->getRelationProviders());
     }
 
     public function serialize()
@@ -80,20 +95,5 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         ) = unserialize($str);
 
         parent::unserialize($parentStr);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function merge(MergeableInterface $object)
-    {
-        if (!$object instanceof self) {
-            throw new \InvalidArgumentException(sprintf('Object must be an instance of %s.', __CLASS__));
-        }
-
-        parent::merge($object);
-
-        $this->relations = array_merge($this->relations, $object->getRelations());
-        $this->relationProviders = array_merge($this->relationProviders, $object->getRelationProviders());
     }
 }
