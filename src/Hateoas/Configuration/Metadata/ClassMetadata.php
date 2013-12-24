@@ -77,6 +77,9 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         $this->relationProviders = array_merge($this->relationProviders, $object->getRelationProviders());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function serialize()
     {
         return serialize(array(
@@ -86,6 +89,9 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         ));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function unserialize($str)
     {
         list(
