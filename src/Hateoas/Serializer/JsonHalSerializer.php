@@ -21,7 +21,7 @@ class JsonHalSerializer implements JsonSerializerInterface
                 'href' => $link->getHref(),
             ), $link->getAttributes());
 
-            if (!isset($serializedLinks[$link->getRel()])) {
+            if (!isset($serializedLinks[$link->getRel()]) && 'curies' !== $link->getRel()) {
                 $serializedLinks[$link->getRel()] = $serializedLink;
             } elseif (isset($serializedLinks[$link->getRel()]['href'])) {
                 $serializedLinks[$link->getRel()] = array(

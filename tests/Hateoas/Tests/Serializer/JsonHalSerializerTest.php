@@ -81,4 +81,79 @@ class JsonHalSerializerTest extends TestCase
             $contextProphecy->reveal()
         );
     }
+
+    public function testSerializeCuriesWithOneLinkShouldBeAnArray()
+    {
+        $links = array(
+            new Link('self',   '/users/42'),
+            new Link('curies', '/rels/{rel}', array('name' => 'p')),
+        );
+
+        $expectedSerializedLinks = array(
+            'self' => array(
+                'href' => '/users/42',
+            ),
+            'curies' => array(
+                array(
+                    'href' => '/rels/{rel}',
+                    'name' => 'p',
+                ),
+            ),
+        );
+
+        $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+
+        $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
+        $jsonSerializationVisitorProphecy
+            ->addData('_links', $expectedSerializedLinks)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $jsonHalSerializer = new JsonHalSerializer();
+        $jsonHalSerializer->serializeLinks(
+            $links,
+            $jsonSerializationVisitorProphecy->reveal(),
+            $contextProphecy->reveal()
+        );
+    }
+
+    public function testSerializeCuriesWithMultipleEntriesShouldBeAnArray()
+    {
+        $links = array(
+            new Link('self',   '/users/42'),
+            new Link('curies', '/rels/{rel}', array('name' => 'p')),
+            new Link('curies', '/foo/rels/{rel}', array('name' => 'foo')),
+        );
+
+        $expectedSerializedLinks = array(
+            'self' => array(
+                'href' => '/users/42',
+            ),
+            'curies' => array(
+                array(
+                    'href' => '/rels/{rel}',
+                    'name' => 'p',
+                ),
+                array(
+                    'href' => '/foo/rels/{rel}',
+                    'name' => 'foo',
+                ),
+            ),
+        );
+
+        $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+
+        $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
+        $jsonSerializationVisitorProphecy
+            ->addData('_links', $expectedSerializedLinks)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $jsonHalSerializer = new JsonHalSerializer();
+        $jsonHalSerializer->serializeLinks(
+            $links,
+            $jsonSerializationVisitorProphecy->reveal(),
+            $contextProphecy->reveal()
+        );
+    }
 }
