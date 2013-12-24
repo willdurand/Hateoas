@@ -37,7 +37,7 @@ class Route
     {
         $this->name       = $name;
         $this->parameters = $parameters;
-        $this->absolute = $absolute;
+        $this->absolute   = $absolute;
         $this->generator  = $generator;
     }
 

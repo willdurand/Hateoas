@@ -2,11 +2,8 @@
 
 namespace Hateoas\Tests\Representation\Factory;
 
-use Hateoas\HateoasBuilder;
 use Hateoas\Representation\Factory\PagerfantaFactory;
-use Hateoas\Tests\TestCase;
 use Hateoas\Tests\Representation\RepresentationTestCase;
-use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 
