@@ -22,6 +22,7 @@ services.
   - [The Expression Language](#the-expression-language)
     - [Context](#context)
     - [Adding Your Own Context Variables](#adding-your-own-context-variables)
+    - [Expression Functions](#expression-functions)
   - [URL Generators](#url-generators)
   - [Helpers](#helpers)
     - [LinkHelper](#linkhelper)
@@ -50,7 +51,6 @@ services.
     - [@Exclusion](#exclusion)
     - [@RelationProvider](#relationprovider)
 * [Internals](#internals)
-  - [Expression Functions](#expression-functions)
 
 
 Installation
@@ -486,6 +486,21 @@ The `foo` variable is now available:
 expr(foo !== null)
 ```
 
+##### Expression Functions
+
+**Expression Functions** are custom functions used to extend the [Expression
+Language](#the-expression-language) as explained in the [Extending the
+ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/extending.html),
+part of the Symfony documentation.
+
+Hateoas provides core expression functions such as the `LinkExpressionFunction`
+described in [LinkHelper - The `link` Function](#the-link-function), but you can
+also write your own function.
+The `ExpressionFunctionInterface` is designed to represent an expression
+function. Adding a new expression function is a matter of implementing this
+interface and registering by calling the `registerExpressionFunction()` method
+on the [HateoasBuilder](#the-hateoasbuilder).
+
 ### URL Generators
 
 Since you can use the [Expression Language](#the-expression-language) to define
@@ -794,7 +809,9 @@ All the methods below return the current builder, so that you can chain them.
 
 * `setExpressionContextVariable($name, $value)`: adds a new expression context
   variable;
-* `setExpressionLanguage(ExpressionLanguage $expressionLanguage)`.
+* `setExpressionLanguage(ExpressionLanguage $expressionLanguage)`;
+* `registerExpressionFunction(ExpressionFunctionInterface
+   $expressionFunction)`: adds a new expression function.
 
 #### Relation Provider
 
@@ -1086,22 +1103,6 @@ This section refers to the Hateoas internals, providing documentation about
 hidden parts of this library. This is not always relevant for end users, but
 interesting for developers or people interested in learning how things work
 under the hood.
-
-### Expression Functions
-
-**Expression Functions** are custom functions used to extend the [Expression
-Language](#the-expression-language) as explained in the [Extending the
-ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/extending.html),
-part of the Symfony documentation.
-
-By now, Hateoas does not let users add their own custom functions. Only core
-functions are registered, such as the `LinkExpressionFunction` described in
-[LinkHelper - The `link` Function](#the-link-function).
-
-The `ExpressionFunctionInterface` is designed to represent an expression
-function. Adding a new expression function is a matter of implementing this
-interface and registering it into the `ExpressionEvaluator` through the
-`registerFunction()` method.
 
 
 Contributing
