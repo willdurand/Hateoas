@@ -2,9 +2,14 @@
 
 namespace Hateoas\Tests\Serializer;
 
+use Hateoas\HateoasBuilder;
 use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\JsonHalSerializer;
+use Hateoas\Tests\Fixtures\AdrienBrault;
+use Hateoas\Tests\Fixtures\Foo1;
+use Hateoas\Tests\Fixtures\Foo2;
+use Hateoas\Tests\Fixtures\Foo3;
 use Hateoas\Tests\TestCase;
 
 class JsonHalSerializerTest extends TestCase
@@ -155,5 +160,75 @@ class JsonHalSerializerTest extends TestCase
             $jsonSerializationVisitorProphecy->reveal(),
             $contextProphecy->reveal()
         );
+    }
+
+    public function testSerializeAdrienBrault()
+    {
+        $hateoas      = HateoasBuilder::buildHateoas();
+        $adrienBrault = new AdrienBrault();
+
+        $this
+            ->json($hateoas->serialize($adrienBrault, 'json'))
+            ->isEqualTo(<<<JSON
+{
+    "first_name": "Adrien",
+    "last_name": "Brault",
+    "_links": {
+        "self": {
+            "href": "http:\/\/adrienbrault.fr"
+        },
+        "computer": {
+            "href": "http:\/\/www.apple.com\/macbook-pro\/"
+        },
+        "dynamic-relation": {
+            "href": "awesome!!!"
+        }
+    },
+    "_embedded": {
+        "computer": {
+            "name": "MacBook Pro"
+        },
+        "broken-computer": {
+            "name": "Windows Computer"
+        }
+    }
+}
+JSON
+            );
+    }
+
+    public function testSerializeInlineJson()
+    {
+        $foo1 = new Foo1();
+        $foo2 = new Foo2();
+        $foo3 = new Foo3();
+        $foo1->inline = $foo2;
+        $foo2->inline = $foo3;
+
+        $hateoas = HateoasBuilder::buildHateoas();
+
+        $this
+            ->json($hateoas->serialize($foo1, 'json'))
+            ->isEqualTo(<<<JSON
+{
+    "_links": {
+        "self3": {
+            "href": "foo3"
+        },
+        "self2": {
+            "href": "foo2"
+        },
+        "self1": {
+            "href": "foo1"
+        }
+    },
+    "_embedded": {
+        "self3": "foo3",
+        "self2": "foo2",
+        "self1": "foo1"
+    }
+}
+JSON
+            );
     }
 }

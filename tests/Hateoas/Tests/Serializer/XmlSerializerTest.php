@@ -2,10 +2,12 @@
 
 namespace Hateoas\Tests\Serializer;
 
-use Hateoas\Tests\TestCase;
+use Hateoas\HateoasBuilder;
 use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
 use Hateoas\Serializer\XmlSerializer;
+use Hateoas\Tests\Fixtures\AdrienBrault;
+use Hateoas\Tests\TestCase;
 use JMS\Serializer\XmlSerializationVisitor;
 
 class XmlSerializerTest extends TestCase
@@ -30,7 +32,7 @@ class XmlSerializerTest extends TestCase
 
         $this
             ->string($xmlSerializationVisitor->getResult())
-                ->isEqualTo(<<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <link rel="self" href="/users/42"/>
@@ -38,8 +40,7 @@ class XmlSerializerTest extends TestCase
 </root>
 
 XML
-                )
-        ;
+            );
     }
 
     public function testSerializeEmbeddeds()
@@ -61,7 +62,7 @@ XML
 
         $this
             ->string($xmlSerializationVisitor->getResult())
-            ->isEqualTo(<<<EXPECTED
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <person rel="friend">
@@ -69,8 +70,35 @@ XML
   </person>
 </root>
 
-EXPECTED
-        );
+XML
+            );
+    }
+
+    public function testSerializeAdrienBrault()
+    {
+        $hateoas      = HateoasBuilder::buildHateoas();
+        $adrienBrault = new AdrienBrault();
+
+        $this
+            ->string($hateoas->serialize($adrienBrault, 'xml'))
+            ->isEqualTo(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <first_name><![CDATA[Adrien]]></first_name>
+  <last_name><![CDATA[Brault]]></last_name>
+  <link rel="self" href="http://adrienbrault.fr"/>
+  <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
+  <link rel="dynamic-relation" href="awesome!!!"/>
+  <computer rel="computer">
+    <name><![CDATA[MacBook Pro]]></name>
+  </computer>
+  <computer rel="broken-computer">
+    <name><![CDATA[Windows Computer]]></name>
+  </computer>
+</result>
+
+XML
+            );
     }
 
     private function createXmlSerializationVisitor()

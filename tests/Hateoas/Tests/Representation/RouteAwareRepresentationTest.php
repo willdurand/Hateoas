@@ -26,8 +26,7 @@ class RouteAwareRepresentationTest extends RepresentationTestCase
 
         $this
             ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <users rel="authors">
@@ -40,8 +39,7 @@ class RouteAwareRepresentationTest extends RepresentationTestCase
 XML
             )
             ->string($this->halHateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="/authors?query=willdurand%2FHateoas">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -49,24 +47,26 @@ XML
 </result>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'json'))
-            ->isEqualTo(
-                '{'
-                    .'"_links":{'
-                        .'"self":{'
-                            .'"href":"\/authors?query=willdurand%2FHateoas"'
-                        .'}'
-                    .'},'
-                    .'"_embedded":{'
-                        .'"authors":['
-                            .'"Adrien",'
-                            .'"William"'
-                        .']'
-                    .'}'
-                .'}'
-            )
-        ;
+            );
+
+        $this
+            ->json($this->halHateoas->serialize($collection, 'json'))
+            ->isEqualTo(<<<JSON
+{
+    "_links": {
+        "self": {
+            "href": "\/authors?query=willdurand%2FHateoas"
+        }
+    },
+    "_embedded": {
+        "authors": [
+            "Adrien",
+            "William"
+        ]
+    }
+}
+JSON
+            );
     }
 
     public function testGenerateAbsoluteURIs()
@@ -89,8 +89,7 @@ XML
 
         $this
             ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <users rel="authors">
@@ -103,8 +102,7 @@ XML
 XML
             )
             ->string($this->halHateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="http://example.com/authors?query=willdurand%2FHateoas">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -112,23 +110,25 @@ XML
 </result>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'json'))
-            ->isEqualTo(
-                '{'
-                    .'"_links":{'
-                        .'"self":{'
-                            .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas"'
-                        .'}'
-                    .'},'
-                    .'"_embedded":{'
-                        .'"authors":['
-                            .'"Adrien",'
-                            .'"William"'
-                        .']'
-                    .'}'
-                .'}'
-            )
-        ;
+            );
+
+        $this
+            ->json($this->halHateoas->serialize($collection, 'json'))
+            ->isEqualTo(<<<JSON
+{
+    "_links": {
+        "self": {
+            "href": "http:\/\/example.com\/authors?query=willdurand%2FHateoas"
+        }
+    },
+    "_embedded": {
+        "authors": [
+            "Adrien",
+            "William"
+        ]
+    }
+}
+JSON
+            );
     }
 }

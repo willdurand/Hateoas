@@ -21,8 +21,7 @@ class CollectionRepresentationTest extends RepresentationTestCase
 
         $this
             ->string($this->hateoas->serialize($collection, 'xml'))
-                ->isEqualTo(
-<<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <users rel="authors">
@@ -32,10 +31,9 @@ class CollectionRepresentationTest extends RepresentationTestCase
 </collection>
 
 XML
-                )
+            )
             ->string($this->halHateoas->serialize($collection, 'xml'))
-                ->isEqualTo(
-<<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -43,12 +41,21 @@ XML
 </collection>
 
 XML
-                )
-            ->string($this->halHateoas->serialize($collection, 'json'))
-                ->isEqualTo(
-                    '{"_embedded":{"authors":["Adrien","William"]}}'
-                )
-        ;
+            );
+
+        $this
+            ->json($this->halHateoas->serialize($collection, 'json'))
+            ->isEqualTo(<<<JSON
+{
+    "_embedded": {
+        "authors": [
+            "Adrien",
+            "William"
+        ]
+    }
+}
+JSON
+        );
     }
 
     public function testEmbeddedRelationIsMergedWithCustomRelations()
@@ -73,8 +80,7 @@ XML
 
         $this
             ->string($this->hateoas->serialize($collection, 'xml'))
-                ->isEqualTo(
-<<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <link rel="custom" href="/custom"/>
@@ -85,10 +91,9 @@ XML
 </collection>
 
 XML
-                )
+            )
             ->string($this->halHateoas->serialize($collection, 'xml'))
-                ->isEqualTo(
-<<<XML
+            ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <link rel="custom" href="/custom"/>
@@ -97,11 +102,25 @@ XML
 </collection>
 
 XML
-                )
-            ->string($this->halHateoas->serialize($collection, 'json'))
-                ->isEqualTo(
-                    '{"_links":{"custom":{"href":"\/custom"}},"_embedded":{"authors":["Adrien","William"]}}'
-                )
-        ;
+            );
+
+        $this
+            ->json($this->halHateoas->serialize($collection, 'json'))
+            ->isEqualTo(<<<JSON
+{
+    "_links": {
+        "custom": {
+            "href": "\/custom"
+        }
+    },
+    "_embedded": {
+        "authors": [
+            "Adrien",
+            "William"
+        ]
+    }
+}
+JSON
+            );
     }
 }

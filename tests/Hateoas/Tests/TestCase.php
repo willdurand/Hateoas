@@ -10,4 +10,11 @@ abstract class TestCase extends BaseTestCase
     {
         return __DIR__;
     }
+
+    protected function json($string)
+    {
+        return $this->string(
+            json_encode(json_decode($string), JSON_PRETTY_PRINT)
+        );
+    }
 }
