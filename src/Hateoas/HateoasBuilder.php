@@ -16,6 +16,7 @@ use Hateoas\Configuration\Provider\Resolver\RelationProviderResolverInterface;
 use Hateoas\Configuration\Provider\Resolver\StaticMethodResolver;
 use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Expression\ExpressionEvaluator;
+use Hateoas\Expression\ExpressionFunctionInterface;
 use Hateoas\Expression\LinkExpressionFunction;
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinkFactory;
@@ -62,6 +63,11 @@ class HateoasBuilder
      * @var array
      */
     private $contextVariables = array();
+
+    /**
+     * ExpressionFunctionInterface[]
+     */
+    private $expressionFunctions = array();
 
     /**
      * @var XmlSerializerInterface
@@ -141,6 +147,11 @@ class HateoasBuilder
 
         // Register Hateoas core functions
         $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelper));
+
+        // Register user functions
+        foreach ($this->expressionFunctions as $expressionFunction) {
+            $expressionEvaluator->registerFunction($expressionFunction);
+        }
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -264,6 +275,18 @@ class HateoasBuilder
     public function setExpressionLanguage(ExpressionLanguage $expressionLanguage)
     {
         $this->expressionLanguage = $expressionLanguage;
+
+        return $this;
+    }
+
+    /**
+     * @param ExpressionFunctionInterface $expressionFunction
+     *
+     * @return HateoasBuilder
+     */
+    public function registerExpressionFunction(ExpressionFunctionInterface $expressionFunction)
+    {
+        $this->expressionFunctions[] = $expressionFunction;
 
         return $this;
     }
