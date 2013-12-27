@@ -41,6 +41,7 @@ services.
     - [Others](#others)
   - [Configuring a Cache Directory](#configuring-a-cache-directory)
   - [Configuring Metadata Locations](#configuring-metadata-locations)
+  - [Extending The Library](#extending-the-library)
 * [Reference](#reference)
   - [XML](#xml)
   - [YAML](#yaml)
@@ -874,23 +875,30 @@ class names where all `\` are replaced with `.`. So, if you class would be
 named `Vendor\Package\Foo` the metadata file would need to be located at
 `$someDir/Vendor.Package.Foo.(xml|yml)`.
 
-### Extending the library
+### Extending The Library
 
-Hateoas allows frameworks to dynamically add relations to classes.
+Hateoas allows frameworks to dynamically add relations to classes by providing
+an extension point at configuration level. This feature can be useful for those
+who want to to create a new layer on top of Hateoas, or to add "global"
+relations rather than copying the same configuration on each class.
 
-The `ConfigurationExtensionInterface` has to be implemented:
+In order to leverage this mechanism, the `ConfigurationExtensionInterface`
+interface has to be implemented:
 
 ```php
 use Hateoas\Configuration\Metadata\ConfigurationExtensionInterface;
 use Hateoas\Configuration\Metadata\ClassMetadataInterface;
 use Hateoas\Configuration\Relation;
 
-class AcmeFooHateoasExtension implements ConfigurationExtensionInterface
+class AcmeFooConfigurationExtension implements ConfigurationExtensionInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     public function decorate(ClassMetadataInterface $classMetadata)
     {
         if (0 === strpos('Acme\Foo\Model', $classMetadata->getName())) {
-            // Add a "root" relation to all classes in the Acme\Foo\Model namespace
+            // Add a "root" relation to all classes in the `Acme\Foo\Model` namespace
             $classMetadata->addRelation(
                 new Relation(
                     'root',
@@ -902,15 +910,14 @@ class AcmeFooHateoasExtension implements ConfigurationExtensionInterface
 }
 ```
 
-You will have access to the existing relations loaded from annotations, xml,
-or yaml with `$classMetadata->getRelations()`.
+You can access the existing relations loaded from Annotations, XML, or YAML with
+`$classMetadata->getRelations()`.
 
-If the $classMetadata has relations, or if you add relations to it, its
-relations will be cached. So if you read configuration files (xml,
-annotations), make sure to reference them on the class metadata:
+If the `$classMetadata` has relations, or if you add relations to it, its
+relations will be cached. So if you read configuration files (Annotations, XML,
+or YAML), make sure to reference them on the class metadata:
 
 ```php
-$classMetadata->addRelation(...);
 $classMetadata->fileResources[] = $file;
 ```
 
