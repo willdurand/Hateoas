@@ -1007,6 +1007,9 @@ use Hateoas\Configuration\Annotation as Hateoas;
 | attributes | No                     | array                           | Yes on key and values |
 | exclusion  | No                     | [@Exclusion](#exclusion)        | N/A                   |
 
+**Important:** `attributes` are only used on **link relations** (i.e. combined
+with the `href` property, not with the `embedded` one).
+
 #### @Route
 
 ```php
