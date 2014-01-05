@@ -28,8 +28,18 @@ class PagerfantaFactory
 
     public function create(Pagerfanta $pager, $route, array $routeParameters = array(), $inline = null, $absolute = false)
     {
+        if (null === $inline) {
+            $currentPageResults = $pager->getCurrentPageResults();
+
+            if ($currentPageResults instanceof \Traversable) {
+                $inline = iterator_to_array($currentPageResults);
+            } else {
+                $inline = $currentPageResults;
+            }
+        }
+
         return new PaginatedRepresentation(
-            $inline ?: $pager->getCurrentPageResults(),
+            $inline,
             $route,
             $routeParameters,
             $pager->getCurrentPage(),

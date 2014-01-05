@@ -5,6 +5,7 @@ namespace Hateoas\Tests\Representation\Factory;
 use Hateoas\Representation\Factory\PagerfantaFactory;
 use Hateoas\Tests\Representation\RepresentationTestCase;
 use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Adapter\CallbackAdapter;
 use Pagerfanta\Pagerfanta;
 
 class PagerfantaFactoryTest extends RepresentationTestCase
@@ -123,6 +124,47 @@ XML
 </collection>
 
 XML
+            );
+    }
+
+    public function testArrayIteratorShouldBeSerialized()
+    {
+        $factory    = new PagerfantaFactory();
+        $pagerfanta = new Pagerfanta(new CallbackAdapter(
+            function () { return 2; },
+            function () { return new \ArrayIterator(array('foo', 'bar')); }
+        ));
+
+        $collection = $factory->create(
+            $pagerfanta,
+            '/my_route', array(),
+            null, // inline
+            true  // absolute
+        );
+
+        $this
+            ->json($this->hateoas->serialize($collection, 'json'))
+            ->isEqualTo(
+                <<<JSON
+{
+    "0": "foo",
+    "1": "bar",
+    "page": 1,
+    "limit": 10,
+    "pages": 1,
+    "_links": {
+        "self": {
+            "href": "http:\/\/example.com\/my_route?page=1&limit=10"
+        },
+        "first": {
+            "href": "http:\/\/example.com\/my_route?page=1&limit=10"
+        },
+        "last": {
+            "href": "http:\/\/example.com\/my_route?page=1&limit=10"
+        }
+    }
+}
+JSON
             );
     }
 }
