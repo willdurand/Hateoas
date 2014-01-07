@@ -38,4 +38,5 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 class User
 {
+    // do not use for functional testing
 }

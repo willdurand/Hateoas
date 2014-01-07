@@ -57,6 +57,9 @@ class Hateoas implements SerializerInterface
     }
 
     /**
+     * @deprecated You should use the `getLinkHelper()` method to get the helper instead of
+     *             relying on this proxy method. This method will be removed as of 2.2.0.
+     *
      * Gets the 'href' value of an object's link, identified by its rel name.
      *
      * @param object  $object
@@ -67,6 +70,14 @@ class Hateoas implements SerializerInterface
      */
     public function getLinkHref($object, $rel, $absolute = false)
     {
-        return $this->linkHelper->getLinkHref($object, $rel, $absolute);
+        return $this->getLinkHelper()->getLinkHref($object, $rel, $absolute);
+    }
+
+    /**
+     * @return LinkHelper
+     */
+    public function getLinkHelper()
+    {
+        return $this->linkHelper;
     }
 }
