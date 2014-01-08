@@ -26,6 +26,8 @@ services.
   - [URL Generators](#url-generators)
   - [Helpers](#helpers)
     - [LinkHelper](#linkhelper)
+  - [Twig Extensions](#twig-extensions)
+    - [LinkExtension](#linkextension)
   - [Serializers & Formats](#serializers--formats)
     - [The JsonHalSerializer](#the-jsonhalserializer)
     - [The XmlSerializer](#the-xmlserializer)
@@ -674,6 +676,30 @@ $linkHelper->getLinkHref($user, 'relative');
 
 $linkHelper->getLinkHref($user, 'relative', true);
 // http://example.com/api/posts/789
+```
+
+### Twig Extensions
+
+Hateoas also provides a set of [Twig](http://twig.sensiolabs.org) extensions.
+
+#### LinkExtension
+
+The `LinkExtension` allows you to use the [LinkHelper](#linkhelper) into your
+Twig templates, so that you can generate links in your HTML templates for
+instance.
+
+This extension exposes the `getLinkHref()` helper's method through the
+`link_href` Twig function:
+
+```html+jinja
+{{ link_href(user, 'self') }}
+{# will generate: /users/123 #}
+
+{{ link_href(will, 'self', false) }}
+{# will generate: /users/123 #}
+
+{{ link_href(will, 'self', true) }}
+{# will generate: http://example.com/users/123 #}
 ```
 
 ### Serializers & Formats

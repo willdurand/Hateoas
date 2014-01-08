@@ -1,0 +1,20 @@
+--TEST--
+"link_href" function
+--TEMPLATE--
+{{ link_href(will, 'self', false) }}
+{{ link_href(will, 'self') }}
+{{ link_href(will, 'self', true) }}
+{{ link_href(will, 'post', false) }}
+{{ link_href(will, 'post') }}
+{{ link_href(will, 'post', true) }}
+--DATA--
+return array(
+    'will'   => new \Hateoas\Tests\Fixtures\Will(123, new \Hateoas\Tests\Fixtures\Post(345)),
+)
+--EXPECT--
+/user_get/123
+/user_get/123
+http://example.com/user_get/123
+http://example.com/post_get/345
+http://example.com/post_get/345
+http://example.com/post_get/345

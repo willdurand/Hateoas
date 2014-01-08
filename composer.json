@@ -26,11 +26,13 @@
         "symfony/yaml": "~2.0",
         "symfony/routing": "~2.0",
         "symfony/dependency-injection": "~2.0",
-        "pagerfanta/pagerfanta": "~1.0"
+        "pagerfanta/pagerfanta": "~1.0",
+        "twig/twig": "~1.12"
     },
     "suggest": {
         "symfony/yaml": "To use yaml based configuration.",
-        "symfony/routing": "To use the SymfonyRouteFactory."
+        "symfony/routing": "To use the SymfonyRouteFactory.",
+        "twig/twig": "To use the Twig extensions."
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }
