@@ -2,6 +2,8 @@
 
 namespace Hateoas\Tests\Representation\Factory;
 
+use Hateoas\Configuration\Route;
+use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\Factory\PagerfantaFactory;
 use Hateoas\Tests\Representation\RepresentationTestCase;
 use Pagerfanta\Adapter\ArrayAdapter;
@@ -24,21 +26,28 @@ class PagerfantaFactoryTest extends RepresentationTestCase
         $pagerProphecy->getNbPages()->willReturn(4);
 
         $factory = new PagerfantaFactory('p', 'l');
-        $representation1 = $factory->create(
+        $representation1 = $factory->createRepresentation(
             $pagerProphecy->reveal(),
-            'users',
-            array(
-                'query' => 'hateoas',
-            ),
-            $results
-        );
-        $representation2 = $factory->create(
-            $pagerProphecy->reveal(),
-            'users',
-            array(
-                'query' => 'hateoas',
+            new Route(
+                'users',
+                array(
+                    'query' => 'hateoas',
+                )
             )
         );
+        $representation2 = $factory->createRepresentation(
+            $pagerProphecy->reveal(),
+            new Route(
+                'users',
+                array(
+                    'query' => 'hateoas',
+                )
+            ),
+            array()
+        );
+
+        $this->variable($representation1->getInline())->isEqualTo(new CollectionRepresentation($results));
+        $this->variable($representation2->getInline())->isEqualTo(array());
 
         foreach (array($representation1, $representation2) as $representation) {
             $this
@@ -73,7 +82,7 @@ class PagerfantaFactoryTest extends RepresentationTestCase
             'boom'
         )));
 
-        $collection = $factory->create($pagerfanta, 'my_route');
+        $collection = $factory->createRepresentation($pagerfanta, new Route('my_route'));
 
         $this
             ->string($this->hateoas->serialize($collection, 'xml'))
@@ -81,15 +90,47 @@ class PagerfantaFactoryTest extends RepresentationTestCase
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1">
-  <entry><![CDATA[bim]]></entry>
-  <entry><![CDATA[bam]]></entry>
-  <entry><![CDATA[boom]]></entry>
+  <entry rel="items">
+    <entry><![CDATA[bim]]></entry>
+    <entry><![CDATA[bam]]></entry>
+    <entry><![CDATA[boom]]></entry>
+  </entry>
   <link rel="self" href="my_route?page=1&amp;limit=10"/>
   <link rel="first" href="my_route?page=1&amp;limit=10"/>
   <link rel="last" href="my_route?page=1&amp;limit=10"/>
 </collection>
 
 XML
+            );
+
+        $this
+            ->json($this->hateoas->serialize($collection, 'json'))
+            ->isEqualTo(
+                <<<JSON
+{
+    "page": 1,
+    "limit": 10,
+    "pages": 1,
+    "_links": {
+        "self": {
+            "href": "my_route?page=1&limit=10"
+        },
+        "first": {
+            "href": "my_route?page=1&limit=10"
+        },
+        "last": {
+            "href": "my_route?page=1&limit=10"
+        }
+    },
+    "_embedded": {
+        "items": [
+            "bim",
+            "bam",
+            "boom"
+        ]
+    }
+}
+JSON
             );
     }
 
@@ -102,11 +143,13 @@ XML
             'boom'
         )));
 
-        $collection = $factory->create(
+        $collection = $factory->createRepresentation(
             $pagerfanta,
-            '/my_route', array(),
-            null, // inline
-            true  // absolute
+            new Route(
+                '/my_route',
+                array(),
+                true
+            )
         );
 
         $this
@@ -115,56 +158,17 @@ XML
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1">
-  <entry><![CDATA[bim]]></entry>
-  <entry><![CDATA[bam]]></entry>
-  <entry><![CDATA[boom]]></entry>
+  <entry rel="items">
+    <entry><![CDATA[bim]]></entry>
+    <entry><![CDATA[bam]]></entry>
+    <entry><![CDATA[boom]]></entry>
+  </entry>
   <link rel="self" href="http://example.com/my_route?page=1&amp;limit=10"/>
   <link rel="first" href="http://example.com/my_route?page=1&amp;limit=10"/>
   <link rel="last" href="http://example.com/my_route?page=1&amp;limit=10"/>
 </collection>
 
 XML
-            );
-    }
-
-    public function testArrayIteratorShouldBeSerialized()
-    {
-        $factory    = new PagerfantaFactory();
-        $pagerfanta = new Pagerfanta(new CallbackAdapter(
-            function () { return 2; },
-            function () { return new \ArrayIterator(array('foo', 'bar')); }
-        ));
-
-        $collection = $factory->create(
-            $pagerfanta,
-            '/my_route', array(),
-            null, // inline
-            true  // absolute
-        );
-
-        $this
-            ->json($this->hateoas->serialize($collection, 'json'))
-            ->isEqualTo(
-                <<<JSON
-{
-    "0": "foo",
-    "1": "bar",
-    "page": 1,
-    "limit": 10,
-    "pages": 1,
-    "_links": {
-        "self": {
-            "href": "http:\/\/example.com\/my_route?page=1&limit=10"
-        },
-        "first": {
-            "href": "http:\/\/example.com\/my_route?page=1&limit=10"
-        },
-        "last": {
-            "href": "http:\/\/example.com\/my_route?page=1&limit=10"
-        }
-    }
-}
-JSON
             );
     }
 }

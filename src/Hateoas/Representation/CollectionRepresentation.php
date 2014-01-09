@@ -57,6 +57,10 @@ class CollectionRepresentation
         Exclusion $embedExclusion = null,
         array $relations          = array()
     ) {
+        if ($resources instanceof \Traversable) {
+            $resources = iterator_to_array($resources);
+        }
+
         $this->resources      = $resources;
         $this->rel            = $rel ?: 'items';
         $this->xmlElementName = $xmlElementName;

@@ -2,6 +2,8 @@
 
 namespace Hateoas\Representation\Factory;
 
+use Hateoas\Configuration\Route;
+use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\PaginatedRepresentation;
 use Pagerfanta\Pagerfanta;
 
@@ -26,28 +28,42 @@ class PagerfantaFactory
         $this->limitParameterName = $limitParameterName;
     }
 
+    /**
+     * @deprecated  This method will be removed as of 2.2. Use the
+     *              `createRepresentation()` method instead.
+     */
     public function create(Pagerfanta $pager, $route, array $routeParameters = array(), $inline = null, $absolute = false)
     {
-        if (null === $inline) {
-            $currentPageResults = $pager->getCurrentPageResults();
+        return $this->createRepresentation(
+            $pager,
+            new Route($route, $routeParameters, $absolute),
+            $inline
+        );
+    }
 
-            if ($currentPageResults instanceof \Traversable) {
-                $inline = iterator_to_array($currentPageResults);
-            } else {
-                $inline = $currentPageResults;
-            }
+    /**
+     * @param Pagerfanta $pager  The pager
+     * @param Route      $route  The collection's route
+     * @param mixed      $inline Most of the time, a custom `CollectionRepresentation` instance
+     *
+     * @return PaginatedRepresentation
+     */
+    public function createRepresentation(Pagerfanta $pager, Route $route, $inline = null)
+    {
+        if (null === $inline) {
+            $inline = new CollectionRepresentation($pager->getCurrentPageResults());
         }
 
         return new PaginatedRepresentation(
             $inline,
-            $route,
-            $routeParameters,
+            $route->getName(),
+            $route->getParameters(),
             $pager->getCurrentPage(),
             $pager->getMaxPerPage(),
             $pager->getNbPages(),
             $this->pageParameterName,
             $this->limitParameterName,
-            $absolute
+            $route->isAbsolute()
         );
     }
 }
