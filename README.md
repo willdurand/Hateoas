@@ -397,10 +397,6 @@ You would get the following JSON content:
 
 ```json
 {
-    "users": [
-        { "id": 123 },
-        { "id": 456 }
-    ],
     "page": 1,
     "limit": 10,
     "pages": 1,
@@ -414,6 +410,12 @@ You would get the following JSON content:
         "last": {
             "href": "/api/users?page=1&limit=10"
         }
+    },
+    "_embedded": {
+        "items": [
+            { "id": 123 },
+            { "id": 456 }
+        ]
     }
 }
 ```
@@ -433,6 +435,29 @@ And the following XML content:
 
 You can generate **absolute URIs** by setting the `absolute` parameter to `true`
 in both the `PaginatedRepresentation` and the `RouteAwareRepresentation`.
+
+If you want to customize the inlined CollectionRepresentation, pass one to the
+create method:
+
+```php
+use Hateoas\Representation\Factory\PagerfantaFactory;
+
+$pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page and limit parameters name
+$paginatedCollection = $pagerfantaFactory->create(
+    $pager,
+    'user_list',
+    array() // route parameters,
+    new CollectionRepresentation(
+        $pager->getCurrentPageResults(),
+        'users',
+        'users',
+        new Exclusion(...)
+    )
+);
+
+$json = $hateoas->serialize($paginatedCollection, 'json');
+$xml  = $hateoas->serialize($paginatedCollection, 'xml');
+```
 
 ### The Expression Language
 

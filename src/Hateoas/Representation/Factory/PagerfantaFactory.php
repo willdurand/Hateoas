@@ -2,6 +2,8 @@
 
 namespace Hateoas\Representation\Factory;
 
+use Hateoas\Configuration\Route;
+use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\PaginatedRepresentation;
 use Pagerfanta\Pagerfanta;
 
@@ -28,26 +30,29 @@ class PagerfantaFactory
 
     public function create(Pagerfanta $pager, $route, array $routeParameters = array(), $inline = null, $absolute = false)
     {
-        if (null === $inline) {
-            $currentPageResults = $pager->getCurrentPageResults();
+        return $this->createV2(
+            $pager,
+            new Route($route, $routeParameters, $absolute),
+            $inline
+        );
+    }
 
-            if ($currentPageResults instanceof \Traversable) {
-                $inline = iterator_to_array($currentPageResults);
-            } else {
-                $inline = $currentPageResults;
-            }
+    public function createV2(Pagerfanta $pager, Route $route, $inline = null)
+    {
+        if (null === $inline) {
+            $inline = new CollectionRepresentation($pager->getCurrentPageResults());
         }
 
         return new PaginatedRepresentation(
             $inline,
-            $route,
-            $routeParameters,
+            $route->getName(),
+            $route->getParameters(),
             $pager->getCurrentPage(),
             $pager->getMaxPerPage(),
             $pager->getNbPages(),
             $this->pageParameterName,
             $this->limitParameterName,
-            $absolute
+            $route->isAbsolute()
         );
     }
 }

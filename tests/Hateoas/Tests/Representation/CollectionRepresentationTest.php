@@ -8,13 +8,13 @@ use Hateoas\Representation\CollectionRepresentation;
 
 class CollectionRepresentationTest extends RepresentationTestCase
 {
-    public function testSerialize()
+    /**
+     * @dataProvider getTestSerializeData
+     */
+    public function testSerialize($resources)
     {
         $collection = new CollectionRepresentation(
-            array(
-                'Adrien',
-                'William',
-            ),
+            $resources,
             'authors'
         );
         $collection->setXmlElementName('users');
@@ -55,6 +55,24 @@ XML
     }
 }
 JSON
+        );
+    }
+
+    public function getTestSerializeData()
+    {
+        return array(
+            array(
+                array(
+                    'Adrien',
+                    'William',
+                )
+            ),
+            array(
+                new \ArrayIterator(array(
+                    'Adrien',
+                    'William',
+                ))
+            ),
         );
     }
 
