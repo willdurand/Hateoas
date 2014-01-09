@@ -388,7 +388,10 @@ $pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page and lim
 $paginatedCollection = $pagerfantaFactory->create(
     $pager,
     'user_list',
-    array() // route parameters
+    array(), // route parameters
+    false,   // is absolute ?
+    'users', // rel
+    'users'  // xml element name
 );
 
 $json = $hateoas->serialize($paginatedCollection, 'json');
@@ -399,10 +402,6 @@ You would get the following JSON content:
 
 ```json
 {
-    "users": [
-        { "id": 123 },
-        { "id": 456 }
-    ],
     "page": 1,
     "limit": 10,
     "pages": 1,
@@ -416,6 +415,12 @@ You would get the following JSON content:
         "last": {
             "href": "/api/users?page=1&limit=10"
         }
+    },
+    "_embedded": {
+        "users": [
+            { "id": 123 },
+            { "id": 456 }
+        ]
     }
 }
 ```
@@ -425,16 +430,17 @@ And the following XML content:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1">
-    <user id="123"></user>
-    <user id="456"></user>
+    <users rel="users">
+        <user id="123"></user>
+        <user id="456"></user>
+    </users>
     <link rel="self" href="/api/users?page=1&amp;limit=10" />
     <link rel="first" href="/api/users?page=1&amp;limit=10" />
     <link rel="last" href="/api/users?page=1&amp;limit=10" />
 </collection>
 ```
 
-You can generate **absolute URIs** by setting the `absolute` parameter to `true`
-in both the `PaginatedRepresentation` and the `RouteAwareRepresentation`.
+You can generate **absolute URIs** by setting the `absolute` parameter to `true`.
 
 ### The Expression Language
 
