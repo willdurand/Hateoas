@@ -24,15 +24,8 @@ class PagerfantaFactoryTest extends RepresentationTestCase
         $pagerProphecy->getNbPages()->willReturn(4);
 
         $factory = new PagerfantaFactory('p', 'l');
-        $representation1 = $factory->create(
-            $pagerProphecy->reveal(),
-            'users',
-            array(
-                'query' => 'hateoas',
-            ),
-            $results
-        );
-        $representation2 = $factory->create(
+
+        $representation = $factory->create(
             $pagerProphecy->reveal(),
             'users',
             array(
@@ -40,28 +33,26 @@ class PagerfantaFactoryTest extends RepresentationTestCase
             )
         );
 
-        foreach (array($representation1, $representation2) as $representation) {
-            $this
-                ->object($representation)
-                    ->isInstanceOf('Hateoas\Representation\PaginatedRepresentation')
-                ->variable($representation->getPage())
-                    ->isEqualTo(2)
-                ->variable($representation->getLimit())
-                    ->isEqualTo(20)
-                ->variable($representation->getPages())
-                    ->isEqualTo(4)
-                ->array($representation->getParameters())
-                    ->isEqualTo(array(
-                        'query' => 'hateoas',
-                        'p' => 2,
-                        'l' => 20,
-                    ))
-                ->string($representation->getPageParameterName())
-                    ->isEqualTo('p')
-                ->string($representation->getLimitParameterName())
-                    ->isEqualTo('l')
-            ;
-        }
+        $this
+            ->object($representation)
+                ->isInstanceOf('Hateoas\Representation\PaginatedRepresentation')
+            ->variable($representation->getPage())
+                ->isEqualTo(2)
+            ->variable($representation->getLimit())
+                ->isEqualTo(20)
+            ->variable($representation->getPages())
+                ->isEqualTo(4)
+            ->array($representation->getParameters())
+                ->isEqualTo(array(
+                    'query' => 'hateoas',
+                    'p' => 2,
+                    'l' => 20,
+                ))
+            ->string($representation->getPageParameterName())
+                ->isEqualTo('p')
+            ->string($representation->getLimitParameterName())
+                ->isEqualTo('l')
+        ;
     }
 
     public function testSerialize()
@@ -81,9 +72,11 @@ class PagerfantaFactoryTest extends RepresentationTestCase
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1">
-  <entry><![CDATA[bim]]></entry>
-  <entry><![CDATA[bam]]></entry>
-  <entry><![CDATA[boom]]></entry>
+  <entry rel="items">
+    <entry><![CDATA[bim]]></entry>
+    <entry><![CDATA[bam]]></entry>
+    <entry><![CDATA[boom]]></entry>
+  </entry>
   <link rel="self" href="my_route?page=1&amp;limit=10"/>
   <link rel="first" href="my_route?page=1&amp;limit=10"/>
   <link rel="last" href="my_route?page=1&amp;limit=10"/>
@@ -104,8 +97,8 @@ XML
 
         $collection = $factory->create(
             $pagerfanta,
-            '/my_route', array(),
-            null, // inline
+            '/my_route',
+            array(),
             true  // absolute
         );
 
@@ -115,9 +108,11 @@ XML
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1">
-  <entry><![CDATA[bim]]></entry>
-  <entry><![CDATA[bam]]></entry>
-  <entry><![CDATA[boom]]></entry>
+  <entry rel="items">
+    <entry><![CDATA[bim]]></entry>
+    <entry><![CDATA[bam]]></entry>
+    <entry><![CDATA[boom]]></entry>
+  </entry>
   <link rel="self" href="http://example.com/my_route?page=1&amp;limit=10"/>
   <link rel="first" href="http://example.com/my_route?page=1&amp;limit=10"/>
   <link rel="last" href="http://example.com/my_route?page=1&amp;limit=10"/>
@@ -137,8 +132,8 @@ XML
 
         $collection = $factory->create(
             $pagerfanta,
-            '/my_route', array(),
-            null, // inline
+            '/my_route',
+            array(),
             true  // absolute
         );
 
@@ -147,8 +142,6 @@ XML
             ->isEqualTo(
                 <<<JSON
 {
-    "0": "foo",
-    "1": "bar",
     "page": 1,
     "limit": 10,
     "pages": 1,
@@ -162,6 +155,12 @@ XML
         "last": {
             "href": "http:\/\/example.com\/my_route?page=1&limit=10"
         }
+    },
+    "_embedded": {
+        "items": [
+            "foo",
+            "bar"
+        ]
     }
 }
 JSON
