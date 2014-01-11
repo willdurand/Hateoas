@@ -97,8 +97,8 @@ Usage
 **Hateoas** leverages the [Serializer](https://github.com/schmittjoh/serializer)
 library to provide a nice way to build HATEOAS REST web services. HATEOAS stands
 for **H**ypermedia **a**s **t**he **E**ngine **o**f **A**pplication **S**tate,
-and basically adds **hypermedia links** to your **representations** (i.e. your
-API responses). [HATEOAS is about the discoverability of actions on a
+and adds **hypermedia links** to your **representations** (i.e. your API
+responses). [HATEOAS is about the discoverability of actions on a
 resource](http://timelessrepo.com/haters-gonna-hateoas).
 
 For instance, let's say you have a User API which returns a **representation**
@@ -167,11 +167,11 @@ class User
 In the example above, we configure a `self` relation that is a link because of
 the `href` parameter. Its value, which may look weird at first glance, will be
 extensively covered in [The Expression Language](#the-expression-language)
-section, but it basically generates a URI.
+section. This special value is used to generate a URI.
 
 In this section, [**annotations**](#annotations) are used to configure Hateoas.
-However, [**XML**](#xml) and [**YAML**](#yaml) formats are also supported. If
-you wish, you can use plain PHP too.
+[**XML**](#xml) and [**YAML**](#yaml) formats are also supported. If you wish,
+you can use plain PHP too.
 
 **Important:** you must configure both the Serializer and Hateoas the same way. E.g.
 if you use YAML for configuring Serializer, use YAML for configuring Hateoas.
@@ -193,7 +193,7 @@ $xml  = $hateoas->serialize($user, 'xml');
 
 The `$hateoas` object is an instance of `JMS\Serializer\SerializerInterface`,
 coming from the Serializer library. Hateoas does not come with its own
-serializer, it simply hooks into the JMS Serializer.
+serializer, it hooks into the JMS Serializer.
 
 By default, Hateoas uses the [Hypertext Application
 Language](http://stateless.co/hal_specification.html) (HAL) for JSON
@@ -442,8 +442,8 @@ Hateoas relies on the powerful Symfony
 [ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/introduction.html)
 component to retrieve values such as links, ids or objects to embed.
 
-Basically, each time you fill in a value (e.g. a Relation `href` in annotations
-or YAML), you can either pass a **hardcoded value** or an **expression**.
+Each time you fill in a value (e.g. a Relation `href` in annotations or YAML),
+you can either pass a **hardcoded value** or an **expression**.
 In order to use the Expression Language, you have to use the `expr()` notation:
 
 ```php
@@ -581,8 +581,8 @@ Hateoas provides a set of helpers to ease the process of building APIs.
 
 The `LinkHelper` class provides a `getLinkHref($object, $rel, $absolute = false)`
 method that allows you to get the _href_ value of any object, for any given
-relation name.  Basically, it is able to generate a URI (either absolute or
-relative) from any **link** relation:
+relation name. It is able to generate a URI (either absolute or relative) from
+any **link** relation:
 
 ```php
 $user = new User(123, 'William', 'Durand');
@@ -872,8 +872,8 @@ documentation](http://jmsyst.com/libs/serializer) for more details.
 Both the serializer and the Hateoas libraries collect metadata about your
 objects from various sources such as YML, XML, or annotations. In order to make
 this process as efficient as possible, it is recommended that you allow the
-Hateoas library to cache this information. To do that, just configure a
-cache directory:
+Hateoas library to cache this information. To do that, configure a cache
+directory:
 
 ```php
 $builder = \Hateoas\HateoasBuilder::create();
@@ -897,8 +897,8 @@ $hateoas = \Hateoas\HateoasBuilder::create()
 ```
 
 Hateoas would expect the metadata files to be named like the fully qualified
-class names where all `\` are replaced with `.`. So, if you class would be
-named `Vendor\Package\Foo` the metadata file would need to be located at
+class names where all `\` are replaced with `.`. If you class would be named
+`Vendor\Package\Foo` the metadata file would need to be located at
 `$someDir/Vendor.Package.Foo.(xml|yml)`.
 
 ### Extending The Library
