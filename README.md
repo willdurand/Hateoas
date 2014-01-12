@@ -19,6 +19,8 @@ services.
   - [Configuring Links](#configuring-links)
   - [Embedding Resources](#embedding-resources)
   - [Dealing With Collections](#dealing-with-collections)
+  - [Representations](#representations)
+    - [VndErrorRepresentation](#vnderrorrepresentation)
   - [The Expression Language](#the-expression-language)
     - [Context](#context)
     - [Adding Your Own Context Variables](#adding-your-own-context-variables)
@@ -435,6 +437,59 @@ And the following XML content:
 
 You can generate **absolute URIs** by setting the `absolute` parameter to `true`
 in both the `PaginatedRepresentation` and the `RouteAwareRepresentation`.
+
+### Representations
+
+As mentionned in the previous section, **representations** are classes configured
+with the library's annotations in order to help you with common tasks. The
+**collection representations** are described in [Dealing With
+Collection](#dealing-with-collections).
+
+#### VndErrorRepresentation
+
+The `VndErrorRepresentation` allows you to describe an error response following
+the [`vnd.error` specification](https://github.com/blongden/vnd.error).
+
+```php
+$error = new VndErrorRepresentation(
+    'Validation failed',
+    42,
+    new Relation('help', 'http://.../', null, array('title' => 'Error Information')),
+    new Relation('describes', 'http://.../', null, array('title' => 'Error Description'))
+);
+```
+
+Serializing such a representation in XML and JSON would give you the following
+outputs:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+    <resource logref="42">
+    <message><![CDATA[Validation failed]]></message>
+    <link rel="help" href="http://.../" title="Error Information"/>
+    <link rel="describes" href="http://.../" title="Error Description"/>
+</resource>
+```
+
+```json
+{
+    "message": "Validation failed",
+    "logref": 42,
+    "_links": {
+        "help": {
+            "href": "http://.../",
+            "title": "Error Information"
+        },
+        "describes": {
+            "href": "http://.../",
+            "title": "Error Description"
+        }
+    }
+}
+```
+
+**Hint:** it is recommended to create your own error classes that extend the
+`VndErrorRepresentation` class.
 
 ### The Expression Language
 
