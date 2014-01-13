@@ -40,101 +40,90 @@ Score"></a>
 Version"></a></p>
 
 <ul>
-<li>
-<a href="#installation">Installation</a>
-
-<ul>
-<li><a href="#working-with-symfony2">Working With Symfony2</a></li>
-</ul>
-</li>
-<li>
-<a href="#usage">Usage</a>
-
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#configuring-links">Configuring Links</a></li>
-<li><a href="#embedding-resources">Embedding Resources</a></li>
-<li><a href="#dealing-with-collections">Dealing With Collections</a></li>
-<li>
-<a href="#representations">Representations</a>
-
-<ul>
-<li><a href="#vnderrorrepresentation">VndErrorRepresentation</a></li>
-</ul>
-</li>
-<li>
-<a href="#the-expression-language">The Expression Language</a>
-
-<ul>
-<li><a href="#context">Context</a></li>
-<li><a href="#adding-your-own-context-variables">Adding Your Own Context Variables</a></li>
-<li><a href="#expression-functions">Expression Functions</a></li>
-</ul>
-</li>
-<li><a href="#url-generators">URL Generators</a></li>
-<li>
-<a href="#helpers">Helpers</a>
-
-<ul>
-<li><a href="#linkhelper">LinkHelper</a></li>
-</ul>
-</li>
-<li>
-<a href="#twig-extensions">Twig Extensions</a>
-
-<ul>
-<li><a href="#linkextension">LinkExtension</a></li>
-</ul>
-</li>
-<li>
-<a href="#serializers--formats">Serializers &amp; Formats</a>
-
-<ul>
-<li><a href="#the-jsonhalserializer">The JsonHalSerializer</a></li>
-<li><a href="#the-xmlserializer">The XmlSerializer</a></li>
-<li><a href="#the-xmlhalserializer">The XmlHalSerializer</a></li>
-<li><a href="#adding-new-serializers">Adding New Serializers</a></li>
-</ul>
-</li>
-<li>
-<a href="#the-hateoasbuilder">The HateoasBuilder</a>
-
-<ul>
-<li><a href="#xml-serializer">XML Serializer</a></li>
-<li><a href="#json-serializer">JSON Serializer</a></li>
-<li><a href="#url-generator">URL Generator</a></li>
-<li><a href="#expression-evaluatorexpression-language">Expression Evaluator/Expression Language</a></li>
-<li><a href="#relation-provider">Relation Provider</a></li>
-<li><a href="#jms-serializer-specific">(JMS) Serializer Specific</a></li>
-<li><a href="#others">Others</a></li>
-</ul>
-</li>
-<li><a href="#configuring-a-cache-directory">Configuring a Cache Directory</a></li>
-<li><a href="#configuring-metadata-locations">Configuring Metadata Locations</a></li>
-<li><a href="#extending-the-library">Extending The Library</a></li>
-</ul>
-</li>
-<li>
-<a href="#reference">Reference</a>
-
-<ul>
-<li><a href="#xml">XML</a></li>
-<li><a href="#yaml">YAML</a></li>
-<li>
-<a href="#annotations">Annotations</a>
-
-<ul>
-<li><a href="#relation">@Relation</a></li>
-<li><a href="#route">@Route</a></li>
-<li><a href="#embedded">@Embedded</a></li>
-<li><a href="#exclusion">@Exclusion</a></li>
-<li><a href="#relationprovider">@RelationProvider</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#internals">Internals</a></li>
-</ul><h2>
+    <li>
+        <a href="#installation">Installation</a>
+        <ul>
+            <li><a href="#working-with-symfony2">Working With Symfony2</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#usage">Usage</a>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#configuring-links">Configuring Links</a></li>
+            <li><a href="#embedding-resources">Embedding Resources</a></li>
+            <li><a href="#dealing-with-collections">Dealing With Collections</a></li>
+            <li>
+                <a href="#representations">Representations</a>
+                <ul>
+                    <li><a href="#vnderrorrepresentation">VndErrorRepresentation</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#the-expression-language">The Expression Language</a>
+                <ul>
+                    <li><a href="#context">Context</a></li>
+                    <li><a href="#adding-your-own-context-variables">Adding Your Own Context Variables</a></li>
+                    <li><a href="#expression-functions">Expression Functions</a></li>
+                </ul>
+            </li>
+            <li><a href="#url-generators">URL Generators</a></li>
+            <li>
+                <a href="#helpers">Helpers</a>
+                <ul>
+                    <li><a href="#linkhelper">LinkHelper</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#twig-extensions">Twig Extensions</a>
+                <ul>
+                    <li><a href="#linkextension">LinkExtension</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#serializers--formats">Serializers &amp; Formats</a>
+                <ul>
+                    <li><a href="#the-jsonhalserializer">The JsonHalSerializer</a></li>
+                    <li><a href="#the-xmlserializer">The XmlSerializer</a></li>
+                    <li><a href="#the-xmlhalserializer">The XmlHalSerializer</a></li>
+                    <li><a href="#adding-new-serializers">Adding New Serializers</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#the-hateoasbuilder">The HateoasBuilder</a>
+                <ul>
+                    <li><a href="#xml-serializer">XML Serializer</a></li>
+                    <li><a href="#json-serializer">JSON Serializer</a></li>
+                    <li><a href="#url-generator">URL Generator</a></li>
+                    <li><a href="#expression-evaluatorexpression-language">Expression Evaluator/Expression Language</a></li>
+                    <li><a href="#relation-provider">Relation Provider</a></li>
+                    <li><a href="#jms-serializer-specific">(JMS) Serializer Specific</a></li>
+                    <li><a href="#others">Others</a></li>
+                </ul>
+            </li>
+            <li><a href="#configuring-a-cache-directory">Configuring a Cache Directory</a></li>
+            <li><a href="#configuring-metadata-locations">Configuring Metadata Locations</a></li>
+            <li><a href="#extending-the-library">Extending The Library</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#reference">Reference</a>
+        <ul>
+            <li><a href="#xml">XML</a></li>
+            <li><a href="#yaml">YAML</a></li>
+            <li>
+                <a href="#annotations">Annotations</a>
+                <ul>
+                    <li><a href="#relation">@Relation</a></li>
+                    <li><a href="#route">@Route</a></li>
+                    <li><a href="#embedded">@Embedded</a></li>
+                    <li><a href="#exclusion">@Exclusion</a></li>
+                    <li><a href="#relationprovider">@RelationProvider</a></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    </ul><h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>The recommended way to install Hateoas is through
