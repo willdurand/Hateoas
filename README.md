@@ -378,19 +378,24 @@ possible `last`, `next`, and `previous` links.
 
 The `RouteAwareRepresentation` adds a `self` relation based on a given route.
 
+You can generate **absolute URIs** by setting the `absolute` parameter to `true`
+in both the `PaginatedRepresentation` and the `RouteAwareRepresentation`.
+
 The Hateoas library also provides a `PagerfantaFactory` to easily build
 `PaginatedRepresentation` from a
 [Pagerfanta](https://github.com/whiteoctober/Pagerfanta) instance. If you use
-the Pagerfanta library, this is an easier way to create the collection objects:
+the Pagerfanta library, this is an easier way to create the collection
+representations:
 
 ```php
+use Hateoas\Configuration\Route;
 use Hateoas\Representation\Factory\PagerfantaFactory;
 
-$pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page and limit parameters name
-$paginatedCollection = $pagerfantaFactory->create(
+$pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page,
+                                                // and limit parameters name
+$paginatedCollection = $pagerfantaFactory->createRepresentation(
     $pager,
-    'user_list',
-    array() // route parameters
+    new Route('user_list', array())
 );
 
 $json = $hateoas->serialize($paginatedCollection, 'json');
@@ -401,10 +406,6 @@ You would get the following JSON content:
 
 ```json
 {
-    "users": [
-        { "id": 123 },
-        { "id": 456 }
-    ],
     "page": 1,
     "limit": 10,
     "pages": 1,
@@ -418,6 +419,12 @@ You would get the following JSON content:
         "last": {
             "href": "/api/users?page=1&limit=10"
         }
+    },
+    "_embedded": {
+        "items": [
+            { "id": 123 },
+            { "id": 456 }
+        ]
     }
 }
 ```
@@ -435,8 +442,27 @@ And the following XML content:
 </collection>
 ```
 
-You can generate **absolute URIs** by setting the `absolute` parameter to `true`
-in both the `PaginatedRepresentation` and the `RouteAwareRepresentation`.
+If you want to customize the inlined `CollectionRepresentation`, pass one as
+third argument of the `createRepresentation()` method:
+
+```php
+use Hateoas\Representation\Factory\PagerfantaFactory;
+
+$pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page and limit parameters name
+$paginatedCollection = $pagerfantaFactory->createRepresentation(
+    $pager,
+    new Route('user_list', array()),
+    new CollectionRepresentation(
+        $pager->getCurrentPageResults(),
+        'users',
+        'users',
+        new Exclusion(...)
+    )
+);
+
+$json = $hateoas->serialize($paginatedCollection, 'json');
+$xml  = $hateoas->serialize($paginatedCollection, 'xml');
+```
 
 ### Representations
 
