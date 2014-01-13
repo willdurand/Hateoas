@@ -7,7 +7,6 @@ use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\Factory\PagerfantaFactory;
 use Hateoas\Tests\Representation\RepresentationTestCase;
 use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Adapter\CallbackAdapter;
 use Pagerfanta\Pagerfanta;
 
 class PagerfantaFactoryTest extends RepresentationTestCase
