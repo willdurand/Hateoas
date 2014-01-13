@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Hateoas - A PHP library to support implementing representations for HATEOAS REST web services.</title>
+    <title>Hateoas by willdurand</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -17,26 +17,31 @@
     <div class="wrapper">
       <header>
         <h1 class="header">Hateoas</h1>
-        <p class="header">
-            Powerful PHP library to support implementing representations for <strong>HATEOAS</strong> REST web services.
-            Start building truly REST APIs now!
-        </p>
+        <p class="header">A PHP library to support implementing representations for HATEOAS REST web services.</p>
 
         <ul>
           <li class="download"><a class="buttons" href="https://github.com/willdurand/Hateoas/zipball/master">Download ZIP</a></li>
           <li class="download"><a class="buttons" href="https://github.com/willdurand/Hateoas/tarball/master">Download TAR</a></li>
           <li><a class="buttons github" href="https://github.com/willdurand/Hateoas">View On GitHub</a></li>
         </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/willdurand">willdurand</a></p>
+
+
       </header>
       <section>
         <h1>
 <a name="hateoas" class="anchor" href="#hateoas"><span class="octicon octicon-link"></span></a>Hateoas</h1>
 
-<p>
-    <a href="http://travis-ci.org/willdurand/Hateoas"><img src="https://secure.travis-ci.org/willdurand/Hateoas.png" alt="Build Status"></a>
-    <a href="https://packagist.org/packages/willdurand/hateoas"><img src="https://poser.pugx.org/willdurand/hateoas/v/stable.png" alt="Latest Stable Version"></a>
-    <a href="https://packagist.org/packages/willdurand/hateoas"><img src="https://poser.pugx.org/willdurand/hateoas/downloads.png" alt="Total Downloads"></a>
-</p>
+<p><a href="http://travis-ci.org/willdurand/Hateoas"><img src="https://secure.travis-ci.org/willdurand/Hateoas.png" alt="Build
+Status"></a>
+<a href="https://scrutinizer-ci.com/g/willdurand/Hateoas/"><img src="https://scrutinizer-ci.com/g/willdurand/Hateoas/badges/quality-score.png?s=45b5a825f99de4d29c98b5103f59e060139cf354" alt="Scrutinizer Quality
+Score"></a>
+<a href="https://packagist.org/packages/willdurand/hateoas"><img src="https://poser.pugx.org/willdurand/hateoas/v/stable.png" alt="Latest Stable
+Version"></a></p>
+
+<p>A PHP library to support implementing representations for HATEOAS REST web
+services.</p>
 
 <ul>
 <li>
@@ -55,11 +60,19 @@
 <li><a href="#embedding-resources">Embedding Resources</a></li>
 <li><a href="#dealing-with-collections">Dealing With Collections</a></li>
 <li>
+<a href="#representations">Representations</a>
+
+<ul>
+<li><a href="#vnderrorrepresentation">VndErrorRepresentation</a></li>
+</ul>
+</li>
+<li>
 <a href="#the-expression-language">The Expression Language</a>
 
 <ul>
 <li><a href="#context">Context</a></li>
 <li><a href="#adding-your-own-context-variables">Adding Your Own Context Variables</a></li>
+<li><a href="#expression-functions">Expression Functions</a></li>
 </ul>
 </li>
 <li><a href="#url-generators">URL Generators</a></li>
@@ -68,6 +81,13 @@
 
 <ul>
 <li><a href="#linkhelper">LinkHelper</a></li>
+</ul>
+</li>
+<li>
+<a href="#twig-extensions">Twig Extensions</a>
+
+<ul>
+<li><a href="#linkextension">LinkExtension</a></li>
 </ul>
 </li>
 <li>
@@ -95,6 +115,7 @@
 </li>
 <li><a href="#configuring-a-cache-directory">Configuring a Cache Directory</a></li>
 <li><a href="#configuring-metadata-locations">Configuring Metadata Locations</a></li>
+<li><a href="#extending-the-library">Extending The Library</a></li>
 </ul>
 </li>
 <li>
@@ -116,13 +137,7 @@
 </li>
 </ul>
 </li>
-<li>
-<a href="#internals">Internals</a>
-
-<ul>
-<li><a href="#expression-functions">Expression Functions</a></li>
-</ul>
-</li>
+<li><a href="#internals">Internals</a></li>
 </ul><h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
@@ -166,8 +181,8 @@ following documentation has been written for <strong>Hateoas 2.0</strong> and ab
 <p><strong>Hateoas</strong> leverages the <a href="https://github.com/schmittjoh/serializer">Serializer</a>
 library to provide a nice way to build HATEOAS REST web services. HATEOAS stands
 for <strong>H</strong>ypermedia <strong>a</strong>s <strong>t</strong>he <strong>E</strong>ngine <strong>o</strong>f <strong>A</strong>pplication <strong>S</strong>tate,
-and basically adds <strong>hypermedia links</strong> to your <strong>representations</strong> (i.e. your
-API responses). <a href="http://timelessrepo.com/haters-gonna-hateoas">HATEOAS is about the discoverability of actions on a
+and adds <strong>hypermedia links</strong> to your <strong>representations</strong> (i.e. your API
+responses). <a href="http://timelessrepo.com/haters-gonna-hateoas">HATEOAS is about the discoverability of actions on a
 resource</a>.</p>
 
 <p>For instance, let's say you have a User API which returns a <strong>representation</strong>
@@ -233,11 +248,11 @@ has an <code>href</code> parameter:</p>
 <p>In the example above, we configure a <code>self</code> relation that is a link because of
 the <code>href</code> parameter. Its value, which may look weird at first glance, will be
 extensively covered in <a href="#the-expression-language">The Expression Language</a>
-section, but it basically generates a URI.</p>
+section. This special value is used to generate a URI.</p>
 
 <p>In this section, <a href="#annotations"><strong>annotations</strong></a> are used to configure Hateoas.
-However, <a href="#xml"><strong>XML</strong></a> and <a href="#yaml"><strong>YAML</strong></a> formats are also supported. If
-you wish, you can use plain PHP too.</p>
+<a href="#xml"><strong>XML</strong></a> and <a href="#yaml"><strong>YAML</strong></a> formats are also supported. If you wish,
+you can use plain PHP too.</p>
 
 <p><strong>Important:</strong> you must configure both the Serializer and Hateoas the same way. E.g.
 if you use YAML for configuring Serializer, use YAML for configuring Hateoas.</p>
@@ -258,7 +273,7 @@ Everything works fine out of the box:</p>
 
 <p>The <code>$hateoas</code> object is an instance of <code>JMS\Serializer\SerializerInterface</code>,
 coming from the Serializer library. Hateoas does not come with its own
-serializer, it simply hooks into the JMS Serializer.</p>
+serializer, it hooks into the JMS Serializer.</p>
 
 <p>By default, Hateoas uses the <a href="http://stateless.co/hal_specification.html">Hypertext Application
 Language</a> (HAL) for JSON
@@ -419,8 +434,9 @@ These help you represent the collection and add pagination and limits:</p>
     <span class="mi">1</span><span class="p">,</span> <span class="c1">// page</span>
     <span class="mi">20</span><span class="p">,</span> <span class="c1">// limit</span>
     <span class="mi">4</span><span class="p">,</span> <span class="c1">// total pages</span>
-    <span class="s1">'page'</span><span class="p">,</span> <span class="c1">// page route parameter name, optional, defaults to 'page'</span>
-    <span class="s1">'limit'</span> <span class="c1">// limit route parameter name, optional, defaults to 'limit'</span>
+    <span class="s1">'page'</span><span class="p">,</span>  <span class="c1">// page route parameter name, optional, defaults to 'page'</span>
+    <span class="s1">'limit'</span><span class="p">,</span> <span class="c1">// limit route parameter name, optional, defaults to 'limit'</span>
+    <span class="k">false</span>    <span class="c1">// generate relative URIs</span>
 <span class="p">);</span>
 
 <span class="nv">$json</span> <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$paginatedCollection</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">);</span>
@@ -433,18 +449,25 @@ collection resources rel, and the xml root element name.</p>
 <p>The <code>PaginatedRepresentation</code> is designed to add <code>self</code>, <code>first</code>, and when
 possible <code>last</code>, <code>next</code>, and <code>previous</code> links.</p>
 
+<p>The <code>RouteAwareRepresentation</code> adds a <code>self</code> relation based on a given route.</p>
+
+<p>You can generate <strong>absolute URIs</strong> by setting the <code>absolute</code> parameter to <code>true</code>
+in both the <code>PaginatedRepresentation</code> and the <code>RouteAwareRepresentation</code>.</p>
+
 <p>The Hateoas library also provides a <code>PagerfantaFactory</code> to easily build
 <code>PaginatedRepresentation</code> from a
 <a href="https://github.com/whiteoctober/Pagerfanta">Pagerfanta</a> instance. If you use
-the Pagerfanta library, this is an easier way to create the collection objects:</p>
+the Pagerfanta library, this is an easier way to create the collection
+representations:</p>
 
-<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Representation\Factory\PagerfantaFactory</span><span class="p">;</span>
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Configuration\Route</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Hateoas\Representation\Factory\PagerfantaFactory</span><span class="p">;</span>
 
-<span class="nv">$pagerfantaFactory</span>   <span class="o">=</span> <span class="k">new</span> <span class="nx">PagerfantaFactory</span><span class="p">();</span> <span class="c1">// you can pass the page and limit parameters name</span>
-<span class="nv">$paginatedCollection</span> <span class="o">=</span> <span class="nv">$pagerfantaFactory</span><span class="o">-&gt;</span><span class="na">create</span><span class="p">(</span>
+<span class="nv">$pagerfantaFactory</span>   <span class="o">=</span> <span class="k">new</span> <span class="nx">PagerfantaFactory</span><span class="p">();</span> <span class="c1">// you can pass the page,</span>
+                                                <span class="c1">// and limit parameters name</span>
+<span class="nv">$paginatedCollection</span> <span class="o">=</span> <span class="nv">$pagerfantaFactory</span><span class="o">-&gt;</span><span class="na">createRepresentation</span><span class="p">(</span>
     <span class="nv">$pager</span><span class="p">,</span>
-    <span class="s1">'user_list'</span><span class="p">,</span>
-    <span class="k">array</span><span class="p">()</span> <span class="c1">// route parameters</span>
+    <span class="k">new</span> <span class="nx">Route</span><span class="p">(</span><span class="s1">'user_list'</span><span class="p">,</span> <span class="k">array</span><span class="p">())</span>
 <span class="p">);</span>
 
 <span class="nv">$json</span> <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$paginatedCollection</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">);</span>
@@ -454,10 +477,6 @@ the Pagerfanta library, this is an easier way to create the collection objects:<
 <p>You would get the following JSON content:</p>
 
 <div class="highlight highlight-json"><pre><span class="p">{</span>
-    <span class="nt">"users"</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span> <span class="nt">"id"</span><span class="p">:</span> <span class="mi">123</span> <span class="p">},</span>
-        <span class="p">{</span> <span class="nt">"id"</span><span class="p">:</span> <span class="mi">456</span> <span class="p">}</span>
-    <span class="p">],</span>
     <span class="nt">"page"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="nt">"limit"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
     <span class="nt">"pages"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -471,6 +490,12 @@ the Pagerfanta library, this is an easier way to create the collection objects:<
         <span class="nt">"last"</span><span class="p">:</span> <span class="p">{</span>
             <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"/api/users?page=1&amp;limit=10"</span>
         <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">"_embedded"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"items"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span> <span class="nt">"id"</span><span class="p">:</span> <span class="mi">123</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="nt">"id"</span><span class="p">:</span> <span class="mi">456</span> <span class="p">}</span>
+        <span class="p">]</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -487,6 +512,79 @@ the Pagerfanta library, this is an easier way to create the collection objects:<
 <span class="nt">&lt;/collection&gt;</span>
 </pre></div>
 
+<p>If you want to customize the inlined <code>CollectionRepresentation</code>, pass one as
+third argument of the <code>createRepresentation()</code> method:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Representation\Factory\PagerfantaFactory</span><span class="p">;</span>
+
+<span class="nv">$pagerfantaFactory</span>   <span class="o">=</span> <span class="k">new</span> <span class="nx">PagerfantaFactory</span><span class="p">();</span> <span class="c1">// you can pass the page and limit parameters name</span>
+<span class="nv">$paginatedCollection</span> <span class="o">=</span> <span class="nv">$pagerfantaFactory</span><span class="o">-&gt;</span><span class="na">createRepresentation</span><span class="p">(</span>
+    <span class="nv">$pager</span><span class="p">,</span>
+    <span class="k">new</span> <span class="nx">Route</span><span class="p">(</span><span class="s1">'user_list'</span><span class="p">,</span> <span class="k">array</span><span class="p">()),</span>
+    <span class="k">new</span> <span class="nx">CollectionRepresentation</span><span class="p">(</span>
+        <span class="nv">$pager</span><span class="o">-&gt;</span><span class="na">getCurrentPageResults</span><span class="p">(),</span>
+        <span class="s1">'users'</span><span class="p">,</span>
+        <span class="s1">'users'</span><span class="p">,</span>
+        <span class="k">new</span> <span class="nx">Exclusion</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">);</span>
+
+<span class="nv">$json</span> <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$paginatedCollection</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">);</span>
+<span class="nv">$xml</span>  <span class="o">=</span> <span class="nv">$hateoas</span><span class="o">-&gt;</span><span class="na">serialize</span><span class="p">(</span><span class="nv">$paginatedCollection</span><span class="p">,</span> <span class="s1">'xml'</span><span class="p">);</span>
+</pre></div>
+
+<h3>
+<a name="representations" class="anchor" href="#representations"><span class="octicon octicon-link"></span></a>Representations</h3>
+
+<p>As mentionned in the previous section, <strong>representations</strong> are classes configured
+with the library's annotations in order to help you with common tasks. The
+<strong>collection representations</strong> are described in <a href="#dealing-with-collections">Dealing With
+Collection</a>.</p>
+
+<h4>
+<a name="vnderrorrepresentation" class="anchor" href="#vnderrorrepresentation"><span class="octicon octicon-link"></span></a>VndErrorRepresentation</h4>
+
+<p>The <code>VndErrorRepresentation</code> allows you to describe an error response following
+the <a href="https://github.com/blongden/vnd.error"><code>vnd.error</code> specification</a>.</p>
+
+<div class="highlight highlight-php"><pre><span class="nv">$error</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VndErrorRepresentation</span><span class="p">(</span>
+    <span class="s1">'Validation failed'</span><span class="p">,</span>
+    <span class="mi">42</span><span class="p">,</span>
+    <span class="k">new</span> <span class="nx">Relation</span><span class="p">(</span><span class="s1">'help'</span><span class="p">,</span> <span class="s1">'http://.../'</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Error Information'</span><span class="p">)),</span>
+    <span class="k">new</span> <span class="nx">Relation</span><span class="p">(</span><span class="s1">'describes'</span><span class="p">,</span> <span class="s1">'http://.../'</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'title'</span> <span class="o">=&gt;</span> <span class="s1">'Error Description'</span><span class="p">))</span>
+<span class="p">);</span>
+</pre></div>
+
+<p>Serializing such a representation in XML and JSON would give you the following
+outputs:</p>
+
+<div class="highlight highlight-xml"><pre><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+    <span class="nt">&lt;resource</span> <span class="na">logref=</span><span class="s">"42"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;message&gt;</span><span class="cp">&lt;![CDATA[Validation failed]]&gt;</span><span class="nt">&lt;/message&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"help"</span> <span class="na">href=</span><span class="s">"http://.../"</span> <span class="na">title=</span><span class="s">"Error Information"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"describes"</span> <span class="na">href=</span><span class="s">"http://.../"</span> <span class="na">title=</span><span class="s">"Error Description"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/resource&gt;</span>
+</pre></div>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"message"</span><span class="p">:</span> <span class="s2">"Validation failed"</span><span class="p">,</span>
+    <span class="nt">"logref"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="nt">"_links"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"help"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"http://.../"</span><span class="p">,</span>
+            <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Error Information"</span>
+        <span class="p">},</span>
+        <span class="nt">"describes"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"href"</span><span class="p">:</span> <span class="s2">"http://.../"</span><span class="p">,</span>
+            <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Error Description"</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><strong>Hint:</strong> it is recommended to create your own error classes that extend the
+<code>VndErrorRepresentation</code> class.</p>
+
 <h3>
 <a name="the-expression-language" class="anchor" href="#the-expression-language"><span class="octicon octicon-link"></span></a>The Expression Language</h3>
 
@@ -494,8 +592,8 @@ the Pagerfanta library, this is an easier way to create the collection objects:<
 <a href="http://symfony.com/doc/current/components/expression_language/introduction.html">ExpressionLanguage</a>
 component to retrieve values such as links, ids or objects to embed.</p>
 
-<p>Basically, each time you fill in a value (e.g. a Relation <code>href</code> in annotations
-or YAML), you can either pass a <strong>hardcoded value</strong> or an <strong>expression</strong>.
+<p>Each time you fill in a value (e.g. a Relation <code>href</code> in annotations or YAML),
+you can either pass a <strong>hardcoded value</strong> or an <strong>expression</strong>.
 In order to use the Expression Language, you have to use the <code>expr()</code> notation:</p>
 
 <div class="highlight highlight-php"><pre><span class="sd">/**</span>
@@ -538,6 +636,22 @@ new context variables:</p>
 
 <pre><code>expr(foo !== null)
 </code></pre>
+
+<h5>
+<a name="expression-functions" class="anchor" href="#expression-functions"><span class="octicon octicon-link"></span></a>Expression Functions</h5>
+
+<p><strong>Expression Functions</strong> are custom functions used to extend the <a href="#the-expression-language">Expression
+Language</a> as explained in the <a href="http://symfony.com/doc/current/components/expression_language/extending.html">Extending the
+ExpressionLanguage</a>,
+part of the Symfony documentation.</p>
+
+<p>Hateoas provides core expression functions such as the <code>LinkExpressionFunction</code>
+described in <a href="#the-link-function">LinkHelper - The <code>link</code> Function</a>, but you can
+also write your own function.
+The <code>ExpressionFunctionInterface</code> is designed to represent an expression
+function. Adding a new expression function is a matter of implementing this
+interface and registering by calling the <code>registerExpressionFunction()</code> method
+on the <a href="#the-hateoasbuilder">HateoasBuilder</a>.</p>
 
 <h3>
 <a name="url-generators" class="anchor" href="#url-generators"><span class="octicon octicon-link"></span></a>URL Generators</h3>
@@ -615,8 +729,8 @@ in Silex:</p>
 
 <p>The <code>LinkHelper</code> class provides a <code>getLinkHref($object, $rel, $absolute = false)</code>
 method that allows you to get the <em>href</em> value of any object, for any given
-relation name.  Basically, it is able to generate a URI (either absolute or
-relative) from any <strong>link</strong> relation:</p>
+relation name. It is able to generate a URI (either absolute or relative) from
+any <strong>link</strong> relation:</p>
 
 <div class="highlight highlight-php"><pre><span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">User</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="s1">'William'</span><span class="p">,</span> <span class="s1">'Durand'</span><span class="p">);</span>
 
@@ -710,6 +824,31 @@ defined as <strong>absolute</strong> in their configuration.</p>
 </pre></div>
 
 <h3>
+<a name="twig-extensions" class="anchor" href="#twig-extensions"><span class="octicon octicon-link"></span></a>Twig Extensions</h3>
+
+<p>Hateoas also provides a set of <a href="http://twig.sensiolabs.org">Twig</a> extensions.</p>
+
+<h4>
+<a name="linkextension" class="anchor" href="#linkextension"><span class="octicon octicon-link"></span></a>LinkExtension</h4>
+
+<p>The <code>LinkExtension</code> allows you to use the <a href="#linkhelper">LinkHelper</a> into your
+Twig templates, so that you can generate links in your HTML templates for
+instance.</p>
+
+<p>This extension exposes the <code>getLinkHref()</code> helper's method through the
+<code>link_href</code> Twig function:</p>
+
+<div class="highlight highlight-html+jinja"><pre><span class="cp">{{</span> <span class="nv">link_href</span><span class="o">(</span><span class="nv">user</span><span class="o">,</span> <span class="s1">'self'</span><span class="o">)</span> <span class="cp">}}</span>
+<span class="c">{# will generate: /users/123 #}</span>
+
+<span class="cp">{{</span> <span class="nv">link_href</span><span class="o">(</span><span class="nv">will</span><span class="o">,</span> <span class="s1">'self'</span><span class="o">,</span> <span class="kp">false</span><span class="o">)</span> <span class="cp">}}</span>
+<span class="c">{# will generate: /users/123 #}</span>
+
+<span class="cp">{{</span> <span class="nv">link_href</span><span class="o">(</span><span class="nv">will</span><span class="o">,</span> <span class="s1">'self'</span><span class="o">,</span> <span class="kp">true</span><span class="o">)</span> <span class="cp">}}</span>
+<span class="c">{# will generate: http://example.com/users/123 #}</span>
+</pre></div>
+
+<h3>
 <a name="serializers--formats" class="anchor" href="#serializers--formats"><span class="octicon octicon-link"></span></a>Serializers &amp; Formats</h3>
 
 <p>Hateoas provides a set of <strong>serializers</strong>. Each <strong>serializer</strong> allows you to
@@ -755,7 +894,7 @@ that rather than being links, the values are resource objects.</p>
 <h4>
 <a name="the-xmlserializer" class="anchor" href="#the-xmlserializer"><span class="octicon octicon-link"></span></a> The XmlSerializer</h4>
 
-<p>The <code>XmlHalSerializer</code> allows you to generate <a href="http://tools.ietf.org/search/rfc4287#section-4.2.7">Atom
+<p>The <code>XmlSerializer</code> allows you to generate <a href="http://tools.ietf.org/search/rfc4287#section-4.2.7">Atom
 Links</a> into your XML
 documents. It is the default XML serializer.</p>
 
@@ -857,7 +996,10 @@ default one.</li>
 <code>setExpressionContextVariable($name, $value)</code>: adds a new expression context
 variable;</li>
 <li>
-<code>setExpressionLanguage(ExpressionLanguage $expressionLanguage)</code>.</li>
+<code>setExpressionLanguage(ExpressionLanguage $expressionLanguage)</code>;</li>
+<li>
+<code>registerExpressionFunction(ExpressionFunctionInterface
+$expressionFunction)</code>: adds a new expression function.</li>
 </ul><h4>
 <a name="relation-provider" class="anchor" href="#relation-provider"><span class="octicon octicon-link"></span></a>Relation Provider</h4>
 
@@ -902,8 +1044,8 @@ documentation</a> for more details.</p>
 <p>Both the serializer and the Hateoas libraries collect metadata about your
 objects from various sources such as YML, XML, or annotations. In order to make
 this process as efficient as possible, it is recommended that you allow the
-Hateoas library to cache this information. To do that, just configure a
-cache directory:</p>
+Hateoas library to cache this information. To do that, configure a cache
+directory:</p>
 
 <div class="highlight highlight-php"><pre><span class="nv">$builder</span> <span class="o">=</span> <span class="nx">\Hateoas\HateoasBuilder</span><span class="o">::</span><span class="na">create</span><span class="p">();</span>
 
@@ -926,9 +1068,54 @@ located:</p>
 </pre></div>
 
 <p>Hateoas would expect the metadata files to be named like the fully qualified
-class names where all <code>\</code> are replaced with <code>.</code>. So, if you class would be
-named <code>Vendor\Package\Foo</code> the metadata file would need to be located at
+class names where all <code>\</code> are replaced with <code>.</code>. If you class would be named
+<code>Vendor\Package\Foo</code> the metadata file would need to be located at
 <code>$someDir/Vendor.Package.Foo.(xml|yml)</code>.</p>
+
+<h3>
+<a name="extending-the-library" class="anchor" href="#extending-the-library"><span class="octicon octicon-link"></span></a>Extending The Library</h3>
+
+<p>Hateoas allows frameworks to dynamically add relations to classes by providing
+an extension point at configuration level. This feature can be useful for those
+who want to to create a new layer on top of Hateoas, or to add "global"
+relations rather than copying the same configuration on each class.</p>
+
+<p>In order to leverage this mechanism, the <code>ConfigurationExtensionInterface</code>
+interface has to be implemented:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Hateoas\Configuration\Metadata\ConfigurationExtensionInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Hateoas\Configuration\Metadata\ClassMetadataInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Hateoas\Configuration\Relation</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">AcmeFooConfigurationExtension</span> <span class="k">implements</span> <span class="nx">ConfigurationExtensionInterface</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * {@inheritDoc}</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">decorate</span><span class="p">(</span><span class="nx">ClassMetadataInterface</span> <span class="nv">$classMetadata</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">===</span> <span class="nb">strpos</span><span class="p">(</span><span class="s1">'Acme\Foo\Model'</span><span class="p">,</span> <span class="nv">$classMetadata</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">()))</span> <span class="p">{</span>
+            <span class="c1">// Add a "root" relation to all classes in the `Acme\Foo\Model` namespace</span>
+            <span class="nv">$classMetadata</span><span class="o">-&gt;</span><span class="na">addRelation</span><span class="p">(</span>
+                <span class="k">new</span> <span class="nx">Relation</span><span class="p">(</span>
+                    <span class="s1">'root'</span><span class="p">,</span>
+                    <span class="s1">'/'</span>
+                <span class="p">)</span>
+            <span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>You can access the existing relations loaded from Annotations, XML, or YAML with
+<code>$classMetadata-&gt;getRelations()</code>.</p>
+
+<p>If the <code>$classMetadata</code> has relations, or if you add relations to it, its
+relations will be cached. So if you read configuration files (Annotations, XML,
+or YAML), make sure to reference them on the class metadata:</p>
+
+<div class="highlight highlight-php"><pre><span class="nv">$classMetadata</span><span class="o">-&gt;</span><span class="na">fileResources</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$file</span><span class="p">;</span>
+</pre></div>
 
 <h2>
 <a name="reference" class="anchor" href="#reference"><span class="octicon octicon-link"></span></a>Reference</h2>
@@ -1003,7 +1190,7 @@ file for more details.</p>
 <span class="sd"> * @Hateoas\Relation(</span>
 <span class="sd"> *     name = "self",</span>
 <span class="sd"> *     href = "http://hello",</span>
-<span class="sd"> *     embed = "expr(object.getHello())",</span>
+<span class="sd"> *     embedded = "expr(object.getHello())",</span>
 <span class="sd"> *     attributes = { "foo" = "bar" },</span>
 <span class="sd"> *     exclusion = ...,</span>
 <span class="sd"> * )</span>
@@ -1051,7 +1238,10 @@ file for more details.</p>
 <td>N/A</td>
 </tr>
 </tbody>
-</table><h4>
+</table><p><strong>Important:</strong> <code>attributes</code> are only used on <strong>link relations</strong> (i.e. combined
+with the <code>href</code> property, not with the <code>embedded</code> one).</p>
+
+<h4>
 <a name="route" class="anchor" href="#route"><span class="octicon octicon-link"></span></a><a href="https://github.com/Route" class="user-mention">@Route</a>
 </h4>
 
@@ -1097,8 +1287,8 @@ if you have configured one.</p>
 <tr>
 <td>absolute</td>
 <td>Defaults to false</td>
-<td>boolean</td>
-<td>No</td>
+<td>boolean / string</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>generator</td>
@@ -1278,31 +1468,6 @@ you should exclude it to prevent the URL generation from failing:</p>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
-<h2>
-<a name="internals" class="anchor" href="#internals"><span class="octicon octicon-link"></span></a>Internals</h2>
-
-<p>This section refers to the Hateoas internals, providing documentation about
-hidden parts of this library. This is not always relevant for end users, but
-interesting for developers or people interested in learning how things work
-under the hood.</p>
-
-<h3>
-<a name="expression-functions" class="anchor" href="#expression-functions"><span class="octicon octicon-link"></span></a>Expression Functions</h3>
-
-<p><strong>Expression Functions</strong> are custom functions used to extend the <a href="#the-expression-language">Expression
-Language</a> as explained in the <a href="http://symfony.com/doc/current/components/expression_language/extending.html">Extending the
-ExpressionLanguage</a>,
-part of the Symfony documentation.</p>
-
-<p>By now, Hateoas does not let users add their own custom functions. Only core
-functions are registered, such as the <code>LinkExpressionFunction</code> described in
-<a href="#the-link-function">LinkHelper - The <code>link</code> Function</a>.</p>
-
-<p>The <code>ExpressionFunctionInterface</code> is designed to represent an expression
-function. Adding a new expression function is a matter of implementing this
-interface and registering it into the <code>ExpressionEvaluator</code> through the
-<code>registerFunction()</code> method.</p>
       </section>
       <footer>
         <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
