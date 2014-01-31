@@ -101,7 +101,7 @@ class HateoasBuilder
     /**
      * @param SerializerBuilder $serializerBuilder
      *
-     * @return Hateoas
+     * @return HateoasBuilder
      */
     public static function create(SerializerBuilder $serializerBuilder = null)
     {
