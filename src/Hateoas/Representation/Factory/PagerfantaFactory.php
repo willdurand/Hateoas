@@ -61,9 +61,25 @@ class PagerfantaFactory
             $pager->getCurrentPage(),
             $pager->getMaxPerPage(),
             $pager->getNbPages(),
-            $this->pageParameterName,
-            $this->limitParameterName,
+            $this->getPageParameterName(),
+            $this->getLimitParameterName(),
             $route->isAbsolute()
         );
+    }
+    
+    /**
+     * @return string
+     */
+    public function getPageParameterName()
+    {
+        return $this->pageParameterName;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getLimitParameterName()
+    {
+        return $this->limitParameterName;
     }
 }
