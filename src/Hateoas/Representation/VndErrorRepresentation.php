@@ -60,4 +60,14 @@ class VndErrorRepresentation
 
         return $relations;
     }
+    
+    public function getMessage()
+    {
+        return $this->message;
+    }
+    
+    public function getLogref()
+    {
+        return $this->logref;
+    }
 }
