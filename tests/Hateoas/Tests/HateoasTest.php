@@ -37,18 +37,18 @@ class HateoasTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLinkHrefUrlWithUnknownRelShouldReturnNull()
     {
-        $this->assertNull($this->hateoas->getLinkHref(new Will(123), 'unknown-rel'));
-        $this->assertNull($this->hateoas->getLinkHref(new Will(123), 'unknown-rel', true));
+        $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'unknown-rel'));
+        $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'unknown-rel', true));
     }
 
     public function testGetLinkHrefUrl()
     {
-        $this->assertEquals('/users/123', $this->hateoas->getLinkHref(new Will(123), 'self'));
-        $this->assertEquals('/users/123', $this->hateoas->getLinkHref(new Will(123), 'self', false));
+        $this->assertEquals('/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'self'));
+        $this->assertEquals('/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'self', false));
     }
 
     public function testGetLinkHrefUrlWithAbsoluteTrue()
     {
-        $this->assertEquals('http://example.com/users/123', $this->hateoas->getLinkHref(new Will(123), 'self', true));
+        $this->assertEquals('http://example.com/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'self', true));
     }
 }

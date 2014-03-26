@@ -29,19 +29,6 @@ class PagerfantaFactory
     }
 
     /**
-     * @deprecated  This method will be removed as of 2.2. Use the
-     *              `createRepresentation()` method instead.
-     */
-    public function create(Pagerfanta $pager, $route, array $routeParameters = array(), $inline = null, $absolute = false)
-    {
-        return $this->createRepresentation(
-            $pager,
-            new Route($route, $routeParameters, $absolute),
-            $inline
-        );
-    }
-
-    /**
      * @param Pagerfanta $pager  The pager
      * @param Route      $route  The collection's route
      * @param mixed      $inline Most of the time, a custom `CollectionRepresentation` instance
