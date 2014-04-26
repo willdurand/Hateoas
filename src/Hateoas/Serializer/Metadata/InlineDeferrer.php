@@ -37,7 +37,7 @@ class InlineDeferrer implements JMSSerializerMetadataAwareInterface
     }
 
     public function handleItems($object, array $items, SerializationContext $context)
-    {
+    {return $items;
         if ($this->deferredData->contains($object)) {
             $items = array_merge($this->deferredData->offsetGet($object), $items);
             $this->deferredData->detach($object);

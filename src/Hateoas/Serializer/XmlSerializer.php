@@ -47,7 +47,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, EmbedSerializer $embedSerializer)
     {
         foreach ($embeddeds as $embedded) {
             $entryNode = $visitor->getDocument()->createElement($this->getElementName($embedded->getData(), $embedded));
@@ -63,13 +63,13 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
 
-                    if (null !== $node = $context->accept($entry)) {
+                    if (null !== $node = $embedSerializer->serialize($entry, $embedded)) {
                         $visitor->getCurrentNode()->appendChild($node);
                     }
 
                     $visitor->revertCurrentNode();
                 }
-            } elseif (null !== $node = $context->accept($embedded->getData())) {
+            } elseif (null !== $node = $embedSerializer->serialize($embedded->getData(), $embedded)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 

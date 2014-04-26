@@ -24,5 +24,5 @@ interface XmlSerializerInterface
      * @param XmlSerializationVisitor $visitor
      * @param SerializationContext    $context
      */
-    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, EmbedSerializer $embedSerializer);
 }

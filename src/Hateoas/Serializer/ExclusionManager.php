@@ -68,6 +68,8 @@ class ExclusionManager
 
         $propertyMetadata = new RelationPropertyMetadata($exclusion);
 
-        return $context->getExclusionStrategy()->shouldSkipProperty($propertyMetadata, $context);
+        $shouldSkip = $context->getExclusionStrategy()->shouldSkipProperty($propertyMetadata, $context);
+
+        return $shouldSkip;
     }
 }

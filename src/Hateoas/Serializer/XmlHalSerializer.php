@@ -42,7 +42,7 @@ class XmlHalSerializer implements XmlSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, EmbedSerializer $embedSerializer)
     {
         foreach ($embeddeds as $embedded) {
             if ($embedded->getData() instanceof \Traversable || is_array($embedded->getData())) {
@@ -53,7 +53,7 @@ class XmlHalSerializer implements XmlSerializerInterface
                     $visitor->setCurrentNode($entryNode);
                     $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
-                    if (null !== $node = $context->accept($data)) {
+                    if (null !== $node = $embedSerializer->serialize($data, $embedded)) {
                         $visitor->getCurrentNode()->appendChild($node);
                     }
 
@@ -69,7 +69,7 @@ class XmlHalSerializer implements XmlSerializerInterface
             $visitor->setCurrentNode($entryNode);
             $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
-            if (null !== $node = $context->accept($embedded->getData())) {
+            if (null !== $node = $embedSerializer->serialize($embedded->getData(), $embedded)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
 

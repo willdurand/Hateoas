@@ -2,6 +2,7 @@
 
 namespace Hateoas\Serializer;
 
+use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationContext;
 
@@ -39,11 +40,11 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, EmbedSerializer $embedSerializer)
     {
         $serializedEmbeddeds = array();
         foreach ($embeddeds as $embedded) {
-            $serializedEmbeddeds[$embedded->getRel()] = $context->accept($embedded->getData());
+            $serializedEmbeddeds[$embedded->getRel()] = $embedSerializer->serialize($embedded->getData(), $embedded);
         }
 
         $visitor->addData('_embedded', $serializedEmbeddeds);

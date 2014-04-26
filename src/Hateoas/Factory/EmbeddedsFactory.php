@@ -59,7 +59,7 @@ class EmbeddedsFactory
             $data = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getContent(), $object);
             $xmlElementName = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getXmlElementName(), $object);
 
-            $embeddeds[] = new Embedded($rel, $data, $xmlElementName);
+            $embeddeds[] = new Embedded($rel, $data, $xmlElementName, $relation->getEmbedded()->getExclusion());
         }
 
         return $embeddeds;

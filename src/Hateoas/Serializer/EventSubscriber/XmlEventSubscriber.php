@@ -4,15 +4,18 @@ namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinksFactory;
+use Hateoas\Serializer\EmbedSerializer;
+use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use Metadata\MetadataFactoryInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class XmlEventSubscriber implements EventSubscriberInterface
+class XmlEventSubscriber implements EventSubscriberInterface, JMSSerializerMetadataAwareInterface
 {
     /**
      * {@inheritdoc}
@@ -44,6 +47,11 @@ class XmlEventSubscriber implements EventSubscriberInterface
     private $embeddedsFactory;
 
     /**
+     * @var MetadataFactoryInterface
+     */
+    private $serializerMetadataFactory;
+
+    /**
      * @param XmlSerializerInterface $xmlSerializer
      * @param LinksFactory           $linksFactory
      * @param EmbeddedsFactory       $embeddedsFactory
@@ -55,8 +63,14 @@ class XmlEventSubscriber implements EventSubscriberInterface
         $this->embeddedsFactory = $embeddedsFactory;
     }
 
+    public function setMetadataFactory(MetadataFactoryInterface $metadataFactory)
+    {
+        $this->serializerMetadataFactory = $metadataFactory;
+    }
+
     public function onPostSerialize(ObjectEvent $event)
     {
+        $object    = $event->getObject();
         $context   = $event->getContext();
         $embeddeds = $this->embeddedsFactory->create($event->getObject(), $event->getContext());
         $links     = $this->linksFactory->create($event->getObject(), $event->getContext());
@@ -66,7 +80,14 @@ class XmlEventSubscriber implements EventSubscriberInterface
         }
 
         if (count($embeddeds) > 0) {
-            $this->xmlSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
+            // This fixes the $context->getDepth()
+            $context->startVisiting($object);
+            $context->pushClassMetadata($this->serializerMetadataFactory->getMetadataForClass($event->getType()['name']));
+
+            $this->xmlSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), new EmbedSerializer($context));
+
+            $context->stopVisiting($object);
+            $context->popClassMetadata();
         }
     }
 }

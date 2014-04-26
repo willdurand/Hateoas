@@ -2,6 +2,8 @@
 
 namespace Hateoas\Model;
 
+use Hateoas\Configuration\Exclusion;
+
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
@@ -22,16 +24,19 @@ class Embedded
      */
     private $xmlElementName;
 
+    private $exclusion;
+
     /**
      * @param string      $rel
      * @param mixed       $data
      * @param string|null $xmlElementName
      */
-    public function __construct($rel, $data, $xmlElementName = null)
+    public function __construct($rel, $data, $xmlElementName = null, Exclusion $exclusion = null)
     {
         $this->rel            = $rel;
         $this->data           = $data;
         $this->xmlElementName = $xmlElementName;
+        $this->exclusion = $exclusion;
     }
 
     /**
@@ -56,5 +61,13 @@ class Embedded
     public function getXmlElementName()
     {
         return $this->xmlElementName;
+    }
+
+    /**
+     * @return Exclusion
+     */
+    public function getExclusion()
+    {
+        return $this->exclusion;
     }
 }

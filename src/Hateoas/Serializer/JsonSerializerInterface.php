@@ -24,5 +24,5 @@ interface JsonSerializerInterface
      * @param JsonSerializationVisitor $visitor
      * @param SerializationContext     $context
      */
-    public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, EmbedSerializer $embedSerializer);
 }

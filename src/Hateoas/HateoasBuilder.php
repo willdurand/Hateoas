@@ -183,7 +183,10 @@ class HateoasBuilder
         ;
 
         $jmsSerializer = $this->serializerBuilder->build();
-        foreach (array_merge($inlineDeferrers, array($this->jsonSerializer, $this->xmlSerializer)) as $serializer) {
+        $metadataFactoryAwares = $inlineDeferrers;
+        $metadataFactoryAwares = array_merge($metadataFactoryAwares, array($this->jsonSerializer, $this->xmlSerializer));
+        $metadataFactoryAwares = array_merge($metadataFactoryAwares, $eventSubscribers);
+        foreach ($metadataFactoryAwares as $serializer) {
             if ($serializer instanceof JMSSerializerMetadataAwareInterface) {
                 $serializer->setMetadataFactory($jmsSerializer->getMetadataFactory());
             }
