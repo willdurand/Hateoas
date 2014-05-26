@@ -1073,6 +1073,7 @@ Acme\Demo\Representation\User:
                     id: expr(object.getId())
                     page: 1
                 generator: my_custom_generator
+                absolute: false
             embedded:
                 content: expr(object.getFriends())
                 xmlElementName: users
