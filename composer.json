@@ -21,7 +21,7 @@
     },
     "require-dev": {
         "hautelook/frankenstein": "~0.1",
-        "atoum/atoum": "dev-master",
+        "atoum/atoum": "*@dev",
         "phpunit/phpunit": "~3.7",
         "symfony/yaml": "~2.0",
         "symfony/routing": "~2.0",
