@@ -54,7 +54,7 @@ class PagerfantaFactory
             $pager->getNbResults()
         );
     }
-    
+
     /**
      * @return string
      */
@@ -62,7 +62,7 @@ class PagerfantaFactory
     {
         return $this->pageParameterName;
     }
-    
+
     /**
      * @return string
      */
