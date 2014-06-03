@@ -23,6 +23,7 @@ class PagerfantaFactoryTest extends RepresentationTestCase
         $pagerProphecy->getCurrentPage()->willReturn(2);
         $pagerProphecy->getMaxPerPage()->willReturn(20);
         $pagerProphecy->getNbPages()->willReturn(4);
+        $pagerProphecy->getNbResults()->willReturn(100);
 
         $factory = new PagerfantaFactory('p', 'l');
         $representation1 = $factory->createRepresentation(
@@ -58,6 +59,8 @@ class PagerfantaFactoryTest extends RepresentationTestCase
                     ->isEqualTo(20)
                 ->variable($representation->getPages())
                     ->isEqualTo(4)
+                ->variable($representation->getTotal())
+                    ->isEqualTo(100)
                 ->array($representation->getParameters())
                     ->isEqualTo(array(
                         'query' => 'hateoas',
@@ -88,7 +91,7 @@ class PagerfantaFactoryTest extends RepresentationTestCase
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<collection page="1" limit="10" pages="1">
+<collection page="1" limit="10" pages="1" total="3">
   <entry rel="items">
     <entry><![CDATA[bim]]></entry>
     <entry><![CDATA[bam]]></entry>
@@ -110,6 +113,7 @@ XML
     "page": 1,
     "limit": 10,
     "pages": 1,
+    "total": 3,
     "_links": {
         "self": {
             "href": "my_route?page=1&limit=10"
@@ -156,7 +160,7 @@ JSON
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<collection page="1" limit="10" pages="1">
+<collection page="1" limit="10" pages="1" total="3">
   <entry rel="items">
     <entry><![CDATA[bim]]></entry>
     <entry><![CDATA[bam]]></entry>

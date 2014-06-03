@@ -80,6 +80,14 @@ class PaginatedRepresentation extends RouteAwareRepresentation
     private $pages;
 
     /**
+     * @var int|null
+     *
+     * @Serializer\Expose
+     * @Serializer\XmlAttribute
+     */
+    private $total;
+
+    /**
      * @var string
      */
     private $pageParameterName;
@@ -98,12 +106,14 @@ class PaginatedRepresentation extends RouteAwareRepresentation
         $pages,
         $pageParameterName       = null,
         $limitParameterName      = null,
-        $absolute                = false
+        $absolute                = false,
+        $total                   = null
     ) {
         parent::__construct($inline, $route, $parameters, $absolute);
 
         $this->page               = $page;
         $this->pages              = $pages;
+        $this->total              = $total;
         $this->limit              = $limit;
         $this->pageParameterName  = $pageParameterName  ?: 'page';
         $this->limitParameterName = $limitParameterName ?: 'limit';
@@ -146,6 +156,14 @@ class PaginatedRepresentation extends RouteAwareRepresentation
     public function getPages()
     {
         return $this->pages;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTotal()
+    {
+        return $this->total;
     }
 
     /**

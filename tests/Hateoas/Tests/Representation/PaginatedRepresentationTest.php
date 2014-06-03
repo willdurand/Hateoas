@@ -24,7 +24,11 @@ class PaginatedRepresentationTest extends RepresentationTestCase
             ),
             3,
             20,
-            17
+            17,
+            null,
+            null,
+            false,
+            100
         );
 
         $this
@@ -32,7 +36,7 @@ class PaginatedRepresentationTest extends RepresentationTestCase
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<collection page="3" limit="20" pages="17">
+<collection page="3" limit="20" pages="17" total="100">
   <users rel="authors">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
@@ -50,7 +54,7 @@ XML
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<collection page="3" limit="20" pages="17" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20">
+<collection page="3" limit="20" pages="17" total="100" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
   <resource rel="authors"><![CDATA[William]]></resource>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
@@ -67,6 +71,7 @@ XML
                     .'"page":3,'
                     .'"limit":20,'
                     .'"pages":17,'
+                    .'"total":100,'
                     .'"_links":{'
                         .'"self":{'
                             .'"href":"\/authors?query=willdurand%2FHateoas&page=3&limit=20"'
