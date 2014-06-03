@@ -22,6 +22,9 @@ use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Helper\LinkHelper;
+use Hateoas\Serializer\JsonSerializerRegistry;
+use Hateoas\Serializer\XmlHalSerializer;
+use Hateoas\Serializer\XmlSerializerRegistry;
 use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
@@ -70,14 +73,14 @@ class HateoasBuilder
     private $expressionFunctions = array();
 
     /**
-     * @var XmlSerializerInterface
+     * @var XmlSerializerRegistry
      */
-    private $xmlSerializer;
+    private $xmlSerializerRegistry;
 
     /**
-     * @var JsonSerializerInterface
+     * @var JsonSerializerRegistry
      */
-    private $jsonSerializer;
+    private $jsonSerializerRegistry;
 
     /**
      * @var UrlGeneratorRegistry
@@ -120,12 +123,17 @@ class HateoasBuilder
 
     public function __construct(SerializerBuilder $serializerBuilder = null)
     {
-        $this->serializerBuilder    = $serializerBuilder ?: SerializerBuilder::create();
-        $this->urlGeneratorRegistry = new UrlGeneratorRegistry();
-        $this->chainResolver        = new ChainResolver(array(
+        $this->serializerBuilder     = $serializerBuilder ?: SerializerBuilder::create();
+        $this->urlGeneratorRegistry  = new UrlGeneratorRegistry();
+        $this->xmlSerializerRegistry = new XmlSerializerRegistry();
+        $this->jsonSerializerRegistry = new JsonSerializerRegistry();
+        $this->chainResolver         = new ChainResolver(array(
             new MethodResolver(),
             new StaticMethodResolver(),
         ));
+
+        $this->setDefaultJsonSerializers();
+        $this->setDefaultXmlSerializers();
     }
 
     /**
@@ -153,19 +161,11 @@ class HateoasBuilder
             $expressionEvaluator->registerFunction($expressionFunction);
         }
 
-        if (null === $this->xmlSerializer) {
-            $this->setDefaultXmlSerializer();
-        }
-
-        if (null === $this->jsonSerializer) {
-            $this->setDefaultJsonSerializer();
-        }
-
         $inlineDeferrers  = array();
         $eventSubscribers = array(
-            new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedsFactory),
+            new XmlEventSubscriber($this->xmlSerializerRegistry, $linksFactory, $embeddedsFactory),
             new JsonEventSubscriber(
-                $this->jsonSerializer,
+                $this->jsonSerializerRegistry,
                 $linksFactory,
                 $embeddedsFactory,
                 $inlineDeferrers[] = new InlineDeferrer(),
@@ -183,7 +183,12 @@ class HateoasBuilder
         ;
 
         $jmsSerializer = $this->serializerBuilder->build();
-        foreach (array_merge($inlineDeferrers, array($this->jsonSerializer, $this->xmlSerializer)) as $serializer) {
+        $serializers = array_merge(
+            $inlineDeferrers,
+            $this->jsonSerializerRegistry->getSerializers(),
+            $this->xmlSerializerRegistry->getSerializers()
+        );
+        foreach ($serializers as $serializer) {
             if ($serializer instanceof JMSSerializerMetadataAwareInterface) {
                 $serializer->setMetadataFactory($jmsSerializer->getMetadataFactory());
             }
@@ -193,13 +198,21 @@ class HateoasBuilder
     }
 
     /**
+     * @param string|null            $name
      * @param XmlSerializerInterface $xmlSerializer
      *
      * @return HateoasBuilder
      */
-    public function setXmlSerializer(XmlSerializerInterface $xmlSerializer)
+    public function setXmlSerializer($name, XmlSerializerInterface $xmlSerializer)
     {
-        $this->xmlSerializer = $xmlSerializer;
+        $this->xmlSerializerRegistry->set($name, $xmlSerializer);
+
+        return $this;
+    }
+
+    public function setDefaultXmlSerializerName($name)
+    {
+        $this->xmlSerializerRegistry->setDefaultSerializerName($name);
 
         return $this;
     }
@@ -209,19 +222,30 @@ class HateoasBuilder
      *
      * @return HateoasBuilder
      */
-    public function setDefaultXmlSerializer()
+    public function setDefaultXmlSerializers()
     {
-        return $this->setXmlSerializer(new XmlSerializer());
+        $this->setXmlSerializer(null, new XmlSerializer());
+        $this->setXmlSerializer('hal', new XmlHalSerializer());
+
+        return $this;
     }
 
     /**
+     * @param string|null             $name
      * @param JsonSerializerInterface $jsonSerializer
      *
      * @return HateoasBuilder
      */
-    public function setJsonSerializer(JsonSerializerInterface $jsonSerializer)
+    public function setJsonSerializer($name, JsonSerializerInterface $jsonSerializer)
     {
-        $this->jsonSerializer = $jsonSerializer;
+        $this->jsonSerializerRegistry->set($name, $jsonSerializer);
+
+        return $this;
+    }
+
+    public function setDefaultJsonSerializerName($name)
+    {
+        $this->jsonSerializerRegistry->setDefaultSerializerName($name);
 
         return $this;
     }
@@ -231,9 +255,13 @@ class HateoasBuilder
      *
      * @return HateoasBuilder
      */
-    public function setDefaultJsonSerializer()
+    public function setDefaultJsonSerializers()
     {
-        return $this->setJsonSerializer(new JsonHalSerializer());
+        $halSerializer = new JsonHalSerializer();
+        $this->setJsonSerializer(null, $halSerializer);
+        $this->setJsonSerializer('hal', $halSerializer);
+
+        return $this;
     }
 
     /**

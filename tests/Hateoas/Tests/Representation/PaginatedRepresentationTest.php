@@ -4,6 +4,7 @@ namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Serializer\HateoasSerializationContext;
 
 class PaginatedRepresentationTest extends RepresentationTestCase
 {
@@ -46,7 +47,7 @@ class PaginatedRepresentationTest extends RepresentationTestCase
 
 XML
             )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
+            ->string($this->hateoas->serialize($collection, 'xml', HateoasSerializationContext::create()->setXmlSerializerName('hal')))
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -61,7 +62,7 @@ XML
 
 XML
             )
-            ->string($this->halHateoas->serialize($collection, 'json'))
+            ->string($this->hateoas->serialize($collection, 'json'))
             ->isEqualTo(
                 '{'
                     .'"page":3,'
@@ -137,7 +138,7 @@ XML
 
 XML
             )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
+            ->string($this->hateoas->serialize($collection, 'xml', HateoasSerializationContext::create()->setXmlSerializerName('hal')))
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -152,7 +153,7 @@ XML
 
 XML
             )
-            ->string($this->halHateoas->serialize($collection, 'json'))
+            ->string($this->hateoas->serialize($collection, 'json'))
             ->isEqualTo(
                 '{'
                     .'"page":3,'

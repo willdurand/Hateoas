@@ -4,7 +4,8 @@ namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinksFactory;
-use Hateoas\Serializer\JsonSerializerInterface;
+use Hateoas\Serializer\HateoasSerializationContext;
+use Hateoas\Serializer\JsonSerializerRegistry;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -30,9 +31,9 @@ class JsonEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @var JsonSerializerInterface
+     * @var JsonSerializerRegistry
      */
-    private $jsonSerializer;
+    private $serializerRegistry;
 
     /**
      * @var LinksFactory
@@ -55,20 +56,20 @@ class JsonEventSubscriber implements EventSubscriberInterface
     private $linksInlineDeferrer;
 
     /**
-     * @param JsonSerializerInterface $jsonSerializer
+     * @param JsonSerializerRegistry  $serializerRegistry
      * @param LinksFactory            $linksFactory
      * @param EmbeddedsFactory        $embeddedsFactory
      * @param InlineDeferrer          $embeddedsInlineDeferrer
      * @param InlineDeferrer          $linksInleDeferrer
      */
     public function __construct(
-        JsonSerializerInterface $jsonSerializer,
+        JsonSerializerRegistry $serializerRegistry,
         LinksFactory $linksFactory,
         EmbeddedsFactory $embeddedsFactory,
         InlineDeferrer $embeddedsInlineDeferrer,
         InlineDeferrer $linksInleDeferrer
     ) {
-        $this->jsonSerializer          = $jsonSerializer;
+        $this->serializerRegistry      = $serializerRegistry;
         $this->linksFactory            = $linksFactory;
         $this->embeddedsFactory        = $embeddedsFactory;
         $this->embeddedsInlineDeferrer = $embeddedsInlineDeferrer;
@@ -86,12 +87,18 @@ class JsonEventSubscriber implements EventSubscriberInterface
         $embeddeds = $this->embeddedsInlineDeferrer->handleItems($object, $embeddeds, $context);
         $links  = $this->linksInlineDeferrer->handleItems($object, $links, $context);
 
+        $serializerName = null;
+        if ($context instanceof HateoasSerializationContext) {
+            $serializerName = $context->getJsonSerializerName();
+        }
+        $jsonSerializer = $this->serializerRegistry->get($serializerName);
+
         if (count($links) > 0) {
-            $this->jsonSerializer->serializeLinks($links, $event->getVisitor(), $context);
+            $jsonSerializer->serializeLinks($links, $event->getVisitor(), $context);
         }
 
         if (count($embeddeds) > 0) {
-            $this->jsonSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
+            $jsonSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
         }
     }
 }

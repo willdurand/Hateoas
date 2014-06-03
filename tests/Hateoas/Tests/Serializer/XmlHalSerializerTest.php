@@ -12,7 +12,7 @@ class XmlHalSerializerTest extends TestCase
     public function testSerializeAdrienBrault()
     {
         $hateoas = HateoasBuilder::create()
-            ->setXmlSerializer(new XmlHalSerializer())
+            ->setXmlSerializer(null, new XmlHalSerializer())
             ->build();
         $adrienBrault = new AdrienBrault();
 

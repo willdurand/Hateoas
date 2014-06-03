@@ -31,11 +31,5 @@ abstract class RepresentationTestCase extends TestCase
             ->setUrlGenerator(null, $this->queryStringUrlGenerator)
             ->build()
         ;
-
-        $this->halHateoas = HateoasBuilder::create()
-            ->setUrlGenerator(null, $this->queryStringUrlGenerator)
-            ->setXmlSerializer(new XmlHalSerializer())
-            ->build()
-        ;
     }
 }

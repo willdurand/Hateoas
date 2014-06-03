@@ -4,7 +4,8 @@ namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinksFactory;
-use Hateoas\Serializer\XmlSerializerInterface;
+use Hateoas\Serializer\HateoasSerializationContext;
+use Hateoas\Serializer\XmlSerializerRegistry;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -29,9 +30,9 @@ class XmlEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @var XmlSerializerInterface
+     * @var XmlSerializerRegistry
      */
-    private $xmlSerializer;
+    private $serializerRegistry;
 
     /**
      * @var LinksFactory
@@ -44,15 +45,15 @@ class XmlEventSubscriber implements EventSubscriberInterface
     private $embeddedsFactory;
 
     /**
-     * @param XmlSerializerInterface $xmlSerializer
-     * @param LinksFactory           $linksFactory
-     * @param EmbeddedsFactory       $embeddedsFactory
+     * @param XmlSerializerRegistry $serializerRegistry
+     * @param LinksFactory          $linksFactory
+     * @param EmbeddedsFactory      $embeddedsFactory
      */
-    public function __construct(XmlSerializerInterface $xmlSerializer, LinksFactory $linksFactory, EmbeddedsFactory $embeddedsFactory)
+    public function __construct(XmlSerializerRegistry $serializerRegistry, LinksFactory $linksFactory, EmbeddedsFactory $embeddedsFactory)
     {
-        $this->xmlSerializer    = $xmlSerializer;
-        $this->linksFactory     = $linksFactory;
-        $this->embeddedsFactory = $embeddedsFactory;
+        $this->serializerRegistry = $serializerRegistry;
+        $this->linksFactory       = $linksFactory;
+        $this->embeddedsFactory   = $embeddedsFactory;
     }
 
     public function onPostSerialize(ObjectEvent $event)
@@ -61,12 +62,18 @@ class XmlEventSubscriber implements EventSubscriberInterface
         $embeddeds = $this->embeddedsFactory->create($event->getObject(), $event->getContext());
         $links     = $this->linksFactory->create($event->getObject(), $event->getContext());
 
+        $serializerName = null;
+        if ($context instanceof HateoasSerializationContext) {
+            $serializerName = $context->getXmlSerializerName();
+        }
+        $xmlSerializer = $this->serializerRegistry->get($serializerName);
+
         if (count($links) > 0) {
-            $this->xmlSerializer->serializeLinks($links, $event->getVisitor(), $context);
+            $xmlSerializer->serializeLinks($links, $event->getVisitor(), $context);
         }
 
         if (count($embeddeds) > 0) {
-            $this->xmlSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
+            $xmlSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
         }
     }
 }

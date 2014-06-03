@@ -30,7 +30,7 @@ XML
             );
 
         $this
-            ->json($this->halHateoas->serialize($error, 'json'))
+            ->json($this->hateoas->serialize($error, 'json'))
             ->isEqualTo(<<<JSON
 {
     "message": "Validation failed",

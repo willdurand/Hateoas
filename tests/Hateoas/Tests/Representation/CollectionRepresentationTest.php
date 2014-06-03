@@ -5,6 +5,7 @@ namespace Hateoas\Tests\Representation;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Representation\CollectionRepresentation;
+use Hateoas\Serializer\HateoasSerializationContext;
 
 class CollectionRepresentationTest extends RepresentationTestCase
 {
@@ -32,7 +33,7 @@ class CollectionRepresentationTest extends RepresentationTestCase
 
 XML
             )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
+            ->string($this->hateoas->serialize($collection, 'xml', HateoasSerializationContext::create()->setXmlSerializerName('hal')))
             ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
@@ -44,7 +45,7 @@ XML
             );
 
         $this
-            ->json($this->halHateoas->serialize($collection, 'json'))
+            ->json($this->hateoas->serialize($collection, 'json'))
             ->isEqualTo(<<<JSON
 {
     "_embedded": {
@@ -110,7 +111,7 @@ JSON
 
 XML
             )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
+            ->string($this->hateoas->serialize($collection, 'xml', HateoasSerializationContext::create()->setXmlSerializerName('hal')))
             ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
@@ -123,7 +124,7 @@ XML
             );
 
         $this
-            ->json($this->halHateoas->serialize($collection, 'json'))
+            ->json($this->hateoas->serialize($collection, 'json'))
             ->isEqualTo(<<<JSON
 {
     "_links": {

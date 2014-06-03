@@ -4,6 +4,7 @@ namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\RouteAwareRepresentation;
+use Hateoas\Serializer\HateoasSerializationContext;
 
 class RouteAwareRepresentationTest extends RepresentationTestCase
 {
@@ -38,7 +39,7 @@ class RouteAwareRepresentationTest extends RepresentationTestCase
 
 XML
             )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
+            ->string($this->hateoas->serialize($collection, 'xml', HateoasSerializationContext::create()->setXmlSerializerName('hal')))
             ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="/authors?query=willdurand%2FHateoas">
@@ -50,7 +51,7 @@ XML
             );
 
         $this
-            ->json($this->halHateoas->serialize($collection, 'json'))
+            ->json($this->hateoas->serialize($collection, 'json'))
             ->isEqualTo(<<<JSON
 {
     "_links": {
@@ -101,7 +102,7 @@ JSON
 
 XML
             )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
+            ->string($this->hateoas->serialize($collection, 'xml', HateoasSerializationContext::create()->setXmlSerializerName('hal')))
             ->isEqualTo(<<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="http://example.com/authors?query=willdurand%2FHateoas">
@@ -113,7 +114,7 @@ XML
             );
 
         $this
-            ->json($this->halHateoas->serialize($collection, 'json'))
+            ->json($this->hateoas->serialize($collection, 'json'))
             ->isEqualTo(<<<JSON
 {
     "_links": {

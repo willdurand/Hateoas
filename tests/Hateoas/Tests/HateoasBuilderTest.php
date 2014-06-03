@@ -87,4 +87,28 @@ XML
             )
         ;
     }
+
+    public function testSetAlternativeDefaultXmlSerializer()
+    {
+        $hateoas = HateoasBuilder::create()
+            ->setDefaultXmlSerializerName('hal')
+            ->build()
+        ;
+
+        $adrienBrault = new AdrienBrault();
+
+        $this
+            ->string($hateoas->serialize($adrienBrault, 'xml', SerializationContext::create()->setGroups(array('simple'))))
+                ->isEqualTo(<<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result href="http://adrienbrault.fr">
+  <first_name><![CDATA[Adrien]]></first_name>
+  <last_name><![CDATA[Brault]]></last_name>
+  <link rel="computer" href="http://www.apple.com/macbook-pro/"/>
+</result>
+
+XML
+                )
+        ;
+    }
 }

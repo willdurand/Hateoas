@@ -28,6 +28,11 @@ abstract class AbstractEventSubscriberTest extends TestCase
             ->serializeLinks($links, $serializationVisitor, $context)
             ->shouldBeCalledTimes(1)
         ;
+        $serializerRegistryProphecy = $this->prophesizeSerializerRegistry();
+        $serializerRegistryProphecy
+            ->get(null)
+            ->willReturn($serializerProphecy->reveal())
+        ;
 
         $linksFactoryProphecy = $this->prophesize('Hateoas\Factory\LinksFactory');
         $linksFactoryProphecy
@@ -46,7 +51,7 @@ abstract class AbstractEventSubscriberTest extends TestCase
         $eventProphecy = $this->mockEvent($object, $serializationVisitor, $context);
 
         $embeddedEventSubscriber = $this->createEventSubscriber(
-            $serializerProphecy->reveal(),
+            $serializerRegistryProphecy->reveal(),
             $linksFactoryProphecy->reveal(),
             $embeddedsFactoryProphecy->reveal()
         );
@@ -71,6 +76,11 @@ abstract class AbstractEventSubscriberTest extends TestCase
             ->serializeLinks($links, $serializationVisitor)
             ->shouldNotBeCalled()
         ;
+        $serializerRegistryProphecy = $this->prophesizeSerializerRegistry();
+        $serializerRegistryProphecy
+            ->get(null)
+            ->willReturn($serializerProphecy->reveal())
+        ;
 
         $linksFactoryProphecy = $this->prophesize('Hateoas\Factory\LinksFactory');
         $linksFactoryProphecy
@@ -89,18 +99,74 @@ abstract class AbstractEventSubscriberTest extends TestCase
         $eventProphecy = $this->mockEvent($object, $serializationVisitor, $context);
 
         $embeddedEventSubscriber = $this->createEventSubscriber(
-            $serializerProphecy->reveal(),
+            $serializerRegistryProphecy->reveal(),
             $linksFactoryProphecy->reveal(),
             $embeddedsFactoryProphecy->reveal()
         );
         $embeddedEventSubscriber->onPostSerialize($eventProphecy->reveal());
     }
 
-    abstract protected function createEventSubscriber($serializer, $linksFactory, $embeddedsFactory);
+    public function testOnPostSerializeWithCustomSerializer()
+    {
+        $embeddeds = array();
+        $links = array();
+        $object = new \StdClass();
+        $contextProphecy = $this->prophesize('Hateoas\Serializer\HateoasSerializationContext');
+        call_user_func(array($contextProphecy, $this->getContextSerializerNameGetterName()), null)
+            ->willReturn('custom')
+        ;
+        $context = $contextProphecy->reveal();
+
+        $serializationVisitor = $this->mockSerializationVisitor();
+
+        $serializerProphecy = $this->prophesizeSerializer();
+        $serializerProphecy
+            ->serializeEmbeddeds($embeddeds, $serializationVisitor, $context)
+            ->shouldNotBeCalled()
+        ;
+        $serializerProphecy
+            ->serializeLinks($links, $serializationVisitor)
+            ->shouldNotBeCalled()
+        ;
+        $serializerRegistryProphecy = $this->prophesizeSerializerRegistry();
+        $serializerRegistryProphecy
+            ->get('custom')
+            ->willReturn($serializerProphecy->reveal())
+        ;
+
+        $linksFactoryProphecy = $this->prophesize('Hateoas\Factory\LinksFactory');
+        $linksFactoryProphecy
+            ->create($object, $context)
+            ->willReturn($links)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $embeddedsFactoryProphecy = $this->prophesize('Hateoas\Factory\EmbeddedsFactory');
+        $embeddedsFactoryProphecy
+            ->create($object, $context)
+            ->willReturn($embeddeds)
+            ->shouldBeCalledTimes(1)
+        ;
+
+        $eventProphecy = $this->mockEvent($object, $serializationVisitor, $context);
+
+        $embeddedEventSubscriber = $this->createEventSubscriber(
+            $serializerRegistryProphecy->reveal(),
+            $linksFactoryProphecy->reveal(),
+            $embeddedsFactoryProphecy->reveal()
+        );
+        $embeddedEventSubscriber->onPostSerialize($eventProphecy->reveal());
+    }
+
+    abstract protected function createEventSubscriber($serializerRegistry, $linksFactory, $embeddedsFactory);
+
+    abstract protected function prophesizeSerializerRegistry();
 
     abstract protected function prophesizeSerializer();
 
     abstract protected function mockSerializationVisitor();
+
+    abstract protected function getContextSerializerNameGetterName();
 
     private function mockEvent($object, $serializationVisitor, $context)
     {
