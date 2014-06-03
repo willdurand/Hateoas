@@ -464,6 +464,32 @@ $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
+If you want to change the xml root name of the collection, create a new
+class with the xml root configured and use the inline mechanism:
+
+```php
+use JMS\Serializer\Annotation as Serializer;
+
+/**
+ * @Serializer\XmlRoot("users")
+ */
+class UsersRepresentation
+{
+    /**
+     * @Serializer\Inline
+     */
+    private $inline;
+
+    public function __construct($inline)
+    {
+        $this->inline = $inline;
+    }
+}
+
+$paginatedCollection = ...;
+$paginatedCollection = new UsersRepresentation($paginatedCollection);
+```
+
 ### Representations
 
 As mentionned in the previous section, **representations** are classes configured

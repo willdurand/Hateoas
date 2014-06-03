@@ -4,6 +4,7 @@ namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Tests\Fixtures\UsersRepresentation;
 
 class PaginatedRepresentationTest extends RepresentationTestCase
 {
@@ -58,6 +59,39 @@ XML
   <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
   <link rel="previous" href="/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
 </collection>
+
+XML
+            )
+            ->string($this->hateoas->serialize(new UsersRepresentation($collection), 'xml'))
+            ->isEqualTo(
+                <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<users page="3" limit="20" pages="17">
+  <users rel="authors">
+    <entry><![CDATA[Adrien]]></entry>
+    <entry><![CDATA[William]]></entry>
+  </users>
+  <link rel="self" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20"/>
+  <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
+  <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;page=17&amp;limit=20"/>
+  <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
+  <link rel="previous" href="/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
+</users>
+
+XML
+            )
+            ->string($this->halHateoas->serialize(new UsersRepresentation($collection), 'xml'))
+            ->isEqualTo(
+                <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<users page="3" limit="20" pages="17" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20">
+  <resource rel="authors"><![CDATA[Adrien]]></resource>
+  <resource rel="authors"><![CDATA[William]]></resource>
+  <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
+  <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;page=17&amp;limit=20"/>
+  <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
+  <link rel="previous" href="/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
+</users>
 
 XML
             )
