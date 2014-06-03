@@ -70,7 +70,7 @@ XML
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<users page="3" limit="20" pages="17">
+<users page="3" limit="20" pages="17" total="100">
   <users rel="authors">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
@@ -88,7 +88,7 @@ XML
             ->isEqualTo(
                 <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<users page="3" limit="20" pages="17" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20">
+<users page="3" limit="20" pages="17" total="100" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
   <resource rel="authors"><![CDATA[William]]></resource>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
