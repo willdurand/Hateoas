@@ -50,7 +50,8 @@ class PagerfantaFactory
             $pager->getNbPages(),
             $this->getPageParameterName(),
             $this->getLimitParameterName(),
-            $route->isAbsolute()
+            $route->isAbsolute(),
+            $pager->getNbResults()
         );
     }
     
