@@ -72,7 +72,7 @@ class InlineDeferrer implements JMSSerializerMetadataAwareInterface
         }
 
         if (
-            $metadataStack->count() > 0 && $metadataStack[0]->inline
+            $metadataStack->count() > 0 && isset($metadataStack[0]->inline) && $metadataStack[0]->inline
             && $this->serializerMetadataFactory->getMetadataForClass(get_class($parentObject)) === $metadataStack[1]
         ) {
             return $parentObject;
