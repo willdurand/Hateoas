@@ -2,7 +2,7 @@
 
 namespace Hateoas\Configuration;
 
-use Hateoas\Configuration\Provider\RelationProvider as RelationProviderProvider;
+use Hateoas\Configuration\Provider\RelationProviderInterface as RelationProviderProviderInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -21,10 +21,10 @@ class RelationsRepository
     private $relationProvider;
 
     /**
-     * @param MetadataFactoryInterface $metadataFactory
-     * @param RelationProviderProvider $relationProvider
+     * @param MetadataFactoryInterface          $metadataFactory
+     * @param RelationProviderProviderInterface $relationProvider
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory, RelationProviderProvider $relationProvider)
+    public function __construct(MetadataFactoryInterface $metadataFactory, RelationProviderProviderInterface $relationProvider)
     {
         $this->metadataFactory  = $metadataFactory;
         $this->relationProvider = $relationProvider;

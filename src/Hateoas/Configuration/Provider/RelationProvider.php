@@ -9,7 +9,7 @@ use Metadata\MetadataFactoryInterface;
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class RelationProvider
+class RelationProvider implements RelationProviderInterface
 {
     /**
      * @var MetadataFactoryInterface
