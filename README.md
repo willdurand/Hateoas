@@ -1068,7 +1068,7 @@ Reference
             <h:href uri="http://acme.com/foo/1" />
         </h:relation>
         <h:relation rel="expr(object.getFriendsDynamicRel())">
-            <h:href router="user_friends" generator="my_custom_generator">
+            <h:href route="user_friends" generator="my_custom_generator">
                 <h:parameter name="id" value="expr(object.getId())" />
                 <h:parameter name="page" value="1" />
             </h:ref>
