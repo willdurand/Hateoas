@@ -98,7 +98,7 @@ Usage
 
 **Hateoas** leverages the [Serializer](https://github.com/schmittjoh/serializer)
 library to provide a nice way to build HATEOAS REST web services. HATEOAS stands
-for **H**ypermedia **a**s **t**he **E**ngine **o**f **A**pplication **S**tate,
+for **Hypermedia as the Engine of Application State**,
 and adds **hypermedia links** to your **representations** (i.e. your API
 responses). [HATEOAS is about the discoverability of actions on a
 resource](http://timelessrepo.com/haters-gonna-hateoas).
@@ -199,7 +199,7 @@ serializer, it hooks into the JMS Serializer.
 
 By default, Hateoas uses the [Hypertext Application
 Language](http://stateless.co/hal_specification.html) (HAL) for JSON
-serialization. This specifies the *structure* of the response (e.g. that
+serialization. This specifies the _structure_ of the response (e.g. that
 "links" should live under a `_links` key):
 
 ```json
