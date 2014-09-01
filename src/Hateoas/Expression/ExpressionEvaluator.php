@@ -22,10 +22,16 @@ class ExpressionEvaluator
      */
     private $context;
 
-    public function __construct(ExpressionLanguage $expressionLanguage, array $context = array())
+    /**
+     * @var array
+     */
+    private $cache;
+
+    public function __construct(ExpressionLanguage $expressionLanguage, array $context = array(), array $cache = array())
     {
         $this->expressionLanguage = $expressionLanguage;
         $this->context            = $context;
+        $this->cache              = $cache;
     }
 
     /**
@@ -44,19 +50,33 @@ class ExpressionEvaluator
      */
     public function evaluate($expression, $data)
     {
-        if (!preg_match(self::EXPRESSION_REGEX, $expression, $matches)) {
+        if (is_bool($expression)) {
             return $expression;
         }
 
-        $expression = $matches['expression'];
+        $key = $expression;
 
-        $context = array_merge($this->context, array(
-            'object' => $data,
-        ));
+        if (!array_key_exists($key, $this->cache)) {
+            if (!preg_match(self::EXPRESSION_REGEX, $expression, $matches)) {
+                $this->cache[$key] = false;
+            } else {
+                $expression = $matches['expression'];
+                $context = $this->context;
+                $context['object'] = $data;
+                $this->cache[$key] = $this->expressionLanguage->parse($expression, array_keys($context));
+            }
+        }
 
-        $parsedExpression = $this->expressionLanguage->parse($expression, array_keys($context));
+        if (false !== $this->cache[$key]) {
+            if (!isset($context)) {
+                $context = $this->context;
+                $context['object'] = $data;
+            }
 
-        return $this->expressionLanguage->evaluate($parsedExpression, $context);
+            return $this->expressionLanguage->evaluate($this->cache[$key], $context);
+        }
+
+        return $expression;
     }
 
     public function evaluateArray(array $array, $data)
