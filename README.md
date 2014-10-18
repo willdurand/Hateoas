@@ -297,7 +297,7 @@ an `_embedded` key:
         },
         "manager": {
             "href": "/api/users/23"
-        },
+        }
     },
     "_embedded": {
         "manager": {
