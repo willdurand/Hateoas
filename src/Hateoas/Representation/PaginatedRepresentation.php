@@ -59,6 +59,7 @@ class PaginatedRepresentation extends RouteAwareRepresentation
      * @var int
      *
      * @Serializer\Expose
+     * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
      */
     private $page;
@@ -67,6 +68,7 @@ class PaginatedRepresentation extends RouteAwareRepresentation
      * @var int
      *
      * @Serializer\Expose
+     * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
      */
     private $limit;
@@ -75,6 +77,7 @@ class PaginatedRepresentation extends RouteAwareRepresentation
      * @var int
      *
      * @Serializer\Expose
+     * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
      */
     private $pages;
@@ -83,6 +86,7 @@ class PaginatedRepresentation extends RouteAwareRepresentation
      * @var int|null
      *
      * @Serializer\Expose
+     * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
      */
     private $total;
