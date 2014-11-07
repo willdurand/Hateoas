@@ -1090,9 +1090,11 @@ file for more details.
 ```yaml
 Acme\Demo\Representation\User:
     relations:
-        -   rel: self
+        -   
+            rel: self
             href: http://acme.com/foo/1
-        -   rel: expr(object.getFriendsDynamicRel())
+        -   
+            rel: expr(object.getFriendsDynamicRel())
             href:
                 route: user_friends
                 parameters:
