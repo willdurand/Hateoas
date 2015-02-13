@@ -31,6 +31,7 @@ class XmlHalSerializerTest extends TestCase
   <resource rel="broken-computer">
     <name><![CDATA[Windows Computer]]></name>
   </resource>
+  <resource rel="dynamic-relation"><![CDATA[wowowow]]></resource>
 </result>
 
 XML

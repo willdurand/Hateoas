@@ -50,7 +50,7 @@ class ExpressionEvaluator
      */
     public function evaluate($expression, $data)
     {
-        if (is_bool($expression)) {
+        if (!is_string($expression)) {
             return $expression;
         }
 

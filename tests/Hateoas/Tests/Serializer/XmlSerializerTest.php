@@ -95,6 +95,9 @@ XML
   <computer rel="broken-computer">
     <name><![CDATA[Windows Computer]]></name>
   </computer>
+  <entry rel="dynamic-relation">
+    <entry><![CDATA[wowowow]]></entry>
+  </entry>
 </result>
 
 XML

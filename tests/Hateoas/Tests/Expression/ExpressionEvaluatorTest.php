@@ -117,6 +117,29 @@ class ExpressionEvaluatorTest extends TestCase
             ->isEqualTo('Hello, toto!')
         ;
     }
+
+    /**
+     * @dataProvider getTestEvaluateNonStringData
+     */
+    public function testEvaluateNonString($value)
+    {
+        $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
+
+        $this
+            ->variable($expressionEvaluator->evaluate($value, array()))
+                ->isIdenticalTo($value)
+        ;
+    }
+
+    public function getTestEvaluateNonStringData()
+    {
+        return array(
+            array(true),
+            array(1.0),
+            array(new \StdClass),
+            array(array('foo' => 'bar')),
+        );
+    }
 }
 
 class HelloExpressionFunction implements ExpressionFunctionInterface
