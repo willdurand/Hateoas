@@ -56,7 +56,7 @@ class AdrienBrault
     public function getRelations()
     {
         return array(
-            new Relation('dynamic-relation', 'awesome!!!'),
+            new Relation('dynamic-relation', 'awesome!!!', array('wowowow')),
         );
     }
 }

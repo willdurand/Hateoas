@@ -190,7 +190,10 @@ class JsonHalSerializerTest extends TestCase
         },
         "broken-computer": {
             "name": "Windows Computer"
-        }
+        },
+        "dynamic-relation": [
+            "wowowow"
+        ]
     }
 }
 JSON
