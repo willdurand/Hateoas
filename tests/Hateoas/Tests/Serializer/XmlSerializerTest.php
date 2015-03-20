@@ -95,6 +95,12 @@ XML
   <computer rel="broken-computer">
     <name><![CDATA[Windows Computer]]></name>
   </computer>
+  <smartphone rel="smartphone">
+    <name><![CDATA[iPhone 6]]></name>
+  </smartphone>
+  <smartphone rel="smartphone">
+    <name><![CDATA[Nexus 5]]></name>
+  </smartphone>
   <entry rel="dynamic-relation">
     <entry><![CDATA[wowowow]]></entry>
   </entry>

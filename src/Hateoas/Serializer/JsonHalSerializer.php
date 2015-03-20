@@ -42,8 +42,20 @@ class JsonHalSerializer implements JsonSerializerInterface
     public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, SerializationContext $context)
     {
         $serializedEmbeddeds = array();
+        $multiple = array();
         foreach ($embeddeds as $embedded) {
-            $serializedEmbeddeds[$embedded->getRel()] = $context->accept($embedded->getData());
+            if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
+                $serializedEmbeddeds[$embedded->getRel()] = $context->accept($embedded->getData());
+            } elseif (!isset($multiple[$embedded->getRel()])) {
+                $multiple[$embedded->getRel()] = true;
+
+                $serializedEmbeddeds[$embedded->getRel()] = array(
+                    $serializedEmbeddeds[$embedded->getRel()],
+                    $context->accept($embedded->getData()),
+                );
+            } else {
+                $serializedEmbeddeds[$embedded->getRel()][] = $context->accept($embedded->getData());
+            }
         }
 
         $visitor->addData('_embedded', $serializedEmbeddeds);

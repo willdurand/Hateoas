@@ -59,18 +59,43 @@ class JsonHalSerializerTest extends TestCase
 
     public function testSerializeEmbeddeds()
     {
+        $acceptArguments = array(
+            array('name' => 'John'),
+            array('name' => 'Bar'),
+            array('name' => 'Baz'),
+            array('name' => 'Foo'),
+            array('name' => 'Baz'),
+            array('name' => 'Buzz'),
+        );
+
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
-        $contextProphecy
-            ->accept(array('name' => 'John'))
-            ->willReturnArgument()
-        ;
+        foreach ($acceptArguments as $arg) {
+            $contextProphecy
+                ->accept($arg)
+                ->willReturnArgument()
+            ;
+        }
 
         $embeddeds = array(
             new Embedded('friend', array('name' => 'John')),
+            new Embedded('foo', array('name' => 'Bar')),
+            new Embedded('foo', array('name' => 'Baz')),
+            new Embedded('bar', array('name' => 'Foo')),
+            new Embedded('bar', array('name' => 'Baz')),
+            new Embedded('bar', array('name' => 'Buzz')),
         );
 
         $expectedEmbeddedded = array(
             'friend' => array('name' => 'John'),
+            'foo' => array(
+                array('name' => 'Bar'),
+                array('name' => 'Baz'),
+            ),
+            'bar' => array(
+                array('name' => 'Foo'),
+                array('name' => 'Baz'),
+                array('name' => 'Buzz'),
+            ),
         );
 
         $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
@@ -191,6 +216,14 @@ class JsonHalSerializerTest extends TestCase
         "broken-computer": {
             "name": "Windows Computer"
         },
+        "smartphone": [
+            {
+                "name": "iPhone 6"
+            },
+            {
+                "name": "Nexus 5"
+            }
+        ],
         "dynamic-relation": [
             "wowowow"
         ]

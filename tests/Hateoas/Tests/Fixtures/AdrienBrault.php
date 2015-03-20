@@ -28,6 +28,14 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      "broken-computer",
  *      embedded = "expr(object.getWindowsComputer())"
  * )
+ * @Hateoas\Relation(
+ *      "smartphone",
+ *      embedded = "expr(object.getiOSSmartphone())"
+ * )
+ * @Hateoas\Relation(
+ *      "smartphone",
+ *      embedded = "expr(object.getAndroidSmartphone())"
+ * )
  *
  * @Hateoas\RelationProvider("getRelations")
  */
@@ -51,6 +59,16 @@ class AdrienBrault
     public function getWindowsComputer()
     {
         return new Computer('Windows Computer');
+    }
+
+    public function getiOSSmartphone()
+    {
+        return new Smartphone('iPhone 6');
+    }
+
+    public function getAndroidSmartphone()
+    {
+        return new Smartphone('Nexus 5');
     }
 
     public function getRelations()
