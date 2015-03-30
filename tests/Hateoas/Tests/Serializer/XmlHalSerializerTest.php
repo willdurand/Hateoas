@@ -31,6 +31,12 @@ class XmlHalSerializerTest extends TestCase
   <resource rel="broken-computer">
     <name><![CDATA[Windows Computer]]></name>
   </resource>
+  <resource rel="smartphone">
+    <name><![CDATA[iPhone 6]]></name>
+  </resource>
+  <resource rel="smartphone">
+    <name><![CDATA[Nexus 5]]></name>
+  </resource>
   <resource rel="dynamic-relation"><![CDATA[wowowow]]></resource>
 </result>
 
