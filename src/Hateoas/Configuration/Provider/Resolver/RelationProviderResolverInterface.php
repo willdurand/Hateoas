@@ -12,7 +12,7 @@ interface RelationProviderResolverInterface
     /**
      * @param  RelationProviderConfiguration $relationProvider
      * @param  object                        $object
-     * @return callable|false                Returns `false` if it does not support this RelationProvider,
+     * @return callable|null                 Returns `null` if it does not support this RelationProvider,
      *                                       a `callable` otherwise.
      */
     public function getRelationProvider(RelationProviderConfiguration $configuration, $object);
