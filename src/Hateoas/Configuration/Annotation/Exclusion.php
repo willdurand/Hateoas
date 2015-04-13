@@ -29,7 +29,7 @@ final class Exclusion
      * If you are working with the FOS/Rest Bundle, be reminded to set
      * Rest\View(serializerEnableMaxDepthChecks=true)
      * on your controller
-     * 
+     *
      * @var int
      */
     public $maxDepth = null;

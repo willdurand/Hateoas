@@ -8,7 +8,7 @@ namespace Hateoas\Configuration\Provider;
 interface RelationProviderInterface
 {
     /**
-     * @param object                             $object
+     * @param  object                            $object
      * @return \Hateoas\Configuration\Relation[] Returns array of Relations for specified object.
      */
     public function getRelations($object);

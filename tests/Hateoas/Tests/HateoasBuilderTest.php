@@ -7,7 +7,6 @@ use Hateoas\UrlGenerator\CallableUrlGenerator;
 use JMS\Serializer\SerializationContext;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\WithAlternativeRouter;
-use Hateoas\Tests\TestCase;
 
 /**
  * Contains functional tests
