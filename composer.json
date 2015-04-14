@@ -13,6 +13,7 @@
         }
     ],
     "require": {
+        "php": ">=5.3",
         "doctrine/common": "~2.0",
         "doctrine/annotations": "~1.0",
         "jms/metadata": "~1.1",
