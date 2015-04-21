@@ -1247,10 +1247,26 @@ class User
 #### @RelationProvider
 
 This annotation can be defined on a class.
+It is useful if you wish to serialize multiple-relations(links).
+As an example:
+
+```
+{
+  "_links": {
+    "relation_name": [
+      {"href": "link1"},
+      {"href": "link2"},
+      {"href": "link3"}
+    ]
+  }
+}
+```
 
 | Property | Required | Content | Expression language |
 |----------|----------|---------|---------------------|
 | name     | Yes      | string  | No                  |
+
+The property "name" should take the relations-returning method which you have defined in your class ("addRelations" in the following example).
 
 The can be:
 
