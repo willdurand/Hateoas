@@ -8,6 +8,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @Serializer\ExclusionPolicy("all")
  * @Serializer\XmlRoot("collection")
+ * @Serializer\AccessorOrder("custom", custom = {"page", "limit", "pages", "total"})
  *
  * @Hateoas\Relation(
  *      "first",
@@ -53,7 +54,7 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class PaginatedRepresentation extends RouteAwareRepresentation
+class PaginatedRepresentation extends AbstractSegmentedRepresentation
 {
     /**
      * @var int
@@ -71,35 +72,12 @@ class PaginatedRepresentation extends RouteAwareRepresentation
      * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
      */
-    private $limit;
-
-    /**
-     * @var int
-     *
-     * @Serializer\Expose
-     * @Serializer\Type("integer")
-     * @Serializer\XmlAttribute
-     */
     private $pages;
-
-    /**
-     * @var int|null
-     *
-     * @Serializer\Expose
-     * @Serializer\Type("integer")
-     * @Serializer\XmlAttribute
-     */
-    private $total;
 
     /**
      * @var string
      */
     private $pageParameterName;
-
-    /**
-     * @var string
-     */
-    private $limitParameterName;
 
     public function __construct(
         $inline,
@@ -113,14 +91,11 @@ class PaginatedRepresentation extends RouteAwareRepresentation
         $absolute                = false,
         $total                   = null
     ) {
-        parent::__construct($inline, $route, $parameters, $absolute);
+        parent::__construct($inline, $route, $parameters, $limit, $total, $limitParameterName, $absolute);
 
         $this->page               = $page;
         $this->pages              = $pages;
-        $this->total              = $total;
-        $this->limit              = $limit;
         $this->pageParameterName  = $pageParameterName  ?: 'page';
-        $this->limitParameterName = $limitParameterName ?: 'limit';
     }
 
     /**
@@ -132,24 +107,18 @@ class PaginatedRepresentation extends RouteAwareRepresentation
     }
 
     /**
-     * @return int
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
      * @param  null  $page
      * @param  null  $limit
      * @return array
      */
     public function getParameters($page = null, $limit = null)
     {
-        $parameters = parent::getParameters();
+        $parameters = parent::getParameters($limit);
 
-        $parameters[$this->pageParameterName]  = null === $page ? $this->getPage() : $page;
-        $parameters[$this->limitParameterName] = null === $limit ? $this->getLimit() : $limit;
+        unset($parameters[$this->pageParameterName]);
+        $parameters[$this->pageParameterName] = null === $page ? $this->getPage() : $page;
+
+        $this->moveParameterToEnd($parameters, $this->getLimitParameterName());
 
         return $parameters;
     }
@@ -163,26 +132,10 @@ class PaginatedRepresentation extends RouteAwareRepresentation
     }
 
     /**
-     * @return int|null
-     */
-    public function getTotal()
-    {
-        return $this->total;
-    }
-
-    /**
      * @return string
      */
     public function getPageParameterName()
     {
         return $this->pageParameterName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLimitParameterName()
-    {
-        return $this->limitParameterName;
     }
 }

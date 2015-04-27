@@ -341,7 +341,7 @@ The library provides several classes in the `Hateoas\Representation\*`
 namespace to help you with common tasks. These are simple classes configured
 with the library's annotations.
 
-The `PaginatedRepresentation` and `CollectionRepresentation` classes are
+The `PaginatedRepresentation`, `OffsetRepresentation` and `CollectionRepresentation` classes are
 probably the most interesting ones. These are helpful when your resource is
 actually a collection of resources (e.g. `/users` is a collection of users).
 These help you represent the collection and add pagination and limits:
@@ -354,16 +354,17 @@ $paginatedCollection = new PaginatedRepresentation(
     new CollectionRepresentation(
         array($user1, $user2, ...),
         'users', // embedded rel
-        'users' // xml element name
+        'users'  // xml element name
     ),
     'user_list', // route
     array(), // route parameters
-    1, // page
-    20, // limit
-    4, // total pages
+    1,       // page number
+    20,      // limit
+    4,       // total pages
     'page',  // page route parameter name, optional, defaults to 'page'
     'limit', // limit route parameter name, optional, defaults to 'limit'
-    false    // generate relative URIs
+    false,   // generate relative URIs, optional, defaults to `false`
+    75       // total collection size, optional, defaults to `null`
 );
 
 $json = $hateoas->serialize($paginatedCollection, 'json');
@@ -375,6 +376,9 @@ collection resources rel, and the xml root element name.
 
 The `PaginatedRepresentation` is designed to add `self`, `first`, and when
 possible `last`, `next`, and `previous` links.
+
+The `OffsetRepresentation` works just like `PaginatedRepresentation` but is useful
+when pagination is expressed by `offset`, `limit` and `total`.
 
 The `RouteAwareRepresentation` adds a `self` relation based on a given route.
 
