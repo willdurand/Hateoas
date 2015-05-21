@@ -42,7 +42,7 @@ class Relation
     public function __construct($name, $href = null, $embedded = null, array $attributes = array(), Exclusion $exclusion = null)
     {
         if (null !== $embedded && !$embedded instanceof Embedded) {
-            $embedded = new Embedded($embedded, null, $exclusion);
+            $embedded = new Embedded($embedded);
         }
 
         if (null === !$href && null === $embedded) {
