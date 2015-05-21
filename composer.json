@@ -17,7 +17,7 @@
         "doctrine/common": "~2.0",
         "doctrine/annotations": "~1.0",
         "jms/metadata": "~1.1",
-        "jms/serializer": "~0.13@dev",
+        "jms/serializer": "~0.13",
         "symfony/expression-language": "~2.4"
     },
     "require-dev": {
