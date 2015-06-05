@@ -20,5 +20,6 @@ class RelationPropertyMetadata extends VirtualPropertyMetadata
         $this->sinceVersion = $exclusion->getSinceVersion();
         $this->untilVersion = $exclusion->getUntilVersion();
         $this->maxDepth = $exclusion->getMaxDepth();
+        $this->notGroups = $exclusion->getNotGroups();
     }
 }

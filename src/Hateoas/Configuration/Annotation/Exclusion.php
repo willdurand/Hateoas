@@ -38,4 +38,9 @@ final class Exclusion
      * @var string
      */
     public $excludeIf = null;
+
+    /**
+     * @var array
+     */
+    public $notGroups = null;
 }

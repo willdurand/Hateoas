@@ -72,7 +72,8 @@ class AnnotationDriver implements DriverInterface
             $exclusion->sinceVersion,
             $exclusion->untilVersion,
             $exclusion->maxDepth,
-            $exclusion->excludeIf
+            $exclusion->excludeIf,
+            $exclusion->notGroups
         );
     }
 

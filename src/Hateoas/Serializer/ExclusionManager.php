@@ -70,6 +70,17 @@ class ExclusionManager
             return true;
         }
 
+        if (null !== $exclusion) {
+            $exclusionGroups = $exclusion->getNotGroups();
+            $contextGroups = $context->attributes->get('groups')->get();
+            if (
+                is_array($exclusionGroups) &&
+                0 < count(array_intersect($contextGroups, $exclusionGroups))
+            ) {
+                return true;
+            }
+        }
+
         return false;
     }
 }
