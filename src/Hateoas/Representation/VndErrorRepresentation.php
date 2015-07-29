@@ -38,6 +38,10 @@ class VndErrorRepresentation
      */
     private $describes;
 
+    /**
+     * @param string $message
+     * @param integer $logref
+     */
     public function __construct($message, $logref = null, Relation $help = null, Relation $describes = null)
     {
         $this->message   = $message;

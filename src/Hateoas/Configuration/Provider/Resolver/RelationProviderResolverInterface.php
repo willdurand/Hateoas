@@ -10,7 +10,6 @@ use Hateoas\Configuration\RelationProvider as RelationProviderConfiguration;
 interface RelationProviderResolverInterface
 {
     /**
-     * @param  RelationProviderConfiguration $relationProvider
      * @param  object                        $object
      * @return callable|null                 Returns `null` if it does not support this RelationProvider,
      *                                       a `callable` otherwise.

@@ -60,7 +60,6 @@ abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
     }
 
     /**
-     * @param  null  $offset
      * @param  null  $limit
      * @return array
      */
@@ -90,7 +89,7 @@ abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
     }
 
     /**
-     * @param string $paramName
+     * @param string $key
      */
     protected function moveParameterToEnd(array &$parameters, $key)
     {

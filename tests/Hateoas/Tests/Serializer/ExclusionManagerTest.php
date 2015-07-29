@@ -155,6 +155,10 @@ class ExclusionManagerTest extends TestCase
         );
     }
 
+    /**
+     * @param \Closure $shouldSkipPropertyCallback
+     * @param integer $calledTimes
+     */
     private function mockExclusionStrategy($shouldSkipProperty = false, $shouldSkipPropertyCallback = null, $calledTimes = null)
     {
         $exclusionStrategyProphecy = $this->prophesize('JMS\Serializer\Exclusion\ExclusionStrategyInterface');

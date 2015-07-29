@@ -42,6 +42,14 @@ class LinkExpressionFunctionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/foo', eval(sprintf('return %s;', $compiledExpression)));
     }
 
+    /**
+     * @param string $result
+     * @param \stdClass $expectedObject
+     * @param string $expectedRel
+     * @param boolean $expectedAbsolute
+     *
+     * @return \Hateoas\Helper\LinkHelper
+     */
     private function mockHelper($result, $expectedObject, $expectedRel, $expectedAbsolute)
     {
         $linkHelperMock = $this

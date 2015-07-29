@@ -65,6 +65,9 @@ class LinkHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($linkHelper->getLinkHref(new Will(123), 'unknown-rel'));
     }
 
+    /**
+     * @return \Hateoas\Configuration\RelationsRepository
+     */
     private function getRelationsRepositoryMock()
     {
         $relationRepoMock = $this->getMockBuilder('Hateoas\Configuration\RelationsRepository')
@@ -82,6 +85,11 @@ class LinkHelperTest extends \PHPUnit_Framework_TestCase
         return $relationRepoMock;
     }
 
+    /**
+     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
+     *
+     * @return \Hateoas\Factory\LinkFactory
+     */
     private function getLinkFactoryMock($expects = null)
     {
         if (null === $expects) {
