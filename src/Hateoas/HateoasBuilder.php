@@ -496,6 +496,9 @@ class HateoasBuilder
         return $metadataFactory;
     }
 
+    /**
+     * @param string $dir
+     */
     private function createDir($dir)
     {
         if (is_dir($dir)) {

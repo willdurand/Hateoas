@@ -69,6 +69,13 @@ class OffsetRepresentation extends AbstractSegmentedRepresentation
      */
     private $offsetParameterName;
 
+    /**
+     * @param CollectionRepresentation $inline
+     * @param string $route
+     * @param integer|null $offset
+     * @param integer $limit
+     * @param integer $total
+     */
     public function __construct(
         $inline,
         $route,

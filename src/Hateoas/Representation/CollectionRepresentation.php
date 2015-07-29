@@ -49,6 +49,10 @@ class CollectionRepresentation
      */
     private $relations;
 
+    /**
+     * @param string $rel
+     * @param string $xmlElementName
+     */
     public function __construct(
         $resources,
         $rel                      = null,
