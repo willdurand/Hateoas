@@ -55,6 +55,14 @@ class ExclusionManager
 
     private function shouldSkip($object, Exclusion $exclusion = null, SerializationContext $context)
     {
+        if ($context->getExclusionStrategy()) {
+            $propertyMetadata = new RelationPropertyMetadata($exclusion);
+
+            if ($context->getExclusionStrategy()->shouldSkipProperty($propertyMetadata, $context)) {
+                return true;
+            }
+        }
+
         if (null !== $exclusion
             && null !== $exclusion->getExcludeIf()
             && $this->expressionEvaluator->evaluate($exclusion->getExcludeIf(), $object)
@@ -62,12 +70,6 @@ class ExclusionManager
             return true;
         }
 
-        if (!$context->getExclusionStrategy()) {
-            return false;
-        }
-
-        $propertyMetadata = new RelationPropertyMetadata($exclusion);
-
-        return $context->getExclusionStrategy()->shouldSkipProperty($propertyMetadata, $context);
+        return false;
     }
 }
