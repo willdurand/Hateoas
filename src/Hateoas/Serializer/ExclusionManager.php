@@ -45,18 +45,18 @@ class ExclusionManager
             return $this->shouldSkipRelation($object, $relation, $context);
         }
 
-        return $this->shouldSkip($object, $relation->getEmbedded()->getExclusion(), $context);
+        return $this->shouldSkip($object, $relation, $relation->getEmbedded()->getExclusion(), $context);
     }
 
     private function shouldSkipRelation($object, Relation $relation, SerializationContext $context)
     {
-        return $this->shouldSkip($object, $relation->getExclusion(), $context);
+        return $this->shouldSkip($object, $relation, $relation->getExclusion(), $context);
     }
 
-    private function shouldSkip($object, Exclusion $exclusion = null, SerializationContext $context)
+    private function shouldSkip($object, Relation $relation, Exclusion $exclusion = null, SerializationContext $context)
     {
         if ($context->getExclusionStrategy()) {
-            $propertyMetadata = new RelationPropertyMetadata($exclusion);
+            $propertyMetadata = new RelationPropertyMetadata($exclusion, $relation);
 
             if ($context->getExclusionStrategy()->shouldSkipProperty($propertyMetadata, $context)) {
                 return true;
