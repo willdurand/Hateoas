@@ -63,19 +63,13 @@ Installation
 
 The recommended way to install Hateoas is through
 [Composer](http://getcomposer.org/). Require the `willdurand/hateoas` package
-into your `composer.json` file:
+by running the following command:
 
-```json
-{
-    "require": {
-        "willdurand/hateoas": "@stable"
-    }
-}
+```sh
+composer require willdurand/hateoas
 ```
 
-**Protip:** you should browse the
-[`willdurand/hateoas`](https://packagist.org/packages/willdurand/hateoas)
-page to choose a stable version to use, avoid the `@stable` meta constraint.
+This will resolve the latest stable version.
 
 Otherwise, install the library and setup the autoloader yourself.
 
