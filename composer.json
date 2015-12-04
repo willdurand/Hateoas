@@ -18,15 +18,15 @@
         "doctrine/annotations": "~1.0",
         "jms/metadata": "~1.1",
         "jms/serializer": "~1.0",
-        "symfony/expression-language": "~2.4"
+        "symfony/expression-language": "~2.4 || ~3.0"
     },
     "require-dev": {
         "hautelook/frankenstein": "~0.1",
         "atoum/atoum": "*@dev",
         "phpunit/phpunit": "~3.7",
-        "symfony/yaml": "~2.0",
-        "symfony/routing": "~2.0",
-        "symfony/dependency-injection": "~2.0",
+        "symfony/yaml": "~2.0 || ~3.0",
+        "symfony/routing": "~2.0 || ~3.0",
+        "symfony/dependency-injection": "~2.0 || ~3.0",
         "pagerfanta/pagerfanta": "~1.0",
         "twig/twig": "~1.12"
     },
