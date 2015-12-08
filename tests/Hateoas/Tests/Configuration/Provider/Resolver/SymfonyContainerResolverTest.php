@@ -21,15 +21,12 @@ class SymfonyContainerResolverTest extends TestCase
 
         $providerProvider = new SymfonyContainerResolver($containerProphecy->reveal());
 
-        $this
-            ->variable($providerProvider->getRelationProvider(new RelationProviderConfiguration('!-;'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProviderConfiguration('getSomething'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProviderConfiguration('foo::bar'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProviderConfiguration('acme.foo_service:method'), $object))
-                ->isEqualTo(array($service, 'method'))
-        ;
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProviderConfiguration('!-;'), $object));
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProviderConfiguration('getSomething'), $object));
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProviderConfiguration('foo::bar'), $object));
+        $this->assertSame(
+            [$service, 'method'],
+            $providerProvider->getRelationProvider(new RelationProviderConfiguration('acme.foo_service:method'), $object)
+        );
     }
 }

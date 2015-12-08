@@ -31,10 +31,8 @@ class OffsetRepresentationTest extends RepresentationTestCase
             false
         );
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="44" limit="20" total="95">
   <users rel="authors">
@@ -49,10 +47,12 @@ class OffsetRepresentationTest extends RepresentationTestCase
 </collection>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
+
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="44" limit="20" total="95" href="/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -64,10 +64,11 @@ XML
 </collection>
 
 XML
-            )
-            ->string($this->hateoas->serialize(new UsersRepresentation($collection), 'xml'))
-            ->isEqualTo(
-                <<<XML
+            ,
+            $this->halHateoas->serialize($collection, 'xml')
+        );
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <users offset="44" limit="20" total="95">
   <users rel="authors">
@@ -82,10 +83,12 @@ XML
 </users>
 
 XML
-            )
-            ->string($this->halHateoas->serialize(new UsersRepresentation($collection), 'xml'))
-            ->isEqualTo(
-                <<<XML
+            ,
+            $this->hateoas->serialize(new UsersRepresentation($collection), 'xml')
+        );
+
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <users offset="44" limit="20" total="95" href="/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -97,39 +100,41 @@ XML
 </users>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'json'))
-            ->isEqualTo(
-                '{'
-                    .'"offset":44,'
-                    .'"limit":20,'
-                    .'"total":95,'
-                    .'"_links":{'
-                        .'"self":{'
-                            .'"href":"\/authors?query=willdurand%2FHateoas&offset=44&limit=20"'
-                        .'},'
-                        .'"first":{'
-                            .'"href":"\/authors?query=willdurand%2FHateoas&limit=20"'
-                        .'},'
-                        .'"last":{'
-                            .'"href":"\/authors?query=willdurand%2FHateoas&offset=80&limit=20"'
-                        .'},'
-                        .'"next":{'
-                            .'"href":"\/authors?query=willdurand%2FHateoas&offset=64&limit=20"'
-                        .'},'
-                        .'"previous":{'
-                            .'"href":"\/authors?query=willdurand%2FHateoas&offset=24&limit=20"'
-                        .'}'
+            ,
+            $this->halHateoas->serialize(new UsersRepresentation($collection), 'xml')
+        );
+
+        $this->assertSame(
+            '{'
+                .'"offset":44,'
+                .'"limit":20,'
+                .'"total":95,'
+                .'"_links":{'
+                    .'"self":{'
+                        .'"href":"\/authors?query=willdurand%2FHateoas&offset=44&limit=20"'
                     .'},'
-                    .'"_embedded":{'
-                        .'"authors":['
-                            .'"Adrien",'
-                            .'"William"'
-                        .']'
+                    .'"first":{'
+                        .'"href":"\/authors?query=willdurand%2FHateoas&limit=20"'
+                    .'},'
+                    .'"last":{'
+                        .'"href":"\/authors?query=willdurand%2FHateoas&offset=80&limit=20"'
+                    .'},'
+                    .'"next":{'
+                        .'"href":"\/authors?query=willdurand%2FHateoas&offset=64&limit=20"'
+                    .'},'
+                    .'"previous":{'
+                        .'"href":"\/authors?query=willdurand%2FHateoas&offset=24&limit=20"'
                     .'}'
+                .'},'
+                .'"_embedded":{'
+                    .'"authors":['
+                        .'"Adrien",'
+                        .'"William"'
+                    .']'
                 .'}'
-            )
-        ;
+            .'}',
+            $this->halHateoas->serialize($collection, 'json')
+        );
     }
 
     public function testGenerateAbsoluteURIs()
@@ -155,10 +160,8 @@ XML
             true // force absolute URIs
         );
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="44" limit="20" total="95">
   <users rel="authors">
@@ -173,10 +176,11 @@ XML
 </collection>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="44" limit="20" total="95" href="http://example.com/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -188,39 +192,40 @@ XML
 </collection>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'json'))
-            ->isEqualTo(
-                '{'
-                    .'"offset":44,'
-                    .'"limit":20,'
-                    .'"total":95,'
-                    .'"_links":{'
-                        .'"self":{'
-                            .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=44&limit=20"'
-                        .'},'
-                        .'"first":{'
-                            .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&limit=20"'
-                        .'},'
-                        .'"last":{'
-                            .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=80&limit=20"'
-                        .'},'
-                        .'"next":{'
-                            .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=64&limit=20"'
-                        .'},'
-                        .'"previous":{'
-                            .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=24&limit=20"'
-                        .'}'
+            ,
+            $this->halHateoas->serialize($collection, 'xml')
+        );
+        $this->assertSame(
+            '{'
+                .'"offset":44,'
+                .'"limit":20,'
+                .'"total":95,'
+                .'"_links":{'
+                    .'"self":{'
+                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=44&limit=20"'
                     .'},'
-                    .'"_embedded":{'
-                        .'"authors":['
-                            .'"Adrien",'
-                            .'"William"'
-                        .']'
+                    .'"first":{'
+                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&limit=20"'
+                    .'},'
+                    .'"last":{'
+                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=80&limit=20"'
+                    .'},'
+                    .'"next":{'
+                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=64&limit=20"'
+                    .'},'
+                    .'"previous":{'
+                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=24&limit=20"'
                     .'}'
+                .'},'
+                .'"_embedded":{'
+                    .'"authors":['
+                        .'"Adrien",'
+                        .'"William"'
+                    .']'
                 .'}'
-            )
-        ;
+            .'}',
+            $this->halHateoas->serialize($collection, 'json')
+        );
     }
 
     public function testExclusion()
@@ -248,10 +253,8 @@ XML
             20
         );
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection limit="20">
   <users rel="authors">
@@ -264,8 +267,9 @@ XML
 </collection>
 
 XML
-            )
-        ;
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
 
         /*
          * no next since on last block
@@ -281,10 +285,8 @@ XML
             100
         );
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="80" limit="20" total="100">
   <users rel="authors">
@@ -298,7 +300,8 @@ XML
 </collection>
 
 XML
-            )
-        ;
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Hateoas\Tests\Expression;
 
+use Prophecy\Argument;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\Node\Node;
 use Symfony\Component\ExpressionLanguage\ParsedExpression;
@@ -15,15 +16,12 @@ class ExpressionEvaluatorTest extends TestCase
     {
         $expressionLanguageProphecy = $this->prophesize('Symfony\Component\ExpressionLanguage\ExpressionLanguage');
         $expressionLanguageProphecy
-            ->parse($this->arg->any())
+            ->parse(Argument::any())
             ->shouldNotBeCalled()
         ;
         $expressionEvaluator = new ExpressionEvaluator($expressionLanguageProphecy->reveal());
 
-        $this
-            ->string($expressionEvaluator->evaluate('hello', null))
-                ->isEqualTo('hello')
-        ;
+        $this->assertSame('hello', $expressionEvaluator->evaluate('hello', null));
     }
 
     public function testEvaluate()
@@ -42,10 +40,7 @@ class ExpressionEvaluatorTest extends TestCase
 
         $expressionEvaluator = new ExpressionEvaluator($expressionLanguageProphecy->reveal());
 
-        $this
-            ->string($expressionEvaluator->evaluate('expr("42")', $data))
-                ->isEqualTo('42')
-        ;
+        $this->assertSame('42', $expressionEvaluator->evaluate('expr("42")', $data));
     }
 
     public function testEvaluateArray()
@@ -73,13 +68,13 @@ class ExpressionEvaluatorTest extends TestCase
             'hello' => array('expr(aaa)'),
         );
 
-        $this
-            ->array($expressionEvaluator->evaluateArray($array, $data))
-                ->isEqualTo(array(
-                    1 => 2,
-                    'hello' => array(3),
-                ))
-        ;
+        $this->assertSame(
+            $expressionEvaluator->evaluateArray($array, $data),
+            [
+                1 => 2,
+                'hello' => [3],
+            ]
+        );
     }
 
     public function testSetContextVariable()
@@ -101,10 +96,7 @@ class ExpressionEvaluatorTest extends TestCase
         $expressionEvaluator = new ExpressionEvaluator($expressionLanguageProphecy->reveal());
         $expressionEvaluator->setContextVariable('name', 'Adrien');
 
-        $this
-            ->string($expressionEvaluator->evaluate('expr(name)', $data))
-                ->isEqualTo('Adrien')
-        ;
+        $this->assertSame('Adrien', $expressionEvaluator->evaluate('expr(name)', $data));
     }
 
     public function testRegisterFunction()
@@ -112,10 +104,7 @@ class ExpressionEvaluatorTest extends TestCase
         $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
         $expressionEvaluator->registerFunction(new HelloExpressionFunction());
 
-        $this
-            ->string($expressionEvaluator->evaluate('expr(hello("toto"))', null))
-            ->isEqualTo('Hello, toto!')
-        ;
+        $this->assertSame('Hello, toto!', $expressionEvaluator->evaluate('expr(hello("toto"))', null));
     }
 
     /**
@@ -125,10 +114,7 @@ class ExpressionEvaluatorTest extends TestCase
     {
         $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
 
-        $this
-            ->variable($expressionEvaluator->evaluate($value, array()))
-                ->isIdenticalTo($value)
-        ;
+        $this->assertSame($value, $expressionEvaluator->evaluate($value, array()));
     }
 
     public function getTestEvaluateNonStringData()

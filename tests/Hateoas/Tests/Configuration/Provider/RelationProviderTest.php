@@ -6,6 +6,7 @@ use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider as RelationProviderConfiguration;
 use Hateoas\Configuration\Provider\RelationProvider;
 use Hateoas\Tests\TestCase;
+use Prophecy\Argument;
 
 class RelationProviderTest extends TestCase
 {
@@ -32,13 +33,13 @@ class RelationProviderTest extends TestCase
 
         $resolverProphecy = $this->prophesize('Hateoas\Configuration\Provider\Resolver\RelationProviderResolverInterface');
         $resolverProphecy
-            ->getRelationProvider($this->arg->which('getName', 'getRelations'), $this->arg->any())
+            ->getRelationProvider(Argument::which('getName', 'getRelations'), Argument::any())
             ->willReturn(function () use ($relations1) {
                 return $relations1;
             })
         ;
         $resolverProphecy
-            ->getRelationProvider($this->arg->which('getName', 'Class:getRelations'), $this->arg->any())
+            ->getRelationProvider(Argument::which('getName', 'Class:getRelations'), Argument::any())
             ->willReturn(function () use ($relations2) {
                 return $relations2;
             })
@@ -48,9 +49,6 @@ class RelationProviderTest extends TestCase
 
         $object = new \StdClass();
 
-        $this
-            ->array($relationProvider->getRelations($object))
-                ->isEqualTo(array($relation1, $relation2))
-        ;
+        $this->assertSame([$relation1, $relation2], $relationProvider->getRelations($object));
     }
 }

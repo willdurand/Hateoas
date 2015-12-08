@@ -22,9 +22,9 @@ class SymfonyUrlGeneratorTest extends TestCase
 
         $urlGenerator = new SymfonyUrlGenerator($symfonyUrlGeneratorProphecy->reveal());
 
-        $this
-            ->string($urlGenerator->generate($name, $parameters, $absolute))
-                ->isEqualTo($expectedResult)
-        ;
+        $this->assertSame(
+            $expectedResult,
+            $urlGenerator->generate($name, $parameters, $absolute)
+        );
     }
 }

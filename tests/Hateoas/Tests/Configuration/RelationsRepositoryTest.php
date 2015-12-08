@@ -5,6 +5,7 @@ namespace Hateoas\Tests\Configuration;
 use Hateoas\Tests\TestCase;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationsRepository;
+use Prophecy\Argument;
 
 class RelationsRepositoryTest extends TestCase
 {
@@ -16,10 +17,7 @@ class RelationsRepositoryTest extends TestCase
         );
         $object = new \StdClass();
 
-        $this
-            ->array($relationsRepository->getRelations($object))
-                ->isEmpty()
-        ;
+        $this->assertEmpty($relationsRepository->getRelations($object));
     }
 
     public function testMetadataFactoryRelations()
@@ -45,10 +43,7 @@ class RelationsRepositoryTest extends TestCase
             $this->prophesizeRelationProvider()->reveal()
         );
 
-        $this
-            ->array($relationsRepository->getRelations(new \StdClass()))
-                ->isEqualTo($relations)
-        ;
+        $this->assertSame($relations, $relationsRepository->getRelations(new \StdClass()));
     }
 
     public function testRelationProviderRelations()
@@ -65,17 +60,14 @@ class RelationsRepositoryTest extends TestCase
             $this->prophesizeRelationProvider($relations, $object)->reveal()
         );
 
-        $this
-            ->array($relationsRepository->getRelations($object))
-                ->isEqualTo($relations)
-        ;
+        $this->assertSame($relations, $relationsRepository->getRelations($object));
     }
 
     private function prophesizeRelationProvider($relations = array(), $object = null)
     {
         $relationProviderProphecy = $this->prophesize('Hateoas\Configuration\Provider\RelationProvider');
         $relationProviderProphecy
-            ->getRelations($object ?: $this->arg->any())
+            ->getRelations($object ?: Argument::any())
             ->willReturn($relations)
         ;
 

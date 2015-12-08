@@ -9,8 +9,14 @@ use Hateoas\UrlGenerator\CallableUrlGenerator;
 
 abstract class RepresentationTestCase extends TestCase
 {
+    /**
+     * @var \Hateoas\Hateoas
+     */
     protected $hateoas;
 
+    /**
+     * @var \Hateoas\Hateoas
+     */
     protected $halHateoas;
 
     private $queryStringUrlGenerator;

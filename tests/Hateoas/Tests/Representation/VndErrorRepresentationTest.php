@@ -16,9 +16,8 @@ class VndErrorRepresentationTest extends RepresentationTestCase
             new Relation('describes', 'http://.../', null, array('title' => 'Error Description'))
         );
 
-        $this
-            ->string($this->hateoas->serialize($error, 'xml'))
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <resource logref="42">
   <message><![CDATA[Validation failed]]></message>
@@ -27,11 +26,12 @@ class VndErrorRepresentationTest extends RepresentationTestCase
 </resource>
 
 XML
-            );
+            ,
+            $this->hateoas->serialize($error, 'xml')
+        );
 
-        $this
-            ->json($this->halHateoas->serialize($error, 'json'))
-            ->isEqualTo(<<<JSON
+        $this->assertSame(
+            <<<JSON
 {
     "message": "Validation failed",
     "logref": 42,
@@ -47,6 +47,8 @@ XML
     }
 }
 JSON
-            );
+            ,
+            $this->json($this->halHateoas->serialize($error, 'json'))
+        );
     }
 }

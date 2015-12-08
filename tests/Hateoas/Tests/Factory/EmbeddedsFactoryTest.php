@@ -6,6 +6,7 @@ use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Relation;
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Tests\TestCase;
+use Prophecy\Argument;
 
 class EmbeddedsFactoryTest extends TestCase
 {
@@ -31,7 +32,7 @@ class EmbeddedsFactoryTest extends TestCase
         $ELProphecy->evaluate('expr(object.getManager())', $object)->willReturn(42)->shouldBeCalledTimes(1);
         $ELProphecy->evaluate('expr(object.getManagerRel())', $object)->willReturn(42)->shouldBeCalledTimes(1);
         $ELProphecy->evaluate('expr(object.getXmlElementName())', $object)->willReturn(42)->shouldBeCalledTimes(1);
-        $ELProphecy->evaluate($this->arg->any(), $object)->willReturnArgument();
+        $ELProphecy->evaluate(Argument::any(), $object)->willReturnArgument();
 
         $exclusionManagerProphecy = $this->prophesize('Hateoas\Serializer\ExclusionManager');
         $exclusionManagerProphecy->shouldSkipEmbedded($object, $relations[0], $context)->willReturn(true);
@@ -46,23 +47,13 @@ class EmbeddedsFactoryTest extends TestCase
 
         $embeddeds = $embeddedsFactory->create($object, $context);
 
-        $this
-            ->array($embeddeds)
-                ->hasSize(2)
-            ->object($embeddeds[0])
-                ->isInstanceOf('Hateoas\Model\Embedded')
-                ->variable($embeddeds[0]->getRel())
-                    ->isEqualTo('friend')
-                ->variable($embeddeds[0]->getData())
-                    ->isEqualTo(42)
-            ->object($embeddeds[1])
-                ->isInstanceOf('Hateoas\Model\Embedded')
-                ->variable($embeddeds[1]->getRel())
-                    ->isEqualTo(42)
-                ->variable($embeddeds[1]->getData())
-                    ->isEqualTo(42)
-                ->variable($embeddeds[1]->getXmlElementName())
-                    ->isEqualTo(42)
-        ;
+        $this->assertCount(2, $embeddeds);
+        $this->assertInstanceOf('Hateoas\Model\Embedded', $embeddeds[0]);
+        $this->assertSame('friend', $embeddeds[0]->getRel());
+        $this->assertSame(42, $embeddeds[0]->getData());
+        $this->assertInstanceOf('Hateoas\Model\Embedded', $embeddeds[1]);
+        $this->assertSame(42, $embeddeds[1]->getRel());
+        $this->assertSame(42, $embeddeds[1]->getData());
+        $this->assertSame(42, $embeddeds[1]->getXmlElementName());
     }
 }

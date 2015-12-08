@@ -18,10 +18,7 @@ class HateoasBuilderTest extends TestCase
         $hateoasBuilder = new HateoasBuilder();
         $hateoas = $hateoasBuilder->build();
 
-        $this
-            ->object($hateoas)
-                ->isInstanceOf('Hateoas\Hateoas')
-        ;
+        $this->assertInstanceOf('Hateoas\Hateoas', $hateoas);
     }
 
     public function testSerializeAdrienBraultWithExclusion()
@@ -36,9 +33,8 @@ class HateoasBuilderTest extends TestCase
         $context  = SerializationContext::create()->setGroups(array('simple'));
         $context2 = clone $context;
 
-        $this
-            ->string($hateoas->serialize($adrienBrault, 'xml', $context))
-                ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <first_name><![CDATA[Adrien]]></first_name>
@@ -48,9 +44,11 @@ class HateoasBuilderTest extends TestCase
 </result>
 
 XML
-                )
-            ->string($hateoas->serialize($fakeAdrienBrault, 'xml', $context2))
-                ->isEqualTo(<<<XML
+            ,
+            $hateoas->serialize($adrienBrault, 'xml', $context)
+        );
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <first_name><![CDATA[John]]></first_name>
@@ -59,8 +57,9 @@ XML
 </result>
 
 XML
-                )
-        ;
+            ,
+            $hateoas->serialize($fakeAdrienBrault, 'xml', $context2)
+        );
     }
 
     public function testAlternativeUrlGenerator()
@@ -74,16 +73,16 @@ XML
             ->build()
         ;
 
-        $this
-            ->string($hateoas->serialize(new WithAlternativeRouter(), 'xml'))
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <link rel="search" href="/search?query=hello"/>
 </result>
 
 XML
-            )
-        ;
+            ,
+            $hateoas->serialize(new WithAlternativeRouter(), 'xml')
+        );
     }
 }

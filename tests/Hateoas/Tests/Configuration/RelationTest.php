@@ -11,16 +11,9 @@ class RelationTest extends TestCase
     {
         $relation = new Relation('self', 'user_get');
 
-        $this
-            ->object($relation)
-                ->isInstanceOf('Hateoas\Configuration\Relation')
-            ->string($relation->getName())
-                ->isEqualTo('self')
-            ->string($relation->getHref())
-                ->isEqualTo('user_get')
-            ->array($relation->getAttributes())
-                ->isEmpty()
-        ;
+        $this->assertSame('self', $relation->getName());
+        $this->assertSame('user_get', $relation->getHref());
+        $this->assertEmpty($relation->getAttributes());
     }
 
     public function requireHrefOrEmbed()
@@ -38,17 +31,10 @@ class RelationTest extends TestCase
     {
         $relation = new Relation('self', null, 'foo');
 
-        $this
-            ->object($relation)
-                ->isInstanceOf('Hateoas\Configuration\Relation')
-            ->string($relation->getName())
-                ->isEqualTo('self')
-            ->variable($relation->getHref())
-                ->isNull()
-            ->object($relation->getEmbed())
-                ->isInstanceOf('Hateoas\Configuration\Embed')
-            ->variable($relation->getEmbed()->getContent())
-                ->isEqualTo('foo')
-        ;
+        $this->assertSame('self', $relation->getName());
+        $this->assertNull($relation->getHref());
+        $this->assertEmpty($relation->getAttributes());
+        $this->assertInstanceOf('Hateoas\Configuration\Embed', $relation->getEmbedded());
+        $this->assertSame('foo', $relation->getEmbedded()->getContent());
     }
 }

@@ -13,15 +13,12 @@ class StaticMethodResolverTest extends TestCase
         $object = new \StdClass();
         $providerProvider = new StaticMethodResolver();
 
-        $this
-            ->variable($providerProvider->getRelationProvider(new RelationProvider('!-;'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProvider('getSomething'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProvider('foo:bar'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProvider('Hateoas\Stuff::getRelations'), $object))
-                ->isEqualTo(array('Hateoas\Stuff', 'getRelations'))
-        ;
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProvider('!-;'), $object));
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProvider('getSomething'), $object));
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProvider('foo:bar'), $object));
+        $this->assertSame(
+            ['Hateoas\Stuff', 'getRelations'],
+            $providerProvider->getRelationProvider(new RelationProvider('Hateoas\Stuff::getRelations'), $object)
+        );
     }
 }
