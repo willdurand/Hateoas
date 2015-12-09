@@ -24,9 +24,8 @@ class RouteAwareRepresentationTest extends RepresentationTestCase
             )
         );
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <users rel="authors">
@@ -37,9 +36,11 @@ class RouteAwareRepresentationTest extends RepresentationTestCase
 </result>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
-            ->isEqualTo(<<<XML
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="/authors?query=willdurand%2FHateoas">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -47,11 +48,12 @@ XML
 </result>
 
 XML
-            );
+            ,
+            $this->halHateoas->serialize($collection, 'xml')
+        );
 
-        $this
-            ->json($this->halHateoas->serialize($collection, 'json'))
-            ->isEqualTo(<<<JSON
+        $this->assertSame(
+            <<<JSON
 {
     "_links": {
         "self": {
@@ -66,7 +68,9 @@ XML
     }
 }
 JSON
-            );
+            ,
+            $this->json($this->halHateoas->serialize($collection, 'json'))
+        );
     }
 
     public function testGenerateAbsoluteURIs()
@@ -87,9 +91,8 @@ JSON
             true // absolute
         );
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <users rel="authors">
@@ -100,9 +103,11 @@ JSON
 </result>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
-            ->isEqualTo(<<<XML
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="http://example.com/authors?query=willdurand%2FHateoas">
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -110,11 +115,12 @@ XML
 </result>
 
 XML
-            );
+            ,
+            $this->halHateoas->serialize($collection, 'xml')
+        );
 
-        $this
-            ->json($this->halHateoas->serialize($collection, 'json'))
-            ->isEqualTo(<<<JSON
+        $this->assertSame(
+            <<<JSON
 {
     "_links": {
         "self": {
@@ -129,6 +135,8 @@ XML
     }
 }
 JSON
-            );
+            ,
+            $this->json($this->halHateoas->serialize($collection, 'json'))
+        );
     }
 }

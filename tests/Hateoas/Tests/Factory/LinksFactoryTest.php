@@ -53,10 +53,7 @@ class LinksFactoryTest extends TestCase
 
         $links = $linksFactory->create($object, $context);
 
-        $this
-            ->array($links)
-                ->hasSize(1)
-                ->contains($link)
-        ;
+        $this->assertCount(1, $links);
+        $this->assertContains($link, $links);
     }
 }

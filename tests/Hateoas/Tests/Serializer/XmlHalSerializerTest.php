@@ -16,9 +16,8 @@ class XmlHalSerializerTest extends TestCase
             ->build();
         $adrienBrault = new AdrienBrault();
 
-        $this
-            ->string($hateoas->serialize($adrienBrault, 'xml'))
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="http://adrienbrault.fr">
   <first_name><![CDATA[Adrien]]></first_name>
@@ -41,6 +40,8 @@ class XmlHalSerializerTest extends TestCase
 </result>
 
 XML
-            );
+            ,
+            $hateoas->serialize($adrienBrault, 'xml')
+        );
     }
 }

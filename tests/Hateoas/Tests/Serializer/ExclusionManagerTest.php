@@ -8,6 +8,7 @@ use Hateoas\Serializer\ExclusionManager;
 use JMS\Serializer\Context;
 use JMS\Serializer\SerializationContext;
 use Hateoas\Tests\TestCase;
+use Prophecy\Argument;
 
 class ExclusionManagerTest extends TestCase
 {
@@ -19,10 +20,7 @@ class ExclusionManagerTest extends TestCase
         $relation = new Relation('foo', 'foo', 'foo');
         $context = SerializationContext::create();
 
-        $this
-            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
-                ->isFalse()
-        ;
+        $this->assertFalse($exclusionManager->shouldSkipEmbedded($object, $relation, $context));
     }
 
     public function testSkipNullEmbedded()
@@ -33,10 +31,7 @@ class ExclusionManagerTest extends TestCase
         $relation = new Relation('foo', 'foo');
         $context = SerializationContext::create();
 
-        $this
-            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
-                ->isTrue()
-        ;
+        $this->assertTrue($exclusionManager->shouldSkipEmbedded($object, $relation, $context));
     }
 
     public function testDoesNotSkipNonNullLink()
@@ -47,10 +42,7 @@ class ExclusionManagerTest extends TestCase
         $relation = new Relation('foo', 'foo');
         $context = SerializationContext::create();
 
-        $this
-            ->boolean($exclusionManager->shouldSkipLink($object, $relation, $context))
-                ->isFalse()
-        ;
+        $this->assertFalse($exclusionManager->shouldSkipLink($object, $relation, $context));
     }
 
     public function testSkipNullLink()
@@ -61,26 +53,17 @@ class ExclusionManagerTest extends TestCase
         $relation = new Relation('foo', null, 'foo');
         $context = SerializationContext::create();
 
-        $this
-            ->boolean($exclusionManager->shouldSkipLink($object, $relation, $context))
-                ->isTrue()
-        ;
+        $this->assertTrue($exclusionManager->shouldSkipLink($object, $relation, $context));
     }
 
     public function testSkip()
     {
         $test = $this;
         $exclusionStrategyCallback = function ($args) use ($test) {
-            $test
-                ->array($args[0]->groups)
-                    ->isEqualTo(array('foo', 'bar'))
-                ->float($args[0]->sinceVersion)
-                    ->isEqualTo(1.1)
-                ->float($args[0]->untilVersion)
-                    ->isEqualTo(1.7)
-                ->integer($args[0]->maxDepth)
-                    ->isEqualTo(77)
-            ;
+            $test->assertSame(['foo', 'bar'], $args[0]->groups);
+            $test->assertSame(1.1, $args[0]->sinceVersion);
+            $test->assertSame(1.7, $args[0]->untilVersion);
+            $test->assertSame(77, $args[0]->maxDepth);
         };
 
         $exclusionManager = new ExclusionManager($this->mockExpressionEvaluator());
@@ -98,12 +81,8 @@ class ExclusionManagerTest extends TestCase
             ->addExclusionStrategy($exclusionStrategy)
         ;
 
-        $this
-            ->boolean($exclusionManager->shouldSkipLink($object, $relation, $context))
-                ->isTrue()
-            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
-                ->isTrue()
-        ;
+        $this->assertTrue($exclusionManager->shouldSkipLink($object, $relation, $context));
+        $this->assertTrue($exclusionManager->shouldSkipEmbedded($object, $relation, $context));
     }
 
     public function testSkipEmbedded()
@@ -116,10 +95,7 @@ class ExclusionManagerTest extends TestCase
             ->addExclusionStrategy($this->mockExclusionStrategy(true))
         ;
 
-        $this
-            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
-                ->isTrue()
-        ;
+        $this->assertTrue($exclusionManager->shouldSkipEmbedded($object, $relation, $context));
     }
 
     /**
@@ -139,12 +115,8 @@ class ExclusionManagerTest extends TestCase
         ;
         $exclusionManager = new ExclusionManager($expressionEvaluatorProphecy->reveal());
 
-        $this
-            ->boolean($exclusionManager->shouldSkipLink($object, $relation, $context))
-                ->isEqualTo($exclude)
-            ->boolean($exclusionManager->shouldSkipEmbedded($object, $relation, $context))
-                ->isEqualTo($exclude)
-        ;
+        $this->assertSame($exclude, $exclusionManager->shouldSkipLink($object, $relation, $context));
+        $this->assertSame($exclude, $exclusionManager->shouldSkipEmbedded($object, $relation, $context));
     }
 
     public function getTestSkipExcludeIfData()
@@ -164,8 +136,8 @@ class ExclusionManagerTest extends TestCase
         $exclusionStrategyProphecy = $this->prophesize('JMS\Serializer\Exclusion\ExclusionStrategyInterface');
         $method = $exclusionStrategyProphecy
             ->shouldSkipProperty(
-                $this->arg->type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'),
-                $this->arg->type('JMS\Serializer\SerializationContext')
+                Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'),
+                Argument::type('JMS\Serializer\SerializationContext')
             )
             ->will(function () use ($shouldSkipProperty, $shouldSkipPropertyCallback) {
                 if (null !== $shouldSkipPropertyCallback) {

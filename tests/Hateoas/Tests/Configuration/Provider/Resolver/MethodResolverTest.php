@@ -13,15 +13,12 @@ class MethodResolverTest extends TestCase
         $object = new \StdClass();
         $providerProvider = new MethodResolver();
 
-        $this
-            ->variable($providerProvider->getRelationProvider(new RelationProvider('!-;'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProvider('foo:bar'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProvider('foo::bar'), $object))
-                ->isNull()
-            ->variable($providerProvider->getRelationProvider(new RelationProvider('getRelations'), $object))
-                ->isEqualTo(array($object, 'getRelations'))
-        ;
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProvider('!-;'), $object));
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProvider('foo:bar'), $object));
+        $this->assertNull($providerProvider->getRelationProvider(new RelationProvider('foo::bar'), $object));
+        $this->assertSame(
+            [$object, 'getRelations'],
+            $providerProvider->getRelationProvider(new RelationProvider('getRelations'), $object)
+        );
     }
 }

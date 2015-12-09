@@ -20,191 +20,95 @@ abstract class AbstractDriverTest extends TestCase
         $class = new \ReflectionClass('Hateoas\Tests\Fixtures\User');
         $classMetadata = $driver->loadMetadataForClass($class);
 
-        $this
-            ->object($classMetadata)
-                ->isInstanceOf('Hateoas\Configuration\Metadata\ClassMetadata')
-        ;
+        $this->assertInstanceOf('Hateoas\Configuration\Metadata\ClassMetadata', $classMetadata);
 
         /** @var $relations Relation[] */
         $relations = $classMetadata->getRelations();
 
-        $this->array($relations);
+        $this->assertInternalType('array', $relations);
         foreach ($relations as $relation) {
-            $this
-                ->object($relation)
-                    ->isInstanceOf('Hateoas\Configuration\Relation')
-            ;
+            $this->assertInstanceOf('Hateoas\Configuration\Relation', $relation);
         }
 
         $i = 0;
 
         $relation = $relations[$i++];
-        $this
-            ->string($relation->getName())
-                ->isEqualTo('self')
-            ->string($relation->getHref())
-                ->isEqualTo('http://hateoas.web/user/42')
-            ->array($relation->getAttributes())
-                ->isEqualTo(array(
-                    'type' => 'application/json',
-                ))
-            ->variable($relation->getEmbedded())
-                ->isNull()
-            ->variable($relation->getExclusion())
-                ->isNull()
-        ;
+        $this->assertSame('self', $relation->getName());
+        $this->assertSame('http://hateoas.web/user/42', $relation->getHref());
+        $this->assertSame(['type' => 'application/json'], $relation->getAttributes());
+        $this->assertNull($relation->getEmbedded());
+        $this->assertNull($relation->getExclusion());
 
         $relation = $relations[$i++];
-        $this
-            ->string($relation->getName())
-                ->isEqualTo('foo')
-            ->object($relation->getHref())
-                ->isInstanceOf('Hateoas\Configuration\Route')
-                ->and($route = $relation->getHref())
-                    ->string($route->getName())
-                        ->isEqualTo('user_get')
-                    ->array($route->getParameters())
-                        ->isEqualTo(array(
-                            'id' => 'expr(object.getId())',
-                        ))
-                    ->boolean($route->isAbsolute())
-                        ->isEqualTo(false)
-            ->object($relation->getEmbedded())
-                ->isInstanceOf('Hateoas\Configuration\Embedded')
-                ->and($embedded = $relation->getEmbedded())
-                    ->string($embedded->getContent())
-                        ->isEqualTo('expr(object.getFoo())')
-                    ->variable($embedded->getXmlElementName())
-                        ->isNull()
-            ->variable($relation->getExclusion())
-                ->isNull()
-        ;
+        $this->assertSame('foo', $relation->getName());
+        $this->assertInstanceOf('Hateoas\Configuration\Route', $relation->getHref());
+        $this->assertSame('user_get', $relation->getHref()->getName());
+        $this->assertSame(['id' => 'expr(object.getId())'], $relation->getHref()->getParameters());
+        $this->assertFalse($relation->getHref()->isAbsolute());
+        $this->assertInstanceOf('Hateoas\Configuration\Embedded', $relation->getEmbedded());
+        $this->assertSame('expr(object.getFoo())', $relation->getEmbedded()->getContent());
+        $this->assertNull($relation->getEmbedded()->getXmlElementName());
+        $this->assertNull($relation->getEmbedded()->getExclusion());
 
         $relation = $relations[$i++];
-        $this
-            ->string($relation->getName())
-                ->isEqualTo('bar')
-            ->string($relation->getHref())
-                ->isEqualTo('foo')
-            ->object($relation->getEmbedded())
-                ->isInstanceOf('Hateoas\Configuration\Embedded')
-                ->and($embedded = $relation->getEmbedded())
-                    ->variable($embedded->getContent())
-                        ->isEqualTo('data')
-                    ->string($embedded->getXmlElementName())
-                        ->isEqualTo('barTag')
-            ->variable($relation->getExclusion())
-                ->isNull()
-        ;
+        $this->assertSame('bar', $relation->getName());
+        $this->assertSame('foo', $relation->getHref());
+        $this->assertInstanceOf('Hateoas\Configuration\Embedded', $relation->getEmbedded());
+        $this->assertSame('data', $relation->getEmbedded()->getContent());
+        $this->assertSame('barTag', $relation->getEmbedded()->getXmlElementName());
+        $this->assertNull($relation->getEmbedded()->getExclusion());
 
         $relation = $relations[$i++];
-        $this
-            ->string($relation->getName())
-                ->isEqualTo('baz')
-            ->object($relation->getHref())
-                ->isInstanceOf('Hateoas\Configuration\Route')
-                ->and($route = $relation->getHref())
-                    ->string($route->getName())
-                        ->isEqualTo('user_get')
-                    ->array($route->getParameters())
-                        ->isEqualTo(array(
-                            'id' => 'expr(object.getId())',
-                        ))
-                    ->boolean($route->isAbsolute())
-                        ->isEqualTo(true)
-            ->variable($relation->getExclusion())
-                ->isNull()
-        ;
+        $this->assertSame('baz', $relation->getName());
+        $this->assertInstanceOf('Hateoas\Configuration\Route', $relation->getHref());
+        $this->assertSame('user_get', $relation->getHref()->getName());
+        $this->assertSame(['id' => 'expr(object.getId())'], $relation->getHref()->getParameters());
+        $this->assertTrue($relation->getHref()->isAbsolute());
+        $this->assertNull($relation->getExclusion());
 
         $relation = $relations[$i++];
-        $this
-            ->string($relation->getName())
-                ->isEqualTo('boom')
-            ->object($relation->getHref())
-                ->isInstanceOf('Hateoas\Configuration\Route')
-                ->and($route = $relation->getHref())
-                    ->string($route->getName())
-                        ->isEqualTo('user_get')
-                    ->array($route->getParameters())
-                        ->isEqualTo(array(
-                            'id' => 'expr(object.getId())',
-                        ))
-                    ->boolean($route->isAbsolute())
-                        ->isEqualTo(false)
-            ->variable($relation->getExclusion())
-                ->isNull()
-        ;
+        $this->assertSame('boom', $relation->getName());
+        $this->assertInstanceOf('Hateoas\Configuration\Route', $relation->getHref());
+        $this->assertSame('user_get', $relation->getHref()->getName());
+        $this->assertSame(['id' => 'expr(object.getId())'], $relation->getHref()->getParameters());
+        $this->assertFalse($relation->getHref()->isAbsolute());
+        $this->assertNull($relation->getExclusion());
 
         $relation = $relations[$i++];
-        $this
-            ->string($relation->getName())
-                ->isEqualTo('badaboom')
-            ->variable($relation->getHref())
-                ->isNull()
-            ->object($relation->getEmbedded())
-                ->isInstanceOf('Hateoas\Configuration\Embedded')
-                ->and($embedded = $relation->getEmbedded())
-                    ->string($embedded->getContent())
-                        ->isEqualTo('expr(object.getFoo())')
-            ->variable($relation->getExclusion())
-                ->isNull()
-        ;
+        $this->assertSame('badaboom', $relation->getName());
+        $this->assertNull($relation->getHref());
+        $this->assertInstanceOf('Hateoas\Configuration\Embedded', $relation->getEmbedded());
+        $this->assertSame('expr(object.getFoo())', $relation->getEmbedded()->getContent());
+        $this->assertNull($relation->getExclusion());
 
         $relation = $relations[$i++];
-        $this
-            ->string($relation->getName())
-                ->isEqualTo('hello')
-            ->variable($relation->getHref())
-                ->isEqualTo('/hello')
-            ->object($relation->getExclusion())
-                ->isInstanceOf('Hateoas\Configuration\Exclusion')
-                ->and($exclusion = $relation->getExclusion())
-                    ->array($exclusion->getGroups())
-                        ->isEqualTo(array('group1', 'group2'))
-                    ->float($exclusion->getSinceVersion())
-                        ->isEqualTo(1.0)
-                    ->float($exclusion->getUntilVersion())
-                        ->isEqualTo(2.2)
-                    ->integer($exclusion->getMaxDepth())
-                        ->isEqualTo(42)
-                    ->string($exclusion->getExcludeIf())
-                        ->isEqualTo('foo')
-            ->object($relation->getEmbedded())
-                ->isInstanceOf('Hateoas\Configuration\Embedded')
-                ->and($embedded = $relation->getEmbedded())
-                    ->string($embedded->getContent())
-                        ->isEqualTo('hello')
-                    ->object($embedded->getExclusion())
-                        ->isInstanceOf('Hateoas\Configuration\Exclusion')
-                        ->and($exclusion = $embedded->getExclusion())
-                            ->array($exclusion->getGroups())
-                                ->isEqualTo(array('group3', 'group4'))
-                            ->float($exclusion->getSinceVersion())
-                                ->isEqualTo(1.1)
-                            ->float($exclusion->getUntilVersion())
-                                ->isEqualTo(2.3)
-                            ->integer($exclusion->getMaxDepth())
-                                ->isEqualTo(43)
-                            ->string($exclusion->getExcludeIf())
-                                ->isEqualTo('bar')
-        ;
+        $this->assertSame('hello', $relation->getName());
+        $this->assertSame('/hello', $relation->getHref());
+        $this->assertInstanceOf('Hateoas\Configuration\Exclusion', $relation->getExclusion());
+        $this->assertSame(['group1', 'group2'], $relation->getExclusion()->getGroups());
+        $this->assertSame(1.0, $relation->getExclusion()->getSinceVersion());
+        $this->assertSame(2.2, $relation->getExclusion()->getUntilVersion());
+        $this->assertSame(42, $relation->getExclusion()->getMaxDepth());
+        $this->assertSame('foo', $relation->getExclusion()->getExcludeIf());
+        $this->assertInstanceOf('Hateoas\Configuration\Embedded', $relation->getEmbedded());
+        $this->assertSame('hello', $relation->getEmbedded()->getContent());
+        $this->assertInstanceOf('Hateoas\Configuration\Exclusion', $relation->getEmbedded()->getExclusion());
+        $this->assertSame(['group3', 'group4'], $relation->getEmbedded()->getExclusion()->getGroups());
+        $this->assertSame(1.1, $relation->getEmbedded()->getExclusion()->getSinceVersion());
+        $this->assertSame(2.3, $relation->getEmbedded()->getExclusion()->getUntilVersion());
+        $this->assertSame(43, $relation->getEmbedded()->getExclusion()->getMaxDepth());
+        $this->assertSame('bar', $relation->getEmbedded()->getExclusion()->getExcludeIf());
 
         /** @var $relations RelationProvider[] */
         $relationProviders = $classMetadata->getRelationProviders();
 
-        $this->array($relationProviders);
+        $this->assertInternalType('array', $relationProviders);
         foreach ($relationProviders as $relationProvider) {
-            $this
-                ->object($relationProvider)
-                    ->isInstanceOf('Hateoas\Configuration\RelationProvider')
-            ;
+            $this->assertInstanceOf('Hateoas\Configuration\RelationProvider', $relationProvider);
         }
 
         $relationProvider = current($relationProviders);
-        $this
-            ->string($relationProvider->getName())
-                ->isEqualTo('getRelations')
-        ;
+        $this->assertSame('getRelations', $relationProvider->getName());
     }
 
     public function testEmptyClass()
@@ -213,9 +117,6 @@ abstract class AbstractDriverTest extends TestCase
         $class = new \ReflectionClass('Hateoas\Tests\Fixtures\EmptyClass');
         $classMetadata = $driver->loadMetadataForClass($class);
 
-        $this
-            ->variable($classMetadata)
-                ->isNull()
-        ;
+        $this->assertNull($classMetadata);
     }
 }

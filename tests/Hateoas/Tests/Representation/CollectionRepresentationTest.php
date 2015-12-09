@@ -19,9 +19,8 @@ class CollectionRepresentationTest extends RepresentationTestCase
         );
         $collection->setXmlElementName('users');
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <users rel="authors">
@@ -31,9 +30,11 @@ class CollectionRepresentationTest extends RepresentationTestCase
 </collection>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
-            ->isEqualTo(<<<XML
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <resource rel="authors"><![CDATA[Adrien]]></resource>
@@ -41,11 +42,12 @@ XML
 </collection>
 
 XML
-            );
+            ,
+            $this->halHateoas->serialize($collection, 'xml')
+        );
 
-        $this
-            ->json($this->halHateoas->serialize($collection, 'json'))
-            ->isEqualTo(<<<JSON
+        $this->assertSame(
+            <<<JSON
 {
     "_embedded": {
         "authors": [
@@ -55,6 +57,8 @@ XML
     }
 }
 JSON
+            ,
+            $this->json($this->halHateoas->serialize($collection, 'json'))
         );
     }
 
@@ -96,9 +100,8 @@ JSON
         );
         $collection->setXmlElementName('users');
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <link rel="custom" href="/custom"/>
@@ -109,9 +112,11 @@ JSON
 </collection>
 
 XML
-            )
-            ->string($this->halHateoas->serialize($collection, 'xml'))
-            ->isEqualTo(<<<XML
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <link rel="custom" href="/custom"/>
@@ -120,11 +125,12 @@ XML
 </collection>
 
 XML
-            );
+            ,
+            $this->halHateoas->serialize($collection, 'xml')
+        );
 
-        $this
-            ->json($this->halHateoas->serialize($collection, 'json'))
-            ->isEqualTo(<<<JSON
+        $this->assertSame(
+            <<<JSON
 {
     "_links": {
         "custom": {
@@ -139,6 +145,8 @@ XML
     }
 }
 JSON
-            );
+            ,
+            $this->json($this->halHateoas->serialize($collection, 'json'))
+        );
     }
 }

@@ -15,16 +15,10 @@ class RelationPropertyMetadataTest extends TestCase
     {
         $propertyMetadata = new RelationPropertyMetadata();
 
-        $this
-            ->variable($propertyMetadata->groups)
-                ->isNull()
-            ->variable($propertyMetadata->sinceVersion)
-                ->isNull()
-            ->variable($propertyMetadata->untilVersion)
-                ->isNull()
-            ->variable($propertyMetadata->maxDepth)
-                ->isNull()
-        ;
+        $this->assertNull($propertyMetadata->groups);
+        $this->assertNull($propertyMetadata->sinceVersion);
+        $this->assertNull($propertyMetadata->untilVersion);
+        $this->assertNull($propertyMetadata->maxDepth);
     }
 
     public function testWithExclusion()
@@ -36,16 +30,10 @@ class RelationPropertyMetadataTest extends TestCase
             42
         ));
 
-        $this
-            ->variable($propertyMetadata->groups)
-                ->isEqualTo(array('foo', 'bar'))
-            ->variable($propertyMetadata->sinceVersion)
-                ->isEqualTo(1.1)
-            ->variable($propertyMetadata->untilVersion)
-                ->isEqualTo(2.2)
-            ->variable($propertyMetadata->maxDepth)
-                ->isEqualTo(42)
-        ;
+        $this->assertSame(['foo', 'bar'], $propertyMetadata->groups);
+        $this->assertSame(1.1, $propertyMetadata->sinceVersion);
+        $this->assertSame(2.2, $propertyMetadata->untilVersion);
+        $this->assertSame(42, $propertyMetadata->maxDepth);
     }
 
     public function testWithEmbeddedRelation()
@@ -56,14 +44,14 @@ class RelationPropertyMetadataTest extends TestCase
             new Embedded('bar', array('name' => 'John'))
         ));
 
-        $this
-            ->variable($propertyMetadata->name)
-                ->isEqualTo('foo')
-            ->variable($propertyMetadata->class)
-                ->isEqualTo('Hateoas\Configuration\Relation')
-            ->variable($propertyMetadata->type)
-                ->isEqualTo(array('name' => 'Hateoas\Model\Embedded', 'params' => array()))
-        ;
+        $this->assertSame('foo', $propertyMetadata->name);
+        $this->assertSame('Hateoas\Configuration\Relation', $propertyMetadata->class);
+        $this->assertSame(
+            [
+                'name' => 'Hateoas\Model\Embedded',
+                'params' => [],
+            ], $propertyMetadata->type
+        );
     }
 
     public function testWithLinkRelation()
@@ -73,13 +61,13 @@ class RelationPropertyMetadataTest extends TestCase
             new Route('/route', array('foo' => 'bar'))
         ));
 
-        $this
-            ->variable($propertyMetadata->name)
-                ->isEqualTo('foo')
-            ->variable($propertyMetadata->class)
-                ->isEqualTo('Hateoas\Configuration\Relation')
-            ->variable($propertyMetadata->type)
-                ->isEqualTo(array('name' => 'Hateoas\Model\Link', 'params' => array()))
-        ;
+        $this->assertSame('foo', $propertyMetadata->name);
+        $this->assertSame('Hateoas\Configuration\Relation', $propertyMetadata->class);
+        $this->assertSame(
+            [
+                'name' => 'Hateoas\Model\Link',
+                'params' => [],
+            ], $propertyMetadata->type
+        );
     }
 }

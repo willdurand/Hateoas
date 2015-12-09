@@ -46,32 +46,25 @@ class PagerfantaFactoryTest extends RepresentationTestCase
             array()
         );
 
-        $this->variable($representation1->getInline())->isEqualTo(new CollectionRepresentation($results));
-        $this->variable($representation2->getInline())->isEqualTo(array());
+        $this->assertEquals(new CollectionRepresentation($results), $representation1->getInline());
+        $this->assertSame([], $representation2->getInline());
 
         foreach (array($representation1, $representation2) as $representation) {
-            $this
-                ->object($representation)
-                    ->isInstanceOf('Hateoas\Representation\PaginatedRepresentation')
-                ->variable($representation->getPage())
-                    ->isEqualTo(2)
-                ->variable($representation->getLimit())
-                    ->isEqualTo(20)
-                ->variable($representation->getPages())
-                    ->isEqualTo(4)
-                ->variable($representation->getTotal())
-                    ->isEqualTo(100)
-                ->array($representation->getParameters())
-                    ->isEqualTo(array(
-                        'query' => 'hateoas',
-                        'p' => 2,
-                        'l' => 20,
-                    ))
-                ->string($representation->getPageParameterName())
-                    ->isEqualTo('p')
-                ->string($representation->getLimitParameterName())
-                    ->isEqualTo('l')
-            ;
+            $this->assertInstanceOf('Hateoas\Representation\PaginatedRepresentation', $representation);
+            $this->assertSame(2, $representation->getPage());
+            $this->assertSame(20, $representation->getLimit());
+            $this->assertSame(4, $representation->getPages());
+            $this->assertSame(100, $representation->getTotal());
+            $this->assertSame(
+                [
+                    'query' => 'hateoas',
+                    'p' => 2,
+                    'l' => 20,
+                ],
+                $representation->getParameters()
+            );
+            $this->assertSame('p', $representation->getPageParameterName());
+            $this->assertSame('l', $representation->getLimitParameterName());
         }
     }
 
@@ -86,10 +79,8 @@ class PagerfantaFactoryTest extends RepresentationTestCase
 
         $collection = $factory->createRepresentation($pagerfanta, new Route('my_route'));
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1" total="3">
   <entry rel="items">
@@ -103,12 +94,11 @@ class PagerfantaFactoryTest extends RepresentationTestCase
 </collection>
 
 XML
-            );
-
-        $this
-            ->json($this->hateoas->serialize($collection, 'json'))
-            ->isEqualTo(
-                <<<JSON
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
+        $this->assertSame(
+            <<<JSON
 {
     "page": 1,
     "limit": 10,
@@ -134,7 +124,9 @@ XML
     }
 }
 JSON
-            );
+            ,
+            $this->json($this->hateoas->serialize($collection, 'json'))
+        );
     }
 
     public function testGenerateAbsoluteURIs()
@@ -155,10 +147,8 @@ JSON
             )
         );
 
-        $this
-            ->string($this->hateoas->serialize($collection, 'xml'))
-            ->isEqualTo(
-                <<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1" total="3">
   <entry rel="items">
@@ -172,6 +162,8 @@ JSON
 </collection>
 
 XML
-            );
+            ,
+            $this->hateoas->serialize($collection, 'xml')
+        );
     }
 }

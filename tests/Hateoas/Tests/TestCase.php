@@ -2,9 +2,7 @@
 
 namespace Hateoas\Tests;
 
-use Hautelook\Frankenstein\TestCase as BaseTestCase;
-
-abstract class TestCase extends BaseTestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     public static function rootPath()
     {
@@ -17,8 +15,6 @@ abstract class TestCase extends BaseTestCase
             throw new \PHPUnit_Framework_IncompleteTestError('This test requires PHP 5.4+');
         }
 
-        return $this->string(
-            json_encode(json_decode($string), JSON_PRETTY_PRINT)
-        );
+        return json_encode(json_decode($string), JSON_PRETTY_PRINT);
     }
 }

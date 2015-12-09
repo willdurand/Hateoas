@@ -30,9 +30,8 @@ class XmlSerializerTest extends TestCase
             $contextProphecy->reveal()
         );
 
-        $this
-            ->string($xmlSerializationVisitor->getResult())
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <link rel="self" href="/users/42"/>
@@ -40,7 +39,9 @@ class XmlSerializerTest extends TestCase
 </root>
 
 XML
-            );
+            ,
+            $xmlSerializationVisitor->getResult()
+        );
     }
 
     public function testSerializeEmbeddeds()
@@ -60,9 +61,8 @@ XML
             $contextProphecy->reveal()
         );
 
-        $this
-            ->string($xmlSerializationVisitor->getResult())
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <person rel="friend">
@@ -71,7 +71,9 @@ XML
 </root>
 
 XML
-            );
+            ,
+            $xmlSerializationVisitor->getResult()
+        );
     }
 
     public function testSerializeAdrienBrault()
@@ -79,9 +81,8 @@ XML
         $hateoas      = HateoasBuilder::buildHateoas();
         $adrienBrault = new AdrienBrault();
 
-        $this
-            ->string($hateoas->serialize($adrienBrault, 'xml'))
-            ->isEqualTo(<<<XML
+        $this->assertSame(
+            <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
   <first_name><![CDATA[Adrien]]></first_name>
@@ -107,7 +108,9 @@ XML
 </result>
 
 XML
-            );
+            ,
+            $hateoas->serialize($adrienBrault, 'xml')
+        );
     }
 
     private function createXmlSerializationVisitor()

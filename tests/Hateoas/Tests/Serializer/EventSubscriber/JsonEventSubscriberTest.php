@@ -3,6 +3,7 @@
 namespace Hateoas\Tests\Serializer\EventSubscriber;
 
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
+use Prophecy\Argument;
 
 class JsonEventSubscriberTest extends AbstractEventSubscriberTest
 {
@@ -10,7 +11,7 @@ class JsonEventSubscriberTest extends AbstractEventSubscriberTest
     {
         $inlineDeferrerProphecy = $this->prophesize('Hateoas\Serializer\Metadata\InlineDeferrer');
         $inlineDeferrerProphecy
-            ->handleItems($this->arg->cetera())
+            ->handleItems(Argument::cetera())
             ->will(function ($args) {
                 return $args[1];
             })

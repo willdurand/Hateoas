@@ -192,9 +192,8 @@ class JsonHalSerializerTest extends TestCase
         $hateoas      = HateoasBuilder::buildHateoas();
         $adrienBrault = new AdrienBrault();
 
-        $this
-            ->json($hateoas->serialize($adrienBrault, 'json'))
-            ->isEqualTo(<<<JSON
+        $this->assertSame(
+            <<<JSON
 {
     "first_name": "Adrien",
     "last_name": "Brault",
@@ -230,7 +229,9 @@ class JsonHalSerializerTest extends TestCase
     }
 }
 JSON
-            );
+            ,
+            $this->json($hateoas->serialize($adrienBrault, 'json'))
+        );
     }
 
     public function testSerializeInlineJson()
@@ -243,9 +244,8 @@ JSON
 
         $hateoas = HateoasBuilder::buildHateoas();
 
-        $this
-            ->json($hateoas->serialize($foo1, 'json'))
-            ->isEqualTo(<<<JSON
+        $this->assertSame(
+            <<<JSON
 {
     "_links": {
         "self3": {
@@ -265,6 +265,8 @@ JSON
     }
 }
 JSON
-            );
+            ,
+            $this->json($hateoas->serialize($foo1, 'json'))
+        );
     }
 }

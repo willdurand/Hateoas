@@ -12,21 +12,23 @@ class UrlGeneratorRegistryTest extends TestCase
         $defaultUrlGenerator = $this->mockUrlGenerator();
         $registry = new UrlGeneratorRegistry($defaultUrlGenerator);
 
-        $this
-            ->object($registry->get(UrlGeneratorRegistry::DEFAULT_URL_GENERATOR_KEY))
-                ->isEqualTo($defaultUrlGenerator)
-            ->object($registry->get())
-                ->isEqualTo($defaultUrlGenerator)
-            ->exception(function () use ($registry) {
-                $registry->get('foo');
-            })
-                ->isInstanceOf('InvalidArgumentException')
-                    ->hasMessage('The "foo" url generator is not set. Available url generators are: default.')
+        $this->assertSame($defaultUrlGenerator, $registry->get(UrlGeneratorRegistry::DEFAULT_URL_GENERATOR_KEY));
+        $this->assertSame($defaultUrlGenerator, $registry->get());
 
-            ->when($registry->set('foo', $fooUrlGenerator = $this->mockUrlGenerator()))
-            ->object($registry->get('foo'))
-                ->isEqualTo($fooUrlGenerator)
-        ;
+        $exception = null;
+        try {
+            $registry->get('foo');
+        } catch (\Exception $e) {
+            $exception = $e;
+        }
+        $this->assertInstanceOf('InvalidArgumentException', $exception);
+        $this->assertSame(
+            'The "foo" url generator is not set. Available url generators are: default.',
+            $exception->getMessage()
+        );
+
+        $registry->set('foo', $fooUrlGenerator = $this->mockUrlGenerator());
+        $this->assertSame($fooUrlGenerator, $registry->get('foo'));
     }
 
     private function mockUrlGenerator()

@@ -20,16 +20,10 @@ class LinkFactoryTest extends TestCase
             new Relation('foo', '/bar', null, array('templated' => false))
         );
 
-        $this
-            ->object($link)
-                ->isInstanceOf('Hateoas\Model\Link')
-            ->string($link->getRel())
-                ->isEqualTo('foo')
-            ->string($link->getHref())
-                ->isEqualTo('/bar')
-            ->array($link->getAttributes())
-                ->isEqualTo(array('templated' => false))
-        ;
+        $this->assertInstanceOf('Hateoas\Model\Link', $link);
+        $this->assertSame('foo', $link->getRel());
+        $this->assertSame('/bar', $link->getHref());
+        $this->assertSame(['templated' => false], $link->getAttributes());
     }
 
     public function testRoute()
@@ -39,14 +33,9 @@ class LinkFactoryTest extends TestCase
             new Relation('foo', new Route('/route', array('foo' => 'bar')))
         );
 
-        $this
-            ->object($link)
-                ->isInstanceOf('Hateoas\Model\Link')
-            ->string($link->getRel())
-                ->isEqualTo('foo')
-            ->string($link->getHref())
-                ->isEqualTo('/route?foo=bar')
-        ;
+        $this->assertInstanceOf('Hateoas\Model\Link', $link);
+        $this->assertSame('foo', $link->getRel());
+        $this->assertSame('/route?foo=bar', $link->getHref());
     }
 
     public function testExpressions()
@@ -56,16 +45,10 @@ class LinkFactoryTest extends TestCase
             new Relation('expr(object.getRel())', 'expr(object.getUrl())', null, array('expr(object.getRel())' => 'expr(object.getUrl())'))
         );
 
-        $this
-            ->object($link)
-                ->isInstanceOf('Hateoas\Model\Link')
-            ->string($link->getRel())
-                ->isEqualTo('tested-rel')
-            ->string($link->getHref())
-                ->isEqualTo('/tested-url')
-            ->array($link->getAttributes())
-                ->isEqualTo(array('tested-rel' => '/tested-url'))
-        ;
+        $this->assertInstanceOf('Hateoas\Model\Link', $link);
+        $this->assertSame('tested-rel', $link->getRel());
+        $this->assertSame('/tested-url', $link->getHref());
+        $this->assertSame(['tested-rel' => '/tested-url'], $link->getAttributes());
     }
 
     public function testParametersExpression()
@@ -75,14 +58,9 @@ class LinkFactoryTest extends TestCase
             new Relation('foo', new Route('/route', 'expr(object.getParameters())'))
         );
 
-        $this
-            ->object($link)
-                ->isInstanceOf('Hateoas\Model\Link')
-            ->string($link->getRel())
-                ->isEqualTo('foo')
-            ->string($link->getHref())
-                ->isEqualTo('/route?a=b')
-        ;
+        $this->assertInstanceOf('Hateoas\Model\Link', $link);
+        $this->assertSame('foo', $link->getRel());
+        $this->assertSame('/route?a=b', $link->getHref());
     }
 
     public function testParametersDeepArrayExpression()
@@ -100,14 +78,9 @@ class LinkFactoryTest extends TestCase
             )
         );
 
-        $this
-            ->object($link)
-                ->isInstanceOf('Hateoas\Model\Link')
-            ->string($link->getRel())
-                ->isEqualTo('foo')
-            ->string($link->getHref())
-                ->isEqualTo('/route?tested-rel%5B0%5D=tested-rel')
-        ;
+        $this->assertInstanceOf('Hateoas\Model\Link', $link);
+        $this->assertSame('foo', $link->getRel());
+        $this->assertSame('/route?tested-rel%5B0%5D=tested-rel', $link->getHref());
     }
 
     public function testRouteRequiresGenerator()
@@ -117,32 +90,27 @@ class LinkFactoryTest extends TestCase
 
         $linkFactory = new LinkFactory($expressionEvaluator, $urlGeneratorRegistry);
 
-        $this
-            ->exception(function () use ($linkFactory) {
-                $linkFactory->createLink(
-                    new TestedObject(),
-                    new Relation('foo', new Route('/route', array('foo' => 'bar')))
-                );
-            })
-                ->isInstanceOf('RuntimeException')
-                    ->hasMessage('You cannot use a route without an url generator.')
-        ;
+        $this->setExpectedException('RuntimeException', 'You cannot use a route without an url generator.');
+
+        $linkFactory->createLink(
+            new TestedObject(),
+            new Relation('foo', new Route('/route', array('foo' => 'bar')))
+        );
     }
 
     public function testRouteParamatersNotArray()
     {
         $linkFactory = $this->createLinkFactory();
 
-        $this
-            ->exception(function () use ($linkFactory) {
-                $linkFactory->createLink(
-                    new TestedObject(),
-                    new Relation('foo', new Route('/route', 'yolo'))
-                );
-            })
-                ->isInstanceOf('RuntimeException')
-                    ->hasMessage('The route parameters should be an array, string given. Maybe you forgot to wrap the expression in expr(...).')
-        ;
+        $this->setExpectedException(
+            'RuntimeException',
+            'The route parameters should be an array, string given. Maybe you forgot to wrap the expression in expr(...).'
+        );
+
+        $linkFactory->createLink(
+            new TestedObject(),
+            new Relation('foo', new Route('/route', 'yolo'))
+        );
     }
 
     private function createLinkFactory()
