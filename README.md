@@ -7,6 +7,7 @@ Status](https://secure.travis-ci.org/willdurand/Hateoas.png)](http://travis-ci.o
 Score](https://scrutinizer-ci.com/g/willdurand/Hateoas/badges/quality-score.png?s=45b5a825f99de4d29c98b5103f59e060139cf354)](https://scrutinizer-ci.com/g/willdurand/Hateoas/)
 [![Latest Stable
 Version](https://poser.pugx.org/willdurand/hateoas/v/stable.png)](https://packagist.org/packages/willdurand/hateoas)
+![PHP7 ready](https://img.shields.io/badge/PHP7-ready-green.svg)
 
 A PHP library to support implementing representations for HATEOAS REST web
 services.
@@ -1088,10 +1089,10 @@ file for more details.
 ```yaml
 Acme\Demo\Representation\User:
     relations:
-        -   
+        -
             rel: self
             href: http://acme.com/foo/1
-        -   
+        -
             rel: expr(object.getFriendsDynamicRel())
             href:
                 route: user_friends
