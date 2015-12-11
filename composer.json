@@ -26,7 +26,8 @@
         "symfony/routing": "~2.0 || ~3.0",
         "symfony/dependency-injection": "~2.0 || ~3.0",
         "pagerfanta/pagerfanta": "~1.0",
-        "twig/twig": "~1.12"
+        "twig/twig": "~1.12",
+        "knplabs/knp-components":   "~1.2"
     },
     "suggest": {
         "symfony/yaml": "To use yaml based configuration.",
