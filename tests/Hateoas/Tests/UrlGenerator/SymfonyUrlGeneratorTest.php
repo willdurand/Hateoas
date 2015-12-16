@@ -14,6 +14,10 @@ class SymfonyUrlGeneratorTest extends TestCase
         $absolute       = true;
         $expectedResult = '/users/42';
 
+        if (\Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_PATH === 1) {
+            $absolute = \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL;
+        }
+
         $symfonyUrlGeneratorProphecy = $this->prophesize('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
         $symfonyUrlGeneratorProphecy
             ->generate($name, $parameters, $absolute)
