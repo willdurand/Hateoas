@@ -56,8 +56,8 @@ class LinkFactory
                 : $this->expressionEvaluator->evaluate($href->getParameters(), $object)
             ;
             $isAbsolute = $this->expressionEvaluator->evaluate($href->isAbsolute(), $object)
-                ? SymfonyUrlGeneratorInterface::ABSOLUTE_PATH
-                : SymfonyUrlGeneratorInterface::ABSOLUTE_URL
+                ? SymfonyUrlGeneratorInterface::ABSOLUTE_URL
+                : SymfonyUrlGeneratorInterface::ABSOLUTE_PATH
             ;
 
             if (!is_array($parameters)) {
