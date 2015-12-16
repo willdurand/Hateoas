@@ -7,7 +7,6 @@ use Hateoas\Configuration\Route;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Link;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface as SymfonyUrlGeneratorInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -55,10 +54,7 @@ class LinkFactory
                 ? $this->expressionEvaluator->evaluateArray($href->getParameters(), $object)
                 : $this->expressionEvaluator->evaluate($href->getParameters(), $object)
             ;
-            $isAbsolute = $this->expressionEvaluator->evaluate($href->isAbsolute(), $object)
-                ? SymfonyUrlGeneratorInterface::ABSOLUTE_PATH
-                : SymfonyUrlGeneratorInterface::ABSOLUTE_URL
-            ;
+            $isAbsolute = $this->expressionEvaluator->evaluate($href->isAbsolute(), $object);
 
             if (!is_array($parameters)) {
                 throw new \RuntimeException(
