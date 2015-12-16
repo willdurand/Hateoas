@@ -27,6 +27,7 @@
         "symfony/dependency-injection": "~2.0 || ~3.0",
         "pagerfanta/pagerfanta": "~1.0",
         "twig/twig": "~1.12",
+        "symfony/event-dispatcher": "~2.5",
         "knplabs/knp-components":   "~1.2"
     },
     "suggest": {
