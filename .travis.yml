@@ -11,10 +11,13 @@ matrix:
     fast_finish: true
     allow_failures:
         - php: hhvm
+env:
+  - PREFER_LOWEST="--prefer-lowest"
+  - PREFER_LOWEST=""
 
 before_script:
     - composer self-update
-    - composer install --prefer-dist --no-interaction
+    - composer update --prefer-dist --no-interaction $PREFER_LOWEST
 
 script:
     - ./bin/phpunit --coverage-text
