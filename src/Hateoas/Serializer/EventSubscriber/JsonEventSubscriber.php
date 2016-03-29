@@ -80,6 +80,8 @@ class JsonEventSubscriber implements EventSubscriberInterface
         $object  = $event->getObject();
         $context = $event->getContext();
 
+        $context->startVisiting($object);
+
         $embeddeds = $this->embeddedsFactory->create($object, $context);
         $links     = $this->linksFactory->create($object, $context);
 
@@ -93,5 +95,7 @@ class JsonEventSubscriber implements EventSubscriberInterface
         if (count($embeddeds) > 0) {
             $this->jsonSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
         }
+
+        $context->stopVisiting($object);
     }
 }

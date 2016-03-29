@@ -3,6 +3,8 @@
 namespace Hateoas\Tests;
 
 use Hateoas\HateoasBuilder;
+use Hateoas\Tests\Fixtures\CircularReference1;
+use Hateoas\Tests\Fixtures\CircularReference2;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use JMS\Serializer\SerializationContext;
 use Hateoas\Tests\Fixtures\AdrienBrault;
@@ -83,6 +85,47 @@ XML
 XML
             ,
             $hateoas->serialize(new WithAlternativeRouter(), 'xml')
+        );
+    }
+
+    public function testCyclicalReferences()
+    {
+        $hateoas = HateoasBuilder::create()->build();
+
+        $reference1 = new CircularReference1();
+        $reference2 = new CircularReference2();
+        $reference1->setReference2($reference2);
+        $reference2->setReference1($reference1);
+
+        $this->assertSame(
+            <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <name><![CDATA[reference1]]></name>
+  <entry rel="reference2">
+    <name><![CDATA[reference2]]></name>
+    <entry rel="reference1"/>
+  </entry>
+</result>
+
+XML
+            ,
+            $hateoas->serialize($reference1, 'xml')
+        );
+
+        $this->assertSame(
+            '{'
+                .'"name":"reference1",'
+                .'"_embedded":{'
+                    .'"reference2":{'
+                        .'"name":"reference2",'
+                        .'"_embedded":{'
+                            .'"reference1":null'
+                        .'}'
+                    .'}'
+                .'}'
+            .'}',
+            $hateoas->serialize($reference1, 'json')
         );
     }
 }
