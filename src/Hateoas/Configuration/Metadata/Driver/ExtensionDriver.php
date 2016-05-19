@@ -2,8 +2,8 @@
 
 namespace Hateoas\Configuration\Metadata\Driver;
 
-use Hateoas\Configuration\ConfigurationExtensionInterface;
 use Hateoas\Configuration\Metadata\ClassMetadata;
+use Hateoas\Configuration\Metadata\ConfigurationExtensionInterface;
 use Metadata\Driver\DriverInterface;
 
 /**
@@ -21,7 +21,7 @@ class ExtensionDriver implements DriverInterface
      */
     private $extensions;
 
-    public function __construct(DriverInterface $delegate, array $extensions)
+    public function __construct(DriverInterface $delegate, array $extensions = [])
     {
         $this->delegate   = $delegate;
         $this->extensions = $extensions;
@@ -53,5 +53,12 @@ class ExtensionDriver implements DriverInterface
         }
 
         return $metadata;
+    }
+
+    /**
+     * @param ConfigurationExtensionInterface $extension
+     */
+    public function registerExtension(ConfigurationExtensionInterface $extension) {
+        $this->extensions[] = $extension;
     }
 }
