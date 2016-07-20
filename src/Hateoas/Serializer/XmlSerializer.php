@@ -3,6 +3,7 @@
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Embedded;
+use Hateoas\Serializer\Metadata\EmbeddedPropertyMetadata;
 use Hateoas\Util\ClassUtils;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
@@ -63,14 +64,12 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
 
-                    if (null !== $node = $context->accept($entry)) {
-                        $visitor->getCurrentNode()->appendChild($node);
-                    }
+                    $this->acceptDataAndAppend($entry, $visitor, $context);
 
                     $visitor->revertCurrentNode();
                 }
-            } elseif (null !== $node = $context->accept($embedded->getData())) {
-                $visitor->getCurrentNode()->appendChild($node);
+            } else {
+                $this->acceptDataAndAppend($embedded->getData(), $visitor, $context);
             }
 
             $visitor->revertCurrentNode();
@@ -91,5 +90,16 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
         }
 
         return $elementName ?: 'entry';
+    }
+
+    private function acceptDataAndAppend($data, XmlSerializationVisitor $visitor, SerializationContext $context)
+    {
+        $context->pushPropertyMetadata(new EmbeddedPropertyMetadata());
+
+        if (null !== $node = $context->accept($data)) {
+            $visitor->getCurrentNode()->appendChild($node);
+        }
+
+        $context->popPropertyMetadata();
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Hateoas\Serializer;
 
+use Hateoas\Model\Embedded;
 use Hateoas\Representation\Resource;
+use Hateoas\Serializer\Metadata\EmbeddedPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
 
@@ -53,9 +55,7 @@ class XmlHalSerializer implements XmlSerializerInterface
                     $visitor->setCurrentNode($entryNode);
                     $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
-                    if (null !== $node = $context->accept($data)) {
-                        $visitor->getCurrentNode()->appendChild($node);
-                    }
+                    $this->acceptDataAndAppend($data, $visitor, $context);
 
                     $visitor->revertCurrentNode();
                 }
@@ -69,11 +69,20 @@ class XmlHalSerializer implements XmlSerializerInterface
             $visitor->setCurrentNode($entryNode);
             $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
-            if (null !== $node = $context->accept($embedded->getData())) {
-                $visitor->getCurrentNode()->appendChild($node);
-            }
+            $this->acceptDataAndAppend($embedded->getData(), $visitor, $context);
 
             $visitor->revertCurrentNode();
         }
+    }
+
+    private function acceptDataAndAppend($data, XmlSerializationVisitor $visitor, SerializationContext $context)
+    {
+        $context->pushPropertyMetadata(new EmbeddedPropertyMetadata());
+
+        if (null !== $node = $context->accept($data)) {
+            $visitor->getCurrentNode()->appendChild($node);
+        }
+
+        $context->popPropertyMetadata();
     }
 }
