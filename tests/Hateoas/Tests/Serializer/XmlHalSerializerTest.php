@@ -3,9 +3,12 @@
 namespace Hateoas\Tests\Serializer;
 
 use Hateoas\HateoasBuilder;
+use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Tests\Fixtures\AdrienBrault;
+use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\TestCase;
+use JMS\Serializer\SerializationContext;
 
 class XmlHalSerializerTest extends TestCase
 {
@@ -42,6 +45,31 @@ class XmlHalSerializerTest extends TestCase
 XML
             ,
             $hateoas->serialize($adrienBrault, 'xml')
+        );
+    }
+
+    public function testGh236()
+    {
+        $data = new CollectionRepresentation([new Gh236Foo()]);
+
+        $hateoas = HateoasBuilder::create()
+            ->setXmlSerializer(new XmlHalSerializer())
+            ->build();
+
+        $this->assertSame(
+            <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<collection>
+  <resource rel="items">
+    <bar>
+      <xxx><![CDATA[yyy]]></xxx>
+    </bar>
+  </resource>
+</collection>
+
+XML
+            ,
+            $hateoas->serialize($data, 'xml', SerializationContext::create()->enableMaxDepthChecks())
         );
     }
 }

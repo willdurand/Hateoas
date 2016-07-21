@@ -5,12 +5,18 @@ namespace Hateoas\Tests\Serializer;
 use Hateoas\HateoasBuilder;
 use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
+use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Serializer\JsonHalSerializer;
+use Hateoas\Serializer\Metadata\EmbeddedPropertyMetadata;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\Foo1;
 use Hateoas\Tests\Fixtures\Foo2;
 use Hateoas\Tests\Fixtures\Foo3;
+use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\TestCase;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerBuilder;
+use Prophecy\Argument;
 
 class JsonHalSerializerTest extends TestCase
 {
@@ -75,6 +81,8 @@ class JsonHalSerializerTest extends TestCase
                 ->willReturnArgument()
             ;
         }
+        $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\EmbeddedPropertyMetadata'))->shouldBeCalled();
+        $contextProphecy->popPropertyMetadata()->shouldBeCalled();
 
         $embeddeds = array(
             new Embedded('friend', array('name' => 'John')),
@@ -267,6 +275,33 @@ JSON
 JSON
             ,
             $this->json($hateoas->serialize($foo1, 'json'))
+        );
+    }
+
+    public function testGh236()
+    {
+        $data = new CollectionRepresentation([new Gh236Foo()]);
+
+        $hateoas = HateoasBuilder::buildHateoas();
+
+        $this->assertSame(
+            <<<JSON
+{
+    "_embedded": {
+        "items": [
+            {
+                "bar": {
+                    "xxx": "yyy"
+                }
+            }
+        ]
+    }
+}
+JSON
+            ,
+            $this->json(
+                $hateoas->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks())
+            )
         );
     }
 }
