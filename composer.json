@@ -19,7 +19,8 @@
         "jms/metadata": "~1.1",
         "jms/serializer": "~1.0",
         "symfony/expression-language": "~2.4 || ~3.0",
-        "phpoption/phpoption": ">=1.1.0,<2.0-dev"
+        "phpoption/phpoption": ">=1.1.0,<2.0-dev",
+        "psr/link": "1.0.x-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.5",
@@ -33,6 +34,10 @@
         "symfony/yaml": "To use yaml based configuration.",
         "symfony/routing": "To use the SymfonyRouteFactory.",
         "twig/twig": "To use the Twig extensions."
+    },
+    "provide": {
+        "psr/link": "1.0.0",
+        "psr/link-implementation": "1.0.0"
     },
     "autoload": {
         "psr-0": { "Hateoas": "src/" }
