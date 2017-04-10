@@ -61,9 +61,12 @@ XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection>
   <resource rel="items">
-    <bar>
+    <a>
       <xxx><![CDATA[yyy]]></xxx>
-    </bar>
+    </a>
+    <resource rel="b_embed">
+      <xxx><![CDATA[zzz]]></xxx>
+    </resource>
   </resource>
 </collection>
 

@@ -81,7 +81,7 @@ class JsonHalSerializerTest extends TestCase
                 ->willReturnArgument()
             ;
         }
-        $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\EmbeddedPropertyMetadata'))->shouldBeCalled();
+        $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
         $contextProphecy->popPropertyMetadata()->shouldBeCalled();
 
         $embeddeds = array(
@@ -290,8 +290,13 @@ JSON
     "_embedded": {
         "items": [
             {
-                "bar": {
+                "a": {
                     "xxx": "yyy"
+                },
+                "_embedded": {
+                    "b_embed": {
+                        "xxx": "zzz"
+                    }
                 }
             }
         ]

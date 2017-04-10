@@ -128,9 +128,12 @@ XML
 <collection>
   <entry rel="items">
     <entry>
-      <bar>
+      <a>
         <xxx><![CDATA[yyy]]></xxx>
-      </bar>
+      </a>
+      <entry rel="b_embed">
+        <xxx><![CDATA[zzz]]></xxx>
+      </entry>
     </entry>
   </entry>
 </collection>
