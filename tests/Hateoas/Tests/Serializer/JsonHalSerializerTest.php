@@ -7,7 +7,6 @@ use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Serializer\JsonHalSerializer;
-use Hateoas\Serializer\Metadata\EmbeddedPropertyMetadata;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\Foo1;
