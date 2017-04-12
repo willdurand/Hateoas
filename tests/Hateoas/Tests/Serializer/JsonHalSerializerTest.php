@@ -8,6 +8,7 @@ use Hateoas\Model\Link;
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\Metadata\EmbeddedPropertyMetadata;
+use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\Foo1;
 use Hateoas\Tests\Fixtures\Foo2;
@@ -15,7 +16,6 @@ use Hateoas\Tests\Fixtures\Foo3;
 use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializerBuilder;
 use Prophecy\Argument;
 
 class JsonHalSerializerTest extends TestCase
@@ -85,12 +85,12 @@ class JsonHalSerializerTest extends TestCase
         $contextProphecy->popPropertyMetadata()->shouldBeCalled();
 
         $embeddeds = array(
-            new Embedded('friend', array('name' => 'John')),
-            new Embedded('foo', array('name' => 'Bar')),
-            new Embedded('foo', array('name' => 'Baz')),
-            new Embedded('bar', array('name' => 'Foo')),
-            new Embedded('bar', array('name' => 'Baz')),
-            new Embedded('bar', array('name' => 'Buzz')),
+            new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata()),
+            new Embedded('foo', array('name' => 'Bar'), new RelationPropertyMetadata()),
+            new Embedded('foo', array('name' => 'Baz'), new RelationPropertyMetadata()),
+            new Embedded('bar', array('name' => 'Foo'), new RelationPropertyMetadata()),
+            new Embedded('bar', array('name' => 'Baz'), new RelationPropertyMetadata()),
+            new Embedded('bar', array('name' => 'Buzz'), new RelationPropertyMetadata()),
         );
 
         $expectedEmbeddedded = array(

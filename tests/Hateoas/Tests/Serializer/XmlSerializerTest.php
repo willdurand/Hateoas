@@ -6,6 +6,7 @@ use Hateoas\HateoasBuilder;
 use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
 use Hateoas\Representation\CollectionRepresentation;
+use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\Gh236Foo;
@@ -52,7 +53,7 @@ XML
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
 
         $embeddeds = array(
-            new Embedded('friend', array('name' => 'John'), 'person'),
+            new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata(), 'person'),
         );
 
         $xmlSerializationVisitor = $this->createXmlSerializationVisitor();

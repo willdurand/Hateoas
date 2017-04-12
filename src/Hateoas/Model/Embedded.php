@@ -34,12 +34,12 @@ class Embedded
      * @param string|null $xmlElementName
      * @param RelationPropertyMetadata $metadata
      */
-    public function __construct($rel, $data, $xmlElementName = null, RelationPropertyMetadata $metadata = null)
+    public function __construct($rel, $data, RelationPropertyMetadata $metadata, $xmlElementName = null)
     {
         $this->rel            = $rel;
         $this->data           = $data;
+        $this->metadata       = $metadata;
         $this->xmlElementName = $xmlElementName;
-        $this->metadata = $metadata;
     }
 
     /**
