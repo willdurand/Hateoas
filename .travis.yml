@@ -5,10 +5,10 @@ cache:
     - $COMPOSER_CACHE_DIR
 
 php:
-  - 5.4
   - 5.5
   - 5.6
   - 7.0
+  - 7.1
   - hhvm
 
 allow_failures:
@@ -23,10 +23,6 @@ env:
   - SYMFONY_VERSION=3.0.*
 
 matrix:
-  #Symfony 3.0 requires PHP 5.5
-  exclude:
-    - php: 5.4
-      env: SYMFONY_VERSION=3.0.*
   fast_finish: true
   allow_failures:
     - php: hhvm
