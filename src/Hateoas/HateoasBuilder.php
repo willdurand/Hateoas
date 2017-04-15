@@ -173,7 +173,8 @@ class HateoasBuilder
             ),
         );
 
-        $this->serializerBuilder
+        $this
+            ->serializerBuilder
             ->addDefaultListeners()
             ->configureListeners(function (EventDispatcherInterface $dispatcher) use ($eventSubscribers) {
                 foreach ($eventSubscribers as $eventSubscriber) {
@@ -326,6 +327,8 @@ class HateoasBuilder
     {
         $this->debug = (boolean) $debug;
 
+        $this->serializerBuilder->setDebug($debug);
+
         return $this;
     }
 
@@ -344,7 +347,9 @@ class HateoasBuilder
             throw new \InvalidArgumentException(sprintf('The cache directory "%s" is not writable.', $dir));
         }
 
-        $this->cacheDir = $dir;
+        $this->cacheDir = $dir . '/hateoas';
+
+        $this->serializerBuilder->setCacheDir($dir . '/serializer');
 
         return $this;
     }
@@ -357,6 +362,8 @@ class HateoasBuilder
     public function includeInterfaceMetadata($include)
     {
         $this->includeInterfaceMetadata = (boolean) $include;
+
+        $this->serializerBuilder->includeInterfaceMetadata($include);
 
         return $this;
     }
@@ -379,6 +386,8 @@ class HateoasBuilder
         }
 
         $this->metadataDirs = $namespacePrefixToDirMap;
+
+        $this->serializerBuilder->setMetadataDirs($namespacePrefixToDirMap);
 
         return $this;
     }
@@ -418,6 +427,8 @@ class HateoasBuilder
 
         $this->metadataDirs[$namespacePrefix] = $dir;
 
+        $this->serializerBuilder->addMetadataDir($dir, $namespacePrefix);
+
         return $this;
     }
 
@@ -433,6 +444,8 @@ class HateoasBuilder
         foreach ($namespacePrefixToDirMap as $prefix => $dir) {
             $this->addMetadataDir($dir, $prefix);
         }
+
+        $this->serializerBuilder->addMetadataDirs($namespacePrefixToDirMap);
 
         return $this;
     }
@@ -456,6 +469,8 @@ class HateoasBuilder
         }
 
         $this->metadataDirs[$namespacePrefix] = $dir;
+
+        $this->serializerBuilder->replaceMetadataDir(dir, $namespacePrefix);
 
         return $this;
     }
