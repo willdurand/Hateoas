@@ -5,9 +5,13 @@ namespace Hateoas\Tests\Serializer;
 use Hateoas\HateoasBuilder;
 use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
+use Hateoas\Representation\CollectionRepresentation;
+use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Tests\Fixtures\AdrienBrault;
+use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\TestCase;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
 
 class XmlSerializerTest extends TestCase
@@ -49,7 +53,7 @@ XML
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
 
         $embeddeds = array(
-            new Embedded('friend', array('name' => 'John'), 'person'),
+            new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata(), 'person'),
         );
 
         $xmlSerializationVisitor = $this->createXmlSerializationVisitor();
@@ -110,6 +114,34 @@ XML
 XML
             ,
             $hateoas->serialize($adrienBrault, 'xml')
+        );
+    }
+
+    public function testGh236()
+    {
+        $data = new CollectionRepresentation([new Gh236Foo()]);
+
+        $hateoas = HateoasBuilder::buildHateoas();
+
+        $this->assertSame(
+            <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<collection>
+  <entry rel="items">
+    <entry>
+      <a>
+        <xxx><![CDATA[yyy]]></xxx>
+      </a>
+      <entry rel="b_embed">
+        <xxx><![CDATA[zzz]]></xxx>
+      </entry>
+    </entry>
+  </entry>
+</collection>
+
+XML
+            ,
+            $hateoas->serialize($data, 'xml', SerializationContext::create()->enableMaxDepthChecks())
         );
     }
 

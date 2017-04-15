@@ -6,6 +6,7 @@ use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Embedded;
 use Hateoas\Serializer\ExclusionManager;
+use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 
 /**
@@ -59,7 +60,9 @@ class EmbeddedsFactory
             $data = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getContent(), $object);
             $xmlElementName = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getXmlElementName(), $object);
 
-            $embeddeds[] = new Embedded($rel, $data, $xmlElementName);
+            $propertyMetadata = new RelationPropertyMetadata($relation->getEmbedded()->getExclusion(), $relation);
+
+            $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName);
         }
 
         return $embeddeds;

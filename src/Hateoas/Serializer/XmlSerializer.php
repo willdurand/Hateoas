@@ -63,14 +63,12 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
 
-                    if (null !== $node = $context->accept($entry)) {
-                        $visitor->getCurrentNode()->appendChild($node);
-                    }
+                    $this->acceptDataAndAppend($embedded, $entry, $visitor, $context);
 
                     $visitor->revertCurrentNode();
                 }
-            } elseif (null !== $node = $context->accept($embedded->getData())) {
-                $visitor->getCurrentNode()->appendChild($node);
+            } else {
+                $this->acceptDataAndAppend($embedded, $embedded->getData(), $visitor, $context);
             }
 
             $visitor->revertCurrentNode();
@@ -91,5 +89,16 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
         }
 
         return $elementName ?: 'entry';
+    }
+
+    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context)
+    {
+        $context->pushPropertyMetadata($embedded->getMetadata());
+
+        if (null !== $node = $context->accept($data)) {
+            $visitor->getCurrentNode()->appendChild($node);
+        }
+
+        $context->popPropertyMetadata();
     }
 }
