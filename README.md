@@ -1062,7 +1062,7 @@ Reference
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <serializer>
-<class name="Acme\Demo\Representation\User" h:providers="Class::getRelations, getRelations" xmlns:h="https://github.com/willdurand/Hateoas">
+    <class name="Acme\Demo\Representation\User" h:providers="Class::getRelations, getRelations" xmlns:h="https://github.com/willdurand/Hateoas">
         <h:relation rel="self">
             <h:href uri="http://acme.com/foo/1" />
         </h:relation>
@@ -1083,6 +1083,10 @@ Reference
 See the
 [`hateoas.xsd`](https://github.com/willdurand/Hateoas/blob/master/hateoas.xsd)
 file for more details.
+
+**Note:** If you are using the [bundle](https://github.com/willdurand/BazingaHateoasBundle),
+then you have to put the Hateoas configuration in the same file as the
+serializer configuration.
 
 ### YAML
 
@@ -1113,6 +1117,10 @@ Acme\Demo\Representation\User:
 
     relation_providers: [ 'Class::getRelations', 'getRelations' ]
 ```
+
+**Note:** If you are using the [bundle](https://github.com/willdurand/BazingaHateoasBundle),
+then you have to put the Hateoas configuration in the same file as the
+serializer configuration.
 
 ### Annotations
 
