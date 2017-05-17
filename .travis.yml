@@ -1,5 +1,7 @@
 language: php
 
+sudo: false
+
 cache:
   directories:
     - $COMPOSER_CACHE_DIR
