@@ -13,5 +13,4 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 class Foo3
 {
-
 }

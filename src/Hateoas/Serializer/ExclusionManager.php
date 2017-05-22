@@ -1,6 +1,7 @@
 <?php
 
 namespace Hateoas\Serializer;
+
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Relation;
 use Hateoas\Expression\ExpressionEvaluator;

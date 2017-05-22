@@ -122,7 +122,7 @@ class JsonHalSerializerTest extends TestCase
     public function testSerializeCuriesWithOneLinkShouldBeAnArray()
     {
         $links = array(
-            new Link('self',   '/users/42'),
+            new Link('self', '/users/42'),
             new Link('curies', '/rels/{rel}', array('name' => 'p')),
         );
 
@@ -157,7 +157,7 @@ class JsonHalSerializerTest extends TestCase
     public function testSerializeCuriesWithMultipleEntriesShouldBeAnArray()
     {
         $links = array(
-            new Link('self',   '/users/42'),
+            new Link('self', '/users/42'),
             new Link('curies', '/rels/{rel}', array('name' => 'p')),
             new Link('curies', '/foo/rels/{rel}', array('name' => 'foo')),
         );

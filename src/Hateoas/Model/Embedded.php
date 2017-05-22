@@ -1,6 +1,7 @@
 <?php
 
 namespace Hateoas\Model;
+
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 
 /**

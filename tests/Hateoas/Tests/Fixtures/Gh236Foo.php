@@ -5,7 +5,6 @@ namespace Hateoas\Tests\Fixtures;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 
-
 /**
  * @Hateoas\Relation(
  *     name = "b_embed",

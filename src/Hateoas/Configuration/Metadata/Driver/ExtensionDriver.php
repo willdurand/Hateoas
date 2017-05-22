@@ -58,7 +58,8 @@ class ExtensionDriver implements DriverInterface
     /**
      * @param ConfigurationExtensionInterface $extension
      */
-    public function registerExtension(ConfigurationExtensionInterface $extension) {
+    public function registerExtension(ConfigurationExtensionInterface $extension)
+    {
         $this->extensions[] = $extension;
     }
 }
