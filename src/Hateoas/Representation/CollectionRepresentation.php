@@ -13,7 +13,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @Serializer\ExclusionPolicy("all")
  * @Serializer\XmlRoot("collection")
  *
- * @Hateoas\RelationProvider("getRelations")
+ * @Hateoas\RelationProvider("getProviderRelations")
  *
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
@@ -113,7 +113,12 @@ class CollectionRepresentation
         $this->xmlElementName = $xmlElementName;
     }
 
-    public function getRelations($object, ClassMetadataInterface $classMetadata)
+    public function getRelations()
+    {
+        return $this->relations;
+    }
+
+    public function getProviderRelations($object, ClassMetadataInterface $classMetadata)
     {
         return array_merge(array(
             new Relation(
