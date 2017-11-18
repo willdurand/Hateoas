@@ -18,6 +18,21 @@ php:
   - hhvm-3.18
 
 matrix:
+    exclude:
+      - php: 5.5
+        env: SYMFONY_VERSION=4.0.*
+      - php: 5.6
+        env: SYMFONY_VERSION=4.0.*
+      - php: 7.0
+        env: SYMFONY_VERSION=4.0.*
+      - php: hhvm-3.9
+        env: SYMFONY_VERSION=4.0.*
+      - php: hhvm-3.12
+        env: SYMFONY_VERSION=4.0.*
+      - php: hhvm-3.15
+        env: SYMFONY_VERSION=4.0.*
+      - php: hhvm-3.18
+        env: SYMFONY_VERSION=4.0.*
     fast_finish: true
 env:
   - SYMFONY_VERSION=2.4.*
@@ -27,6 +42,7 @@ env:
   - SYMFONY_VERSION=2.8.*
   - SYMFONY_VERSION=3.0.*
   - SYMFONY_VERSION=3.2.*
+  - SYMFONY_VERSION=4.0.*
 
 before_install:
   - composer self-update
