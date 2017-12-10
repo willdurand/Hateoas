@@ -14,7 +14,7 @@ services.
 
 
 * [Installation](#installation)
-  - [Working With Symfony2](#working-with-symfony2)
+  - [Working With Symfony](#working-with-symfony)
 * [Usage](#usage)
   - [Introduction](#introduction)
   - [Configuring Links](#configuring-links)
@@ -74,7 +74,7 @@ This will resolve the latest stable version.
 
 Otherwise, install the library and setup the autoloader yourself.
 
-### Working With Symfony2
+### Working With Symfony
 
 There is a bundle for that! Install the
 [BazingaHateoasBundle](https://github.com/willdurand/BazingaHateoasBundle), and
@@ -1267,11 +1267,11 @@ As an example:
 
 The property "name" should take the relations-returning method which you have defined in your class ("addRelations" in the following example).
 
-The can be:
+It can be:
 
 - A method: `addRelations`
 - A static method: `Class::addRelations`
-- A Symfony2 service method: `acme_foo.service:addRelations`
+- A Symfony service method: `acme_foo.service:addRelations`
 
 ```php
 use Hateoas\Configuration\Metadata\ClassMetadataInterface;
