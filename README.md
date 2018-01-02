@@ -850,7 +850,7 @@ that rather than being links, the values are resource objects.
 }
 ```
 
-#### The XmlSerializer
+#### The XmlSerializer
 
 The `XmlSerializer` allows you to generate [Atom
 Links](http://tools.ietf.org/search/rfc4287#section-4.2.7) into your XML
