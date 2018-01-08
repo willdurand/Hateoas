@@ -18,14 +18,14 @@
         "doctrine/annotations": "~1.0",
         "jms/metadata": "~1.1",
         "jms/serializer": "^1.7",
-        "symfony/expression-language": "~2.4 || ~3.0",
+        "symfony/expression-language": "~2.4 || ~3.0 || ~4.0"",
         "phpoption/phpoption": ">=1.1.0,<2.0-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.5",
-        "symfony/yaml": "~2.4 || ~3.0",
-        "symfony/routing": "~2.4 || ~3.0",
-        "symfony/dependency-injection": "~2.4 || ~3.0",
+        "symfony/yaml": "~2.4 || ~3.0 || ~4.0"",
+        "symfony/routing": "~2.4 || ~3.0 || ~4.0"",
+        "symfony/dependency-injection": "~2.4 || ~3.0 || ~4.0"",
         "pagerfanta/pagerfanta": "~1.0",
         "twig/twig": "~1.12"
     },
