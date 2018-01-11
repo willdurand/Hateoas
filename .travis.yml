@@ -8,15 +8,12 @@ cache:
     - $HOME/.composer/cache
 
 php:
-  - 5.5
   - 5.6
   - 7.0
   - 7.1
 
 matrix:
     exclude:
-      - php: 5.5
-        env: SYMFONY_VERSION=4.0.*
       - php: 5.6
         env: SYMFONY_VERSION=4.0.*
       - php: 7.0
