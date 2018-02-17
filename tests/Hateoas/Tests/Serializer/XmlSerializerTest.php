@@ -13,6 +13,7 @@ use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
+use Prophecy\Argument;
 
 class XmlSerializerTest extends TestCase
 {
@@ -51,6 +52,14 @@ XML
     public function testSerializeEmbeddeds()
     {
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+        $navigatorProphecy = $this->prophesize('JMS\Serializer\GraphNavigatorInterface');
+
+        $contextProphecy
+            ->getNavigator()
+            ->willReturn($navigatorProphecy);
+
+        $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
+        $contextProphecy->popPropertyMetadata()->shouldBeCalled();
 
         $embeddeds = array(
             new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata(), 'person'),

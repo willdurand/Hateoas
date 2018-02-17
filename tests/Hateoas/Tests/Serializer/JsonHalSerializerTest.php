@@ -50,7 +50,7 @@ class JsonHalSerializerTest extends TestCase
 
         $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
         $jsonSerializationVisitorProphecy
-            ->addData('_links', $expectedSerializedLinks)
+            ->setData('_links', $expectedSerializedLinks)
             ->shouldBeCalledTimes(1)
         ;
 
@@ -74,15 +74,20 @@ class JsonHalSerializerTest extends TestCase
         );
 
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+        $navigatorProphecy = $this->prophesize('JMS\Serializer\GraphNavigatorInterface');
+
+        $contextProphecy
+            ->getNavigator()
+            ->willReturn($navigatorProphecy);
+
         foreach ($acceptArguments as $arg) {
-            $contextProphecy
-                ->accept($arg)
+            $navigatorProphecy
+                ->accept($arg, null, $contextProphecy)
                 ->willReturnArgument()
             ;
         }
         $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
         $contextProphecy->popPropertyMetadata()->shouldBeCalled();
-
         $embeddeds = array(
             new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata()),
             new Embedded('foo', array('name' => 'Bar'), new RelationPropertyMetadata()),
@@ -107,7 +112,7 @@ class JsonHalSerializerTest extends TestCase
 
         $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
         $jsonSerializationVisitorProphecy
-            ->addData('_embedded', $expectedEmbeddedded)
+            ->setData('_embedded', $expectedEmbeddedded)
             ->shouldBeCalledTimes(1)
         ;
 
@@ -142,7 +147,7 @@ class JsonHalSerializerTest extends TestCase
 
         $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
         $jsonSerializationVisitorProphecy
-            ->addData('_links', $expectedSerializedLinks)
+            ->setData('_links', $expectedSerializedLinks)
             ->shouldBeCalledTimes(1)
         ;
 
@@ -182,7 +187,7 @@ class JsonHalSerializerTest extends TestCase
 
         $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
         $jsonSerializationVisitorProphecy
-            ->addData('_links', $expectedSerializedLinks)
+            ->setData('_links', $expectedSerializedLinks)
             ->shouldBeCalledTimes(1)
         ;
 

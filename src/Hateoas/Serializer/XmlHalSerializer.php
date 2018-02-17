@@ -77,8 +77,9 @@ class XmlHalSerializer implements XmlSerializerInterface
     private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         $context->pushPropertyMetadata($embedded->getMetadata());
+        $navigator = $context->getNavigator();
 
-        if (null !== $node = $context->accept($data)) {
+        if (null !== $node = $navigator->accept($data, null, $context)) {
             $visitor->getCurrentNode()->appendChild($node);
         }
         $context->popPropertyMetadata();

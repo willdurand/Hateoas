@@ -94,8 +94,8 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         $context->pushPropertyMetadata($embedded->getMetadata());
-
-        if (null !== $node = $context->accept($data)) {
+        $navigator = $context->getNavigator();
+        if (null !== $node = $navigator->accept($data, null, $context)) {
             $visitor->getCurrentNode()->appendChild($node);
         }
 

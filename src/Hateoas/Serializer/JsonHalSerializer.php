@@ -33,7 +33,7 @@ class JsonHalSerializer implements JsonSerializerInterface
             }
         }
 
-        $visitor->addData('_links', $serializedLinks);
+        $visitor->setData('_links', $serializedLinks);
     }
 
     /**
@@ -43,25 +43,27 @@ class JsonHalSerializer implements JsonSerializerInterface
     {
         $serializedEmbeddeds = array();
         $multiple = array();
+        $navigator = $context->getNavigator();
+
         foreach ($embeddeds as $embedded) {
             $context->pushPropertyMetadata($embedded->getMetadata());
 
             if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
-                $serializedEmbeddeds[$embedded->getRel()] = $context->accept($embedded->getData());
+                $serializedEmbeddeds[$embedded->getRel()] =  $navigator->accept($embedded->getData(), null, $context);
             } elseif (!isset($multiple[$embedded->getRel()])) {
                 $multiple[$embedded->getRel()] = true;
 
                 $serializedEmbeddeds[$embedded->getRel()] = array(
                     $serializedEmbeddeds[$embedded->getRel()],
-                    $context->accept($embedded->getData()),
+                    $navigator->accept($embedded->getData(), null, $context),
                 );
             } else {
-                $serializedEmbeddeds[$embedded->getRel()][] = $context->accept($embedded->getData());
+                $serializedEmbeddeds[$embedded->getRel()][] = $navigator->accept($embedded->getData(), null, $context);
             }
 
             $context->popPropertyMetadata();
         }
 
-        $visitor->addData('_embedded', $serializedEmbeddeds);
+        $visitor->setData('_embedded', $serializedEmbeddeds);
     }
 }
