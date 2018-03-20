@@ -32,18 +32,25 @@ class Exclusion
      */
     private $excludeIf;
 
+    /**
+     * @var null|array
+     */
+    private $notGroups;
+
     public function __construct(
         array $groups = null,
         $sinceVersion = null,
         $untilVersion = null,
         $maxDepth = null,
-        $excludeIf = null
+        $excludeIf = null,
+        array $notGroups = null
     ) {
         $this->groups = $groups;
         $this->sinceVersion = null !== $sinceVersion ? (float) $sinceVersion : null;
         $this->untilVersion = null !== $untilVersion ? (float) $untilVersion : null;
         $this->maxDepth = null !== $maxDepth ? (int) $maxDepth : null;
         $this->excludeIf = $excludeIf;
+        $this->notGroups = $notGroups;
     }
 
     /**
@@ -84,5 +91,13 @@ class Exclusion
     public function getExcludeIf()
     {
         return $this->excludeIf;
+    }
+
+    /**
+     * @return null|array
+     */
+    public function getNotGroups()
+    {
+        return $this->notGroups;
     }
 }
