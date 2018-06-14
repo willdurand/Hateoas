@@ -35,15 +35,15 @@ class Hateoas implements SerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serialize($data, $format, SerializationContext $context = null)
+    public function serialize($data, string $format, SerializationContext $context = null, string $type = null): string
     {
-        return $this->serializer->serialize($data, $format, $context);
+        return $this->serializer->serialize($data, $format, $context, $type);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function deserialize($data, $type, $format, DeserializationContext $context = null)
+    public function deserialize(string $data, string $type, string $format, DeserializationContext $context = null)
     {
         return $this->serializer->deserialize($data, $type, $format, $context);
     }
