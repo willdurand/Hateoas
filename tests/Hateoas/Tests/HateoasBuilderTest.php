@@ -9,6 +9,7 @@ use Hateoas\UrlGenerator\CallableUrlGenerator;
 use JMS\Serializer\SerializationContext;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\WithAlternativeRouter;
+use JMS\Serializer\SerializerInterface;
 
 /**
  * Contains functional tests
@@ -20,7 +21,7 @@ class HateoasBuilderTest extends TestCase
         $hateoasBuilder = new HateoasBuilder();
         $hateoas = $hateoasBuilder->build();
 
-        $this->assertInstanceOf('Hateoas\Hateoas', $hateoas);
+        $this->assertInstanceOf(SerializerInterface::class, $hateoas);
     }
 
     public function testSerializeAdrienBraultWithExclusion()
@@ -119,9 +120,7 @@ XML
                 .'"_embedded":{'
                     .'"reference2":{'
                         .'"name":"reference2",'
-                        .'"_embedded":{'
-                            .'"reference1":null'
-                        .'}'
+                        .'"_embedded":[]'
                     .'}'
                 .'}'
             .'}',

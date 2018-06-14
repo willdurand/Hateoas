@@ -30,9 +30,4 @@ class JsonEventSubscriberTest extends AbstractEventSubscriberTest
     {
         return $this->prophesize('Hateoas\Serializer\JsonSerializerInterface');
     }
-
-    protected function mockSerializationVisitor()
-    {
-        return $this->prophesize('JMS\Serializer\JsonSerializationVisitor')->reveal();
-    }
 }

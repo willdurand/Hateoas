@@ -45,7 +45,7 @@ class XmlSerializerTest extends TestCase
 
 XML
             ,
-            $xmlSerializationVisitor->getResult()
+            $xmlSerializationVisitor->getResult($xmlSerializationVisitor->getDocument())
         );
     }
 
@@ -85,7 +85,7 @@ XML
 
 XML
             ,
-            $xmlSerializationVisitor->getResult()
+            $xmlSerializationVisitor->getResult($xmlSerializationVisitor->getCurrentNode())
         );
     }
 
@@ -156,17 +156,13 @@ XML
 
     private function createXmlSerializationVisitor()
     {
-        $xmlSerializationVisitor = new XmlSerializationVisitor(
-            $this->prophesize('JMS\Serializer\Naming\PropertyNamingStrategyInterface')->reveal()
-        );
+        $xmlSerializationVisitor = new XmlSerializationVisitor();
         $xmlSerializationVisitorClass = new \ReflectionClass('JMS\Serializer\XmlSerializationVisitor');
         $stackProperty = $xmlSerializationVisitorClass->getProperty('stack');
         $stackProperty->setAccessible('true');
         $stackProperty->setValue($xmlSerializationVisitor, new \SplStack());
 
-        $xmlSerializationVisitor->document = $xmlSerializationVisitor->createDocument(null, null, false);
-        $xmlRootNode = $xmlSerializationVisitor->document->createElement('root');
-        $xmlSerializationVisitor->document->appendChild($xmlRootNode);
+        $xmlRootNode = $document = $xmlSerializationVisitor->createRoot(null, 'root');
         $xmlSerializationVisitor->setCurrentNode($xmlRootNode);
 
         return $xmlSerializationVisitor;

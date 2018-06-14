@@ -14,7 +14,9 @@ use Hateoas\Tests\Fixtures\Foo2;
 use Hateoas\Tests\Fixtures\Foo3;
 use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\TestCase;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Prophecy\Argument;
 
 class JsonHalSerializerTest extends TestCase
@@ -48,9 +50,9 @@ class JsonHalSerializerTest extends TestCase
 
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
 
-        $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
+        $jsonSerializationVisitorProphecy = $this->prophesize(SerializationVisitorInterface::class);
         $jsonSerializationVisitorProphecy
-            ->setData('_links', $expectedSerializedLinks)
+            ->visitProperty(new StaticPropertyMetadata(JsonHalSerializer::class, '_links', $expectedSerializedLinks), $expectedSerializedLinks)
             ->shouldBeCalledTimes(1)
         ;
 
@@ -110,9 +112,9 @@ class JsonHalSerializerTest extends TestCase
             ),
         );
 
-        $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
+        $jsonSerializationVisitorProphecy = $this->prophesize(SerializationVisitorInterface::class);
         $jsonSerializationVisitorProphecy
-            ->setData('_embedded', $expectedEmbeddedded)
+            ->visitProperty(new StaticPropertyMetadata(JsonHalSerializer::class, '_embedded', $expectedEmbeddedded), $expectedEmbeddedded)
             ->shouldBeCalledTimes(1)
         ;
 
@@ -145,9 +147,9 @@ class JsonHalSerializerTest extends TestCase
 
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
 
-        $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
+        $jsonSerializationVisitorProphecy = $this->prophesize(SerializationVisitorInterface::class);
         $jsonSerializationVisitorProphecy
-            ->setData('_links', $expectedSerializedLinks)
+            ->visitProperty(new StaticPropertyMetadata(JsonHalSerializer::class, '_links', $expectedSerializedLinks), $expectedSerializedLinks)
             ->shouldBeCalledTimes(1)
         ;
 
@@ -185,9 +187,9 @@ class JsonHalSerializerTest extends TestCase
 
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
 
-        $jsonSerializationVisitorProphecy = $this->prophesize('JMS\Serializer\JsonSerializationVisitor');
+        $jsonSerializationVisitorProphecy = $this->prophesize(SerializationVisitorInterface::class);
         $jsonSerializationVisitorProphecy
-            ->setData('_links', $expectedSerializedLinks)
+            ->visitProperty(new StaticPropertyMetadata(JsonHalSerializer::class, '_links', $expectedSerializedLinks), $expectedSerializedLinks)
             ->shouldBeCalledTimes(1)
         ;
 
