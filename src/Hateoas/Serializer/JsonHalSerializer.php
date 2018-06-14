@@ -3,6 +3,7 @@
 namespace Hateoas\Serializer;
 
 use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 
 /**
@@ -33,7 +34,7 @@ class JsonHalSerializer implements JsonSerializerInterface
             }
         }
 
-        $visitor->setData('_links', $serializedLinks);
+        $visitor->visitProperty(new StaticPropertyMetadata(__CLASS__, '_links', $serializedLinks), $serializedLinks);
     }
 
     /**
@@ -64,6 +65,6 @@ class JsonHalSerializer implements JsonSerializerInterface
             $context->popPropertyMetadata();
         }
 
-        $visitor->setData('_embedded', $serializedEmbeddeds);
+        $visitor->visitProperty(new StaticPropertyMetadata(__CLASS__, '_embedded', $serializedEmbeddeds), $serializedEmbeddeds);
     }
 }
