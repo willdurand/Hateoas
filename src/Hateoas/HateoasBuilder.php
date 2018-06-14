@@ -183,9 +183,12 @@ class HateoasBuilder
         ;
 
         $jmsSerializer = $this->serializerBuilder->build();
+        $ref = new \ReflectionProperty(get_class($jmsSerializer), 'factory');
+        $ref->setAccessible(true);
+
         foreach (array_merge($inlineDeferrers, array($this->jsonSerializer, $this->xmlSerializer)) as $serializer) {
             if ($serializer instanceof JMSSerializerMetadataAwareInterface) {
-                $serializer->setMetadataFactory($jmsSerializer->getMetadataFactory());
+                $serializer->setMetadataFactory($ref->getValue($jmsSerializer));
             }
         }
 
