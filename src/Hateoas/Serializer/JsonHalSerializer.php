@@ -2,9 +2,10 @@
 
 namespace Hateoas\Serializer;
 
-use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -14,7 +15,7 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeLinks(array $links, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context)
     {
         $serializedLinks = array();
         foreach ($links as $link) {
@@ -40,7 +41,7 @@ class JsonHalSerializer implements JsonSerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context)
     {
         $serializedEmbeddeds = array();
         $multiple = array();
@@ -48,18 +49,21 @@ class JsonHalSerializer implements JsonSerializerInterface
 
         foreach ($embeddeds as $embedded) {
             $context->pushPropertyMetadata($embedded->getMetadata());
+            try {
+                if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
+                    $serializedEmbeddeds[$embedded->getRel()] = $navigator->accept($embedded->getData(), null, $context);
+                } elseif (!isset($multiple[$embedded->getRel()])) {
+                    $multiple[$embedded->getRel()] = true;
 
-            if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
-                $serializedEmbeddeds[$embedded->getRel()] =  $navigator->accept($embedded->getData(), null, $context);
-            } elseif (!isset($multiple[$embedded->getRel()])) {
-                $multiple[$embedded->getRel()] = true;
+                    $serializedEmbeddeds[$embedded->getRel()] = array(
+                        $serializedEmbeddeds[$embedded->getRel()],
+                        $navigator->accept($embedded->getData(), null, $context),
+                    );
+                } else {
+                    $serializedEmbeddeds[$embedded->getRel()][] = $navigator->accept($embedded->getData(), null, $context);
+                }
+            } catch (NotAcceptableException $e) {
 
-                $serializedEmbeddeds[$embedded->getRel()] = array(
-                    $serializedEmbeddeds[$embedded->getRel()],
-                    $navigator->accept($embedded->getData(), null, $context),
-                );
-            } else {
-                $serializedEmbeddeds[$embedded->getRel()][] = $navigator->accept($embedded->getData(), null, $context);
             }
 
             $context->popPropertyMetadata();
