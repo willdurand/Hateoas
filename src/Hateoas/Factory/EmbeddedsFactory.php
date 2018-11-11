@@ -7,6 +7,7 @@ use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Embedded;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
 
 /**
@@ -20,7 +21,7 @@ class EmbeddedsFactory
     private $relationsRepository;
 
     /**
-     * @var ExpressionEvaluator
+     * @var ExpressionEvaluatorInterface
      */
     private $expressionEvaluator;
 
@@ -31,12 +32,12 @@ class EmbeddedsFactory
 
     /**
      * @param RelationsRepository $relationsRepository
-     * @param ExpressionEvaluator $expressionEvaluator
+     * @param ExpressionEvaluatorInterface $expressionEvaluator
      * @param ExclusionManager    $exclusionManager
      */
     public function __construct(
         RelationsRepository $relationsRepository,
-        ExpressionEvaluator $expressionEvaluator,
+        ExpressionEvaluatorInterface $expressionEvaluator,
         ExclusionManager $exclusionManager
     ) {
         $this->relationsRepository = $relationsRepository;
@@ -51,14 +52,15 @@ class EmbeddedsFactory
     public function create($object, SerializationContext $context)
     {
         $embeddeds = array();
+        $langugeData = ['object' => $object, 'context' => $context];
         foreach ($this->relationsRepository->getRelations($object) as $relation) {
             if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
                 continue;
             }
 
-            $rel  = $this->expressionEvaluator->evaluate($relation->getName(), $object);
-            $data = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getContent(), $object);
-            $xmlElementName = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getXmlElementName(), $object);
+            $rel  = $this->checkExpression($relation->getName(), $langugeData);
+            $data = $this->checkExpression($relation->getEmbedded()->getContent(), $langugeData);
+            $xmlElementName = $this->checkExpression($relation->getEmbedded()->getXmlElementName(), $langugeData);
 
             $propertyMetadata = new RelationPropertyMetadata($relation->getEmbedded()->getExclusion(), $relation);
 
@@ -66,5 +68,16 @@ class EmbeddedsFactory
         }
 
         return $embeddeds;
+    }
+
+    const EXPRESSION_REGEX = '/expr\((?P<expression>.+)\)/';
+
+    private function checkExpression($exp, array $data)
+    {
+        if (is_string($exp) && preg_match(self::EXPRESSION_REGEX, $exp, $matches)) {
+            return $this->expressionEvaluator->evaluate($matches['expression'], $data);
+        } else {
+            return $exp;
+        }
     }
 }

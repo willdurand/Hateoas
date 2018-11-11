@@ -15,8 +15,6 @@ use Hateoas\Configuration\Provider\RelationProvider;
 use Hateoas\Configuration\Provider\Resolver\RelationProviderResolverInterface;
 use Hateoas\Configuration\Provider\Resolver\StaticMethodResolver;
 use Hateoas\Configuration\RelationsRepository;
-use Hateoas\Expression\ExpressionEvaluator;
-use Hateoas\Expression\ExpressionFunctionInterface;
 use Hateoas\Expression\LinkExpressionFunction;
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinkFactory;
@@ -33,6 +31,8 @@ use Hateoas\Serializer\Metadata\InlineDeferrer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\SerializerBuilder;
 use Metadata\Cache\FileCache;
 use Metadata\Driver\DriverChain;
@@ -62,11 +62,6 @@ class HateoasBuilder
      * @var array
      */
     private $contextVariables = array();
-
-    /**
-     * ExpressionFunctionInterface[]
-     */
-    private $expressionFunctions = array();
 
     /**
      * @var XmlSerializerInterface
@@ -135,22 +130,24 @@ class HateoasBuilder
     public function build()
     {
         $metadataFactory     = $this->buildMetadataFactory();
+
         $relationProvider    = new RelationProvider($metadataFactory, $this->chainResolver);
         $relationsRepository = new RelationsRepository($metadataFactory, $relationProvider);
+
+        $linkFactory         = new LinkFactory($this->urlGeneratorRegistry);
+        $this->contextVariables['link_helper'] = $linkHelper = new LinkHelper($linkFactory, $relationsRepository);
+
         $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage(), $this->contextVariables);
-        $linkFactory         = new LinkFactory($expressionEvaluator, $this->urlGeneratorRegistry);
-        $exclusionManager    = new ExclusionManager($expressionEvaluator);
+
+        $linkFactory->setExpressionEvaluator($expressionEvaluator);
+
+        $exclusionManager    = new ExclusionManager(new ExpressionLanguageExclusionStrategy($expressionEvaluator));
+
+
         $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
         $embeddedsFactory    = new EmbeddedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
-        $linkHelper          = new LinkHelper($linkFactory, $relationsRepository);
 
-        // Register Hateoas core functions
-        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelper));
 
-        // Register user functions
-        foreach ($this->expressionFunctions as $expressionFunction) {
-            $expressionEvaluator->registerFunction($expressionFunction);
-        }
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -160,15 +157,14 @@ class HateoasBuilder
             $this->setDefaultJsonSerializer();
         }
 
-        $inlineDeferrers  = array();
         $eventSubscribers = array(
             new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedsFactory),
             new JsonEventSubscriber(
                 $this->jsonSerializer,
                 $linksFactory,
                 $embeddedsFactory,
-                $inlineDeferrers[] = new InlineDeferrer(),
-                $inlineDeferrers[] = new InlineDeferrer()
+                new InlineDeferrer(),
+                new InlineDeferrer()
             ),
         );
 
@@ -269,18 +265,6 @@ class HateoasBuilder
     public function setExpressionLanguage(ExpressionLanguage $expressionLanguage)
     {
         $this->expressionLanguage = $expressionLanguage;
-
-        return $this;
-    }
-
-    /**
-     * @param ExpressionFunctionInterface $expressionFunction
-     *
-     * @return HateoasBuilder
-     */
-    public function registerExpressionFunction(ExpressionFunctionInterface $expressionFunction)
-    {
-        $this->expressionFunctions[] = $expressionFunction;
 
         return $this;
     }
@@ -508,6 +492,7 @@ class HateoasBuilder
     {
         if (null === $this->expressionLanguage) {
             $this->expressionLanguage = new ExpressionLanguage();
+            $this->expressionLanguage->registerProvider(new LinkExpressionFunction());
         }
 
         return $this->expressionLanguage;

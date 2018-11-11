@@ -2,59 +2,25 @@
 
 namespace Hateoas\Expression;
 
-use Hateoas\Helper\LinkHelper;
+use Symfony\Component\ExpressionLanguage\ExpressionFunction;
+use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
  */
-class LinkExpressionFunction implements ExpressionFunctionInterface
+class LinkExpressionFunction implements ExpressionFunctionProviderInterface
 {
     /**
-     * @var LinkHelper
+     * @return ExpressionFunction[] An array of Function instances
      */
-    private $linkHelper;
-
-    /**
-     * @param LinkHelper $linkHelper
-     */
-    public function __construct(LinkHelper $linkHelper)
+    public function getFunctions()
     {
-        $this->linkHelper = $linkHelper;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getName()
-    {
-        return 'link';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCompiler()
-    {
-        return function ($object, $rel, $absolute = false) {
-            return sprintf('$link_helper->getLinkHref(%s, %s, %s)', $object, $rel, $absolute);
-        };
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getEvaluator()
-    {
-        return function ($context, $object, $rel, $absolute = false) {
-            return $context['link_helper']->getLinkHref($object, $rel, $absolute);
-        };
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getContextVariables()
-    {
-        return array('link_helper' => $this->linkHelper);
+        return [
+            new ExpressionFunction('link', function ($object, $rel, $absolute = false) {
+                return sprintf('$link_helper->getLinkHref(%s, %s, %s)', $object, $rel, $absolute);
+            }, function ($context, $object, $rel, $absolute = false) {
+                return $context['link_helper']->getLinkHref($object, $rel, $absolute);
+            })
+        ];
     }
 }
