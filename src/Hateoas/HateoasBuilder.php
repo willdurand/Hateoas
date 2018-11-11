@@ -29,7 +29,6 @@ use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\JsonSerializerInterface;
-use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Serializer\XmlSerializerInterface;
@@ -183,14 +182,6 @@ class HateoasBuilder
         ;
 
         $jmsSerializer = $this->serializerBuilder->build();
-        $ref = new \ReflectionProperty(get_class($jmsSerializer), 'factory');
-        $ref->setAccessible(true);
-
-        foreach (array_merge($inlineDeferrers, array($this->jsonSerializer, $this->xmlSerializer)) as $serializer) {
-            if ($serializer instanceof JMSSerializerMetadataAwareInterface) {
-                $serializer->setMetadataFactory($ref->getValue($jmsSerializer));
-            }
-        }
 
         return new Hateoas($jmsSerializer, $linkHelper);
     }
