@@ -6,7 +6,7 @@ use Hateoas\HateoasBuilder;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\Tests\Fixtures\Will;
 
-class HateoasTest extends \PHPUnit_Framework_TestCase
+class HateoasTest extends TestCase
 {
     private $hateoas;
 

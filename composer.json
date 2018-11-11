@@ -20,7 +20,7 @@
         "symfony/expression-language": "~3.0 || ~4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~5",
+        "phpunit/phpunit": "^7",
         "symfony/yaml": "~3.0 || ~4.0",
         "symfony/routing": "~3.0 || ~4.0",
         "symfony/dependency-injection": "~3.0 || ~4.0",

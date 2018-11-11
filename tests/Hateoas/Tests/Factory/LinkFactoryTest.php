@@ -90,7 +90,8 @@ class LinkFactoryTest extends TestCase
 
         $linkFactory = new LinkFactory($urlGeneratorRegistry, $expressionEvaluator);
 
-        $this->setExpectedException('RuntimeException', 'You cannot use a route without an url generator.');
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('You cannot use a route without an url generator.');
 
         $linkFactory->createLink(
             new TestedObject(),
@@ -102,10 +103,8 @@ class LinkFactoryTest extends TestCase
     {
         $linkFactory = $this->createLinkFactory();
 
-        $this->setExpectedException(
-            'RuntimeException',
-            'The route parameters should be an array, string given. Maybe you forgot to wrap the expression in expr(...).'
-        );
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('The route parameters should be an array, string given. Maybe you forgot to wrap the expression in expr(...).');
 
         $linkFactory->createLink(
             new TestedObject(),

@@ -4,9 +4,10 @@ namespace Hateoas\Tests\Expression;
 
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Expression\LinkExpressionFunction;
+use Hateoas\Tests\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-class LinkExpressionFunctionTest extends \PHPUnit_Framework_TestCase
+class LinkExpressionFunctionTest extends TestCase
 {
     public function testEvaluate()
     {

@@ -6,10 +6,11 @@ use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\HateoasBuilder;
 use Hateoas\Helper\LinkHelper;
+use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\Tests\Fixtures\Will;
 
-class LinkHelperTest extends \PHPUnit_Framework_TestCase
+class LinkHelperTest extends TestCase
 {
     private $hateoas;
 
