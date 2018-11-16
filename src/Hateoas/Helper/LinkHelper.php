@@ -6,6 +6,7 @@ use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Factory\LinkFactory;
+use Metadata\MetadataFactoryInterface;
 
 /**
  * @author William Durand <william.durand1@gmail.com>
@@ -18,18 +19,14 @@ class LinkHelper
     private $linkFactory;
 
     /**
-     * @var RelationsRepository
+     * @var MetadataFactoryInterface
      */
-    private $relationsRepository;
+    private $metadataFactory;
 
-    /**
-     * @param LinkFactory         $linkFactory
-     * @param RelationsRepository $relationsRepository
-     */
-    public function __construct(LinkFactory $linkFactory, RelationsRepository $relationsRepository)
+    public function __construct(LinkFactory $linkFactory, MetadataFactoryInterface $metadataFactory)
     {
         $this->linkFactory         = $linkFactory;
-        $this->relationsRepository = $relationsRepository;
+        $this->metadataFactory = $metadataFactory;
     }
 
     /**
@@ -41,14 +38,17 @@ class LinkHelper
      */
     public function getLinkHref($object, $rel, $absolute = false)
     {
-        foreach ($this->relationsRepository->getRelations($object) as $relation) {
-            if ($rel === $relation->getName()) {
-                $relation = $this->patchAbsolute($relation, $absolute);
+        if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
+            foreach ($classMetadata->getRelations() as $relation) {
+                if ($rel === $relation->getName()) {
+                    $relation = $this->patchAbsolute($relation, $absolute);
 
-                if (null !== $link = $this->linkFactory->createLink($object, $relation)) {
-                    return $link->getHref();
+                    if (null !== $link = $this->linkFactory->createLink($object, $relation)) {
+                        return $link->getHref();
+                    }
                 }
             }
+
         }
 
         return null;

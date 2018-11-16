@@ -2,11 +2,13 @@
 
 namespace Hateoas\Tests\Factory;
 
+use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Model\Link;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
+use Metadata\MetadataFactoryInterface;
 
 class LinksFactoryTest extends TestCase
 {
@@ -21,10 +23,16 @@ class LinksFactoryTest extends TestCase
         );
         $link = new Link('', '');
 
-        $relationsRepositoryProphecy = $this->prophesize('Hateoas\Configuration\RelationsRepository');
-        $relationsRepositoryProphecy
-            ->getRelations($object)
+        $metadata = $this->prophesize(ClassMetadata::class);
+        $metadata
+            ->getRelations()
             ->willReturn($relations)
+            ->shouldBeCalledTimes(1);
+
+        $metadataFactory = $this->prophesize(MetadataFactoryInterface::class);
+        $metadataFactory
+            ->getMetadataForClass(get_class($object))
+            ->willReturn($metadata)
             ->shouldBeCalledTimes(1)
         ;
         $linkFactoryProphecy = $this->prophesize('Hateoas\Factory\LinkFactory');
@@ -46,7 +54,7 @@ class LinksFactoryTest extends TestCase
         ;
 
         $linksFactory = new LinksFactory(
-            $relationsRepositoryProphecy->reveal(),
+            $metadataFactory->reveal(),
             $linkFactoryProphecy->reveal(),
             $exclusionManagerProphecy->reveal()
         );

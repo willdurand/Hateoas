@@ -9,6 +9,6 @@ class AnnotationDriverTest extends AbstractDriverTest
 {
     public function createDriver()
     {
-        return new AnnotationDriver(new AnnotationReader());
+        return new AnnotationDriver(new AnnotationReader(), $this->createProvider());
     }
 }

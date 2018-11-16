@@ -49,7 +49,7 @@ class ExtensionDriver implements DriverInterface
             $extension->decorate($metadata);
         }
 
-        if ($newMetadata && count($metadata->getRelations()) < 1 && count($metadata->getRelationProviders()) < 1) {
+        if ($newMetadata && count($metadata->getRelations()) < 1) {
             $metadata = null;
         }
 

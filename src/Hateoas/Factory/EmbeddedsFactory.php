@@ -2,24 +2,18 @@
 
 namespace Hateoas\Factory;
 
-use Hateoas\Configuration\RelationsRepository;
-use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Embedded;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
+use Metadata\MetadataFactoryInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
 class EmbeddedsFactory
 {
-    /**
-     * @var RelationsRepository
-     */
-    private $relationsRepository;
-
     /**
      * @var ExpressionEvaluatorInterface
      */
@@ -31,42 +25,46 @@ class EmbeddedsFactory
     private $exclusionManager;
 
     /**
-     * @param RelationsRepository $relationsRepository
-     * @param ExpressionEvaluatorInterface $expressionEvaluator
-     * @param ExclusionManager    $exclusionManager
+     * @var MetadataFactoryInterface
      */
+    private $metadataFactory;
+
     public function __construct(
-        RelationsRepository $relationsRepository,
+        MetadataFactoryInterface $metadataFactory,
         ExpressionEvaluatorInterface $expressionEvaluator,
         ExclusionManager $exclusionManager
     ) {
-        $this->relationsRepository = $relationsRepository;
         $this->expressionEvaluator = $expressionEvaluator;
-        $this->exclusionManager    = $exclusionManager;
+        $this->exclusionManager = $exclusionManager;
+        $this->metadataFactory = $metadataFactory;
     }
+
     /**
-     * @param  object               $object
+     * @param  object $object
      * @param  SerializationContext $context
      * @return Embedded[]
      */
     public function create($object, SerializationContext $context)
     {
         $embeddeds = array();
-        $langugeData = ['object' => $object, 'context' => $context];
-        foreach ($this->relationsRepository->getRelations($object) as $relation) {
-            if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
-                continue;
+
+        if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
+
+            $langugeData = ['object' => $object, 'context' => $context];
+            foreach ($classMetadata->getRelations() as $relation) {
+                if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
+                    continue;
+                }
+
+                $rel = $this->checkExpression($relation->getName(), $langugeData);
+                $data = $this->checkExpression($relation->getEmbedded()->getContent(), $langugeData);
+                $xmlElementName = $this->checkExpression($relation->getEmbedded()->getXmlElementName(), $langugeData);
+
+                $propertyMetadata = new RelationPropertyMetadata($relation->getEmbedded()->getExclusion(), $relation);
+
+                $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName);
             }
-
-            $rel  = $this->checkExpression($relation->getName(), $langugeData);
-            $data = $this->checkExpression($relation->getEmbedded()->getContent(), $langugeData);
-            $xmlElementName = $this->checkExpression($relation->getEmbedded()->getXmlElementName(), $langugeData);
-
-            $propertyMetadata = new RelationPropertyMetadata($relation->getEmbedded()->getExclusion(), $relation);
-
-            $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName);
         }
-
         return $embeddeds;
     }
 

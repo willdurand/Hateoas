@@ -49,4 +49,4 @@ Hateoas\Tests\Fixtures\User:
                     until_version: 2.3
                     max_depth: 43
                     exclude_if: bar
-    relation_providers: [ getRelations ]
+    relation_providers: [ Hateoas\Tests\Fixtures\User::getRelations ]

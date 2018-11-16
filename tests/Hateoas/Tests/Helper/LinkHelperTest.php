@@ -2,6 +2,7 @@
 
 namespace Hateoas\Tests\Helper;
 
+use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\HateoasBuilder;
@@ -9,6 +10,7 @@ use Hateoas\Helper\LinkHelper;
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\Tests\Fixtures\Will;
+use Metadata\MetadataFactoryInterface;
 
 class LinkHelperTest extends TestCase
 {
@@ -41,7 +43,7 @@ class LinkHelperTest extends TestCase
 
     public function testGetLinkHref()
     {
-        $linkHelper = new LinkHelper($this->getLinkFactoryMock(), $this->getRelationsRepositoryMock());
+        $linkHelper = new LinkHelper($this->getLinkFactoryMock(), $this->getMetadataFactoryMock());
 
         $this->assertEquals(
             'http://example.com/me',
@@ -51,7 +53,7 @@ class LinkHelperTest extends TestCase
 
     public function testGetLinkHrefWithRoute()
     {
-        $linkHelper = new LinkHelper($this->getLinkFactoryMock(), $this->getRelationsRepositoryMock());
+        $linkHelper = new LinkHelper($this->getLinkFactoryMock(), $this->getMetadataFactoryMock());
 
         $this->assertEquals(
             'my-self-route',
@@ -61,21 +63,21 @@ class LinkHelperTest extends TestCase
 
     public function testGetLinkHrefReturnsNullIfRelNotFound()
     {
-        $linkHelper = new LinkHelper($this->getLinkFactoryMock($this->never()), $this->getRelationsRepositoryMock());
+        $linkHelper = new LinkHelper($this->getLinkFactoryMock($this->never()), $this->getMetadataFactoryMock());
 
         $this->assertNull($linkHelper->getLinkHref(new Will(123), 'unknown-rel'));
     }
 
     /**
-     * @return \Hateoas\Configuration\RelationsRepository
+     * @return MetadataFactoryInterface
      */
-    private function getRelationsRepositoryMock()
+    private function getMetadataFactoryMock()
     {
-        $relationRepoMock = $this->getMockBuilder('Hateoas\Configuration\RelationsRepository')
+        $metadataMock = $this->getMockBuilder(ClassMetadata::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $relationRepoMock
+        $metadataMock
             ->expects($this->once())
             ->method('getRelations')
             ->will($this->returnValue(array(
@@ -83,7 +85,15 @@ class LinkHelperTest extends TestCase
                 new Relation('self-route', new Route('my-self-route')),
             )));
 
-        return $relationRepoMock;
+        $metadataFactoryMock = $this->getMockBuilder(MetadataFactoryInterface::class)
+            ->getMock();
+
+        $metadataFactoryMock
+            ->expects($this->once())
+            ->method('getMetadataForClass')
+            ->will($this->returnValue($metadataMock));
+
+        return $metadataFactoryMock;
     }
 
     /**

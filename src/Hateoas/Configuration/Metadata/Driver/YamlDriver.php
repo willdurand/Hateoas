@@ -5,11 +5,13 @@ namespace Hateoas\Configuration\Metadata\Driver;
 use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
+use Hateoas\Configuration\Provider\RelationProviderInterface;
 use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\FileLocatorInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -17,6 +19,17 @@ use Symfony\Component\Yaml\Yaml;
  */
 class YamlDriver extends AbstractFileDriver
 {
+    /**
+     * @var RelationProviderInterface
+     */
+    private $relationProvider;
+
+    public function __construct(FileLocatorInterface $locator, RelationProviderInterface $relationProvider)
+    {
+        parent::__construct($locator);
+        $this->relationProvider = $relationProvider;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -47,7 +60,10 @@ class YamlDriver extends AbstractFileDriver
 
         if (isset($config['relation_providers'])) {
             foreach ($config['relation_providers'] as $relationProvider) {
-                $classMetadata->addRelationProvider(new RelationProvider($relationProvider));
+                $relations = $this->relationProvider->getRelations(new RelationProvider($relationProvider), $class->getName());
+                foreach ($relations as $relation) {
+                    $classMetadata->addRelation($relation);
+                }
             }
         }
 
