@@ -15,7 +15,7 @@ class MethodProviderTest extends TestCase
 
         $this->assertEquals(
             [new Relation('abcde')],
-            $providerProvider->getRelations(new RelationProvider('func(Hateoas\Tests\Configuration\Provider\Provider\abc)'), \stdClass::class)
+            $providerProvider->getRelations(new RelationProvider('func(Hateoas\Tests\Configuration\Provider\abc)'), \stdClass::class)
         );
         $this->assertEquals(
             [new Relation('abcdef')],
@@ -30,7 +30,6 @@ class MethodProviderTest extends TestCase
         ];
     }
 }
-
 function abc()
 {
     return [
