@@ -12,8 +12,8 @@ class VndErrorRepresentationTest extends RepresentationTestCase
         $error = new VndErrorRepresentation(
             'Validation failed',
             42,
-            new Relation('help', 'http://.../', null, array('title' => 'Error Information')),
-            new Relation('describes', 'http://.../', null, array('title' => 'Error Description'))
+            'http://help/',
+            'http://desc/'
         );
 
         $this->assertSame(
@@ -21,8 +21,8 @@ class VndErrorRepresentationTest extends RepresentationTestCase
 <?xml version="1.0" encoding="UTF-8"?>
 <resource logref="42">
   <message><![CDATA[Validation failed]]></message>
-  <link rel="help" href="http://.../" title="Error Information"/>
-  <link rel="describes" href="http://.../" title="Error Description"/>
+  <link rel="help" href="http://help/"/>
+  <link rel="describes" href="http://desc/"/>
 </resource>
 
 XML
@@ -37,12 +37,10 @@ XML
     "logref": 42,
     "_links": {
         "help": {
-            "href": "http:\/\/...\/",
-            "title": "Error Information"
+            "href": "http:\/\/help\/"
         },
         "describes": {
-            "href": "http:\/\/...\/",
-            "title": "Error Description"
+            "href": "http:\/\/desc\/"
         }
     }
 }

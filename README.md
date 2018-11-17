@@ -505,8 +505,8 @@ the [`vnd.error` specification](https://github.com/blongden/vnd.error).
 $error = new VndErrorRepresentation(
     'Validation failed',
     42,
-    new Relation('help', 'http://.../', null, array('title' => 'Error Information')),
-    new Relation('describes', 'http://.../', null, array('title' => 'Error Description'))
+    'http://.../',
+    'http://.../'
 );
 ```
 
@@ -517,8 +517,8 @@ outputs:
 <?xml version="1.0" encoding="UTF-8"?>
     <resource logref="42">
     <message><![CDATA[Validation failed]]></message>
-    <link rel="help" href="http://.../" title="Error Information"/>
-    <link rel="describes" href="http://.../" title="Error Description"/>
+    <link rel="help" href="http://.../"/>
+    <link rel="describes" href="http://.../"/>
 </resource>
 ```
 
@@ -528,12 +528,10 @@ outputs:
     "logref": 42,
     "_links": {
         "help": {
-            "href": "http://.../",
-            "title": "Error Information"
+            "href": "http://.../"
         },
         "describes": {
-            "href": "http://.../",
-            "title": "Error Description"
+            "href": "http://.../"
         }
     }
 }

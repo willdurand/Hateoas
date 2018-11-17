@@ -2,75 +2,98 @@
 
 namespace Hateoas\Representation;
 
-use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Annotation as Hateoas;
-use Hateoas\Configuration\Metadata\ClassMetadataInterface;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @Serializer\ExclusionPolicy("all")
  * @Serializer\XmlRoot("resource")
  *
- * @Hateoas\RelationProvider("getRelations")
+ * @Hateoas\Relation(
+ *      "help",
+ *       href = "expr(object.getHelp())",
+ *      exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(object.getHelp() === null)"
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "describes",
+ *      href = "expr(object.getDescribes())",
+ *      exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(object.getDescribes() === null)"
+ *      )
+ * )
  *
+ * @Hateoas\Relation(
+ *      "about",
+ *      href = "expr(object.getAbout())",
+ *      exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(object.getAbout() === null)"
+ *      )
+ * )
  * @author William Durand <william.durand1@gmail.com>
  */
 class VndErrorRepresentation
 {
     /**
+     * @var string
      * @Serializer\Expose
+     * @Serializer\Type("string")
      */
     private $message;
 
     /**
      * @Serializer\Expose
      * @Serializer\XmlAttribute
+     * @Serializer\Type("int")
      */
     private $logref;
 
     /**
-     * @var Relation
+     * @var string
+     */
+    private $about;
+
+    /**
+     * @var string
      */
     private $help;
 
     /**
-     * @var Relation
+     * @var string
      */
     private $describes;
 
-    /**
-     * @param string $message
-     * @param integer $logref
-     */
-    public function __construct($message, $logref = null, Relation $help = null, Relation $describes = null)
+    public function __construct(string $message, ?int $logref = null, ?string $help = null, ?string $describes = null, ?string $about = null)
     {
-        $this->message   = $message;
-        $this->logref    = $logref;
-        $this->help      = $help;
+        $this->message = $message;
+        $this->logref = $logref;
+        $this->help = $help;
         $this->describes = $describes;
+        $this->about = $about;
     }
 
-    public function getRelations($object, ClassMetadataInterface $classMetadata)
+    public function getHelp(): ?string
     {
-        $relations = array();
-
-        if (null !== $this->help) {
-            $relations[] = $this->help;
-        }
-
-        if (null !== $this->describes) {
-            $relations[] = $this->describes;
-        }
-
-        return $relations;
+        return $this->help;
     }
 
-    public function getMessage()
+    public function getDescribes(): ?string
+    {
+        return $this->describes;
+    }
+
+    public function getAbout(): ?string
+    {
+        return $this->about;
+    }
+
+    public function getMessage(): string
     {
         return $this->message;
     }
 
-    public function getLogref()
+    public function getLogref(): ?int
     {
         return $this->logref;
     }
