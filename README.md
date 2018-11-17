@@ -346,11 +346,7 @@ use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 
 $paginatedCollection = new PaginatedRepresentation(
-    new CollectionRepresentation(
-        array($user1, $user2, ...),
-        'users', // embedded rel
-        'users'  // xml element name
-    ),
+    new CollectionRepresentation(array($user1, $user2, ...)),
     'user_list', // route
     array(), // route parameters
     1,       // page number
@@ -366,8 +362,7 @@ $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
-The `CollectionRepresentation` class allows you to dynamically configure the
-collection resources rel, and the xml root element name.
+The `CollectionRepresentation` offers a basic representation of an embedded collection.
 
 The `PaginatedRepresentation` is designed to add `self`, `first`, and when
 possible `last`, `next`, and `previous` links.
@@ -433,8 +428,8 @@ And the following XML content:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1">
-    <user id="123"></user>
-    <user id="456"></user>
+    <entry id="123"></entry>
+    <entry id="456"></entry>
     <link rel="self" href="/api/users?page=1&amp;limit=10" />
     <link rel="first" href="/api/users?page=1&amp;limit=10" />
     <link rel="last" href="/api/users?page=1&amp;limit=10" />
@@ -451,12 +446,7 @@ $pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page and lim
 $paginatedCollection = $pagerfantaFactory->createRepresentation(
     $pager,
     new Route('user_list', array()),
-    new CollectionRepresentation(
-        $pager->getCurrentPageResults(),
-        'users',
-        'users',
-        new Exclusion(...)
-    )
+    new CollectionRepresentation($pager->getCurrentPageResults())
 );
 
 $json = $hateoas->serialize($paginatedCollection, 'json');
@@ -1109,7 +1099,7 @@ Acme\Demo\Representation\User:
                 until_version: 2.2
                 exclude_if: expr(object.getFriends() === null)
 
-    relation_providers: [ 'Class::getRelations', 'getRelations' ]
+    relation_providers: [ "Class::getRelations", "expr(sevice('foo').getMyAdditionalRelations())" ]
 ```
 
 ### Annotations
