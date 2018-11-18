@@ -26,6 +26,7 @@ before_install:
 
 install:
     - composer install --no-interaction --prefer-dist
+    - bin/phpcs
 
 script:
     - ./bin/phpunit --coverage-text
