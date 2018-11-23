@@ -3,11 +3,13 @@
 namespace Hateoas\Tests\Factory;
 
 use Hateoas\Configuration\Embedded;
+use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
+use Metadata\MetadataFactoryInterface;
 use Prophecy\Argument;
 
 class EmbeddedsFactoryTest extends TestCase
@@ -22,11 +24,18 @@ class EmbeddedsFactoryTest extends TestCase
         $object = new \StdClass();
         $context = $this->prophesize(SerializationContext::class)->reveal();
 
-        $relationsRepositoryProphecy = $this->prophesize('Hateoas\Configuration\RelationsRepository');
-        $relationsRepositoryProphecy
-            ->getRelations($object)
+        $metadata = $this->prophesize(ClassMetadata::class);
+        $metadata
+            ->getRelations()
             ->willReturn($relations)
-            ->shouldBeCalledTimes(1)
+            ->shouldBeCalledTimes(1);
+
+        $metadataFactory = $this->prophesize(MetadataFactoryInterface::class);
+        $metadataFactory
+            ->getMetadataForClass(get_class($object))
+            ->willReturn($metadata)
+            ->shouldBeCalledTimes(1);
+
         ;
         $ctx = [
             'object' => $object,
@@ -46,7 +55,7 @@ class EmbeddedsFactoryTest extends TestCase
         $exclusionManagerProphecy->shouldSkipEmbedded($object, $relations[2], $context)->willReturn(false);
 
         $embeddedsFactory = new EmbeddedsFactory(
-            $relationsRepositoryProphecy->reveal(),
+            $metadataFactory->reveal(),
             $ELProphecy->reveal(),
             $exclusionManagerProphecy->reveal()
         );

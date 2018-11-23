@@ -346,11 +346,7 @@ use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 
 $paginatedCollection = new PaginatedRepresentation(
-    new CollectionRepresentation(
-        array($user1, $user2, ...),
-        'users', // embedded rel
-        'users'  // xml element name
-    ),
+    new CollectionRepresentation(array($user1, $user2, ...)),
     'user_list', // route
     array(), // route parameters
     1,       // page number
@@ -366,8 +362,7 @@ $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
-The `CollectionRepresentation` class allows you to dynamically configure the
-collection resources rel, and the xml root element name.
+The `CollectionRepresentation` offers a basic representation of an embedded collection.
 
 The `PaginatedRepresentation` is designed to add `self`, `first`, and when
 possible `last`, `next`, and `previous` links.
@@ -433,8 +428,8 @@ And the following XML content:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1">
-    <user id="123"></user>
-    <user id="456"></user>
+    <entry id="123"></entry>
+    <entry id="456"></entry>
     <link rel="self" href="/api/users?page=1&amp;limit=10" />
     <link rel="first" href="/api/users?page=1&amp;limit=10" />
     <link rel="last" href="/api/users?page=1&amp;limit=10" />
@@ -451,12 +446,7 @@ $pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page and lim
 $paginatedCollection = $pagerfantaFactory->createRepresentation(
     $pager,
     new Route('user_list', array()),
-    new CollectionRepresentation(
-        $pager->getCurrentPageResults(),
-        'users',
-        'users',
-        new Exclusion(...)
-    )
+    new CollectionRepresentation($pager->getCurrentPageResults())
 );
 
 $json = $hateoas->serialize($paginatedCollection, 'json');
@@ -505,8 +495,8 @@ the [`vnd.error` specification](https://github.com/blongden/vnd.error).
 $error = new VndErrorRepresentation(
     'Validation failed',
     42,
-    new Relation('help', 'http://.../', null, array('title' => 'Error Information')),
-    new Relation('describes', 'http://.../', null, array('title' => 'Error Description'))
+    'http://.../',
+    'http://.../'
 );
 ```
 
@@ -517,8 +507,8 @@ outputs:
 <?xml version="1.0" encoding="UTF-8"?>
     <resource logref="42">
     <message><![CDATA[Validation failed]]></message>
-    <link rel="help" href="http://.../" title="Error Information"/>
-    <link rel="describes" href="http://.../" title="Error Description"/>
+    <link rel="help" href="http://.../"/>
+    <link rel="describes" href="http://.../"/>
 </resource>
 ```
 
@@ -528,12 +518,10 @@ outputs:
     "logref": 42,
     "_links": {
         "help": {
-            "href": "http://.../",
-            "title": "Error Information"
+            "href": "http://.../"
         },
         "describes": {
-            "href": "http://.../",
-            "title": "Error Description"
+            "href": "http://.../"
         }
     }
 }
@@ -1111,7 +1099,7 @@ Acme\Demo\Representation\User:
                 until_version: 2.2
                 exclude_if: expr(object.getFriends() === null)
 
-    relation_providers: [ 'Class::getRelations', 'getRelations' ]
+    relation_providers: [ "Class::getRelations", "expr(sevice('foo').getMyAdditionalRelations())" ]
 ```
 
 ### Annotations

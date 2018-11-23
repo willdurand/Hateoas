@@ -7,9 +7,10 @@ use Hateoas\Configuration\Annotation;
 use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
+use Hateoas\Configuration\Provider\RelationProviderInterface;
+use Hateoas\Configuration\RelationProvider;
 use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Relation;
-use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use Metadata\Driver\DriverInterface;
 
@@ -24,11 +25,15 @@ class AnnotationDriver implements DriverInterface
     private $reader;
 
     /**
-     * @param AnnotationsReader $reader
+     * @var RelationProviderInterface
      */
-    public function __construct(AnnotationsReader $reader)
+    private $relationProvider;
+
+
+    public function __construct(AnnotationsReader $reader, RelationProviderInterface $relationProvider)
     {
         $this->reader = $reader;
+        $this->relationProvider = $relationProvider;
     }
 
     /**
@@ -55,11 +60,14 @@ class AnnotationDriver implements DriverInterface
                     $this->createExclusion($annotation->exclusion)
                 ));
             } elseif ($annotation instanceof Annotation\RelationProvider) {
-                $classMetadata->addRelationProvider(new RelationProvider($annotation->name));
+                $relations = $this->relationProvider->getRelations(new RelationProvider($annotation->name), $class->getName());
+                foreach ($relations as $relation) {
+                    $classMetadata->addRelation($relation);
+                }
             }
         }
 
-        if (0 === count($classMetadata->getRelations()) && 0 === count($classMetadata->getRelationProviders())) {
+        if (0 === count($classMetadata->getRelations())) {
             return null;
         }
 

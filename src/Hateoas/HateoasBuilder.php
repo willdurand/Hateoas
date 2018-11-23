@@ -9,12 +9,10 @@ use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 use Hateoas\Configuration\Metadata\Driver\ExtensionDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
 use Hateoas\Configuration\Metadata\Driver\XmlDriver;
-use Hateoas\Configuration\Provider\Resolver\MethodResolver;
-use Hateoas\Configuration\Provider\Resolver\ChainResolver;
-use Hateoas\Configuration\Provider\RelationProvider;
-use Hateoas\Configuration\Provider\Resolver\RelationProviderResolverInterface;
-use Hateoas\Configuration\Provider\Resolver\StaticMethodResolver;
-use Hateoas\Configuration\RelationsRepository;
+use Hateoas\Configuration\Provider\ChainProvider;
+use Hateoas\Configuration\Provider\ExpressionEvaluatorProvider;
+use Hateoas\Configuration\Provider\FunctionProvider;
+use Hateoas\Configuration\Provider\StaticMethodProvider;
 use Hateoas\Expression\LinkExpressionFunction;
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinkFactory;
@@ -80,7 +78,7 @@ class HateoasBuilder
 
     private $configurationExtensions = array();
 
-    private $chainResolver;
+    private $chainProvider;
 
     private $metadataDirs = array();
 
@@ -116,9 +114,9 @@ class HateoasBuilder
     {
         $this->serializerBuilder    = $serializerBuilder ?: SerializerBuilder::create();
         $this->urlGeneratorRegistry = new UrlGeneratorRegistry();
-        $this->chainResolver        = new ChainResolver(array(
-            new MethodResolver(),
-            new StaticMethodResolver(),
+        $this->chainProvider        = new ChainProvider(array(
+            new FunctionProvider(),
+            new StaticMethodProvider(),
         ));
     }
 
@@ -131,23 +129,18 @@ class HateoasBuilder
     {
         $metadataFactory     = $this->buildMetadataFactory();
 
-        $relationProvider    = new RelationProvider($metadataFactory, $this->chainResolver);
-        $relationsRepository = new RelationsRepository($metadataFactory, $relationProvider);
-
         $linkFactory         = new LinkFactory($this->urlGeneratorRegistry);
-        $this->contextVariables['link_helper'] = $linkHelper = new LinkHelper($linkFactory, $relationsRepository);
+        $this->contextVariables['link_helper'] = $linkHelper = new LinkHelper($linkFactory, $metadataFactory);
 
         $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage(), $this->contextVariables);
+        $this->chainProvider->addProvider(new ExpressionEvaluatorProvider($expressionEvaluator));
 
         $linkFactory->setExpressionEvaluator($expressionEvaluator);
 
         $exclusionManager    = new ExclusionManager(new ExpressionLanguageExclusionStrategy($expressionEvaluator));
 
-
-        $linksFactory        = new LinksFactory($relationsRepository, $linkFactory, $exclusionManager);
-        $embeddedsFactory    = new EmbeddedsFactory($relationsRepository, $expressionEvaluator, $exclusionManager);
-
-
+        $linksFactory        = new LinksFactory($metadataFactory, $linkFactory, $exclusionManager);
+        $embeddedsFactory    = new EmbeddedsFactory($metadataFactory, $expressionEvaluator, $exclusionManager);
 
         if (null === $this->xmlSerializer) {
             $this->setDefaultXmlSerializer();
@@ -269,19 +262,6 @@ class HateoasBuilder
         return $this;
     }
 
-    /**
-     * Add a new relation provider resolver.
-     *
-     * @param RelationProviderResolverInterface $resolver
-     *
-     * @return HateoasBuilder
-     */
-    public function addRelationProviderResolver(RelationProviderResolverInterface $resolver)
-    {
-        $this->chainResolver->addResolver($resolver);
-
-        return $this;
-    }
 
     /**
      * @param ConfigurationExtensionInterface $configurationExtension
@@ -454,12 +434,12 @@ class HateoasBuilder
         if (!empty($this->metadataDirs)) {
             $fileLocator    = new FileLocator($this->metadataDirs);
             $metadataDriver = new DriverChain(array(
-                new YamlDriver($fileLocator),
-                new XmlDriver($fileLocator),
-                new AnnotationDriver($annotationReader),
+                new YamlDriver($fileLocator, $this->chainProvider),
+                new XmlDriver($fileLocator, $this->chainProvider),
+                new AnnotationDriver($annotationReader, $this->chainProvider),
             ));
         } else {
-            $metadataDriver = new AnnotationDriver($annotationReader);
+            $metadataDriver = new AnnotationDriver($annotationReader, $this->chainProvider);
         }
 
         $metadataDriver  = new ExtensionDriver($metadataDriver, $this->configurationExtensions);

@@ -2,6 +2,10 @@
 
 namespace Hateoas\Tests\Configuration\Metadata\Driver;
 
+use Hateoas\Configuration\Provider\ChainProvider;
+use Hateoas\Configuration\Provider\FunctionProvider;
+use Hateoas\Configuration\Provider\RelationProviderInterface;
+use Hateoas\Configuration\Provider\StaticMethodProvider;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider;
 use Metadata\Driver\DriverInterface;
@@ -9,6 +13,14 @@ use Hateoas\Tests\TestCase;
 
 abstract class AbstractDriverTest extends TestCase
 {
+    protected function createProvider(): RelationProviderInterface
+    {
+        return new ChainProvider([
+            new FunctionProvider(),
+            new StaticMethodProvider(),
+        ]);
+    }
+
     /**
      * @return DriverInterface
      */
@@ -100,15 +112,13 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertSame('bar', $relation->getEmbedded()->getExclusion()->getExcludeIf());
 
         /** @var $relations RelationProvider[] */
-        $relationProviders = $classMetadata->getRelationProviders();
+        $relations = $classMetadata->getRelations();
+        $this->assertInternalType('array', $relations);
+        $this->assertCount(7, $relations);
 
-        $this->assertInternalType('array', $relationProviders);
-        foreach ($relationProviders as $relationProvider) {
-            $this->assertInstanceOf('Hateoas\Configuration\RelationProvider', $relationProvider);
-        }
 
-        $relationProvider = current($relationProviders);
-        $this->assertSame('getRelations', $relationProvider->getName());
+//        $relation = current($relations);
+//        $this->assertSame('getRelations', $relation->getName());
     }
 
     public function testEmptyClass()

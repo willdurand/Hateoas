@@ -16,12 +16,6 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
      * @var Relation[]
      */
     private $relations = array();
-
-    /**
-     * @var RelationProvider[]
-     */
-    private $relationProviders = array();
-
     /**
      * {@inheritDoc}
      */
@@ -41,25 +35,9 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     /**
      * {@inheritDoc}
      */
-    public function getRelationProviders()
-    {
-        return $this->relationProviders;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function addRelation(Relation $relation)
     {
         $this->relations[] = $relation;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addRelationProvider(RelationProvider $relationProvider)
-    {
-        $this->relationProviders[] = $relationProvider;
     }
 
     /**
@@ -74,7 +52,6 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         parent::merge($object);
 
         $this->relations         = array_merge($this->relations, $object->getRelations());
-        $this->relationProviders = array_merge($this->relationProviders, $object->getRelationProviders());
     }
 
     /**
@@ -84,7 +61,6 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     {
         return serialize(array(
             $this->relations,
-            $this->relationProviders,
             parent::serialize(),
         ));
     }
@@ -96,7 +72,6 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     {
         list(
             $this->relations,
-            $this->relationProviders,
             $parentStr
         ) = unserialize($str);
 

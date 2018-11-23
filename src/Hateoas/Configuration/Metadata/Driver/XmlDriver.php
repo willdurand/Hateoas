@@ -5,12 +5,14 @@ namespace Hateoas\Configuration\Metadata\Driver;
 use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
+use Hateoas\Configuration\Provider\RelationProviderInterface;
 use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use JMS\Serializer\Exception\XmlErrorException;
 use Metadata\Driver\AbstractFileDriver;
+use Metadata\Driver\FileLocatorInterface;
 
 /**
  * @author Miha Vrhovnik <miha.vrhovnik@pagein.net>
@@ -18,6 +20,17 @@ use Metadata\Driver\AbstractFileDriver;
 class XmlDriver extends AbstractFileDriver
 {
     const NAMESPACE_URI = 'https://github.com/willdurand/Hateoas';
+
+    /**
+     * @var RelationProviderInterface
+     */
+    private $relationProvider;
+
+    public function __construct(FileLocatorInterface $locator, RelationProviderInterface $relationProvider)
+    {
+        parent::__construct($locator);
+        $this->relationProvider = $relationProvider;
+    }
 
     /**
      * {@inheritdoc}
@@ -45,7 +58,10 @@ class XmlDriver extends AbstractFileDriver
             $providers = preg_split('/\s*,\s*/', (string) $exists[0]->attributes(self::NAMESPACE_URI)->providers);
 
             foreach ($providers as $relationProvider) {
-                $classMetadata->addRelationProvider(new RelationProvider($relationProvider));
+                $relations = $this->relationProvider->getRelations(new RelationProvider($relationProvider), $class->getName());
+                foreach ($relations as $relation) {
+                    $classMetadata->addRelation($relation);
+                }
             }
         }
 

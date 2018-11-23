@@ -37,7 +37,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      embedded = "expr(object.getAndroidSmartphone())"
  * )
  *
- * @Hateoas\RelationProvider("getRelations")
+ * @Hateoas\RelationProvider("Hateoas\Tests\Fixtures\AdrienBrault::getRelations")
  */
 class AdrienBrault
 {
@@ -71,7 +71,7 @@ class AdrienBrault
         return new Smartphone('Nexus 5');
     }
 
-    public function getRelations()
+    public static function getRelations()
     {
         return array(
             new Relation('dynamic-relation', 'awesome!!!', array('wowowow')),
