@@ -18,11 +18,10 @@ class RelationPropertyMetadata extends VirtualPropertyMetadata
             $this->name = $relation->getName();
             $this->class = get_class($relation);
 
-            $typeParser = new TypeParser();
             if (null !== $relation->getEmbedded()) {
-                $this->type = $typeParser->parse('Hateoas\Model\Embedded');
+                $this->type = array('name' => 'Hateoas\Model\Embedded', 'params' => []);
             } elseif (null !== $relation->getHref()) {
-                $this->type = $typeParser->parse('Hateoas\Model\Link');
+                $this->type = array('name' => 'Hateoas\Model\Link', 'params' => []);
             }
         }
 

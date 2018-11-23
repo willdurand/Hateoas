@@ -15,9 +15,4 @@ class XmlEventSubscriberTest extends AbstractEventSubscriberTest
     {
         return $this->prophesize('Hateoas\Serializer\XmlSerializerInterface');
     }
-
-    protected function mockSerializationVisitor()
-    {
-        return $this->prophesize('JMS\Serializer\XmlSerializationVisitor')->reveal();
-    }
 }

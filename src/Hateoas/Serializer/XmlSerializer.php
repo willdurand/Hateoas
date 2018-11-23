@@ -3,8 +3,11 @@
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Embedded;
+use Hateoas\Model\Link;
 use Hateoas\Util\ClassUtils;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 use Metadata\MetadataFactoryInterface;
 
@@ -27,9 +30,11 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     }
 
     /**
-     * {@inheritdoc}
+     * @param Link[]                  $links
+     * @param XmlSerializationVisitor $visitor
+     * @param SerializationContext    $context
      */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context)
     {
         foreach ($links as $link) {
             $linkNode = $visitor->getDocument()->createElement('link');
@@ -45,9 +50,11 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     }
 
     /**
-     * {@inheritdoc}
+     * @param Embedded[]              $embeddeds
+     * @param XmlSerializationVisitor $visitor
+     * @param SerializationContext    $context
      */
-    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context)
     {
         foreach ($embeddeds as $embedded) {
             $entryNode = $visitor->getDocument()->createElement($this->getElementName($embedded->getData(), $embedded));
@@ -94,11 +101,14 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context)
     {
         $context->pushPropertyMetadata($embedded->getMetadata());
+        $navigator = $context->getNavigator();
+        try {
+            if (null !== $node = $navigator->accept($data, null)) {
+                $visitor->getCurrentNode()->appendChild($node);
+            }
+        } catch (NotAcceptableException $e) {
 
-        if (null !== $node = $context->accept($data)) {
-            $visitor->getCurrentNode()->appendChild($node);
         }
-
         $context->popPropertyMetadata();
     }
 }

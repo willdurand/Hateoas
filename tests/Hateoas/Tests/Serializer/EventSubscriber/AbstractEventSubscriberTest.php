@@ -3,6 +3,7 @@
 namespace Hateoas\Tests\Serializer\EventSubscriber;
 
 use Hateoas\Tests\TestCase;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 abstract class AbstractEventSubscriberTest extends TestCase
 {
@@ -100,7 +101,10 @@ abstract class AbstractEventSubscriberTest extends TestCase
 
     abstract protected function prophesizeSerializer();
 
-    abstract protected function mockSerializationVisitor();
+    private function mockSerializationVisitor()
+    {
+        return $this->prophesize(SerializationVisitorInterface::class)->reveal();
+    }
 
     private function mockEvent($object, $serializationVisitor, $context)
     {

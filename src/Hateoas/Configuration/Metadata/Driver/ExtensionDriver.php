@@ -3,6 +3,7 @@
 namespace Hateoas\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Metadata\ClassMetadata;
+use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Metadata\ConfigurationExtensionInterface;
 use Metadata\Driver\DriverInterface;
 
@@ -30,7 +31,7 @@ class ExtensionDriver implements DriverInterface
     /**
      * {@inheritdoc}
      */
-    public function loadMetadataForClass(\ReflectionClass $class)
+    public function loadMetadataForClass(\ReflectionClass $class): ?JMSClassMetadata
     {
         $metadata    = $this->delegate->loadMetadataForClass($class);
         $newMetadata = false;

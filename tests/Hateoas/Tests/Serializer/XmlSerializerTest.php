@@ -13,6 +13,7 @@ use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
+use Prophecy\Argument;
 
 class XmlSerializerTest extends TestCase
 {
@@ -44,13 +45,21 @@ class XmlSerializerTest extends TestCase
 
 XML
             ,
-            $xmlSerializationVisitor->getResult()
+            $xmlSerializationVisitor->getResult($xmlSerializationVisitor->getDocument())
         );
     }
 
     public function testSerializeEmbeddeds()
     {
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+        $navigatorProphecy = $this->prophesize('JMS\Serializer\GraphNavigatorInterface');
+
+        $contextProphecy
+            ->getNavigator()
+            ->willReturn($navigatorProphecy);
+
+        $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
+        $contextProphecy->popPropertyMetadata()->shouldBeCalled();
 
         $embeddeds = array(
             new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata(), 'person'),
@@ -76,7 +85,7 @@ XML
 
 XML
             ,
-            $xmlSerializationVisitor->getResult()
+            $xmlSerializationVisitor->getResult($xmlSerializationVisitor->getCurrentNode())
         );
     }
 
@@ -147,17 +156,13 @@ XML
 
     private function createXmlSerializationVisitor()
     {
-        $xmlSerializationVisitor = new XmlSerializationVisitor(
-            $this->prophesize('JMS\Serializer\Naming\PropertyNamingStrategyInterface')->reveal()
-        );
+        $xmlSerializationVisitor = new XmlSerializationVisitor();
         $xmlSerializationVisitorClass = new \ReflectionClass('JMS\Serializer\XmlSerializationVisitor');
         $stackProperty = $xmlSerializationVisitorClass->getProperty('stack');
         $stackProperty->setAccessible('true');
         $stackProperty->setValue($xmlSerializationVisitor, new \SplStack());
 
-        $xmlSerializationVisitor->document = $xmlSerializationVisitor->createDocument(null, null, false);
-        $xmlRootNode = $xmlSerializationVisitor->document->createElement('root');
-        $xmlSerializationVisitor->document->appendChild($xmlRootNode);
+        $xmlRootNode = $document = $xmlSerializationVisitor->createRoot(null, 'root');
         $xmlSerializationVisitor->setCurrentNode($xmlRootNode);
 
         return $xmlSerializationVisitor;
