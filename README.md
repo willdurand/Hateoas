@@ -1197,8 +1197,8 @@ This annotation can be defined in the **exclusion** property of both the
 | Property     | Required | Content          | Expression language    |
 |--------------|----------|------------------|------------------------|
 | groups       | No       | array            | No                     |
-| sinceVersion | No       | float / integer  | No                     |
-| untilVersion | No       | float / integer  | No                     |
+| sinceVersion | No       | string           | No                     |
+| untilVersion | No       | string           | No                     |
 | maxDepth     | No       | integer          | No                     |
 | excludeIf    | No       | string / boolean | Yes                    |
 

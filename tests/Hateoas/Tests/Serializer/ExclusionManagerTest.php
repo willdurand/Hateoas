@@ -67,8 +67,8 @@ class ExclusionManagerTest extends TestCase
         $test = $this;
         $exclusionStrategyCallback = function ($args) use ($test) {
             $test->assertSame(['foo', 'bar'], $args[0]->groups);
-            $test->assertSame(1.1, $args[0]->sinceVersion);
-            $test->assertSame(1.7, $args[0]->untilVersion);
+            $test->assertSame('1.1', $args[0]->sinceVersion);
+            $test->assertSame('1.7', $args[0]->untilVersion);
             $test->assertSame(77, $args[0]->maxDepth);
         };
 
@@ -78,8 +78,8 @@ class ExclusionManagerTest extends TestCase
         $object = new \StdClass();
         $exclusion = new Exclusion(
             array('foo', 'bar'),
-            1.1,
-            1.7,
+            '1.1',
+            '1.7',
             77
         );
         $relation = new Relation('foo', 'foo', 'foo', array(), $exclusion);

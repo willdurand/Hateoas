@@ -16,12 +16,12 @@ final class Exclusion
     public $groups = null;
 
     /**
-     * @var mixed float/integer
+     * @var string
      */
     public $sinceVersion = null;
 
     /**
-     * @var mixed float/integer
+     * @var string
      */
     public $untilVersion = null;
 

@@ -29,7 +29,6 @@ class AnnotationDriver implements DriverInterface
      */
     private $relationProvider;
 
-
     public function __construct(AnnotationsReader $reader, RelationProviderInterface $relationProvider)
     {
         $this->reader = $reader;
@@ -78,9 +77,9 @@ class AnnotationDriver implements DriverInterface
     {
         return new Exclusion(
             $exclusion->groups,
-            $exclusion->sinceVersion,
-            $exclusion->untilVersion,
-            $exclusion->maxDepth,
+            $exclusion->sinceVersion !== null ? (string)$exclusion->sinceVersion : null,
+            $exclusion->untilVersion !== null ? (string)$exclusion->untilVersion : null,
+            $exclusion->maxDepth !== null ? (int)$exclusion->maxDepth : null,
             $exclusion->excludeIf
         );
     }
