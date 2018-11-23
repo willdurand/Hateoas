@@ -82,9 +82,9 @@ class YamlDriver extends AbstractFileDriver
     {
         return new Exclusion(
             isset($exclusion['groups']) ? $exclusion['groups'] : null,
-            isset($exclusion['since_version']) ? $exclusion['since_version'] : null,
-            isset($exclusion['until_version']) ? $exclusion['until_version'] : null,
-            isset($exclusion['max_depth']) ? $exclusion['max_depth'] : null,
+            isset($exclusion['since_version']) ? (string)$exclusion['since_version'] : null,
+            isset($exclusion['until_version']) ? (string)$exclusion['until_version'] : null,
+            isset($exclusion['max_depth']) ? (int)$exclusion['max_depth'] : null,
             isset($exclusion['exclude_if']) ? $exclusion['exclude_if'] : null
         );
     }

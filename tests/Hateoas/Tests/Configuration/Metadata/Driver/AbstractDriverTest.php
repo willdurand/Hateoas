@@ -98,16 +98,16 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertSame('/hello', $relation->getHref());
         $this->assertInstanceOf('Hateoas\Configuration\Exclusion', $relation->getExclusion());
         $this->assertSame(['group1', 'group2'], $relation->getExclusion()->getGroups());
-        $this->assertSame(1.0, $relation->getExclusion()->getSinceVersion());
-        $this->assertSame(2.2, $relation->getExclusion()->getUntilVersion());
+        $this->assertSame('1', $relation->getExclusion()->getSinceVersion());
+        $this->assertSame('2.2', $relation->getExclusion()->getUntilVersion());
         $this->assertSame(42, $relation->getExclusion()->getMaxDepth());
         $this->assertSame('foo', $relation->getExclusion()->getExcludeIf());
         $this->assertInstanceOf('Hateoas\Configuration\Embedded', $relation->getEmbedded());
         $this->assertSame('hello', $relation->getEmbedded()->getContent());
         $this->assertInstanceOf('Hateoas\Configuration\Exclusion', $relation->getEmbedded()->getExclusion());
         $this->assertSame(['group3', 'group4'], $relation->getEmbedded()->getExclusion()->getGroups());
-        $this->assertSame(1.1, $relation->getEmbedded()->getExclusion()->getSinceVersion());
-        $this->assertSame(2.3, $relation->getEmbedded()->getExclusion()->getUntilVersion());
+        $this->assertSame('1.1', $relation->getEmbedded()->getExclusion()->getSinceVersion());
+        $this->assertSame('2.3', $relation->getEmbedded()->getExclusion()->getUntilVersion());
         $this->assertSame(43, $relation->getEmbedded()->getExclusion()->getMaxDepth());
         $this->assertSame('bar', $relation->getEmbedded()->getExclusion()->getExcludeIf());
 

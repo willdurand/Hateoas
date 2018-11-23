@@ -115,7 +115,7 @@ class XmlDriver extends AbstractFileDriver
             isset($exclusion->attributes('')->groups) ? preg_split('/\s*,\s*/', (string) $exclusion->attributes('')->groups) : null,
             isset($exclusion->attributes('')->{'since-version'}) ? (string) $exclusion->attributes('')->{'since-version'} : null,
             isset($exclusion->attributes('')->{'until-version'}) ? (string) $exclusion->attributes('')->{'until-version'} : null,
-            isset($exclusion->attributes('')->{'max-depth'}) ? (string) $exclusion->attributes('')->{'max-depth'} : null,
+            isset($exclusion->attributes('')->{'max-depth'}) ? (int) $exclusion->attributes('')->{'max-depth'} : null,
             isset($exclusion->attributes('')->{'exclude-if'}) ? (string) $exclusion->attributes('')->{'exclude-if'} : null
         );
     }

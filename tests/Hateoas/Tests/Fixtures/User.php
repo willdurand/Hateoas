@@ -17,8 +17,8 @@ use Hateoas\Configuration\Relation;
  *      href = "/hello",
  *      exclusion = @Hateoas\Exclusion(
  *          groups = {"group1", "group2"},
- *          sinceVersion = 1,
- *          untilVersion = 2.2,
+ *          sinceVersion = "1",
+ *          untilVersion = "2.2",
  *          maxDepth = 42,
  *          excludeIf = "foo"
  *      ),
@@ -27,8 +27,8 @@ use Hateoas\Configuration\Relation;
  *          xmlElementName = "barTag",
  *          exclusion = @Hateoas\Exclusion(
  *              groups = {"group3", "group4"},
- *              sinceVersion = 1.1,
- *              untilVersion = 2.3,
+ *              sinceVersion = "1.1",
+ *              untilVersion = "2.3",
  *              maxDepth = 43,
  *              excludeIf = "bar"
  *          )

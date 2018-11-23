@@ -25,14 +25,14 @@ class RelationPropertyMetadataTest extends TestCase
     {
         $propertyMetadata = new RelationPropertyMetadata(new Exclusion(
             array('foo', 'bar'),
-            1.1,
-            2.2,
+            '1.1',
+            '2.2',
             42
         ));
 
         $this->assertSame(['foo', 'bar'], $propertyMetadata->groups);
-        $this->assertSame(1.1, $propertyMetadata->sinceVersion);
-        $this->assertSame(2.2, $propertyMetadata->untilVersion);
+        $this->assertSame('1.1', $propertyMetadata->sinceVersion);
+        $this->assertSame('2.2', $propertyMetadata->untilVersion);
         $this->assertSame(42, $propertyMetadata->maxDepth);
     }
 

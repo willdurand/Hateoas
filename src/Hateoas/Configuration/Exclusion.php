@@ -13,12 +13,12 @@ class Exclusion
     private $groups;
 
     /**
-     * @var null|float
+     * @var null|string
      */
     private $sinceVersion;
 
     /**
-     * @var null|float
+     * @var null|string
      */
     private $untilVersion;
 
@@ -40,9 +40,9 @@ class Exclusion
         $excludeIf = null
     ) {
         $this->groups = $groups;
-        $this->sinceVersion = null !== $sinceVersion ? (float) $sinceVersion : null;
-        $this->untilVersion = null !== $untilVersion ? (float) $untilVersion : null;
-        $this->maxDepth = null !== $maxDepth ? (int) $maxDepth : null;
+        $this->sinceVersion = null !== $sinceVersion ? $sinceVersion : null;
+        $this->untilVersion = null !== $untilVersion ? $untilVersion : null;
+        $this->maxDepth = null !== $maxDepth ? $maxDepth : null;
         $this->excludeIf = $excludeIf;
     }
 
@@ -55,7 +55,7 @@ class Exclusion
     }
 
     /**
-     * @return null|float
+     * @return null|string
      */
     public function getSinceVersion()
     {
@@ -63,7 +63,7 @@ class Exclusion
     }
 
     /**
-     * @return null|float
+     * @return null|string
      */
     public function getUntilVersion()
     {
