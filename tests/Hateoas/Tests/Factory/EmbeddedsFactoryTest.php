@@ -11,15 +11,27 @@ use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
 use Prophecy\Argument;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class EmbeddedsFactoryTest extends TestCase
 {
+    protected function expr($expr)
+    {
+        $expressionLanguage = new ExpressionLanguage();
+
+        return $expressionLanguage->parse($expr, ['object']);
+    }
+
     public function test()
     {
         $relations = array(
             new Relation('self', '/users/1'),
-            new Relation('friend', '/users/42', 'expr(object.getFriend())'),
-            new Relation('expr(object.getManagerRel())', '/users/42', new Embedded('expr(object.getManager())', 'expr(object.getXmlElementName())')),
+            new Relation('friend', '/users/42', $this->expr('object.getFriend()')),
+            new Relation(
+                'manager',
+                '/users/42',
+                new Embedded($this->expr('object.getManager()'), $this->expr('object.getXmlElementName()'))
+            ),
         );
         $object = new \StdClass();
         $context = $this->prophesize(SerializationContext::class)->reveal();
@@ -45,7 +57,6 @@ class EmbeddedsFactoryTest extends TestCase
         $ELProphecy = $this->prophesize(ExpressionEvaluatorInterface::class);
         $ELProphecy->evaluate('object.getFriend()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
         $ELProphecy->evaluate('object.getManager()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
-        $ELProphecy->evaluate('object.getManagerRel()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
         $ELProphecy->evaluate('object.getXmlElementName()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
         $ELProphecy->evaluate(Argument::any(), $ctx)->willReturnArgument();
 
@@ -67,7 +78,7 @@ class EmbeddedsFactoryTest extends TestCase
         $this->assertSame('friend', $embeddeds[0]->getRel());
         $this->assertSame(42, $embeddeds[0]->getData());
         $this->assertInstanceOf('Hateoas\Model\Embedded', $embeddeds[1]);
-        $this->assertSame(42, $embeddeds[1]->getRel());
+        $this->assertSame('manager', $embeddeds[1]->getRel());
         $this->assertSame(42, $embeddeds[1]->getData());
         $this->assertSame(42, $embeddeds[1]->getXmlElementName());
     }

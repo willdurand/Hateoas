@@ -6,6 +6,7 @@ use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Relation;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\TypeParser;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -36,8 +37,8 @@ class RelationPropertyMetadata extends VirtualPropertyMetadata
         $this->untilVersion = $exclusion->getUntilVersion();
         $this->maxDepth = $exclusion->getMaxDepth();
 
-        if ($exclusion->getExcludeIf() !== null && preg_match(self::EXPRESSION_REGEX, $exclusion->getExcludeIf(), $matches)) {
-            $this->excludeIf = $matches['expression'];
+        if ($exclusion->getExcludeIf() instanceof Expression) {
+            $this->excludeIf = (string)$exclusion->getExcludeIf() ;
         } elseif ($exclusion->getExcludeIf() !== null) {
             $this->excludeIf = $exclusion->getExcludeIf();
         }

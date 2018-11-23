@@ -37,7 +37,7 @@ class LinksFactoryTest extends TestCase
         ;
         $linkFactoryProphecy = $this->prophesize('Hateoas\Factory\LinkFactory');
         $linkFactoryProphecy
-            ->createLink($object, $relations[1])
+            ->createLink($object, $relations[1], $context)
             ->willReturn($link)
             ->shouldBeCalledTimes(1)
         ;

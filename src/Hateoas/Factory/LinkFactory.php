@@ -7,6 +7,8 @@ use Hateoas\Configuration\Route;
 use Hateoas\Model\Link;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\SerializationContext;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -42,12 +44,12 @@ class LinkFactory
      *
      * @return Link
      */
-    public function createLink($object, Relation $relation)
+    public function createLink($object, Relation $relation, SerializationContext $context)
     {
-        $data = ['object' => $object];
+        $data = ['object' => $object, 'context' => $context];
 
-        $rel =  $this->checkExpression($relation->getName(), $data);
-        $href = $this->checkExpression($relation->getHref(), $data);
+        $rel =  $relation->getName();
+        $href = $relation->getHref();
         if ($href instanceof Route) {
             if (!$this->urlGeneratorRegistry->hasGenerators()) {
                 throw new \RuntimeException('You cannot use a route without an url generator.');
@@ -55,7 +57,7 @@ class LinkFactory
 
             $name       = $this->checkExpression($href->getName(), $data);
             $parameters = is_array($href->getParameters())
-                ? $this->evaluateArray($this->expressionEvaluator, $href->getParameters(), $data)
+                ? $this->evaluateArray($href->getParameters(), $data)
                 : $this->checkExpression($href->getParameters(), $data)
             ;
             $isAbsolute = $this->checkExpression($href->isAbsolute(), $data);
@@ -77,28 +79,25 @@ class LinkFactory
             $href = $this->checkExpression($href, $data);
         }
 
-        $attributes = $this->evaluateArray($this->expressionEvaluator, $relation->getAttributes(), $data);
+        $attributes = $this->evaluateArray($relation->getAttributes(), $data);
 
         return new Link($rel, $href, $attributes);
     }
 
-    const EXPRESSION_REGEX = '/expr\((?P<expression>.+)\)/';
-
     private function checkExpression($exp, array $data)
     {
-        if (is_string($exp) && preg_match(self::EXPRESSION_REGEX, $exp, $matches)) {
-            return $this->expressionEvaluator->evaluate($matches['expression'], $data);
+        if ($exp instanceof Expression) {
+            return $this->expressionEvaluator->evaluate((string)$exp, $data);
         } else {
             return $exp;
         }
     }
 
-    private function evaluateArray(ExpressionEvaluatorInterface $expressionEvaluator, array $array, array $data)
+    private function evaluateArray(array $array, array $data)
     {
         $newArray = array();
         foreach ($array as $key => $value) {
-            $key = $this->checkExpression($key, $data);
-            $value = is_array($value) ? $this->evaluateArray($expressionEvaluator, $value, $data) : $this->checkExpression($value, $data);
+            $value = is_array($value) ? $this->evaluateArray($value, $data) : $this->checkExpression($value, $data);
 
             $newArray[$key] = $value;
         }

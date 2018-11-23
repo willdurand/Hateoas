@@ -8,6 +8,7 @@ use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
+use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -56,7 +57,7 @@ class EmbeddedsFactory
                     continue;
                 }
 
-                $rel = $this->checkExpression($relation->getName(), $langugeData);
+                $rel = $relation->getName();
                 $data = $this->checkExpression($relation->getEmbedded()->getContent(), $langugeData);
                 $xmlElementName = $this->checkExpression($relation->getEmbedded()->getXmlElementName(), $langugeData);
 
@@ -68,12 +69,10 @@ class EmbeddedsFactory
         return $embeddeds;
     }
 
-    const EXPRESSION_REGEX = '/expr\((?P<expression>.+)\)/';
-
     private function checkExpression($exp, array $data)
     {
-        if (is_string($exp) && preg_match(self::EXPRESSION_REGEX, $exp, $matches)) {
-            return $this->expressionEvaluator->evaluate($matches['expression'], $data);
+        if ($exp instanceof Expression) {
+            return $this->expressionEvaluator->evaluate((string)$exp, $data);
         } else {
             return $exp;
         }

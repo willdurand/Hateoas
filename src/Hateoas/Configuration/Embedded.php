@@ -2,6 +2,8 @@
 
 namespace Hateoas\Configuration;
 
+use Symfony\Component\ExpressionLanguage\Expression;
+
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
@@ -13,7 +15,7 @@ class Embedded
     private $content;
 
     /**
-     * @var string|null
+     * @var string|null|Expression
      */
     private $xmlElementName;
 

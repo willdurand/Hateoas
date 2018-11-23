@@ -12,6 +12,7 @@ use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -19,15 +20,18 @@ use Symfony\Component\Yaml\Yaml;
  */
 class YamlDriver extends AbstractFileDriver
 {
+    use CheckExpressionTrait;
+
     /**
      * @var RelationProviderInterface
      */
     private $relationProvider;
 
-    public function __construct(FileLocatorInterface $locator, RelationProviderInterface $relationProvider)
+    public function __construct(FileLocatorInterface $locator, ExpressionLanguage $expressionLanguage, RelationProviderInterface $relationProvider)
     {
         parent::__construct($locator);
         $this->relationProvider = $relationProvider;
+        $this->expressionLanguage = $expressionLanguage;
     }
 
     /**
@@ -85,7 +89,7 @@ class YamlDriver extends AbstractFileDriver
             isset($exclusion['since_version']) ? (string)$exclusion['since_version'] : null,
             isset($exclusion['until_version']) ? (string)$exclusion['until_version'] : null,
             isset($exclusion['max_depth']) ? (int)$exclusion['max_depth'] : null,
-            isset($exclusion['exclude_if']) ? $exclusion['exclude_if'] : null
+            isset($exclusion['exclude_if']) ? $this->checkExpression((string)$exclusion['exclude_if']) : null
         );
     }
 
@@ -93,22 +97,30 @@ class YamlDriver extends AbstractFileDriver
     {
         $href = null;
         if (isset($relation['href']) && is_array($href = $relation['href']) && isset($href['route'])) {
+
+            $absolute = false;
+            if (isset($href['absolute'])  && is_bool($href['absolute'])) {
+                $absolute = $href['absolute'];
+            } elseif (isset($href['absolute'])) {
+                $absolute = isset($href['absolute']) ? $this->checkExpression($href['absolute']) : false;
+            }
+
             $href = new Route(
-                $href['route'],
-                isset($href['parameters']) ? $href['parameters'] : array(),
-                isset($href['absolute'])   ? $href['absolute'] : false,
+                $this->checkExpression($href['route']),
+                isset($href['parameters']) ? $this->checkExpressionArray((array)$href['parameters']) : array(),
+                $absolute,
                 isset($href['generator'])  ? $href['generator'] : null
             );
         }
 
-        return $href;
+        return $this->checkExpression($href);
     }
 
     private function createEmbedded($relation)
     {
         $embedded = null;
         if (isset($relation['embedded'])) {
-            $embedded = $relation['embedded'];
+            $embedded = $this->checkExpression($relation['embedded']);
 
             if (is_array($embedded)) {
                 $embeddedExclusion = null;
@@ -116,8 +128,8 @@ class YamlDriver extends AbstractFileDriver
                     $embeddedExclusion = $this->parseExclusion($embedded['exclusion']);
                 }
 
-                $xmlElementName = isset($embedded['xmlElementName']) ? $embedded['xmlElementName'] : null;
-                $embedded       = new Embedded($embedded['content'], $xmlElementName, $embeddedExclusion);
+                $xmlElementName = isset($embedded['xmlElementName']) ? $this->checkExpression((string)$embedded['xmlElementName']) : null;
+                $embedded       = new Embedded($this->checkExpression($embedded['content']), $xmlElementName, $embeddedExclusion);
             }
         }
 

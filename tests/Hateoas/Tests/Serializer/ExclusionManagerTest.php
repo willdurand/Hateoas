@@ -110,7 +110,7 @@ class ExclusionManagerTest extends TestCase
     public function testSkipExcludeIf($exclude)
     {
         $object = (object) array('name' => 'adrien');
-        $exclusion = new Exclusion(null, null, null, null, 'expr(stuff)');
+        $exclusion = new Exclusion(null, null, null, null, 'stuff');
         $relation = new Relation('foo', 'foo', 'foo', array(), $exclusion);
         $context = SerializationContext::create();
         $context->initialize(

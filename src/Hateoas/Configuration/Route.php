@@ -2,6 +2,8 @@
 
 namespace Hateoas\Configuration;
 
+use Symfony\Component\ExpressionLanguage\Expression;
+
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
@@ -13,12 +15,12 @@ class Route
     private $name;
 
     /**
-     * @var string|array
+     * @var Expression|string|array|string[]|Expression[]
      */
     private $parameters;
 
     /**
-     * @var boolean
+     * @var boolean|Expression
      */
     private $absolute;
 

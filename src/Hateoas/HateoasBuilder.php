@@ -434,12 +434,12 @@ class HateoasBuilder
         if (!empty($this->metadataDirs)) {
             $fileLocator    = new FileLocator($this->metadataDirs);
             $metadataDriver = new DriverChain(array(
-                new YamlDriver($fileLocator, $this->chainProvider),
-                new XmlDriver($fileLocator, $this->chainProvider),
-                new AnnotationDriver($annotationReader, $this->chainProvider),
+                new YamlDriver($fileLocator, $this->getExpressionLanguage(), $this->chainProvider),
+                new XmlDriver($fileLocator, $this->getExpressionLanguage(), $this->chainProvider),
+                new AnnotationDriver($annotationReader, $this->getExpressionLanguage(), $this->chainProvider),
             ));
         } else {
-            $metadataDriver = new AnnotationDriver($annotationReader, $this->chainProvider);
+            $metadataDriver = new AnnotationDriver($annotationReader, $this->getExpressionLanguage(), $this->chainProvider);
         }
 
         $metadataDriver  = new ExtensionDriver($metadataDriver, $this->configurationExtensions);
