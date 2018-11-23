@@ -4,11 +4,11 @@ namespace Hateoas\Tests\Factory;
 
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
-use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class LinkFactoryTest extends TestCase
@@ -88,9 +88,10 @@ class LinkFactoryTest extends TestCase
         $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
         $urlGeneratorRegistry = new UrlGeneratorRegistry();
 
-        $linkFactory = new LinkFactory($expressionEvaluator, $urlGeneratorRegistry);
+        $linkFactory = new LinkFactory($urlGeneratorRegistry, $expressionEvaluator);
 
-        $this->setExpectedException('RuntimeException', 'You cannot use a route without an url generator.');
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('You cannot use a route without an url generator.');
 
         $linkFactory->createLink(
             new TestedObject(),
@@ -102,10 +103,8 @@ class LinkFactoryTest extends TestCase
     {
         $linkFactory = $this->createLinkFactory();
 
-        $this->setExpectedException(
-            'RuntimeException',
-            'The route parameters should be an array, string given. Maybe you forgot to wrap the expression in expr(...).'
-        );
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('The route parameters should be an array, string given. Maybe you forgot to wrap the expression in expr(...).');
 
         $linkFactory->createLink(
             new TestedObject(),
@@ -121,7 +120,8 @@ class LinkFactoryTest extends TestCase
         $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
         $urlGeneratorRegistry = new UrlGeneratorRegistry($defaultUrlGenerator);
 
-        return new LinkFactory($expressionEvaluator, $urlGeneratorRegistry);
+        $factory = new LinkFactory($urlGeneratorRegistry, $expressionEvaluator);
+        return $factory;
     }
 }
 

@@ -9,26 +9,12 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
-use Metadata\MetadataFactoryInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwareInterface
+class XmlSerializer implements XmlSerializerInterface
 {
-    /**
-     * @var MetadataFactoryInterface
-     */
-    private $metadataFactory;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetadataFactory(MetadataFactoryInterface $metadataFactory)
-    {
-        $this->metadataFactory = $metadataFactory;
-    }
-
     /**
      * @param Link[]                  $links
      * @param XmlSerializationVisitor $visitor
@@ -57,7 +43,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context)
     {
         foreach ($embeddeds as $embedded) {
-            $entryNode = $visitor->getDocument()->createElement($this->getElementName($embedded->getData(), $embedded));
+            $entryNode = $visitor->getDocument()->createElement($this->getElementName($context, $embedded->getData(), $embedded));
 
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
@@ -65,7 +51,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
 
             if ($embedded->getData() instanceof \Traversable || is_array($embedded->getData())) {
                 foreach ($embedded->getData() as $entry) {
-                    $entryNode = $visitor->getDocument()->createElement($this->getElementName($entry));
+                    $entryNode = $visitor->getDocument()->createElement($this->getElementName($context, $entry));
 
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
@@ -82,7 +68,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
         }
     }
 
-    private function getElementName($data, Embedded $embedded = null)
+    private function getElementName(SerializationContext $context, $data, Embedded $embedded = null)
     {
         $elementName = null;
 
@@ -91,7 +77,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
         }
 
         if (null == $elementName && is_object($data)) {
-            $metadata    = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($data));
+            $metadata    = $context->getMetadataFactory()->getMetadataForClass(ClassUtils::getClass($data));
             $elementName = $metadata->xmlRootName;
         }
 

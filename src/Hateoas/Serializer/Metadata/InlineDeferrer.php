@@ -2,38 +2,20 @@
 
 namespace Hateoas\Serializer\Metadata;
 
-use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use JMS\Serializer\SerializationContext;
-use Metadata\MetadataFactory;
-use Metadata\MetadataFactoryInterface;
-
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
-class InlineDeferrer implements JMSSerializerMetadataAwareInterface
+class InlineDeferrer
 {
-    /**
-     * @var MetadataFactory
-     */
-    protected $serializerMetadataFactory;
-
     /**
      * @var \SplObjectStorage
      */
     protected $deferredData;
 
-    public function __construct(MetadataFactory $serializerMetadataFactory = null)
+    public function __construct()
     {
-        $this->serializerMetadataFactory = $serializerMetadataFactory;
         $this->deferredData = new \SplObjectStorage();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetadataFactory(MetadataFactoryInterface $metadataFactory)
-    {
-        $this->serializerMetadataFactory = $metadataFactory;
     }
 
     public function handleItems($object, array $items, SerializationContext $context)
@@ -73,7 +55,7 @@ class InlineDeferrer implements JMSSerializerMetadataAwareInterface
 
         if (
             $metadataStack->count() > 0 && isset($metadataStack[0]->inline) && $metadataStack[0]->inline
-            && $this->serializerMetadataFactory->getMetadataForClass(get_class($parentObject)) === $metadataStack[1]
+            && $context->getMetadataFactory()->getMetadataForClass(get_class($parentObject)) === $metadataStack[1]
         ) {
             return $parentObject;
         }

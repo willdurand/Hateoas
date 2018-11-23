@@ -12,6 +12,8 @@ use JMS\Serializer\TypeParser;
  */
 class RelationPropertyMetadata extends VirtualPropertyMetadata
 {
+    const EXPRESSION_REGEX = '/expr\((?P<expression>.+)\)/';
+
     public function __construct(Exclusion $exclusion = null, Relation $relation = null)
     {
         if (null !== $relation) {
@@ -33,5 +35,11 @@ class RelationPropertyMetadata extends VirtualPropertyMetadata
         $this->sinceVersion = $exclusion->getSinceVersion();
         $this->untilVersion = $exclusion->getUntilVersion();
         $this->maxDepth = $exclusion->getMaxDepth();
+
+        if ($exclusion->getExcludeIf() !== null && preg_match(self::EXPRESSION_REGEX, $exclusion->getExcludeIf(), $matches)) {
+            $this->excludeIf = $matches['expression'];
+        } elseif ($exclusion->getExcludeIf() !== null) {
+            $this->excludeIf = $exclusion->getExcludeIf();
+        }
     }
 }

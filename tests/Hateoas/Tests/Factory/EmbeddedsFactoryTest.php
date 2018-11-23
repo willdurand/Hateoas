@@ -6,6 +6,8 @@ use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Relation;
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Tests\TestCase;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\SerializationContext;
 use Prophecy\Argument;
 
 class EmbeddedsFactoryTest extends TestCase
@@ -18,7 +20,7 @@ class EmbeddedsFactoryTest extends TestCase
             new Relation('expr(object.getManagerRel())', '/users/42', new Embedded('expr(object.getManager())', 'expr(object.getXmlElementName())')),
         );
         $object = new \StdClass();
-        $context = $this->prophesize('JMS\Serializer\SerializationContext')->reveal();
+        $context = $this->prophesize(SerializationContext::class)->reveal();
 
         $relationsRepositoryProphecy = $this->prophesize('Hateoas\Configuration\RelationsRepository');
         $relationsRepositoryProphecy
@@ -26,13 +28,17 @@ class EmbeddedsFactoryTest extends TestCase
             ->willReturn($relations)
             ->shouldBeCalledTimes(1)
         ;
+        $ctx = [
+            'object' => $object,
+            'context' => $context,
+        ];
 
-        $ELProphecy = $this->prophesize('Hateoas\Expression\ExpressionEvaluator');
-        $ELProphecy->evaluate('expr(object.getFriend())', $object)->willReturn(42)->shouldBeCalledTimes(1);
-        $ELProphecy->evaluate('expr(object.getManager())', $object)->willReturn(42)->shouldBeCalledTimes(1);
-        $ELProphecy->evaluate('expr(object.getManagerRel())', $object)->willReturn(42)->shouldBeCalledTimes(1);
-        $ELProphecy->evaluate('expr(object.getXmlElementName())', $object)->willReturn(42)->shouldBeCalledTimes(1);
-        $ELProphecy->evaluate(Argument::any(), $object)->willReturnArgument();
+        $ELProphecy = $this->prophesize(ExpressionEvaluatorInterface::class);
+        $ELProphecy->evaluate('object.getFriend()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
+        $ELProphecy->evaluate('object.getManager()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
+        $ELProphecy->evaluate('object.getManagerRel()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
+        $ELProphecy->evaluate('object.getXmlElementName()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
+        $ELProphecy->evaluate(Argument::any(), $ctx)->willReturnArgument();
 
         $exclusionManagerProphecy = $this->prophesize('Hateoas\Serializer\ExclusionManager');
         $exclusionManagerProphecy->shouldSkipEmbedded($object, $relations[0], $context)->willReturn(true);
