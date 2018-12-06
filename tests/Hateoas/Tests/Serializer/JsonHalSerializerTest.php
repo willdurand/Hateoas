@@ -82,6 +82,7 @@ class JsonHalSerializerTest extends TestCase
         }
         $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
         $contextProphecy->popPropertyMetadata()->shouldBeCalled();
+        $contextProphecy->shouldSerializeNull()->willReturn(false);
 
         $embeddeds = array(
             new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata()),
