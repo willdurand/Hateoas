@@ -129,7 +129,7 @@ XML
         );
     }
 
-    public function testShouldNotSerialiseNull()
+    public function testCyclicalReferencesWithoutNull()
     {
         $hateoas = HateoasBuilder::create()->build();
 
