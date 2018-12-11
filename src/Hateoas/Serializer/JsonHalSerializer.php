@@ -48,7 +48,7 @@ class JsonHalSerializer implements JsonSerializerInterface
 
             $content = $context->accept($embedded->getData());
 
-            if(true !== $context->shouldSerializeNull() && !$content) {
+            if (true !== $context->shouldSerializeNull() && null === $content) {
                 $context->popPropertyMetadata();
                 continue;
             }
@@ -69,7 +69,7 @@ class JsonHalSerializer implements JsonSerializerInterface
             $context->popPropertyMetadata();
         }
 
-        if(empty($serializedEmbeddeds)){
+        if(count($serializedEmbeddeds) === 0){
             return;
         }
 
