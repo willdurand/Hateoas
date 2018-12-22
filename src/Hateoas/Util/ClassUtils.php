@@ -2,24 +2,25 @@
 
 namespace Hateoas\Util;
 
-use Doctrine\Common\Util\ClassUtils as DoctrineClassUtils;
+use Doctrine\Common\Persistence\Proxy;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
 class ClassUtils
 {
-    public static function getClass($object)
+    public static function getClass(object $object): string
     {
-        return self::getRealClass(get_class($object));
-    }
+        $class = get_class($object);
 
-    public static function getRealClass($class)
-    {
-        if (class_exists('Doctrine\Common\Util\ClassUtils')) {
-            $class = DoctrineClassUtils::getRealClass($class);
+        if (!interface_exists(Proxy::class, false)) {
+            return $class;
         }
 
-        return $class;
+        if (false === $pos = strrpos($class, '\\' . Proxy::MARKER . '\\')) {
+            return $class;
+        }
+
+        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
     }
 }
