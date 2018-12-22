@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Factory;
 
 use Hateoas\Model\Link;
@@ -7,12 +9,8 @@ use Hateoas\Serializer\ExclusionManager;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class LinksFactory
 {
-
     /**
      * @var LinkFactory
      */
@@ -39,16 +37,12 @@ class LinksFactory
     }
 
     /**
-     * @param object $object
-     * @param SerializationContext $context
-     *
      * @return Link[]
      */
-    public function create($object, SerializationContext $context)
+    public function create(object $object, SerializationContext $context): array
     {
-        $links = array();
+        $links = [];
         if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
-
             foreach ($classMetadata->getRelations() as $relation) {
                 if ($this->exclusionManager->shouldSkipLink($object, $relation, $context)) {
                     continue;

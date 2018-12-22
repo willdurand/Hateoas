@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\UrlGenerator;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface as SymfonyUrlGeneratorInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class SymfonyUrlGenerator implements UrlGeneratorInterface
 {
     /**
@@ -20,16 +19,15 @@ class SymfonyUrlGenerator implements UrlGeneratorInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param bool|int $absolute
      */
-    public function generate($name, array $parameters, $absolute = false)
+    public function generate(string $name, array $parameters, $absolute = false): string
     {
         // If is it at least Symfony 2.8 and $absolute is passed as boolean
-        if (SymfonyUrlGeneratorInterface::ABSOLUTE_PATH === 1 && is_bool($absolute)) {
+        if (1 === SymfonyUrlGeneratorInterface::ABSOLUTE_PATH && is_bool($absolute)) {
             $absolute = $absolute
                 ? SymfonyUrlGeneratorInterface::ABSOLUTE_URL
-                : SymfonyUrlGeneratorInterface::ABSOLUTE_PATH
-            ;
+                : SymfonyUrlGeneratorInterface::ABSOLUTE_PATH;
         }
 
         return $this->urlGenerator->generate($name, $parameters, $absolute);

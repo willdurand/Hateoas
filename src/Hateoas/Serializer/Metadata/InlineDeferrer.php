@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer\Metadata;
 
 use JMS\Serializer\SerializationContext;
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
+
 class InlineDeferrer
 {
     /**
@@ -18,7 +18,7 @@ class InlineDeferrer
         $this->deferredData = new \SplObjectStorage();
     }
 
-    public function handleItems($object, array $items, SerializationContext $context)
+    public function handleItems(object $object, array $items, SerializationContext $context): array
     {
         if ($this->deferredData->contains($object)) {
             $items = array_merge($this->deferredData->offsetGet($object), $items);
@@ -37,10 +37,10 @@ class InlineDeferrer
         // We need to defer the links serialization to the $parentObject
         $this->deferredData->attach($parentObjectInlining, $items);
 
-        return array();
+        return [];
     }
 
-    private function getParentObjectInlining($object, SerializationContext $context)
+    private function getParentObjectInlining(object $object, SerializationContext $context): ?object
     {
         $metadataStack = $context->getMetadataStack();
         $visitingStack = $context->getVisitingStack();
@@ -53,8 +53,7 @@ class InlineDeferrer
             $parentObject = $visitingStack[1]; // $object is inlined inside $parentObject
         }
 
-        if (
-            $metadataStack->count() > 0 && isset($metadataStack[0]->inline) && $metadataStack[0]->inline
+        if ($metadataStack->count() > 0 && isset($metadataStack[0]->inline) && $metadataStack[0]->inline
             && $context->getMetadataFactory()->getMetadataForClass(get_class($parentObject)) === $metadataStack[1]
         ) {
             return $parentObject;

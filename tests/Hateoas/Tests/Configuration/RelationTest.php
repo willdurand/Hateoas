@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Configuration;
 
-use Hateoas\Tests\TestCase;
 use Hateoas\Configuration\Relation;
+use Hateoas\Tests\TestCase;
 
 class RelationTest extends TestCase
 {
@@ -23,8 +25,7 @@ class RelationTest extends TestCase
                 new Relation('', null, null);
             })
             ->isInstanceOf('InvalidArgumentException')
-            ->hasMessage('$href and $embedded cannot be both null.')
-        ;
+            ->hasMessage('$href and $embedded cannot be both null.');
     }
 
     public function canBeConstructedWithOnlyAnEmbed()

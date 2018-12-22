@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Representation;
 
-use Hateoas\Configuration\Relation;
-use Hateoas\Configuration\Route;
 use Hateoas\Representation\CollectionRepresentation;
 
 class CollectionRepresentationTest extends RepresentationTestCase
@@ -60,19 +60,18 @@ JSON
 
     public function getTestSerializeData()
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'Adrien',
                     'William',
-                )
-            ),
-            array(
-                new \ArrayIterator(array(
-                    'Adrien',
-                    'William',
-                ))
-            ),
-        );
+                ],
+            ],
+            [new \ArrayIterator([
+                'Adrien',
+                'William',
+            ]),
+            ],
+        ];
     }
 }

@@ -1,32 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Representation;
 
-use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @Serializer\ExclusionPolicy("all")
- *
- * @author Premi Giorgio <giosh94mhz@gmail.com>
  */
 abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
 {
     /**
-     * @var int
-     *
      * @Serializer\Expose
      * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
+     *
+     * @var int
      */
     private $limit;
 
     /**
-     * @var int
-     *
      * @Serializer\Expose
      * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
+     *
+     * @var int
      */
     private $total;
 
@@ -35,14 +34,17 @@ abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
      */
     private $limitParameterName;
 
+    /**
+     * @param mixed $inline
+     */
     public function __construct(
         $inline,
-        $route,
-        array $parameters        = array(),
-        $limit,
-        $total                   = null,
-        $limitParameterName      = null,
-        $absolute                = false
+        string $route,
+        array $parameters = [],
+        int $limit,
+        ?int $total = null,
+        ?string $limitParameterName = null,
+        bool $absolute = false
     ) {
         parent::__construct($inline, $route, $parameters, $absolute);
 
@@ -51,47 +53,36 @@ abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
         $this->limitParameterName  = $limitParameterName ?: 'limit';
     }
 
-    /**
-     * @return int
-     */
-    public function getLimit()
+    public function getLimit(): int
     {
         return $this->limit;
     }
 
     /**
      * @param  null  $limit
+     *
      * @return array
      */
-    public function getParameters($limit = null)
+    public function getParameters(?int $limit = null): array
     {
         $parameters = parent::getParameters();
 
-        $parameters[$this->limitParameterName] = null === $limit ? $this->getLimit() : $limit;
+        $parameters[$this->limitParameterName] = $limit ?? $this->getLimit();
 
         return $parameters;
     }
 
-    /**
-     * @return int
-     */
-    public function getTotal()
+    public function getTotal(): ?int
     {
         return $this->total;
     }
 
-    /**
-     * @return string
-     */
-    public function getLimitParameterName()
+    public function getLimitParameterName(): string
     {
         return $this->limitParameterName;
     }
 
-    /**
-     * @param string $key
-     */
-    protected function moveParameterToEnd(array &$parameters, $key)
+    protected function moveParameterToEnd(array &$parameters, string $key): void
     {
         if (! array_key_exists($key, $parameters)) {
             return;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Serializer\EventSubscriber;
 
 use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
@@ -14,8 +16,7 @@ class JsonEventSubscriberTest extends AbstractEventSubscriberTest
             ->handleItems(Argument::cetera())
             ->will(function ($args) {
                 return $args[1];
-            })
-        ;
+            });
 
         return new JsonEventSubscriber(
             $serializer,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Configuration\Provider;
 
 use Hateoas\Configuration\Provider\ExpressionEvaluatorProvider;
@@ -16,8 +18,7 @@ class ExpressionEvaluatorProviderTest extends TestCase
         $containerProphecy = $this->prophesize(ExpressionEvaluatorInterface::class);
         $containerProphecy
             ->evaluate('foo', ['class' => \stdClass::class])
-            ->willReturn([$service])
-        ;
+            ->willReturn([$service]);
 
         $providerProvider = new ExpressionEvaluatorProvider($containerProphecy->reveal());
 

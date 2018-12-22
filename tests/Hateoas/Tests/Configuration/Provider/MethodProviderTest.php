@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Configuration\Provider;
 
 use Hateoas\Configuration\Provider\FunctionProvider;
@@ -19,20 +21,16 @@ class MethodProviderTest extends TestCase
         );
         $this->assertEquals(
             [new Relation('abcdef')],
-            $providerProvider->getRelations(new RelationProvider('func(' . MethodProviderTest::class . '::abc)'), \stdClass::class)
+            $providerProvider->getRelations(new RelationProvider('func(' . self::class . '::abc)'), \stdClass::class)
         );
     }
 
     public static function abc()
     {
-        return [
-            new Relation('abcdef')
-        ];
+        return [new Relation('abcdef')];
     }
 }
 function abc()
 {
-    return [
-        new Relation('abcde')
-    ];
+    return [new Relation('abcde')];
 }

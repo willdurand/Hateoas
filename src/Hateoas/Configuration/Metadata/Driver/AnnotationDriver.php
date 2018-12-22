@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader as AnnotationsReader;
@@ -8,19 +10,18 @@ use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Provider\RelationProviderInterface;
-use Hateoas\Configuration\RelationProvider;
-use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
-use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use JMS\Serializer\Expression\Expression;
+use Metadata\ClassMetadata as JMSClassMetadata;
 use Metadata\Driver\DriverInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class AnnotationDriver implements DriverInterface
 {
     use CheckExpressionTrait;
+
     /**
      * @var AnnotationsReader
      */
@@ -58,7 +59,7 @@ class AnnotationDriver implements DriverInterface
                     $annotation->name,
                     $this->createHref($annotation->href),
                     $this->createEmbedded($annotation->embedded),
-                    $this->checkExpressionArray($annotation->attributes) ?: array(),
+                    $this->checkExpressionArray($annotation->attributes) ?: [],
                     $this->createExclusion($annotation->exclusion)
                 ));
             } elseif ($annotation instanceof Annotation\RelationProvider) {
@@ -76,17 +77,22 @@ class AnnotationDriver implements DriverInterface
         return $classMetadata;
     }
 
-    private function parseExclusion(Annotation\Exclusion $exclusion)
+    private function parseExclusion(Annotation\Exclusion $exclusion): Exclusion
     {
         return new Exclusion(
             $exclusion->groups,
-            $exclusion->sinceVersion !== null ? (string)$exclusion->sinceVersion : null,
-            $exclusion->untilVersion !== null ? (string)$exclusion->untilVersion : null,
-            $exclusion->maxDepth !== null ? (int)$exclusion->maxDepth : null,
+            null !== $exclusion->sinceVersion ? (string) $exclusion->sinceVersion : null,
+            null !== $exclusion->untilVersion ? (string) $exclusion->untilVersion : null,
+            null !== $exclusion->maxDepth ? (int) $exclusion->maxDepth : null,
             $this->checkExpression($exclusion->excludeIf)
         );
     }
 
+    /**
+     * @param mixed $href
+     *
+     * @return Expression|mixed
+     */
     private function createHref($href)
     {
         if ($href instanceof Annotation\Route) {
@@ -101,6 +107,11 @@ class AnnotationDriver implements DriverInterface
         return $this->checkExpression($href);
     }
 
+    /**
+     * @param Annotation\Embedded|mixed $embedded
+     *
+     * @return Expression|mixed
+     */
     private function createEmbedded($embedded)
     {
         if ($embedded instanceof Annotation\Embedded) {
@@ -116,7 +127,7 @@ class AnnotationDriver implements DriverInterface
         return $this->checkExpression($embedded);
     }
 
-    private function createExclusion($exclusion)
+    private function createExclusion(?Annotation\Exclusion $exclusion = null): ?Exclusion
     {
         if (null !== $exclusion) {
             $exclusion = $this->parseExclusion($exclusion);

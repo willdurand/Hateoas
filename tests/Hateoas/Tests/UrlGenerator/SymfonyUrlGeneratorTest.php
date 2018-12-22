@@ -1,28 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\UrlGenerator;
 
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\SymfonyUrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SymfonyUrlGeneratorTest extends TestCase
 {
     public function test()
     {
         $name           = 'user_get';
-        $parameters     = array('id' => 42);
+        $parameters     = ['id' => 42];
         $absolute       = true;
         $expectedResult = '/users/42';
 
-        if (\Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_PATH === 1) {
-            $absolute = \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL;
+        if (1 === UrlGeneratorInterface::ABSOLUTE_PATH) {
+            $absolute = UrlGeneratorInterface::ABSOLUTE_URL;
         }
 
         $symfonyUrlGeneratorProphecy = $this->prophesize('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
         $symfonyUrlGeneratorProphecy
             ->generate($name, $parameters, $absolute)
-            ->willReturn($expectedResult)
-        ;
+            ->willReturn($expectedResult);
 
         $urlGenerator = new SymfonyUrlGenerator($symfonyUrlGeneratorProphecy->reveal());
 

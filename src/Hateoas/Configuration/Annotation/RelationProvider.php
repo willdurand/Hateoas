@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Annotation;
 
 /**
  * @Annotation
  * @Target("CLASS")
- *
- * @author Adrien Brault <adrien.brault@gmail.com>
  */
 class RelationProvider
 {

@@ -1,33 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\UrlGenerator;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class UrlGeneratorRegistry
 {
-    const DEFAULT_URL_GENERATOR_KEY = 'default';
+    public const DEFAULT_URL_GENERATOR_KEY = 'default';
 
+    /**
+     * @var UrlGeneratorInterface[]
+     */
     private $urlGenerators;
 
-    public function __construct(UrlGeneratorInterface $defaultUrlGenerator = null)
+    public function __construct(?UrlGeneratorInterface $defaultUrlGenerator = null)
     {
-        $this->urlGenerators = array();
+        $this->urlGenerators = [];
 
         if (null !== $defaultUrlGenerator) {
-            $this->urlGenerators = array(
-                self::DEFAULT_URL_GENERATOR_KEY => $defaultUrlGenerator,
-            );
+            $this->urlGenerators = [self::DEFAULT_URL_GENERATOR_KEY => $defaultUrlGenerator];
         }
     }
 
     /**
      * @param string|null $name If null it will return the default url generator
-     *
-     * @return UrlGeneratorInterface
      */
-    public function get($name = null)
+    public function get(?string $name = null): UrlGeneratorInterface
     {
         if (null === $name) {
             $name = self::DEFAULT_URL_GENERATOR_KEY;
@@ -38,7 +36,7 @@ class UrlGeneratorRegistry
                 sprintf(
                     'The "%s" url generator is not set. Available url generators are: %s.',
                     $name,
-                    join(', ', array_keys($this->urlGenerators))
+                    implode(', ', array_keys($this->urlGenerators))
                 )
             );
         }
@@ -46,11 +44,7 @@ class UrlGeneratorRegistry
         return $this->urlGenerators[$name];
     }
 
-    /**
-     * @param string|null           $name
-     * @param UrlGeneratorInterface $urlGenerator
-     */
-    public function set($name, UrlGeneratorInterface $urlGenerator)
+    public function set(?string $name, UrlGeneratorInterface $urlGenerator): void
     {
         if (null === $name) {
             $name = self::DEFAULT_URL_GENERATOR_KEY;
@@ -59,10 +53,7 @@ class UrlGeneratorRegistry
         $this->urlGenerators[$name] = $urlGenerator;
     }
 
-    /**
-     * @return boolean
-     */
-    public function hasGenerators()
+    public function hasGenerators(): bool
     {
         return count($this->urlGenerators) > 0;
     }

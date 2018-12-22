@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration;
 
 use JMS\Serializer\Expression\Expression;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class Route
 {
     /**
-     * @var string
+     * @var string|Expression
      */
     private $name;
 
@@ -20,31 +19,31 @@ class Route
     private $parameters;
 
     /**
-     * @var boolean|Expression
+     * @var bool|Expression
      */
     private $absolute;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $generator;
 
     /**
-     * @param string       $name
+     * @param string|Expression $name
      * @param string|array $parameters
-     * @param boolean      $absolute
-     * @param string|null  $generator
+     * @param bool|Expression $absolute
+     * @param string|null $generator
      */
-    public function __construct($name, $parameters = array(), $absolute = false, $generator = null)
+    public function __construct($name, $parameters = [], $absolute = false, $generator = null)
     {
-        $this->name       = $name;
+        $this->name = $name;
         $this->parameters = $parameters;
-        $this->absolute   = $absolute;
-        $this->generator  = $generator;
+        $this->absolute = $absolute;
+        $this->generator = $generator;
     }
 
     /**
-     * @return string
+     * @return Expression|string|array|string[]|Expression[]
      */
     public function getName()
     {
@@ -60,17 +59,14 @@ class Route
     }
 
     /**
-     * @return boolean
+     * @return bool|Expression
      */
     public function isAbsolute()
     {
         return $this->absolute;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getGenerator()
+    public function getGenerator(): ?string
     {
         return $this->generator;
     }

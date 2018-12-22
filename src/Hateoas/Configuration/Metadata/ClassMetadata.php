@@ -1,25 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata;
 
 use Hateoas\Configuration\Relation;
-use Hateoas\Configuration\RelationProvider;
 use Metadata\MergeableClassMetadata;
 use Metadata\MergeableInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInterface
 {
     /**
      * @var Relation[]
      */
-    private $relations = array();
-    /**
-     * {@inheritDoc}
-     */
-    public function getName()
+    private $relations = [];
+
+    public function getName(): string
     {
         return $this->name;
     }
@@ -27,7 +23,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     /**
      * {@inheritDoc}
      */
-    public function getRelations()
+    public function getRelations(): array
     {
         return $this->relations;
     }
@@ -35,7 +31,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     /**
      * {@inheritDoc}
      */
-    public function addRelation(Relation $relation)
+    public function addRelation(Relation $relation): void
     {
         $this->relations[] = $relation;
     }
@@ -46,12 +42,12 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     public function merge(MergeableInterface $object): void
     {
         if (!$object instanceof self) {
-            throw new \InvalidArgumentException(sprintf('Object must be an instance of %s.', __CLASS__));
+            throw new \InvalidArgumentException(sprintf('Object must be an instance of %s.', self::class));
         }
 
         parent::merge($object);
 
-        $this->relations         = array_merge($this->relations, $object->getRelations());
+        $this->relations = array_merge($this->relations, $object->getRelations());
     }
 
     /**
@@ -59,10 +55,10 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->relations,
             parent::serialize(),
-        ));
+        ]);
     }
 
     /**
@@ -70,10 +66,10 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
      */
     public function unserialize($str)
     {
-        list(
+        [
             $this->relations,
-            $parentStr
-        ) = unserialize($str);
+            $parentStr,
+        ] = unserialize($str);
 
         parent::unserialize($parentStr);
     }

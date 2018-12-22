@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Metadata\ClassMetadata;
-use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Metadata\ConfigurationExtensionInterface;
+use Metadata\ClassMetadata as JMSClassMetadata;
 use Metadata\Driver\DriverInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class ExtensionDriver implements DriverInterface
 {
     /**
@@ -56,10 +55,7 @@ class ExtensionDriver implements DriverInterface
         return $metadata;
     }
 
-    /**
-     * @param ConfigurationExtensionInterface $extension
-     */
-    public function registerExtension(ConfigurationExtensionInterface $extension)
+    public function registerExtension(ConfigurationExtensionInterface $extension): void
     {
         $this->extensions[] = $extension;
     }

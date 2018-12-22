@@ -1,10 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class RelationProvider
 {
     /**
@@ -12,18 +11,12 @@ class RelationProvider
      */
     private $name;
 
-    /**
-     * @param string $name
-     */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

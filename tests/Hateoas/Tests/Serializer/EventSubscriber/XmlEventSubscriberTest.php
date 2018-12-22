@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Serializer\EventSubscriber;
 
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;

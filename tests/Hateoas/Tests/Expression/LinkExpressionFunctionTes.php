@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Expression;
 
 use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Expression\LinkExpressionFunction;
+use Hateoas\Helper\LinkHelper;
 use Hateoas\Tests\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
@@ -34,7 +37,7 @@ class LinkExpressionFunctionTest extends TestCase
         $expressionEvaluator = new ExpressionEvaluator($expressionLanguage);
         $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelperMock));
 
-        $compiledExpression = $expressionLanguage->compile('link(object, "self", false)', array('object', 'link_helper'));
+        $compiledExpression = $expressionLanguage->compile('link(object, "self", false)', ['object', 'link_helper']);
 
         // setup variables for expression eval
         $object = $object;
@@ -47,24 +50,22 @@ class LinkExpressionFunctionTest extends TestCase
      * @param string $result
      * @param \stdClass $expectedObject
      * @param string $expectedRel
-     * @param boolean $expectedAbsolute
+     * @param bool $expectedAbsolute
      *
-     * @return \Hateoas\Helper\LinkHelper
+     * @return LinkHelper
      */
     private function mockHelper($result, $expectedObject, $expectedRel, $expectedAbsolute)
     {
         $linkHelperMock = $this
             ->getMockBuilder('Hateoas\Helper\LinkHelper')
             ->disableOriginalConstructor()
-            ->getMock()
-        ;
+            ->getMock();
 
         $linkHelperMock
             ->expects($this->once())
             ->method('getLinkHref')
             ->will($this->returnValue('/foo'))
-            ->with($expectedObject, $expectedRel, $expectedAbsolute)
-        ;
+            ->with($expectedObject, $expectedRel, $expectedAbsolute);
 
         return $linkHelperMock;
     }

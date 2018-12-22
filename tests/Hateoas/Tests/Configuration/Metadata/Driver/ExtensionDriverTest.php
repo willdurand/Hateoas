@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Metadata\ClassMetadata;
@@ -12,8 +14,8 @@ class ExtensionDriverTest extends TestCase
 {
     public function testDoesNothingIfNoExtension()
     {
-        $reflectionClass = new \ReflectionClass(get_class($this));
-        $classMetadata = new ClassMetadata(get_class($this));
+        $reflectionClass = new \ReflectionClass(static::class);
+        $classMetadata = new ClassMetadata(static::class);
         $loadMetadataForClassCallCount = 0;
 
         $delegateDriverProphecy = $this->prophesize('Metadata\Driver\DriverInterface');
@@ -22,9 +24,8 @@ class ExtensionDriverTest extends TestCase
             ->will(function () use (&$loadMetadataForClassCallCount, $classMetadata) {
                 return $loadMetadataForClassCallCount++ < 1 ? $classMetadata : null;
             })
-            ->shouldBeCalledTimes(2)
-        ;
-        $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), array());
+            ->shouldBeCalledTimes(2);
+        $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), []);
 
         $this->assertSame($classMetadata, $extensionDriver->loadMetadataForClass($reflectionClass));
         $this->assertNull($extensionDriver->loadMetadataForClass($reflectionClass));
@@ -32,24 +33,22 @@ class ExtensionDriverTest extends TestCase
 
     public function testExtensions()
     {
-        $reflectionClass = new \ReflectionClass(get_class($this));
-        $classMetadata = new ClassMetadata(get_class($this));
+        $reflectionClass = new \ReflectionClass(static::class);
+        $classMetadata = new ClassMetadata(static::class);
 
-        $extensions = array();
+        $extensions = [];
         for ($i = 0; $i < 2; $i++) {
             $extensionProphecy = $this->prophesize('Hateoas\Configuration\Metadata\ConfigurationExtensionInterface');
             $extensionProphecy
                 ->decorate($classMetadata)
-                ->shouldBeCalledTimes(1)
-            ;
+                ->shouldBeCalledTimes(1);
             $extensions[] = $extensionProphecy->reveal();
         }
 
         $delegateDriverProphecy = $this->prophesize('Metadata\Driver\DriverInterface');
         $delegateDriverProphecy
             ->loadMetadataForClass($reflectionClass)
-            ->willReturn($classMetadata)
-        ;
+            ->willReturn($classMetadata);
 
         $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), $extensions);
 
@@ -58,43 +57,40 @@ class ExtensionDriverTest extends TestCase
 
     public function testDelegateReturnsNullAndNoExtensions()
     {
-        $reflectionClass = new \ReflectionClass(get_class($this));
+        $reflectionClass = new \ReflectionClass(static::class);
 
         $delegateDriverProphecy = $this->prophesize('Metadata\Driver\DriverInterface');
         $delegateDriverProphecy
             ->loadMetadataForClass($reflectionClass)
-            ->willReturn(null)
-        ;
+            ->willReturn(null);
 
-        $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), array());
+        $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), []);
 
         $this->assertNull($extensionDriver->loadMetadataForClass($reflectionClass));
     }
 
     public function testDelegateReturnsNullAndExtensionsDoNothing()
     {
-        $reflectionClass = new \ReflectionClass(get_class($this));
+        $reflectionClass = new \ReflectionClass(static::class);
 
         $extensionProphecy = $this->prophesize('Hateoas\Configuration\Metadata\ConfigurationExtensionInterface');
         $extensionProphecy
             ->decorate(Argument::type('Hateoas\Configuration\Metadata\ClassMetadataInterface'))
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
 
         $delegateDriverProphecy = $this->prophesize('Metadata\Driver\DriverInterface');
         $delegateDriverProphecy
             ->loadMetadataForClass($reflectionClass)
-            ->willReturn(null)
-        ;
+            ->willReturn(null);
 
-        $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), array($extensionProphecy->reveal()));
+        $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), [$extensionProphecy->reveal()]);
 
         $this->assertNull($extensionDriver->loadMetadataForClass($reflectionClass));
     }
 
     public function testDelegateReturnsNullAndExtensionsAddRelations()
     {
-        $reflectionClass = new \ReflectionClass(get_class($this));
+        $reflectionClass = new \ReflectionClass(static::class);
 
         $extensionProphecy = $this->prophesize('Hateoas\Configuration\Metadata\ConfigurationExtensionInterface');
         $extensionProphecy
@@ -102,16 +98,14 @@ class ExtensionDriverTest extends TestCase
             ->will(function ($args) {
                 $args[0]->addRelation(new Relation('foo', 'bar'));
             })
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
 
         $delegateDriverProphecy = $this->prophesize('Metadata\Driver\DriverInterface');
         $delegateDriverProphecy
             ->loadMetadataForClass($reflectionClass)
-            ->willReturn(null)
-        ;
+            ->willReturn(null);
 
-        $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), array($extensionProphecy->reveal()));
+        $extensionDriver = new ExtensionDriver($delegateDriverProphecy->reveal(), [$extensionProphecy->reveal()]);
 
         $this->assertInstanceOf(
             'Hateoas\Configuration\Metadata\ClassMetadataInterface',

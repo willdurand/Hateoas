@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Configuration\Provider;
 
 use Hateoas\Configuration\Provider\StaticMethodProvider;
@@ -11,7 +13,6 @@ class StaticMethodProviderTest extends TestCase
 {
     public function test()
     {
-
         $providerProvider = new StaticMethodProvider();
 
         $this->assertEmpty($providerProvider->getRelations(new RelationProvider('!-;'), \stdClass::class));
@@ -26,8 +27,6 @@ class StaticMethodProviderTest extends TestCase
 
     public static function abc()
     {
-        return [
-            new Relation('abcdef')
-        ];
+        return [new Relation('abcdef')];
     }
 }

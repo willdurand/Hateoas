@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Fixtures;
 
 use Hateoas\Configuration\Annotation as Hateoas;
-use Hateoas\Configuration\Relation;
 
 /**
  * @Hateoas\Relation("self", href = "http://hateoas.web/user/42", attributes = {"type" = "application/json"})
@@ -34,16 +35,15 @@ use Hateoas\Configuration\Relation;
  *          )
  *      )
  * )
- *
  * @Hateoas\RelationProvider("Hateoas\Tests\Fixtures\User::getRelations")
  */
 class User
 {
-    // do not use for functional testing
+    /**
+     * do not use for functional testing
+     */
     public static function getRelations()
     {
-        return array(
-
-        );
+        return [];
     }
 }

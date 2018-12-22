@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Representation;
 
-use Hateoas\Configuration\Relation;
 use Hateoas\Representation\VndErrorRepresentation;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class VndErrorRepresentationTest extends RepresentationTestCase
 {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Representation;
 
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -23,7 +25,6 @@ use JMS\Serializer\Annotation as Serializer;
  *          excludeIf = "expr(object.getDescribes() === null)"
  *      )
  * )
- *
  * @Hateoas\Relation(
  *      "about",
  *      href = "expr(object.getAbout())",
@@ -31,14 +32,14 @@ use JMS\Serializer\Annotation as Serializer;
  *          excludeIf = "expr(object.getAbout() === null)"
  *      )
  * )
- * @author William Durand <william.durand1@gmail.com>
  */
 class VndErrorRepresentation
 {
     /**
-     * @var string
      * @Serializer\Expose
      * @Serializer\Type("string")
+     *
+     * @var string
      */
     private $message;
 
@@ -46,6 +47,8 @@ class VndErrorRepresentation
      * @Serializer\Expose
      * @Serializer\XmlAttribute
      * @Serializer\Type("int")
+     *
+     * @var int
      */
     private $logref;
 

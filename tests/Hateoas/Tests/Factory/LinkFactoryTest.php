@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Factory;
 
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
-use Hateoas\Expression\LinkExpressionFunction;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
@@ -15,7 +16,6 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class LinkFactoryTest extends TestCase
 {
-
     protected function expr($expr)
     {
         $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
@@ -28,7 +28,7 @@ class LinkFactoryTest extends TestCase
         $context = SerializationContext::create();
         $link = $this->createLinkFactory()->createLink(
             new TestedObject(),
-            new Relation('foo', '/bar', null, array('templated' => false)),
+            new Relation('foo', '/bar', null, ['templated' => false]),
             $context
         );
 
@@ -43,7 +43,7 @@ class LinkFactoryTest extends TestCase
         $context = SerializationContext::create();
         $link = $this->createLinkFactory()->createLink(
             new TestedObject(),
-            new Relation('foo', new Route('/route', array('foo' => 'bar'))),
+            new Relation('foo', new Route('/route', ['foo' => 'bar'])),
             $context
         );
 
@@ -61,7 +61,7 @@ class LinkFactoryTest extends TestCase
                 'rel',
                 $this->expr('object.getUrl()'),
                 null,
-                array('tested-rel' => $this->expr('object.getUrl()'))
+                ['tested-rel' => $this->expr('object.getUrl()')]
             ),
             $context
         );
@@ -95,9 +95,9 @@ class LinkFactoryTest extends TestCase
                 'foo',
                 new Route(
                     '/route',
-                    array(
-                        'param' => array($this->expr('object.getRel()'))
-                    )
+                    [
+                        'param' => [$this->expr('object.getRel()')],
+                    ]
                 )
             ),
             $context
@@ -121,7 +121,7 @@ class LinkFactoryTest extends TestCase
         $context = SerializationContext::create();
         $linkFactory->createLink(
             new TestedObject(),
-            new Relation('foo', new Route('/route', array('foo' => 'bar'))),
+            new Relation('foo', new Route('/route', ['foo' => 'bar'])),
             $context
         );
     }
@@ -149,8 +149,7 @@ class LinkFactoryTest extends TestCase
         $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
         $urlGeneratorRegistry = new UrlGeneratorRegistry($defaultUrlGenerator);
 
-        $factory = new LinkFactory($urlGeneratorRegistry, $expressionEvaluator);
-        return $factory;
+        return new LinkFactory($urlGeneratorRegistry, $expressionEvaluator);
     }
 }
 
@@ -168,8 +167,6 @@ class TestedObject
 
     public function getParameters()
     {
-        return array(
-            'a' => 'b',
-        );
+        return ['a' => 'b'];
     }
 }

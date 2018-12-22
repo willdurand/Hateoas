@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas;
 
 use Hateoas\Helper\LinkHelper;
@@ -7,9 +9,6 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class Hateoas implements SerializerInterface
 {
     /**
@@ -22,10 +21,6 @@ class Hateoas implements SerializerInterface
      */
     private $linkHelper;
 
-    /**
-     * @param SerializerInterface $serializer
-     * @param LinkHelper          $linkHelper
-     */
     public function __construct(SerializerInterface $serializer, LinkHelper $linkHelper)
     {
         $this->serializer = $serializer;
@@ -35,7 +30,7 @@ class Hateoas implements SerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function serialize($data, string $format, SerializationContext $context = null, string $type = null): string
+    public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null): string
     {
         return $this->serializer->serialize($data, $format, $context, $type);
     }
@@ -43,23 +38,17 @@ class Hateoas implements SerializerInterface
     /**
      * {@inheritdoc}
      */
-    public function deserialize(string $data, string $type, string $format, DeserializationContext $context = null)
+    public function deserialize(string $data, string $type, string $format, ?DeserializationContext $context = null)
     {
         return $this->serializer->deserialize($data, $type, $format, $context);
     }
 
-    /**
-     * @return SerializerInterface
-     */
-    public function getSerializer()
+    public function getSerializer(): SerializerInterface
     {
         return $this->serializer;
     }
 
-    /**
-     * @return LinkHelper
-     */
-    public function getLinkHelper()
+    public function getLinkHelper(): LinkHelper
     {
         return $this->linkHelper;
     }
