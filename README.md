@@ -1305,6 +1305,31 @@ hidden parts of this library. This is not always relevant for end users, but
 interesting for developers or people interested in learning how things work
 under the hood.
 
+Versioning
+----------
+
+`willdurand/hateoas` follows [Semantic Versioning](http://semver.org/).
+
+### End Of Life
+
+As of October 2013, versions `1.x` and `0.x` are officially not supported anymore 
+(note that `1.x` was never released).
+
+### Stable Version
+
+Version `2.x` is the current major stable version.
+
+### Next version
+
+The upcoming `3.x` version is available in the [develop](https://github.com/willdurand/Hateoas/tree/develop) branch.
+It is still a "work in progress" and is not recommended to use it in production.
+
+`willdurand/hateoas`  `3.x` will be compatible with `jms/serializer` `2.x.` 
+
+By following the [3.0](https://github.com/willdurand/Hateoas/milestone/3) milestone it is possible 
+to have more info about the development status.
+
+Before the release will be provided a UPGRADE document.
 
 Contributing
 ------------
