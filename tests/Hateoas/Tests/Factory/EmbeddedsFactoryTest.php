@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Factory;
 
 use Hateoas\Configuration\Embedded;
@@ -25,7 +27,7 @@ class EmbeddedsFactoryTest extends TestCase
 
     public function test()
     {
-        $relations = array(
+        $relations = [
             new Relation('self', '/users/1'),
             new Relation('friend', '/users/42', $this->expr('object.getFriend()')),
             new Relation(
@@ -33,7 +35,7 @@ class EmbeddedsFactoryTest extends TestCase
                 '/users/42',
                 new Embedded($this->expr('object.getManager()'), $this->expr('object.getXmlElementName()'))
             ),
-        );
+        ];
         $object = new \StdClass();
         $context = $this->prophesize(SerializationContext::class)->reveal();
 
@@ -49,7 +51,6 @@ class EmbeddedsFactoryTest extends TestCase
             ->willReturn($metadata)
             ->shouldBeCalledTimes(1);
 
-        ;
         $ctx = [
             'object' => $object,
             'context' => $context,
@@ -58,7 +59,7 @@ class EmbeddedsFactoryTest extends TestCase
         $ELProphecy = $this->prophesize(ExpressionEvaluatorInterface::class);
         $ELProphecy->evaluate('object.getFriend()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
         $ELProphecy->evaluate('object.getManager()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
-        $ELProphecy->evaluate('object.getXmlElementName()', $ctx)->willReturn(42)->shouldBeCalledTimes(1);
+        $ELProphecy->evaluate('object.getXmlElementName()', $ctx)->willReturn('foo')->shouldBeCalledTimes(1);
         $ELProphecy->evaluate(Argument::any(), $ctx)->willReturnArgument();
 
         $exclusionManagerProphecy = $this->prophesize('Hateoas\Serializer\ExclusionManager');
@@ -81,6 +82,6 @@ class EmbeddedsFactoryTest extends TestCase
         $this->assertInstanceOf('Hateoas\Model\Embedded', $embeddeds[1]);
         $this->assertSame('manager', $embeddeds[1]->getRel());
         $this->assertSame(42, $embeddeds[1]->getData());
-        $this->assertSame(42, $embeddeds[1]->getXmlElementName());
+        $this->assertSame('foo', $embeddeds[1]->getXmlElementName());
     }
 }

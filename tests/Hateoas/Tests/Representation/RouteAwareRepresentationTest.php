@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\CollectionRepresentation;
@@ -11,15 +13,13 @@ class RouteAwareRepresentationTest extends RepresentationTestCase
     {
         $collection = new RouteAwareRepresentation(
             new CollectionRepresentation(
-                array(
+                [
                     'Adrien',
                     'William',
-                )
+                ]
             ),
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            )
+            ['query' => 'willdurand/Hateoas']
         );
 
         $this->assertSame(
@@ -75,17 +75,15 @@ JSON
     {
         $collection = new RouteAwareRepresentation(
             new CollectionRepresentation(
-                array(
+                [
                     'Adrien',
                     'William',
-                ),
+                ],
                 'authors',
                 'users'
             ),
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            ),
+            ['query' => 'willdurand/Hateoas'],
             true // absolute
         );
 

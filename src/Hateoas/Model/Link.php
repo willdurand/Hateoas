@@ -1,10 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Model;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class Link
 {
     /**
@@ -23,11 +22,9 @@ class Link
     private $attributes;
 
     /**
-     * @param string $rel
-     * @param string $href
      * @param array  $attributes
      */
-    public function __construct($rel, $href, array $attributes = array())
+    public function __construct(string $rel, string $href, array $attributes = [])
     {
         $this->rel        = $rel;
         $this->href       = $href;
@@ -37,23 +34,17 @@ class Link
     /**
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    /**
-     * @return string
-     */
-    public function getHref()
+    public function getHref(): string
     {
         return $this->href;
     }
 
-    /**
-     * @return string
-     */
-    public function getRel()
+    public function getRel(): string
     {
         return $this->rel;
     }

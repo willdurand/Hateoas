@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Annotation;
 
 /**
  * @Annotation
  * @Target("ANNOTATION")
- *
- * @author Adrien Brault <adrien.brault@gmail.com>
  */
 class Embedded
 {
     /**
      * @Required
+     * @var mixed
      */
     public $content;
 
@@ -21,7 +22,9 @@ class Embedded
     public $xmlElementName;
 
     /**
+     * phpcs:disable
      * @var \Hateoas\Configuration\Annotation\Exclusion
+     * phpcs:enable
      */
     public $exclusion = null;
 }

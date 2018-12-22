@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Util;
 
 use Doctrine\Common\Persistence\Proxy;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class ClassUtils
 {
     public static function getClass(object $object): string

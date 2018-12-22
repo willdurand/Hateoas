@@ -1,28 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Provider\RelationProviderInterface;
-use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
-use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use JMS\Serializer\Exception\XmlErrorException;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use Metadata\ClassMetadata as JMSClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
 
-/**
- * @author Miha Vrhovnik <miha.vrhovnik@pagein.net>
- */
 class XmlDriver extends AbstractFileDriver
 {
     use CheckExpressionTrait;
 
-    const NAMESPACE_URI = 'https://github.com/willdurand/Hateoas';
+    public const NAMESPACE_URI = 'https://github.com/willdurand/Hateoas';
 
     /**
      * @var RelationProviderInterface
@@ -84,7 +83,7 @@ class XmlDriver extends AbstractFileDriver
                 $embedded = $this->createEmbedded($relation->embedded);
             }
 
-            $attributes = array();
+            $attributes = [];
             foreach ($relation->attribute as $attribute) {
                 $attributes[(string) $attribute->attributes('')->name] = $this->checkExpression((string) $attribute->attributes('')->value);
             }
@@ -113,7 +112,7 @@ class XmlDriver extends AbstractFileDriver
         return 'xml';
     }
 
-    private function parseExclusion(\SimpleXMLElement $exclusion)
+    private function parseExclusion(\SimpleXMLElement $exclusion): Exclusion
     {
         return new Exclusion(
             isset($exclusion->attributes('')->groups) ? preg_split('/\s*,\s*/', (string) $exclusion->attributes('')->groups) : null,
@@ -124,6 +123,12 @@ class XmlDriver extends AbstractFileDriver
         );
     }
 
+    /**
+     * @param mixed $href
+     * @param mixed $name
+     *
+     * @return mixed
+     */
     private function createHref($href, $name)
     {
         if (isset($href->attributes('')->uri) && isset($href->attributes('')->route)) {
@@ -134,16 +139,16 @@ class XmlDriver extends AbstractFileDriver
         } elseif (isset($href->attributes('')->uri)) {
             $href = $this->checkExpression((string) $href->attributes('')->uri);
         } else {
-            $parameters = array();
+            $parameters = [];
             foreach ($href->parameter as $parameter) {
                 $parameters[(string) $parameter->attributes('')->name] = $this->checkExpression((string) $parameter->attributes('')->value);
             }
 
             $absolute = false;
-            if (null !== ($href->attributes('')->absolute)){
-                $absolute = $href->attributes('')->absolute;
-                if (strtolower($absolute) === 'true' || strtolower($absolute) === 'false') {
-                    $absolute = strtolower($absolute) === 'true';
+            if (null !== ($href->attributes('')->absolute)) {
+                $absolute = (string) $href->attributes('')->absolute;
+                if ('true' === strtolower($absolute) || 'false' === strtolower($absolute)) {
+                    $absolute = 'true' === strtolower($absolute);
                 } else {
                     $absolute = $this->checkExpression($absolute);
                 }
@@ -160,7 +165,10 @@ class XmlDriver extends AbstractFileDriver
         return $this->checkExpression($href);
     }
 
-    private function createEmbedded($embedded)
+    /**
+     * @param mixed $embedded
+     */
+    private function createEmbedded($embedded): Embedded
     {
         $embeddedExclusion = isset($embedded->exclusion) ? $this->parseExclusion($embedded->exclusion) : null;
         $xmlElementName = isset($embedded->attributes('')->{'xml-element-name'}) ? $this->checkExpression((string) $embedded->attributes('')->{'xml-element-name'}) : null;

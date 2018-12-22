@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\UrlGenerator;
 
 use Hateoas\Tests\TestCase;
@@ -18,7 +20,7 @@ class UrlGeneratorRegistryTest extends TestCase
         $exception = null;
         try {
             $registry->get('foo');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $exception = $e;
         }
         $this->assertInstanceOf('InvalidArgumentException', $exception);

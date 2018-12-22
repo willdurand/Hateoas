@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\CollectionRepresentation;
@@ -12,15 +14,13 @@ class PaginatedRepresentationTest extends RepresentationTestCase
     {
         $collection = new PaginatedRepresentation(
             new CollectionRepresentation(
-                array(
+                [
                     'Adrien',
                     'William',
-                )
+                ]
             ),
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            ),
+            ['query' => 'willdurand/Hateoas'],
             3,
             20,
             17,
@@ -102,34 +102,34 @@ XML
         );
         $this->assertSame(
             '{'
-                .'"page":3,'
-                .'"limit":20,'
-                .'"pages":17,'
-                .'"total":100,'
-                .'"_links":{'
-                    .'"self":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&page=3&limit=20"'
-                    .'},'
-                    .'"first":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&page=1&limit=20"'
-                    .'},'
-                    .'"last":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&page=17&limit=20"'
-                    .'},'
-                    .'"next":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&page=4&limit=20"'
-                    .'},'
-                    .'"previous":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&page=2&limit=20"'
-                    .'}'
-                .'},'
-                .'"_embedded":{'
-                    .'"items":['
-                        .'"Adrien",'
-                        .'"William"'
-                    .']'
-                .'}'
-            .'}',
+                . '"page":3,'
+                . '"limit":20,'
+                . '"pages":17,'
+                . '"total":100,'
+                . '"_links":{'
+                    . '"self":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&page=3&limit=20"'
+                    . '},'
+                    . '"first":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&page=1&limit=20"'
+                    . '},'
+                    . '"last":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&page=17&limit=20"'
+                    . '},'
+                    . '"next":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&page=4&limit=20"'
+                    . '},'
+                    . '"previous":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&page=2&limit=20"'
+                    . '}'
+                . '},'
+                . '"_embedded":{'
+                    . '"items":['
+                        . '"Adrien",'
+                        . '"William"'
+                    . ']'
+                . '}'
+            . '}',
             $this->halHateoas->serialize($collection, 'json')
         );
     }
@@ -138,15 +138,13 @@ XML
     {
         $collection = new PaginatedRepresentation(
             new CollectionRepresentation(
-                array(
+                [
                     'Adrien',
                     'William',
-                )
+                ]
             ),
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            ),
+            ['query' => 'willdurand/Hateoas'],
             3,
             20,
             17,
@@ -192,33 +190,33 @@ XML
         );
         $this->assertSame(
             '{'
-                .'"page":3,'
-                .'"limit":20,'
-                .'"pages":17,'
-                .'"_links":{'
-                    .'"self":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=3&limit=20"'
-                    .'},'
-                    .'"first":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=1&limit=20"'
-                    .'},'
-                    .'"last":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=17&limit=20"'
-                    .'},'
-                    .'"next":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=4&limit=20"'
-                    .'},'
-                    .'"previous":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=2&limit=20"'
-                    .'}'
-                .'},'
-                .'"_embedded":{'
-                    .'"items":['
-                        .'"Adrien",'
-                        .'"William"'
-                    .']'
-                .'}'
-            .'}',
+                . '"page":3,'
+                . '"limit":20,'
+                . '"pages":17,'
+                . '"_links":{'
+                    . '"self":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=3&limit=20"'
+                    . '},'
+                    . '"first":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=1&limit=20"'
+                    . '},'
+                    . '"last":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=17&limit=20"'
+                    . '},'
+                    . '"next":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=4&limit=20"'
+                    . '},'
+                    . '"previous":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&page=2&limit=20"'
+                    . '}'
+                . '},'
+                . '"_embedded":{'
+                    . '"items":['
+                        . '"Adrien",'
+                        . '"William"'
+                    . ']'
+                . '}'
+            . '}',
             $this->halHateoas->serialize($collection, 'json')
         );
     }

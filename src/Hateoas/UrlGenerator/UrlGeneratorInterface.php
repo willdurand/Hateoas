@@ -1,18 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\UrlGenerator;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 interface UrlGeneratorInterface
 {
     /**
-     * @param string  $name
-     * @param array   $parameters
-     * @param boolean $absolute
-     *
-     * @return string
+     * @param bool|int $absolute
      */
-    public function generate($name, array $parameters, $absolute = false);
+    public function generate(string $name, array $parameters, $absolute = false): string;
 }

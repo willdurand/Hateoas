@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Serializer;
 
 use Hateoas\HateoasBuilder;
@@ -23,38 +25,37 @@ class JsonHalSerializerTest extends TestCase
 {
     public function testSerializeLinks()
     {
-        $links = array(
-            new Link('self', '/users/42', array('awesome' => 'exactly')),
+        $links = [
+            new Link('self', '/users/42', ['awesome' => 'exactly']),
             new Link('foo', '/bar'),
             new Link('foo', '/baz'),
             new Link('bar', '/foo'),
             new Link('bar', '/baz'),
             new Link('bar', '/buzz'),
-        );
+        ];
 
-        $expectedSerializedLinks = array(
-            'self' => array(
+        $expectedSerializedLinks = [
+            'self' => [
                 'href' => '/users/42',
                 'awesome' => 'exactly',
-            ),
-            'foo' => array(
-                array('href' => '/bar'),
-                array('href' => '/baz'),
-            ),
-            'bar' => array(
-                array('href' => '/foo'),
-                array('href' => '/baz'),
-                array('href' => '/buzz'),
-            ),
-        );
+            ],
+            'foo' => [
+                ['href' => '/bar'],
+                ['href' => '/baz'],
+            ],
+            'bar' => [
+                ['href' => '/foo'],
+                ['href' => '/baz'],
+                ['href' => '/buzz'],
+            ],
+        ];
 
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
 
         $jsonSerializationVisitorProphecy = $this->prophesize(SerializationVisitorInterface::class);
         $jsonSerializationVisitorProphecy
             ->visitProperty(new StaticPropertyMetadata(JsonHalSerializer::class, '_links', $expectedSerializedLinks), $expectedSerializedLinks)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
 
         $jsonHalSerializer = new JsonHalSerializer();
         $jsonHalSerializer->serializeLinks(
@@ -66,14 +67,14 @@ class JsonHalSerializerTest extends TestCase
 
     public function testSerializeEmbeddeds()
     {
-        $acceptArguments = array(
-            array('name' => 'John'),
-            array('name' => 'Bar'),
-            array('name' => 'Baz'),
-            array('name' => 'Foo'),
-            array('name' => 'Baz'),
-            array('name' => 'Buzz'),
-        );
+        $acceptArguments = [
+            ['name' => 'John'],
+            ['name' => 'Bar'],
+            ['name' => 'Baz'],
+            ['name' => 'Foo'],
+            ['name' => 'Baz'],
+            ['name' => 'Buzz'],
+        ];
 
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
         $navigatorProphecy = $this->prophesize('JMS\Serializer\GraphNavigatorInterface');
@@ -85,38 +86,36 @@ class JsonHalSerializerTest extends TestCase
         foreach ($acceptArguments as $arg) {
             $navigatorProphecy
                 ->accept($arg, null, $contextProphecy)
-                ->willReturnArgument()
-            ;
+                ->willReturnArgument();
         }
         $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
         $contextProphecy->popPropertyMetadata()->shouldBeCalled();
-        $embeddeds = array(
-            new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata()),
-            new Embedded('foo', array('name' => 'Bar'), new RelationPropertyMetadata()),
-            new Embedded('foo', array('name' => 'Baz'), new RelationPropertyMetadata()),
-            new Embedded('bar', array('name' => 'Foo'), new RelationPropertyMetadata()),
-            new Embedded('bar', array('name' => 'Baz'), new RelationPropertyMetadata()),
-            new Embedded('bar', array('name' => 'Buzz'), new RelationPropertyMetadata()),
-        );
+        $embeddeds = [
+            new Embedded('friend', ['name' => 'John'], new RelationPropertyMetadata()),
+            new Embedded('foo', ['name' => 'Bar'], new RelationPropertyMetadata()),
+            new Embedded('foo', ['name' => 'Baz'], new RelationPropertyMetadata()),
+            new Embedded('bar', ['name' => 'Foo'], new RelationPropertyMetadata()),
+            new Embedded('bar', ['name' => 'Baz'], new RelationPropertyMetadata()),
+            new Embedded('bar', ['name' => 'Buzz'], new RelationPropertyMetadata()),
+        ];
 
-        $expectedEmbeddedded = array(
-            'friend' => array('name' => 'John'),
-            'foo' => array(
-                array('name' => 'Bar'),
-                array('name' => 'Baz'),
-            ),
-            'bar' => array(
-                array('name' => 'Foo'),
-                array('name' => 'Baz'),
-                array('name' => 'Buzz'),
-            ),
-        );
+        $expectedEmbeddedded = [
+            'friend' => ['name' => 'John'],
+            'foo' => [
+                ['name' => 'Bar'],
+                ['name' => 'Baz'],
+            ],
+            'bar' => [
+                ['name' => 'Foo'],
+                ['name' => 'Baz'],
+                ['name' => 'Buzz'],
+            ],
+        ];
 
         $jsonSerializationVisitorProphecy = $this->prophesize(SerializationVisitorInterface::class);
         $jsonSerializationVisitorProphecy
             ->visitProperty(new StaticPropertyMetadata(JsonHalSerializer::class, '_embedded', $expectedEmbeddedded), $expectedEmbeddedded)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
 
         $jsonHalSerializer = new JsonHalSerializer();
         $jsonHalSerializer->serializeEmbeddeds(
@@ -128,30 +127,27 @@ class JsonHalSerializerTest extends TestCase
 
     public function testSerializeCuriesWithOneLinkShouldBeAnArray()
     {
-        $links = array(
+        $links = [
             new Link('self', '/users/42'),
-            new Link('curies', '/rels/{rel}', array('name' => 'p')),
-        );
+            new Link('curies', '/rels/{rel}', ['name' => 'p']),
+        ];
 
-        $expectedSerializedLinks = array(
-            'self' => array(
-                'href' => '/users/42',
-            ),
-            'curies' => array(
-                array(
+        $expectedSerializedLinks = [
+            'self' => ['href' => '/users/42'],
+            'curies' => [
+                [
                     'href' => '/rels/{rel}',
                     'name' => 'p',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
 
         $jsonSerializationVisitorProphecy = $this->prophesize(SerializationVisitorInterface::class);
         $jsonSerializationVisitorProphecy
             ->visitProperty(new StaticPropertyMetadata(JsonHalSerializer::class, '_links', $expectedSerializedLinks), $expectedSerializedLinks)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
 
         $jsonHalSerializer = new JsonHalSerializer();
         $jsonHalSerializer->serializeLinks(
@@ -163,35 +159,32 @@ class JsonHalSerializerTest extends TestCase
 
     public function testSerializeCuriesWithMultipleEntriesShouldBeAnArray()
     {
-        $links = array(
+        $links = [
             new Link('self', '/users/42'),
-            new Link('curies', '/rels/{rel}', array('name' => 'p')),
-            new Link('curies', '/foo/rels/{rel}', array('name' => 'foo')),
-        );
+            new Link('curies', '/rels/{rel}', ['name' => 'p']),
+            new Link('curies', '/foo/rels/{rel}', ['name' => 'foo']),
+        ];
 
-        $expectedSerializedLinks = array(
-            'self' => array(
-                'href' => '/users/42',
-            ),
-            'curies' => array(
-                array(
+        $expectedSerializedLinks = [
+            'self' => ['href' => '/users/42'],
+            'curies' => [
+                [
                     'href' => '/rels/{rel}',
                     'name' => 'p',
-                ),
-                array(
+                ],
+                [
                     'href' => '/foo/rels/{rel}',
                     'name' => 'foo',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
 
         $jsonSerializationVisitorProphecy = $this->prophesize(SerializationVisitorInterface::class);
         $jsonSerializationVisitorProphecy
             ->visitProperty(new StaticPropertyMetadata(JsonHalSerializer::class, '_links', $expectedSerializedLinks), $expectedSerializedLinks)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
 
         $jsonHalSerializer = new JsonHalSerializer();
         $jsonHalSerializer->serializeLinks(

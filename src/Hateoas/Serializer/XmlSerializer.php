@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Embedded;
@@ -10,17 +12,12 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class XmlSerializer implements XmlSerializerInterface
 {
     /**
      * @param Link[]                  $links
-     * @param XmlSerializationVisitor $visitor
-     * @param SerializationContext    $context
      */
-    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context)
+    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         foreach ($links as $link) {
             $linkNode = $visitor->getDocument()->createElement('link');
@@ -36,11 +33,9 @@ class XmlSerializer implements XmlSerializerInterface
     }
 
     /**
-     * @param Embedded[]              $embeddeds
-     * @param XmlSerializationVisitor $visitor
-     * @param SerializationContext    $context
+     * @param Embedded[] $embeddeds
      */
-    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         foreach ($embeddeds as $embedded) {
             $entryNode = $visitor->getDocument()->createElement($this->getElementName($context, $embedded->getData(), $embedded));
@@ -68,7 +63,10 @@ class XmlSerializer implements XmlSerializerInterface
         }
     }
 
-    private function getElementName(SerializationContext $context, $data, Embedded $embedded = null)
+    /**
+     * @param mixed $data
+     */
+    private function getElementName(SerializationContext $context, $data, ?Embedded $embedded = null): string
     {
         $elementName = null;
 
@@ -76,7 +74,7 @@ class XmlSerializer implements XmlSerializerInterface
             $elementName = $embedded->getXmlElementName();
         }
 
-        if (null == $elementName && is_object($data)) {
+        if (null === $elementName && is_object($data)) {
             $metadata    = $context->getMetadataFactory()->getMetadataForClass(ClassUtils::getClass($data));
             $elementName = $metadata->xmlRootName;
         }
@@ -84,7 +82,10 @@ class XmlSerializer implements XmlSerializerInterface
         return $elementName ?: 'entry';
     }
 
-    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context)
+    /**
+     * @param mixed $data
+     */
+    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context): void
     {
         $context->pushPropertyMetadata($embedded->getMetadata());
         $navigator = $context->getNavigator();
@@ -93,7 +94,6 @@ class XmlSerializer implements XmlSerializerInterface
                 $visitor->getCurrentNode()->appendChild($node);
             }
         } catch (NotAcceptableException $e) {
-
         }
         $context->popPropertyMetadata();
     }

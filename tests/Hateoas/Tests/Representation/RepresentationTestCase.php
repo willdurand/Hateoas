@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Representation;
 
+use Hateoas\Hateoas;
 use Hateoas\HateoasBuilder;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Tests\TestCase;
@@ -10,12 +13,12 @@ use Hateoas\UrlGenerator\CallableUrlGenerator;
 abstract class RepresentationTestCase extends TestCase
 {
     /**
-     * @var \Hateoas\Hateoas
+     * @var Hateoas
      */
     protected $hateoas;
 
     /**
-     * @var \Hateoas\Hateoas
+     * @var Hateoas
      */
     protected $halHateoas;
 
@@ -35,13 +38,11 @@ abstract class RepresentationTestCase extends TestCase
 
         $this->hateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, $this->queryStringUrlGenerator)
-            ->build()
-        ;
+            ->build();
 
         $this->halHateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, $this->queryStringUrlGenerator)
             ->setXmlSerializer(new XmlHalSerializer())
-            ->build()
-        ;
+            ->build();
     }
 }

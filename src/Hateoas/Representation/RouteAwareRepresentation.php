@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Representation;
 
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -16,14 +18,14 @@ use JMS\Serializer\Annotation as Serializer;
  *          absolute = "expr(object.isAbsolute())"
  *      )
  * )
- *
- * @author Adrien Brault <adrien.brault@gmail.com>
  */
 class RouteAwareRepresentation
 {
     /**
      * @Serializer\Inline
      * @Serializer\Expose
+     *
+     * @var mixed
      */
     private $inline;
 
@@ -38,11 +40,15 @@ class RouteAwareRepresentation
     private $parameters;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $absolute;
 
-    public function __construct($inline, $route, array $parameters = array(), $absolute = false)
+    /**
+     * @param mixed $inline
+     * @param array $parameters
+     */
+    public function __construct($inline, string $route, array $parameters = [], bool $absolute = false)
     {
         $this->inline     = $inline;
         $this->route      = $route;
@@ -58,10 +64,7 @@ class RouteAwareRepresentation
         return $this->inline;
     }
 
-    /**
-     * @return string
-     */
-    public function getRoute()
+    public function getRoute(): string
     {
         return $this->route;
     }
@@ -69,15 +72,12 @@ class RouteAwareRepresentation
     /**
      * @return array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isAbsolute()
+    public function isAbsolute(): bool
     {
         return $this->absolute;
     }

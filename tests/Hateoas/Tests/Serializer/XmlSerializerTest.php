@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Serializer;
 
 use Hateoas\HateoasBuilder;
@@ -24,10 +26,10 @@ class XmlSerializerTest extends TestCase
         $xmlSerializer = new XmlSerializer();
         $xmlSerializationVisitor = $this->createXmlSerializationVisitor();
 
-        $links = array(
+        $links = [
             new Link('self', '/users/42'),
-            new Link('foo', '/bar', array('type' => 'magic')),
-        );
+            new Link('foo', '/bar', ['type' => 'magic']),
+        ];
 
         $xmlSerializer->serializeLinks(
             $links,
@@ -61,9 +63,9 @@ XML
         $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
         $contextProphecy->popPropertyMetadata()->shouldBeCalled();
 
-        $embeddeds = array(
-            new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata(), 'person'),
-        );
+        $embeddeds = [
+            new Embedded('friend', ['name' => 'John'], new RelationPropertyMetadata(), 'person'),
+        ];
 
         $xmlSerializationVisitor = $this->createXmlSerializationVisitor();
 
@@ -159,7 +161,7 @@ XML
         $xmlSerializationVisitor = new XmlSerializationVisitor();
         $xmlSerializationVisitorClass = new \ReflectionClass('JMS\Serializer\XmlSerializationVisitor');
         $stackProperty = $xmlSerializationVisitorClass->getProperty('stack');
-        $stackProperty->setAccessible('true');
+        $stackProperty->setAccessible(true);
         $stackProperty->setValue($xmlSerializationVisitor, new \SplStack());
 
         $xmlRootNode = $document = $xmlSerializationVisitor->createRoot(null, 'root');

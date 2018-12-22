@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Provider;
 
 use Hateoas\Configuration\RelationProvider;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 
-/**
- * @author Asmir Mustafic <goetas@gmail.com>
- */
 class ExpressionEvaluatorProvider implements RelationProviderInterface
 {
     /**

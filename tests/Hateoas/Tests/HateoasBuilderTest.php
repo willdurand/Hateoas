@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests;
 
 use Hateoas\HateoasBuilder;
+use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\CircularReference1;
 use Hateoas\Tests\Fixtures\CircularReference2;
+use Hateoas\Tests\Fixtures\WithAlternativeRouter;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use JMS\Serializer\SerializationContext;
-use Hateoas\Tests\Fixtures\AdrienBrault;
-use Hateoas\Tests\Fixtures\WithAlternativeRouter;
 use JMS\Serializer\SerializerInterface;
 
 /**
@@ -33,7 +35,7 @@ class HateoasBuilderTest extends TestCase
         $fakeAdrienBrault->firstName = 'John';
         $fakeAdrienBrault->lastName = 'Smith';
 
-        $context  = SerializationContext::create()->setGroups(array('simple'));
+        $context  = SerializationContext::create()->setGroups(['simple']);
         $context2 = clone $context;
 
         $this->assertSame(
@@ -73,8 +75,7 @@ XML
 
         $hateoas = HateoasBuilder::create()
             ->setUrlGenerator('my_generator', $brokenUrlGenerator)
-            ->build()
-        ;
+            ->build();
 
         $this->assertSame(
             <<<XML
@@ -116,14 +117,14 @@ XML
 
         $this->assertSame(
             '{'
-                .'"name":"reference1",'
-                .'"_embedded":{'
-                    .'"reference2":{'
-                        .'"name":"reference2",'
-                        .'"_embedded":[]'
-                    .'}'
-                .'}'
-            .'}',
+                . '"name":"reference1",'
+                . '"_embedded":{'
+                    . '"reference2":{'
+                        . '"name":"reference2",'
+                        . '"_embedded":[]'
+                    . '}'
+                . '}'
+            . '}',
             $hateoas->serialize($reference1, 'json')
         );
     }

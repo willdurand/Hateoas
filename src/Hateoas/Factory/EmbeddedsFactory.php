@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Factory;
 
 use Hateoas\Model\Embedded;
@@ -10,9 +12,6 @@ use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class EmbeddedsFactory
 {
     /**
@@ -41,16 +40,13 @@ class EmbeddedsFactory
     }
 
     /**
-     * @param  object $object
-     * @param  SerializationContext $context
      * @return Embedded[]
      */
-    public function create($object, SerializationContext $context)
+    public function create(object $object, SerializationContext $context): array
     {
-        $embeddeds = array();
+        $embeddeds = [];
 
         if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
-
             $langugeData = ['object' => $object, 'context' => $context];
             foreach ($classMetadata->getRelations() as $relation) {
                 if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
@@ -69,10 +65,16 @@ class EmbeddedsFactory
         return $embeddeds;
     }
 
+    /**
+     * @param mixed $exp
+     * @param array $data
+     *
+     * @return mixed
+     */
     private function checkExpression($exp, array $data)
     {
         if ($exp instanceof Expression) {
-            return $this->expressionEvaluator->evaluate((string)$exp, $data);
+            return $this->expressionEvaluator->evaluate((string) $exp, $data);
         } else {
             return $exp;
         }

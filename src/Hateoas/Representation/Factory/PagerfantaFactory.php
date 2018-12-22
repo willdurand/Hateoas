@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Representation\Factory;
 
 use Hateoas\Configuration\Route;
@@ -7,9 +9,6 @@ use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\PaginatedRepresentation;
 use Pagerfanta\Pagerfanta;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class PagerfantaFactory
 {
     /**
@@ -22,11 +21,7 @@ class PagerfantaFactory
      */
     private $limitParameterName;
 
-    /**
-     * @param string $pageParameterName
-     * @param string $limitParameterName
-     */
-    public function __construct($pageParameterName = null, $limitParameterName = null)
+    public function __construct(?string $pageParameterName = null, ?string $limitParameterName = null)
     {
         $this->pageParameterName  = $pageParameterName;
         $this->limitParameterName = $limitParameterName;
@@ -36,10 +31,8 @@ class PagerfantaFactory
      * @param Pagerfanta $pager  The pager
      * @param Route      $route  The collection's route
      * @param mixed      $inline Most of the time, a custom `CollectionRepresentation` instance
-     *
-     * @return PaginatedRepresentation
      */
-    public function createRepresentation(Pagerfanta $pager, Route $route, $inline = null)
+    public function createRepresentation(Pagerfanta $pager, Route $route, $inline = null): PaginatedRepresentation
     {
         if (null === $inline) {
             $inline = new CollectionRepresentation($pager->getCurrentPageResults());
@@ -59,18 +52,12 @@ class PagerfantaFactory
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getPageParameterName()
+    public function getPageParameterName(): ?string
     {
         return $this->pageParameterName;
     }
 
-    /**
-     * @return string
-     */
-    public function getLimitParameterName()
+    public function getLimitParameterName(): ?string
     {
         return $this->limitParameterName;
     }

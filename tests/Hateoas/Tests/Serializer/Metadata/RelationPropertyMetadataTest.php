@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Serializer\Metadata;
 
 use Hateoas\Configuration\Embedded;
@@ -24,7 +26,7 @@ class RelationPropertyMetadataTest extends TestCase
     public function testWithExclusion()
     {
         $propertyMetadata = new RelationPropertyMetadata(new Exclusion(
-            array('foo', 'bar'),
+            ['foo', 'bar'],
             '1.1',
             '2.2',
             42
@@ -41,7 +43,7 @@ class RelationPropertyMetadataTest extends TestCase
         $propertyMetadata = new RelationPropertyMetadata(null, new Relation(
             'foo',
             null,
-            new Embedded('bar', array('name' => 'John'))
+            new Embedded('bar', ['name' => 'John'])
         ));
 
         $this->assertSame('foo', $propertyMetadata->name);
@@ -50,7 +52,8 @@ class RelationPropertyMetadataTest extends TestCase
             [
                 'name' => 'Hateoas\Model\Embedded',
                 'params' => [],
-            ], $propertyMetadata->type
+            ],
+            $propertyMetadata->type
         );
     }
 
@@ -58,7 +61,7 @@ class RelationPropertyMetadataTest extends TestCase
     {
         $propertyMetadata = new RelationPropertyMetadata(null, new Relation(
             'foo',
-            new Route('/route', array('foo' => 'bar'))
+            new Route('/route', ['foo' => 'bar'])
         ));
 
         $this->assertSame('foo', $propertyMetadata->name);
@@ -67,7 +70,8 @@ class RelationPropertyMetadataTest extends TestCase
             [
                 'name' => 'Hateoas\Model\Link',
                 'params' => [],
-            ], $propertyMetadata->type
+            ],
+            $propertyMetadata->type
         );
     }
 }

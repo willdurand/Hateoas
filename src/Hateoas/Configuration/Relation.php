@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration;
 
 use JMS\Serializer\Expression\Expression;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class Relation
 {
     /**
-     * @var string The link "rel" attribute
+     * The link "rel" attribute
+     *
+     * @var string
      */
     private $name;
 
     /**
-     * @var string|Route|null|Expression
+     * @var string|Route|Expression|null
      */
     private $href;
 
@@ -35,13 +36,12 @@ class Relation
     private $exclusion;
 
     /**
-     * @param string                $name
+     * @param string|Expression $name
      * @param string|Route          $href
      * @param Embedded|string|mixed $embedded
      * @param array                 $attributes
-     * @param Exclusion             $exclusion
      */
-    public function __construct($name, $href = null, $embedded = null, array $attributes = array(), Exclusion $exclusion = null)
+    public function __construct(string $name, $href = null, $embedded = null, array $attributes = [], ?Exclusion $exclusion = null)
     {
         if (null !== $embedded && !$embedded instanceof Embedded) {
             $embedded = new Embedded($embedded);
@@ -58,10 +58,7 @@ class Relation
         $this->exclusion  = $exclusion;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -77,23 +74,17 @@ class Relation
     /**
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    /**
-     * @return Embedded|null
-     */
-    public function getEmbedded()
+    public function getEmbedded(): ?Embedded
     {
         return $this->embedded;
     }
 
-    /**
-     * @return Exclusion|null
-     */
-    public function getExclusion()
+    public function getExclusion(): ?Exclusion
     {
         return $this->exclusion;
     }

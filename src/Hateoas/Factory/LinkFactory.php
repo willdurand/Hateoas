@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Factory;
 
 use Hateoas\Configuration\Relation;
@@ -10,9 +12,6 @@ use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\SerializationContext;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class LinkFactory
 {
     /**
@@ -25,41 +24,32 @@ class LinkFactory
      */
     private $urlGeneratorRegistry;
 
-    /**
-     * @param UrlGeneratorRegistry $urlGeneratorRegistry
-     */
-    public function __construct(UrlGeneratorRegistry $urlGeneratorRegistry, CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
+    public function __construct(UrlGeneratorRegistry $urlGeneratorRegistry, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
         $this->urlGeneratorRegistry = $urlGeneratorRegistry;
-        $this->expressionEvaluator  = $expressionEvaluator;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
-    public function setExpressionEvaluator(CompilableExpressionEvaluatorInterface $expressionEvaluator)
+    public function setExpressionEvaluator(CompilableExpressionEvaluatorInterface $expressionEvaluator): void
     {
-        $this->expressionEvaluator  = $expressionEvaluator;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
-    /**
-     * @param object   $object
-     * @param Relation $relation
-     *
-     * @return Link
-     */
-    public function createLink($object, Relation $relation, SerializationContext $context)
+
+    public function createLink(object $object, Relation $relation, SerializationContext $context): Link
     {
         $data = ['object' => $object, 'context' => $context];
 
-        $rel =  $relation->getName();
+        $rel = $relation->getName();
         $href = $relation->getHref();
         if ($href instanceof Route) {
             if (!$this->urlGeneratorRegistry->hasGenerators()) {
                 throw new \RuntimeException('You cannot use a route without an url generator.');
             }
 
-            $name       = $this->checkExpression($href->getName(), $data);
+            $name = $this->checkExpression($href->getName(), $data);
             $parameters = is_array($href->getParameters())
                 ? $this->evaluateArray($href->getParameters(), $data)
-                : $this->checkExpression($href->getParameters(), $data)
-            ;
+                : $this->checkExpression($href->getParameters(), $data);
             $isAbsolute = $this->checkExpression($href->isAbsolute(), $data);
 
             if (!is_array($parameters)) {
@@ -73,8 +63,7 @@ class LinkFactory
 
             $href = $this->urlGeneratorRegistry
                 ->get($href->getGenerator())
-                ->generate($name, $parameters, $isAbsolute)
-            ;
+                ->generate($name, $parameters, $isAbsolute);
         } else {
             $href = $this->checkExpression($href, $data);
         }
@@ -84,6 +73,12 @@ class LinkFactory
         return new Link($rel, $href, $attributes);
     }
 
+    /**
+     * @param mixed $exp
+     * @param array $data
+     *
+     * @return mixed
+     */
     private function checkExpression($exp, array $data)
     {
         if ($exp instanceof Expression) {
@@ -93,9 +88,15 @@ class LinkFactory
         }
     }
 
-    private function evaluateArray(array $array, array $data)
+    /**
+     * @param array $array
+     * @param array $data
+     *
+     * @return array
+     */
+    private function evaluateArray(array $array, array $data): array
     {
-        $newArray = array();
+        $newArray = [];
         foreach ($array as $key => $value) {
             $value = is_array($value) ? $this->evaluateArray($value, $data) : $this->checkExpression($value, $data);
 

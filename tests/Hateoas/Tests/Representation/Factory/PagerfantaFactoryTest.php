@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Representation\Factory;
 
 use Hateoas\Configuration\Route;
@@ -13,10 +15,10 @@ class PagerfantaFactoryTest extends RepresentationTestCase
 {
     public function test()
     {
-        $results = array(
+        $results = [
             'Adrien',
             'William',
-        );
+        ];
 
         $pagerProphecy = $this->prophesize('Pagerfanta\Pagerfanta');
         $pagerProphecy->getCurrentPageResults()->willReturn($results);
@@ -30,26 +32,22 @@ class PagerfantaFactoryTest extends RepresentationTestCase
             $pagerProphecy->reveal(),
             new Route(
                 'users',
-                array(
-                    'query' => 'hateoas',
-                )
+                ['query' => 'hateoas']
             )
         );
         $representation2 = $factory->createRepresentation(
             $pagerProphecy->reveal(),
             new Route(
                 'users',
-                array(
-                    'query' => 'hateoas',
-                )
+                ['query' => 'hateoas']
             ),
-            array()
+            []
         );
 
         $this->assertEquals(new CollectionRepresentation($results), $representation1->getInline());
         $this->assertSame([], $representation2->getInline());
 
-        foreach (array($representation1, $representation2) as $representation) {
+        foreach ([$representation1, $representation2] as $representation) {
             $this->assertInstanceOf('Hateoas\Representation\PaginatedRepresentation', $representation);
             $this->assertSame(2, $representation->getPage());
             $this->assertSame(20, $representation->getLimit());
@@ -71,11 +69,11 @@ class PagerfantaFactoryTest extends RepresentationTestCase
     public function testSerialize()
     {
         $factory    = new PagerfantaFactory();
-        $pagerfanta = new Pagerfanta(new ArrayAdapter(array(
+        $pagerfanta = new Pagerfanta(new ArrayAdapter([
             'bim',
             'bam',
-            'boom'
-        )));
+            'boom',
+        ]));
 
         $collection = $factory->createRepresentation($pagerfanta, new Route('my_route'));
 
@@ -132,17 +130,17 @@ JSON
     public function testGenerateAbsoluteURIs()
     {
         $factory    = new PagerfantaFactory();
-        $pagerfanta = new Pagerfanta(new ArrayAdapter(array(
+        $pagerfanta = new Pagerfanta(new ArrayAdapter([
             'bim',
             'bam',
-            'boom'
-        )));
+            'boom',
+        ]));
 
         $collection = $factory->createRepresentation(
             $pagerfanta,
             new Route(
                 '/my_route',
-                array(),
+                [],
                 true
             )
         );

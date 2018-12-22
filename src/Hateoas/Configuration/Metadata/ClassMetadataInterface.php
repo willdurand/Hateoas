@@ -1,26 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata;
 
 use Hateoas\Configuration\Relation;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 interface ClassMetadataInterface
 {
-    /**
-     * @return string
-     */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @return Relation[]
      */
-    public function getRelations();
+    public function getRelations(): array;
 
-    /**
-     * @param Relation $relation
-     */
-    public function addRelation(Relation $relation);
+    public function addRelation(Relation $relation): void;
 }

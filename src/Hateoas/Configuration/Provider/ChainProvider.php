@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Provider;
 
 use Hateoas\Configuration\RelationProvider;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class ChainProvider implements RelationProviderInterface
 {
     /**
@@ -19,7 +18,7 @@ class ChainProvider implements RelationProviderInterface
         $this->resolvers = $resolvers;
     }
 
-    public function addProvider(RelationProviderInterface $resolver)
+    public function addProvider(RelationProviderInterface $resolver): void
     {
         $this->resolvers[] = $resolver;
     }
@@ -27,7 +26,7 @@ class ChainProvider implements RelationProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function getRelations(RelationProvider $configuration, string $class):array
+    public function getRelations(RelationProvider $configuration, string $class): array
     {
         $relations = [];
         foreach ($this->resolvers as $resolver) {

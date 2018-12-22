@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Fixtures;
 
+use Hateoas\Configuration\Annotation as Hateoas;
 use Hateoas\Configuration\Relation;
 use JMS\Serializer\Annotation as Serializer;
-use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @Hateoas\Relation(
@@ -36,7 +38,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      "smartphone",
  *      embedded = "expr(object.getAndroidSmartphone())"
  * )
- *
  * @Hateoas\RelationProvider("Hateoas\Tests\Fixtures\AdrienBrault::getRelations")
  */
 class AdrienBrault
@@ -73,8 +74,8 @@ class AdrienBrault
 
     public static function getRelations()
     {
-        return array(
-            new Relation('dynamic-relation', 'awesome!!!', array('wowowow')),
-        );
+        return [
+            new Relation('dynamic-relation', 'awesome!!!', ['wowowow']),
+        ];
     }
 }

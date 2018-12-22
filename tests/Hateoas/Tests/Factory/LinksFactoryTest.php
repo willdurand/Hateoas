@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Factory;
 
 use Hateoas\Configuration\Metadata\ClassMetadata;
@@ -17,10 +19,10 @@ class LinksFactoryTest extends TestCase
         $object = new \StdClass();
         $context = SerializationContext::create();
 
-        $relations = array(
+        $relations = [
             new Relation('self', '/users/1'),
             new Relation('manager', '/users/2'),
-        );
+        ];
         $link = new Link('', '');
 
         $metadata = $this->prophesize(ClassMetadata::class);
@@ -33,25 +35,21 @@ class LinksFactoryTest extends TestCase
         $metadataFactory
             ->getMetadataForClass(get_class($object))
             ->willReturn($metadata)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
         $linkFactoryProphecy = $this->prophesize('Hateoas\Factory\LinkFactory');
         $linkFactoryProphecy
             ->createLink($object, $relations[1], $context)
             ->willReturn($link)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
         $exclusionManagerProphecy = $this->prophesize('Hateoas\Serializer\ExclusionManager');
         $exclusionManagerProphecy
             ->shouldSkipLink($object, $relations[0], $context)
             ->willReturn(true)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
         $exclusionManagerProphecy
             ->shouldSkipLink($object, $relations[1], $context)
             ->willReturn(false)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
 
         $linksFactory = new LinksFactory(
             $metadataFactory->reveal(),

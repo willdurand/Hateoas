@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Provider\RelationProviderInterface;
-use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
-use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use JMS\Serializer\Expression\Expression;
+use Metadata\ClassMetadata as JMSClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class YamlDriver extends AbstractFileDriver
 {
     use CheckExpressionTrait;
@@ -45,7 +45,7 @@ class YamlDriver extends AbstractFileDriver
             throw new \RuntimeException(sprintf('Expected metadata for class %s to be defined in %s.', $name, $file));
         }
 
-        $config        = $config[$name];
+        $config = $config[$name];
         $classMetadata = new ClassMetadata($name);
         $classMetadata->fileResources[] = $file;
         $classMetadata->fileResources[] = $class->getFileName();
@@ -56,7 +56,7 @@ class YamlDriver extends AbstractFileDriver
                     $relation['rel'],
                     $this->createHref($relation),
                     $this->createEmbedded($relation),
-                    isset($relation['attributes']) ? $relation['attributes'] : array(),
+                    $relation['attributes'] ?? [],
                     $this->createExclusion($relation)
                 ));
             }
@@ -82,24 +82,28 @@ class YamlDriver extends AbstractFileDriver
         return 'yml';
     }
 
-    private function parseExclusion(array $exclusion)
+    private function parseExclusion(array $exclusion): Exclusion
     {
         return new Exclusion(
-            isset($exclusion['groups']) ? $exclusion['groups'] : null,
-            isset($exclusion['since_version']) ? (string)$exclusion['since_version'] : null,
-            isset($exclusion['until_version']) ? (string)$exclusion['until_version'] : null,
-            isset($exclusion['max_depth']) ? (int)$exclusion['max_depth'] : null,
-            isset($exclusion['exclude_if']) ? $this->checkExpression((string)$exclusion['exclude_if']) : null
+            $exclusion['groups'] ?? null,
+            isset($exclusion['since_version']) ? (string) $exclusion['since_version'] : null,
+            isset($exclusion['until_version']) ? (string) $exclusion['until_version'] : null,
+            isset($exclusion['max_depth']) ? (int) $exclusion['max_depth'] : null,
+            isset($exclusion['exclude_if']) ? $this->checkExpression((string) $exclusion['exclude_if']) : null
         );
     }
 
+    /**
+     * @param mixed $relation
+     *
+     * @return Expression|mixed
+     */
     private function createHref($relation)
     {
         $href = null;
         if (isset($relation['href']) && is_array($href = $relation['href']) && isset($href['route'])) {
-
             $absolute = false;
-            if (isset($href['absolute'])  && is_bool($href['absolute'])) {
+            if (isset($href['absolute']) && is_bool($href['absolute'])) {
                 $absolute = $href['absolute'];
             } elseif (isset($href['absolute'])) {
                 $absolute = isset($href['absolute']) ? $this->checkExpression($href['absolute']) : false;
@@ -107,15 +111,20 @@ class YamlDriver extends AbstractFileDriver
 
             $href = new Route(
                 $this->checkExpression($href['route']),
-                isset($href['parameters']) ? $this->checkExpressionArray((array)$href['parameters']) : array(),
+                isset($href['parameters']) ? (is_array($href['parameters']) ? $this->checkExpressionArray($href['parameters']) : $this->checkExpression($href['parameters'])) : [],
                 $absolute,
-                isset($href['generator'])  ? $href['generator'] : null
+                $href['generator'] ?? null
             );
         }
 
         return $this->checkExpression($href);
     }
 
+    /**
+     * @param mixed $relation
+     *
+     * @return Embedded|Expression|mixed|null
+     */
     private function createEmbedded($relation)
     {
         $embedded = null;
@@ -128,15 +137,18 @@ class YamlDriver extends AbstractFileDriver
                     $embeddedExclusion = $this->parseExclusion($embedded['exclusion']);
                 }
 
-                $xmlElementName = isset($embedded['xmlElementName']) ? $this->checkExpression((string)$embedded['xmlElementName']) : null;
-                $embedded       = new Embedded($this->checkExpression($embedded['content']), $xmlElementName, $embeddedExclusion);
+                $xmlElementName = isset($embedded['xmlElementName']) ? $this->checkExpression((string) $embedded['xmlElementName']) : null;
+                $embedded = new Embedded($this->checkExpression($embedded['content']), $xmlElementName, $embeddedExclusion);
             }
         }
 
         return $embedded;
     }
 
-    private function createExclusion($relation)
+    /**
+     * @param mixed $relation
+     */
+    private function createExclusion($relation): ?Exclusion
     {
         $exclusion = null;
         if (isset($relation['exclusion'])) {

@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Helper;
 
-use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Factory\LinkFactory;
+use Hateoas\Util\ClassUtils;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
 
-/**
- * @author William Durand <william.durand1@gmail.com>
- */
 class LinkHelper
 {
     /**
@@ -30,18 +29,11 @@ class LinkHelper
         $this->metadataFactory = $metadataFactory;
     }
 
-    /**
-     * @param object  $object
-     * @param string  $rel
-     * @param boolean $absolute
-     *
-     * @return string
-     */
-    public function getLinkHref($object, $rel, $absolute = false, SerializationContext $context = null)
+    public function getLinkHref(object $object, string $rel, bool $absolute = false, ?SerializationContext $context = null): string
     {
         $context = $context ?? SerializationContext::create();
 
-        if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
+        if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($object)))) {
             foreach ($classMetadata->getRelations() as $relation) {
                 if ($rel === $relation->getName()) {
                     $relation = $this->patchAbsolute($relation, $absolute);
@@ -51,13 +43,15 @@ class LinkHelper
                     }
                 }
             }
-
         }
 
-        return null;
+        throw new \RuntimeException(sprintf('Can not find the relation "%s" for the "%s" class', $rel, ClassUtils::getClass($object)));
     }
 
-    private function patchAbsolute(Relation $relation, $absolute)
+    /**
+     * @param mixed $absolute
+     */
+    private function patchAbsolute(Relation $relation, $absolute): Relation
     {
         $href = $relation->getHref();
 

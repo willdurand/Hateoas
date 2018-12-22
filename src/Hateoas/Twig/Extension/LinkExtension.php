@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Twig\Extension;
 
 use Hateoas\Helper\LinkHelper;
 
-/**
- * @author William Durand <william.durand1@gmail.com>
- */
 class LinkExtension extends \Twig_Extension
 {
     /**
@@ -24,9 +23,9 @@ class LinkExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('link_href', array($this->linkHelper, 'getLinkHref')),
-        );
+        return [
+            new \Twig_SimpleFunction('link_href', [$this->linkHelper, 'getLinkHref']),
+        ];
     }
 
     /**

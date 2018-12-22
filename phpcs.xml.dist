@@ -16,9 +16,12 @@
     <rule ref="Doctrine">
         <exclude name="Generic.Formatting.SpaceAfterNot"/>
         <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+        <exclude name="PEAR.Functions.ValidDefaultValue.NotAtEnd"/>
+
 
         <exclude name="Squiz.Arrays.ArrayDeclaration.KeySpecified"/>
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <exclude name="SlevomatCodingStandard.Functions.StaticClosure"/>
 
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
         <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>

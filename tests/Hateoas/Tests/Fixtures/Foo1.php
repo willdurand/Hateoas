@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Fixtures;
 
-use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @Hateoas\Relation(

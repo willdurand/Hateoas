@@ -1,23 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Embedded;
-use Hateoas\Representation\Resource;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class XmlHalSerializer implements XmlSerializerInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context)
+    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         foreach ($links as $link) {
             if ('self' === $link->getRel()) {
@@ -42,10 +37,7 @@ class XmlHalSerializer implements XmlSerializerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         foreach ($embeddeds as $embedded) {
             if ($embedded->getData() instanceof \Traversable || is_array($embedded->getData())) {
@@ -76,7 +68,10 @@ class XmlHalSerializer implements XmlSerializerInterface
         }
     }
 
-    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context)
+    /**
+     * @param mixed $data
+     */
+    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context): void
     {
         $context->pushPropertyMetadata($embedded->getMetadata());
         $navigator = $context->getNavigator();
@@ -85,7 +80,6 @@ class XmlHalSerializer implements XmlSerializerInterface
                 $visitor->getCurrentNode()->appendChild($node);
             }
         } catch (NotAcceptableException $e) {
-
         }
         $context->popPropertyMetadata();
     }
