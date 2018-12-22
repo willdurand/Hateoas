@@ -57,6 +57,11 @@ class HateoasBuilder
     private $expressionLanguage;
 
     /**
+     * @var ExpressionEvaluator
+     */
+    private $expressionEvaluator;
+
+    /**
      * @var array
      */
     private $contextVariables = array();
@@ -132,7 +137,11 @@ class HateoasBuilder
         $linkFactory         = new LinkFactory($this->urlGeneratorRegistry);
         $this->contextVariables['link_helper'] = $linkHelper = new LinkHelper($linkFactory, $metadataFactory);
 
-        $expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage(), $this->contextVariables);
+        $expressionEvaluator =  $this->getExpressionEvaluator();
+        foreach ($this->contextVariables as $name => $value){
+            $expressionEvaluator->setContextVariable($name, $value);
+        }
+
         $this->chainProvider->addProvider(new ExpressionEvaluatorProvider($expressionEvaluator));
 
         $linkFactory->setExpressionEvaluator($expressionEvaluator);
@@ -431,15 +440,17 @@ class HateoasBuilder
             }
         }
 
+        $expressionEvaluator =  $this->getExpressionEvaluator();
+
         if (!empty($this->metadataDirs)) {
             $fileLocator    = new FileLocator($this->metadataDirs);
             $metadataDriver = new DriverChain(array(
-                new YamlDriver($fileLocator, $this->chainProvider),
-                new XmlDriver($fileLocator, $this->chainProvider),
-                new AnnotationDriver($annotationReader, $this->chainProvider),
+                new YamlDriver($fileLocator, $expressionEvaluator, $this->chainProvider),
+                new XmlDriver($fileLocator, $expressionEvaluator, $this->chainProvider),
+                new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider),
             ));
         } else {
-            $metadataDriver = new AnnotationDriver($annotationReader, $this->chainProvider);
+            $metadataDriver = new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider);
         }
 
         $metadataDriver  = new ExtensionDriver($metadataDriver, $this->configurationExtensions);
@@ -476,5 +487,14 @@ class HateoasBuilder
         }
 
         return $this->expressionLanguage;
+    }
+
+    private function getExpressionEvaluator()
+    {
+        if (null === $this->expressionEvaluator) {
+            $this->expressionEvaluator = new ExpressionEvaluator($this->getExpressionLanguage(), $this->contextVariables);
+        }
+
+        return $this->expressionEvaluator;
     }
 }

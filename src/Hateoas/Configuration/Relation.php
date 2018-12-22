@@ -2,6 +2,8 @@
 
 namespace Hateoas\Configuration;
 
+use JMS\Serializer\Expression\Expression;
+
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
  */
@@ -13,12 +15,12 @@ class Relation
     private $name;
 
     /**
-     * @var string|Route|null
+     * @var string|Route|null|Expression
      */
     private $href;
 
     /**
-     * @var array Extra link attributes
+     * @var string[]|Expression[]
      */
     private $attributes;
 

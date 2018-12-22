@@ -6,6 +6,7 @@ use Hateoas\Configuration\RelationsRepository;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Factory\LinkFactory;
+use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -36,14 +37,16 @@ class LinkHelper
      *
      * @return string
      */
-    public function getLinkHref($object, $rel, $absolute = false)
+    public function getLinkHref($object, $rel, $absolute = false, SerializationContext $context = null)
     {
+        $context = $context ?? SerializationContext::create();
+
         if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
             foreach ($classMetadata->getRelations() as $relation) {
                 if ($rel === $relation->getName()) {
                     $relation = $this->patchAbsolute($relation, $absolute);
 
-                    if (null !== $link = $this->linkFactory->createLink($object, $relation)) {
+                    if (null !== $link = $this->linkFactory->createLink($object, $relation, $context)) {
                         return $link->getHref();
                     }
                 }

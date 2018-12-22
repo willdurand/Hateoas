@@ -8,11 +8,22 @@ use Hateoas\Configuration\Provider\RelationProviderInterface;
 use Hateoas\Configuration\Provider\StaticMethodProvider;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider;
+use Hateoas\Expression\LinkExpressionFunction;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use Metadata\Driver\DriverInterface;
 use Hateoas\Tests\TestCase;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 abstract class AbstractDriverTest extends TestCase
 {
+    protected function getExpressionEvaluator()
+    {
+        $expressionLanguage = new ExpressionLanguage();
+        $expressionLanguage->registerProvider(new LinkExpressionFunction());
+
+        return new ExpressionEvaluator($expressionLanguage);
+    }
+
     protected function createProvider(): RelationProviderInterface
     {
         return new ChainProvider([
@@ -31,6 +42,8 @@ abstract class AbstractDriverTest extends TestCase
         $driver = $this->createDriver();
         $class = new \ReflectionClass('Hateoas\Tests\Fixtures\User');
         $classMetadata = $driver->loadMetadataForClass($class);
+
+        $exp = $this->getExpressionEvaluator();
 
         $this->assertInstanceOf('Hateoas\Configuration\Metadata\ClassMetadata', $classMetadata);
 
@@ -55,10 +68,10 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertSame('foo', $relation->getName());
         $this->assertInstanceOf('Hateoas\Configuration\Route', $relation->getHref());
         $this->assertSame('user_get', $relation->getHref()->getName());
-        $this->assertSame(['id' => 'expr(object.getId())'], $relation->getHref()->getParameters());
+        $this->assertEquals(['id' => $exp->parse('object.getId()',['object'])], $relation->getHref()->getParameters());
         $this->assertFalse($relation->getHref()->isAbsolute());
         $this->assertInstanceOf('Hateoas\Configuration\Embedded', $relation->getEmbedded());
-        $this->assertSame('expr(object.getFoo())', $relation->getEmbedded()->getContent());
+        $this->assertEquals($exp->parse('object.getFoo()',['object']), $relation->getEmbedded()->getContent());
         $this->assertNull($relation->getEmbedded()->getXmlElementName());
         $this->assertNull($relation->getEmbedded()->getExclusion());
 
@@ -74,7 +87,7 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertSame('baz', $relation->getName());
         $this->assertInstanceOf('Hateoas\Configuration\Route', $relation->getHref());
         $this->assertSame('user_get', $relation->getHref()->getName());
-        $this->assertSame(['id' => 'expr(object.getId())'], $relation->getHref()->getParameters());
+        $this->assertEquals(['id' => $exp->parse('object.getId()',['object'])], $relation->getHref()->getParameters());
         $this->assertTrue($relation->getHref()->isAbsolute());
         $this->assertNull($relation->getExclusion());
 
@@ -82,7 +95,7 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertSame('boom', $relation->getName());
         $this->assertInstanceOf('Hateoas\Configuration\Route', $relation->getHref());
         $this->assertSame('user_get', $relation->getHref()->getName());
-        $this->assertSame(['id' => 'expr(object.getId())'], $relation->getHref()->getParameters());
+        $this->assertEquals(['id' => $exp->parse('object.getId()',['object'])], $relation->getHref()->getParameters());
         $this->assertFalse($relation->getHref()->isAbsolute());
         $this->assertNull($relation->getExclusion());
 
@@ -90,7 +103,7 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertSame('badaboom', $relation->getName());
         $this->assertNull($relation->getHref());
         $this->assertInstanceOf('Hateoas\Configuration\Embedded', $relation->getEmbedded());
-        $this->assertSame('expr(object.getFoo())', $relation->getEmbedded()->getContent());
+        $this->assertEquals($exp->parse('object.getFoo()',['object']), $relation->getEmbedded()->getContent());
         $this->assertNull($relation->getExclusion());
 
         $relation = $relations[$i++];

@@ -11,6 +11,6 @@ class XmlDriverTest extends AbstractDriverTest
     {
         return new XmlDriver(new FileLocator(array(
             'Hateoas\Tests\Fixtures' => $this->rootPath() . '/Fixtures/config',
-        )), $this->createProvider());
+        )), $this->getExpressionEvaluator(), $this->createProvider());
     }
 }

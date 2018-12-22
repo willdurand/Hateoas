@@ -4,6 +4,7 @@ namespace Hateoas\Serializer\Metadata;
 
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Relation;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\TypeParser;
 
@@ -36,8 +37,8 @@ class RelationPropertyMetadata extends VirtualPropertyMetadata
         $this->untilVersion = $exclusion->getUntilVersion();
         $this->maxDepth = $exclusion->getMaxDepth();
 
-        if ($exclusion->getExcludeIf() !== null && preg_match(self::EXPRESSION_REGEX, $exclusion->getExcludeIf(), $matches)) {
-            $this->excludeIf = $matches['expression'];
+        if ($exclusion->getExcludeIf() instanceof Expression) {
+            $this->excludeIf = (string)$exclusion->getExcludeIf() ;
         } elseif ($exclusion->getExcludeIf() !== null) {
             $this->excludeIf = $exclusion->getExcludeIf();
         }
