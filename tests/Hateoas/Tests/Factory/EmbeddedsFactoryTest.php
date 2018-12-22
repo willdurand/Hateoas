@@ -7,6 +7,7 @@ use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Tests\TestCase;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
@@ -17,9 +18,9 @@ class EmbeddedsFactoryTest extends TestCase
 {
     protected function expr($expr)
     {
-        $expressionLanguage = new ExpressionLanguage();
+        $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
 
-        return $expressionLanguage->parse($expr, ['object']);
+        return $expressionEvaluator->parse($expr, ['object']);
     }
 
     public function test()

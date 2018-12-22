@@ -2,7 +2,7 @@
 
 namespace Hateoas\Configuration;
 
-use Symfony\Component\ExpressionLanguage\Expression;
+use JMS\Serializer\Expression\Expression;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>

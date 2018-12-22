@@ -5,10 +5,10 @@ namespace Hateoas\Factory;
 use Hateoas\Model\Embedded;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
-use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>

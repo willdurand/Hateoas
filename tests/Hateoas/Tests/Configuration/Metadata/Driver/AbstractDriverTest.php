@@ -9,18 +9,19 @@ use Hateoas\Configuration\Provider\StaticMethodProvider;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider;
 use Hateoas\Expression\LinkExpressionFunction;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use Metadata\Driver\DriverInterface;
 use Hateoas\Tests\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 abstract class AbstractDriverTest extends TestCase
 {
-    protected function getExpressionLanguage()
+    protected function getExpressionEvaluator()
     {
         $expressionLanguage = new ExpressionLanguage();
         $expressionLanguage->registerProvider(new LinkExpressionFunction());
 
-        return $expressionLanguage;
+        return new ExpressionEvaluator($expressionLanguage);
     }
 
     protected function createProvider(): RelationProviderInterface
@@ -42,7 +43,7 @@ abstract class AbstractDriverTest extends TestCase
         $class = new \ReflectionClass('Hateoas\Tests\Fixtures\User');
         $classMetadata = $driver->loadMetadataForClass($class);
 
-        $exp = $this->getExpressionLanguage();
+        $exp = $this->getExpressionEvaluator();
 
         $this->assertInstanceOf('Hateoas\Configuration\Metadata\ClassMetadata', $classMetadata);
 

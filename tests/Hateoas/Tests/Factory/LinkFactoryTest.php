@@ -18,9 +18,9 @@ class LinkFactoryTest extends TestCase
 
     protected function expr($expr)
     {
-        $expressionLanguage = new ExpressionLanguage();
+        $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
 
-        return $expressionLanguage->parse($expr, ['object']);
+        return $expressionEvaluator->parse($expr, ['object']);
     }
 
     public function test()

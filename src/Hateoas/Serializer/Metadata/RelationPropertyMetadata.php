@@ -4,9 +4,9 @@ namespace Hateoas\Serializer\Metadata;
 
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Relation;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\Metadata\VirtualPropertyMetadata;
 use JMS\Serializer\TypeParser;
-use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>

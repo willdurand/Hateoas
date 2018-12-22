@@ -6,6 +6,7 @@ use Hateoas\Configuration\Embedded;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Provider\RelationProviderInterface;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\RelationProvider;
@@ -13,7 +14,6 @@ use Hateoas\Configuration\Route;
 use JMS\Serializer\Exception\XmlErrorException;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * @author Miha Vrhovnik <miha.vrhovnik@pagein.net>
@@ -29,7 +29,7 @@ class XmlDriver extends AbstractFileDriver
      */
     private $relationProvider;
 
-    public function __construct(FileLocatorInterface $locator, ExpressionLanguage $expressionLanguage, RelationProviderInterface $relationProvider)
+    public function __construct(FileLocatorInterface $locator, CompilableExpressionEvaluatorInterface $expressionLanguage, RelationProviderInterface $relationProvider)
     {
         parent::__construct($locator);
         $this->relationProvider = $relationProvider;

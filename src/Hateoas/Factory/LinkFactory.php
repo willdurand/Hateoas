@@ -6,9 +6,9 @@ use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Model\Link;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
-use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use JMS\Serializer\Expression\Expression;
 use JMS\Serializer\SerializationContext;
-use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -16,7 +16,7 @@ use Symfony\Component\ExpressionLanguage\Expression;
 class LinkFactory
 {
     /**
-     * @var ExpressionEvaluatorInterface
+     * @var CompilableExpressionEvaluatorInterface
      */
     private $expressionEvaluator;
 
@@ -28,13 +28,13 @@ class LinkFactory
     /**
      * @param UrlGeneratorRegistry $urlGeneratorRegistry
      */
-    public function __construct(UrlGeneratorRegistry $urlGeneratorRegistry, ExpressionEvaluatorInterface $expressionEvaluator = null)
+    public function __construct(UrlGeneratorRegistry $urlGeneratorRegistry, CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
         $this->urlGeneratorRegistry = $urlGeneratorRegistry;
         $this->expressionEvaluator  = $expressionEvaluator;
     }
 
-    public function setExpressionEvaluator(ExpressionEvaluatorInterface $expressionEvaluator)
+    public function setExpressionEvaluator(CompilableExpressionEvaluatorInterface $expressionEvaluator)
     {
         $this->expressionEvaluator  = $expressionEvaluator;
     }
@@ -87,7 +87,7 @@ class LinkFactory
     private function checkExpression($exp, array $data)
     {
         if ($exp instanceof Expression) {
-            return $this->expressionEvaluator->evaluate((string)$exp, $data);
+            return $this->expressionEvaluator->evaluateParsed($exp, $data);
         } else {
             return $exp;
         }

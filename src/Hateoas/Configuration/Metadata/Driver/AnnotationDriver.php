@@ -9,11 +9,11 @@ use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Provider\RelationProviderInterface;
 use Hateoas\Configuration\RelationProvider;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use Metadata\ClassMetadata as JMSClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Metadata\Driver\DriverInterface;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -31,7 +31,7 @@ class AnnotationDriver implements DriverInterface
      */
     private $relationProvider;
 
-    public function __construct(AnnotationsReader $reader, ExpressionLanguage $expressionLanguage, RelationProviderInterface $relationProvider)
+    public function __construct(AnnotationsReader $reader, CompilableExpressionEvaluatorInterface $expressionLanguage, RelationProviderInterface $relationProvider)
     {
         $this->reader = $reader;
         $this->relationProvider = $relationProvider;

@@ -2,12 +2,12 @@
 
 namespace Hateoas\Configuration\Metadata\Driver;
 
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 
 trait CheckExpressionTrait
 {
     /**
-     * @var ExpressionLanguage
+     * @var CompilableExpressionEvaluatorInterface
      */
     private $expressionLanguage;
 
@@ -22,7 +22,7 @@ trait CheckExpressionTrait
         }
     }
 
-    public function checkExpressionArray(array $data)
+    private function checkExpressionArray(array $data): array
     {
         $newArray = array();
         foreach ($data as $key => $value) {
