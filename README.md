@@ -85,10 +85,15 @@ enjoy!
 Usage
 -----
 
-> **Important:** For those who use the `1.0` version, you can [jump to this
-> documentation
-> page](https://github.com/willdurand/Hateoas/blob/1.0/README.md#readme) as the
-> following documentation has been written for **Hateoas 2.0** and above.
+> **Important:** 
+>
+> For those who use the `1.0` version, you can 
+> [jump to this documentation page](https://github.com/willdurand/Hateoas/blob/1.0/README.md#readme).
+> 
+>For those who use the `2.0` version, you can 
+> [jump to this documentation page](https://github.com/willdurand/Hateoas/blob/1.0/README.md#readme).
+>
+> The following documentation has been written for **Hateoas 3.0** and above.
 
 ### Introduction
 
@@ -563,7 +568,7 @@ expr(object.getId())
 We call such a variable a **context variable**.
 
 You can add your own context variables to the Expression Language context by
-adding them to the `ExpressionEvaluator`.
+adding them to the expression evaluator.
 
 ##### Adding Your Own Context Variables
 
@@ -586,18 +591,8 @@ expr(foo !== null)
 
 ##### Expression Functions
 
-**Expression Functions** are custom functions used to extend the [Expression
-Language](#the-expression-language) as explained in the [Extending the
-ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/extending.html),
-part of the Symfony documentation.
-
-Hateoas provides core expression functions such as the `LinkExpressionFunction`
-described in [LinkHelper - The `link` Function](#the-link-function), but you can
-also write your own function.
-The `ExpressionFunctionInterface` is designed to represent an expression
-function. Adding a new expression function is a matter of implementing this
-interface and registering by calling the `registerExpressionFunction()` method
-on the [HateoasBuilder](#the-hateoasbuilder).
+For more info on how to add functions to the expression language, please refer to 
+[https://symfony.com/doc/current/components/expression_language/extending.html](https://symfony.com/doc/current/components/expression_language/extending.html)
 
 ### URL Generators
 
@@ -932,13 +927,6 @@ All the methods below return the current builder, so that you can chain them.
 * `setExpressionContextVariable($name, $value)`: adds a new expression context
   variable;
 * `setExpressionLanguage(ExpressionLanguage $expressionLanguage)`;
-* `registerExpressionFunction(ExpressionFunctionInterface
-   $expressionFunction)`: adds a new expression function.
-
-#### Relation Provider
-
-* `addRelationProviderResolver(RelationProviderResolverInterface $resolver)`:
-  adds a new relation provider resolver.
 
 #### (JMS) Serializer Specific
 
@@ -1016,7 +1004,7 @@ class AcmeFooConfigurationExtension implements ConfigurationExtensionInterface
     /**
      * {@inheritDoc}
      */
-    public function decorate(ClassMetadataInterface $classMetadata)
+    public function decorate(ClassMetadataInterface $classMetadata): void
     {
         if (0 === strpos('Acme\Foo\Model', $classMetadata->getName())) {
             // Add a "root" relation to all classes in the `Acme\Foo\Model` namespace
@@ -1125,10 +1113,10 @@ use Hateoas\Configuration\Annotation as Hateoas;
 
 | Property   | Required               | Content                         | Expression language   |
 |------------|------------------------|---------------------------------|-----------------------|
-| name       | Yes                    | string                          | Yes                   |
+| name       | Yes                    | string                          | No                    |
 | href       | If embedded is not set | string / [@Route](#route)       | Yes                   |
 | embedded   | If href is not set     | string / [@Embedded](#embedded) | Yes                   |
-| attributes | No                     | array                           | Yes on key and values |
+| attributes | No                     | array                           | Yes on values         |
 | exclusion  | No                     | [@Exclusion](#exclusion)        | N/A                   |
 
 **Important:** `attributes` are only used on **link relations** (i.e. combined
@@ -1158,8 +1146,8 @@ if you have configured one.
 
 | Property   | Required            | Content          | Expression language             |
 |------------|---------------------|------------------|---------------------------------|
-| name       | Yes                 | string           | Yes                             |
-| parameters | Defaults to array() | array / string   | Yes (string + array key/values) |
+| name       | Yes                 | string           | No                              |
+| parameters | Defaults to array() | array / string   | Yes (string + array values)     |
 | absolute   | Defaults to false   | boolean / string | Yes                             |
 | generator  | No                  | string / null    | No                              |
 
@@ -1188,7 +1176,7 @@ This annotation can be defined in the **embedded** property of the
 |----------------|---------------------|--------------------------|------------------------|
 | content        | Yes                 | string / array           | Yes (string)           |
 | exclusion      | Defaults to array() | [@Exclusion](#exclusion) | N/A                    |
-| xmlElementName | Defaults to array() | string                   | Yes                    |
+| xmlElementName | Defaults to array() | string                   | No                     |
 
 #### @Exclusion
 
