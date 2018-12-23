@@ -41,7 +41,7 @@ services.
     - [JSON Serializer](#json-serializer)
     - [URL Generator](#url-generator)
     - [Expression Evaluator/Expression Language](#expression-evaluatorexpression-language)
-    - [Relation Provider](#relation-provider)
+    - [Relation Provider](#relationprovider)
     - [(JMS) Serializer Specific](#jms-serializer-specific)
     - [Others](#others)
   - [Configuring a Cache Directory](#configuring-a-cache-directory)
@@ -1240,26 +1240,40 @@ As an example:
 
 | Property | Required | Content | Expression language |
 |----------|----------|---------|---------------------|
-| name     | Yes      | string  | No                  |
+| name     | Yes      | string  | Yes                 |
 
-The property "name" should take the relations-returning method which you have defined in your class ("addRelations" in the following example).
+It can be "name":
 
-It can be:
+- A function: `my_func`
+- A static method: `MyClass::getExtraRelations`
+- An expression: `expr(service('foo').getExtraRelations())`
 
-- A method: `addRelations`
-- A static method: `Class::addRelations`
-- A Symfony service method: `acme_foo.service:addRelations`
+Here and example using a static method:
 
 ```php
-use Hateoas\Configuration\Metadata\ClassMetadataInterface;
 use Hateoas\Configuration as Hateoas;
 
-class MyRelationProvider
+/**
+ * @Hateoas\RelationProvider("MyClass::getExtraRelations")
+ */
+class User
 {
-    public function addRelations($object, ClassMetadataInterface $classMetadata)
+    ...
+}
+```
+
+```php
+use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\RelationProvider;
+
+class MyClass
+{
+    /**
+     * @return Relation[]
+     */
+    public function getExtraRelations(RelationProvider $relationProvider, string $class): array
     {
         // You need to return the relations
-        // Adding the relations to the $classMetadata won't work
         return array(
             new Hateoas\Relation(
                 'self',
