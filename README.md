@@ -1246,15 +1246,15 @@ It can be "name":
 
 - A function: `my_func`
 - A static method: `MyClass::getExtraRelations`
-- An expression: `expr(service('foo').getExtraRelations())`
+- An expression: `expr(service('user.rel_provider').getExtraRelations())`
 
-Here and example using a static method:
+Here and example using the expression language:
 
 ```php
 use Hateoas\Configuration as Hateoas;
 
 /**
- * @Hateoas\RelationProvider("MyClass::getExtraRelations")
+ * @Hateoas\RelationProvider("expr(service('user.rel_provider').getExtraRelations())")
  */
 class User
 {
@@ -1262,24 +1262,33 @@ class User
 }
 ```
 
+Here the `UserRelPrvider` class:
+
 ```php
 use Hateoas\Configuration\Relation;
-use Hateoas\Configuration\RelationProvider;
+use Hateoas\Configuration\Route;
 
-class MyClass
+class UserRelPrvider
 {
+    private $evaluator;
+    
+    public function __construct(CompilableExpressionEvaluatorInterface $evaluator)
+    {
+        $this->evaluator = $evaluator;
+    }
+
     /**
      * @return Relation[]
      */
-    public function getExtraRelations(RelationProvider $relationProvider, string $class): array
+    public function getExtraRelations(): array
     {
         // You need to return the relations
         return array(
-            new Hateoas\Relation(
+            new Relation(
                 'self',
-                new Hateoas\Route(
+                new Route(
                     'foo_get',
-                    array('id' => 'expr(object.getId())')
+                    ['id' => $this->evaluator->parse('object.getId()', ['object'])]
                 )
             )
         );
@@ -1287,6 +1296,21 @@ class MyClass
 }
 ```
 
+`$this->evaluator` implementing `CompilableExpressionEvaluatorInterface` is used to parse the expression language
+ in a form that can be cached and saved for later use. 
+ If you do not need the expression language in your relations, then this service is not needed.
+
+
+The `user.rel_provider` service is defined as:
+
+```yaml
+user.rel_provider:
+    class: UserRelPrvider
+    arguments:
+      - '@jms_serializer.expression_evaluator'
+```
+
+In this case `jms_serializer.expression_evaluator` is a service implementing `CompilableExpressionEvaluatorInterface`.
 
 Internals
 ---------
