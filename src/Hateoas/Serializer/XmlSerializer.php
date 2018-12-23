@@ -1,35 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Embedded;
+use Hateoas\Model\Link;
 use Hateoas\Util\ClassUtils;
+use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
-use Metadata\MetadataFactoryInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
-class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwareInterface
+class XmlSerializer implements XmlSerializerInterface
 {
     /**
-     * @var MetadataFactoryInterface
+     * @param Link[]                  $links
      */
-    private $metadataFactory;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetadataFactory(MetadataFactoryInterface $metadataFactory)
-    {
-        $this->metadataFactory = $metadataFactory;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         foreach ($links as $link) {
             $linkNode = $visitor->getDocument()->createElement('link');
@@ -45,12 +33,12 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
     }
 
     /**
-     * {@inheritdoc}
+     * @param Embedded[] $embeddeds
      */
-    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         foreach ($embeddeds as $embedded) {
-            $entryNode = $visitor->getDocument()->createElement($this->getElementName($embedded->getData(), $embedded));
+            $entryNode = $visitor->getDocument()->createElement($this->getElementName($context, $embedded->getData(), $embedded));
 
             $visitor->getCurrentNode()->appendChild($entryNode);
             $visitor->setCurrentNode($entryNode);
@@ -58,7 +46,7 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
 
             if ($embedded->getData() instanceof \Traversable || is_array($embedded->getData())) {
                 foreach ($embedded->getData() as $entry) {
-                    $entryNode = $visitor->getDocument()->createElement($this->getElementName($entry));
+                    $entryNode = $visitor->getDocument()->createElement($this->getElementName($context, $entry));
 
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
@@ -75,7 +63,10 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
         }
     }
 
-    private function getElementName($data, Embedded $embedded = null)
+    /**
+     * @param mixed $data
+     */
+    private function getElementName(SerializationContext $context, $data, ?Embedded $embedded = null): string
     {
         $elementName = null;
 
@@ -83,22 +74,27 @@ class XmlSerializer implements XmlSerializerInterface, JMSSerializerMetadataAwar
             $elementName = $embedded->getXmlElementName();
         }
 
-        if (null == $elementName && is_object($data)) {
-            $metadata    = $this->metadataFactory->getMetadataForClass(ClassUtils::getClass($data));
+        if (null === $elementName && is_object($data)) {
+            $metadata    = $context->getMetadataFactory()->getMetadataForClass(ClassUtils::getClass($data));
             $elementName = $metadata->xmlRootName;
         }
 
         return $elementName ?: 'entry';
     }
 
-    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context)
+    /**
+     * @param mixed $data
+     */
+    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context): void
     {
         $context->pushPropertyMetadata($embedded->getMetadata());
-
-        if (null !== $node = $context->accept($data)) {
-            $visitor->getCurrentNode()->appendChild($node);
+        $navigator = $context->getNavigator();
+        try {
+            if (null !== $node = $navigator->accept($data, null)) {
+                $visitor->getCurrentNode()->appendChild($node);
+            }
+        } catch (NotAcceptableException $e) {
         }
-
         $context->popPropertyMetadata();
     }
 }

@@ -1,15 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Helper;
 
+use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
+use Hateoas\Factory\LinkFactory;
 use Hateoas\HateoasBuilder;
 use Hateoas\Helper\LinkHelper;
-use Hateoas\UrlGenerator\CallableUrlGenerator;
+use Hateoas\Model\Link;
 use Hateoas\Tests\Fixtures\Will;
+use Hateoas\Tests\TestCase;
+use Hateoas\UrlGenerator\CallableUrlGenerator;
+use Metadata\MetadataFactoryInterface;
 
-class LinkHelperTest extends \PHPUnit_Framework_TestCase
+class LinkHelperTest extends TestCase
 {
     private $hateoas;
 
@@ -17,7 +24,7 @@ class LinkHelperTest extends \PHPUnit_Framework_TestCase
     {
         $this->hateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, new CallableUrlGenerator(function ($name, $parameters, $absolute) {
-                if ($name === 'user_get') {
+                if ('user_get' === $name) {
                     return sprintf(
                         '%s%s',
                         $absolute ? 'http://example.com' : '',
@@ -25,7 +32,7 @@ class LinkHelperTest extends \PHPUnit_Framework_TestCase
                     );
                 }
 
-                if ($name === 'post_get') {
+                if ('post_get' === $name) {
                     return sprintf(
                         '%s%s',
                         $absolute ? 'http://example.com' : '',
@@ -40,55 +47,57 @@ class LinkHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLinkHref()
     {
-        $linkHelper = new LinkHelper($this->getLinkFactoryMock(), $this->getRelationsRepositoryMock());
+        $linkHelper = new LinkHelper($this->getLinkFactoryMock(), $this->getMetadataFactoryMock());
 
         $this->assertEquals(
-            'http://example.com/me',
+            'http://example.com/self',
             $linkHelper->getLinkHref(new Will(123), 'self')
         );
     }
 
-    public function testGetLinkHrefWithRoute()
-    {
-        $linkHelper = new LinkHelper($this->getLinkFactoryMock(), $this->getRelationsRepositoryMock());
-
-        $this->assertEquals(
-            'my-self-route',
-            $linkHelper->getLinkHref(new Will(123), 'self-route')->getName()
-        );
-    }
-
+    /**
+     * @expectedExceptionMessage  Can not find the relation "unknown-rel" for the "Hateoas\Tests\Fixtures\Will" class
+     * @expectedException \RuntimeException
+     */
     public function testGetLinkHrefReturnsNullIfRelNotFound()
     {
-        $linkHelper = new LinkHelper($this->getLinkFactoryMock($this->never()), $this->getRelationsRepositoryMock());
+        $linkHelper = new LinkHelper($this->getLinkFactoryMock($this->never()), $this->getMetadataFactoryMock());
 
-        $this->assertNull($linkHelper->getLinkHref(new Will(123), 'unknown-rel'));
+        $linkHelper->getLinkHref(new Will(123), 'unknown-rel');
     }
 
     /**
-     * @return \Hateoas\Configuration\RelationsRepository
+     * @return MetadataFactoryInterface
      */
-    private function getRelationsRepositoryMock()
+    private function getMetadataFactoryMock()
     {
-        $relationRepoMock = $this->getMockBuilder('Hateoas\Configuration\RelationsRepository')
+        $metadataMock = $this->getMockBuilder(ClassMetadata::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $relationRepoMock
+        $metadataMock
             ->expects($this->once())
             ->method('getRelations')
-            ->will($this->returnValue(array(
+            ->will($this->returnValue([
                 new Relation('self', 'http://example.com/me'),
                 new Relation('self-route', new Route('my-self-route')),
-            )));
+            ]));
 
-        return $relationRepoMock;
+        $metadataFactoryMock = $this->getMockBuilder(MetadataFactoryInterface::class)
+            ->getMock();
+
+        $metadataFactoryMock
+            ->expects($this->once())
+            ->method('getMetadataForClass')
+            ->will($this->returnValue($metadataMock));
+
+        return $metadataFactoryMock;
     }
 
     /**
      * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
      *
-     * @return \Hateoas\Factory\LinkFactory
+     * @return LinkFactory
      */
     private function getLinkFactoryMock($expects = null)
     {
@@ -103,7 +112,9 @@ class LinkHelperTest extends \PHPUnit_Framework_TestCase
         $linkFactoryMock
             ->expects($expects)
             ->method('createLink')
-            ->will($this->returnArgument(1));
+            ->will($this->returnCallback(function ($obj, Relation $relation) {
+                return new Link($relation->getName(), 'http://example.com/' . $relation->getName());
+            }));
 
         return $linkFactoryMock;
     }

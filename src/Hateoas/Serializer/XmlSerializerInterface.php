@@ -1,28 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer;
 
 use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\XmlSerializationVisitor;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 interface XmlSerializerInterface
 {
     /**
      * @param Link[]                  $links
-     * @param XmlSerializationVisitor $visitor
-     * @param SerializationContext    $context
      */
-    public function serializeLinks(array $links, XmlSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context): void;
 
     /**
      * @param Embedded[]              $embeddeds
-     * @param XmlSerializationVisitor $visitor
-     * @param SerializationContext    $context
      */
-    public function serializeEmbeddeds(array $embeddeds, XmlSerializationVisitor $visitor, SerializationContext $context);
+    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void;
 }

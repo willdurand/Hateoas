@@ -1,42 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer\Metadata;
 
-use Hateoas\Serializer\JMSSerializerMetadataAwareInterface;
 use JMS\Serializer\SerializationContext;
-use Metadata\MetadataFactory;
-use Metadata\MetadataFactoryInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
-class InlineDeferrer implements JMSSerializerMetadataAwareInterface
+class InlineDeferrer
 {
-    /**
-     * @var MetadataFactory
-     */
-    protected $serializerMetadataFactory;
-
     /**
      * @var \SplObjectStorage
      */
     protected $deferredData;
 
-    public function __construct(MetadataFactory $serializerMetadataFactory = null)
+    public function __construct()
     {
-        $this->serializerMetadataFactory = $serializerMetadataFactory;
         $this->deferredData = new \SplObjectStorage();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetadataFactory(MetadataFactoryInterface $metadataFactory)
-    {
-        $this->serializerMetadataFactory = $metadataFactory;
-    }
-
-    public function handleItems($object, array $items, SerializationContext $context)
+    public function handleItems(object $object, array $items, SerializationContext $context): array
     {
         if ($this->deferredData->contains($object)) {
             $items = array_merge($this->deferredData->offsetGet($object), $items);
@@ -55,10 +37,10 @@ class InlineDeferrer implements JMSSerializerMetadataAwareInterface
         // We need to defer the links serialization to the $parentObject
         $this->deferredData->attach($parentObjectInlining, $items);
 
-        return array();
+        return [];
     }
 
-    private function getParentObjectInlining($object, SerializationContext $context)
+    private function getParentObjectInlining(object $object, SerializationContext $context): ?object
     {
         $metadataStack = $context->getMetadataStack();
         $visitingStack = $context->getVisitingStack();
@@ -71,9 +53,8 @@ class InlineDeferrer implements JMSSerializerMetadataAwareInterface
             $parentObject = $visitingStack[1]; // $object is inlined inside $parentObject
         }
 
-        if (
-            $metadataStack->count() > 0 && isset($metadataStack[0]->inline) && $metadataStack[0]->inline
-            && $this->serializerMetadataFactory->getMetadataForClass(get_class($parentObject)) === $metadataStack[1]
+        if ($metadataStack->count() > 0 && isset($metadataStack[0]->inline) && $metadataStack[0]->inline
+            && $context->getMetadataFactory()->getMetadataForClass(get_class($parentObject)) === $metadataStack[1]
         ) {
             return $parentObject;
         }

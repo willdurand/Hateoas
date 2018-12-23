@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\EmbeddedsFactory;
@@ -10,9 +12,6 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class JsonEventSubscriber implements EventSubscriberInterface
 {
     /**
@@ -20,13 +19,13 @@ class JsonEventSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            array(
+        return [
+            [
                 'event'  => Events::POST_SERIALIZE,
                 'format' => 'json',
                 'method' => 'onPostSerialize',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -54,13 +53,6 @@ class JsonEventSubscriber implements EventSubscriberInterface
      */
     private $linksInlineDeferrer;
 
-    /**
-     * @param JsonSerializerInterface $jsonSerializer
-     * @param LinksFactory            $linksFactory
-     * @param EmbeddedsFactory        $embeddedsFactory
-     * @param InlineDeferrer          $embeddedsInlineDeferrer
-     * @param InlineDeferrer          $linksInleDeferrer
-     */
     public function __construct(
         JsonSerializerInterface $jsonSerializer,
         LinksFactory $linksFactory,
@@ -75,7 +67,7 @@ class JsonEventSubscriber implements EventSubscriberInterface
         $this->linksInlineDeferrer     = $linksInleDeferrer;
     }
 
-    public function onPostSerialize(ObjectEvent $event)
+    public function onPostSerialize(ObjectEvent $event): void
     {
         $object  = $event->getObject();
         $context = $event->getContext();

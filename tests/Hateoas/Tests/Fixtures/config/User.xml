@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <serializer>
-    <class name="Hateoas\Tests\Fixtures\User" h:providers="getRelations" xmlns:h="https://github.com/willdurand/Hateoas">
+    <class name="Hateoas\Tests\Fixtures\User" h:providers="Hateoas\Tests\Fixtures\User::getRelations" xmlns:h="https://github.com/willdurand/Hateoas">
         <h:relation rel="self">
             <h:href uri="http://hateoas.web/user/42"/>
             <h:attribute name="type" value="application/json"/>

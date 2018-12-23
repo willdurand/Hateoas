@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Factory;
 
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
-use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Link;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
+use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use JMS\Serializer\Expression\Expression;
+use JMS\Serializer\SerializationContext;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class LinkFactory
 {
     /**
-     * @var ExpressionEvaluator
+     * @var CompilableExpressionEvaluatorInterface
      */
     private $expressionEvaluator;
 
@@ -23,38 +24,33 @@ class LinkFactory
      */
     private $urlGeneratorRegistry;
 
-    /**
-     * @param ExpressionEvaluator  $expressionEvaluator
-     * @param UrlGeneratorRegistry $urlGeneratorRegistry
-     */
-    public function __construct(ExpressionEvaluator $expressionEvaluator, UrlGeneratorRegistry $urlGeneratorRegistry)
+    public function __construct(UrlGeneratorRegistry $urlGeneratorRegistry, ?CompilableExpressionEvaluatorInterface $expressionEvaluator = null)
     {
-        $this->expressionEvaluator  = $expressionEvaluator;
         $this->urlGeneratorRegistry = $urlGeneratorRegistry;
+        $this->expressionEvaluator = $expressionEvaluator;
     }
 
-    /**
-     * @param object   $object
-     * @param Relation $relation
-     *
-     * @return Link
-     */
-    public function createLink($object, Relation $relation)
+    public function setExpressionEvaluator(CompilableExpressionEvaluatorInterface $expressionEvaluator): void
     {
-        $rel =  $this->expressionEvaluator->evaluate($relation->getName(), $object);
-        $href = $relation->getHref();
+        $this->expressionEvaluator = $expressionEvaluator;
+    }
 
+    public function createLink(object $object, Relation $relation, SerializationContext $context): Link
+    {
+        $data = ['object' => $object, 'context' => $context];
+
+        $rel = $relation->getName();
+        $href = $relation->getHref();
         if ($href instanceof Route) {
             if (!$this->urlGeneratorRegistry->hasGenerators()) {
                 throw new \RuntimeException('You cannot use a route without an url generator.');
             }
 
-            $name       = $this->expressionEvaluator->evaluate($href->getName(), $object);
+            $name = $this->checkExpression($href->getName(), $data);
             $parameters = is_array($href->getParameters())
-                ? $this->expressionEvaluator->evaluateArray($href->getParameters(), $object)
-                : $this->expressionEvaluator->evaluate($href->getParameters(), $object)
-            ;
-            $isAbsolute = $this->expressionEvaluator->evaluate($href->isAbsolute(), $object);
+                ? $this->evaluateArray($href->getParameters(), $data)
+                : $this->checkExpression($href->getParameters(), $data);
+            $isAbsolute = $this->checkExpression($href->isAbsolute(), $data);
 
             if (!is_array($parameters)) {
                 throw new \RuntimeException(
@@ -67,14 +63,46 @@ class LinkFactory
 
             $href = $this->urlGeneratorRegistry
                 ->get($href->getGenerator())
-                ->generate($name, $parameters, $isAbsolute)
-            ;
+                ->generate($name, $parameters, $isAbsolute);
         } else {
-            $href = $this->expressionEvaluator->evaluate($href, $object);
+            $href = $this->checkExpression($href, $data);
         }
 
-        $attributes = $this->expressionEvaluator->evaluateArray($relation->getAttributes(), $object);
+        $attributes = $this->evaluateArray($relation->getAttributes(), $data);
 
         return new Link($rel, $href, $attributes);
+    }
+
+    /**
+     * @param mixed $exp
+     * @param array $data
+     *
+     * @return mixed
+     */
+    private function checkExpression($exp, array $data)
+    {
+        if ($exp instanceof Expression) {
+            return $this->expressionEvaluator->evaluateParsed($exp, $data);
+        } else {
+            return $exp;
+        }
+    }
+
+    /**
+     * @param array $array
+     * @param array $data
+     *
+     * @return array
+     */
+    private function evaluateArray(array $array, array $data): array
+    {
+        $newArray = [];
+        foreach ($array as $key => $value) {
+            $value = is_array($value) ? $this->evaluateArray($value, $data) : $this->checkExpression($value, $data);
+
+            $newArray[$key] = $value;
+        }
+
+        return $newArray;
     }
 }

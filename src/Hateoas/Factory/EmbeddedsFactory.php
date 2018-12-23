@@ -1,26 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Factory;
 
-use Hateoas\Configuration\RelationsRepository;
-use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Model\Embedded;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
+use JMS\Serializer\Expression\Expression;
+use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
+use Metadata\MetadataFactoryInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class EmbeddedsFactory
 {
     /**
-     * @var RelationsRepository
-     */
-    private $relationsRepository;
-
-    /**
-     * @var ExpressionEvaluator
+     * @var ExpressionEvaluatorInterface
      */
     private $expressionEvaluator;
 
@@ -30,41 +25,58 @@ class EmbeddedsFactory
     private $exclusionManager;
 
     /**
-     * @param RelationsRepository $relationsRepository
-     * @param ExpressionEvaluator $expressionEvaluator
-     * @param ExclusionManager    $exclusionManager
+     * @var MetadataFactoryInterface
      */
+    private $metadataFactory;
+
     public function __construct(
-        RelationsRepository $relationsRepository,
-        ExpressionEvaluator $expressionEvaluator,
+        MetadataFactoryInterface $metadataFactory,
+        ExpressionEvaluatorInterface $expressionEvaluator,
         ExclusionManager $exclusionManager
     ) {
-        $this->relationsRepository = $relationsRepository;
         $this->expressionEvaluator = $expressionEvaluator;
-        $this->exclusionManager    = $exclusionManager;
+        $this->exclusionManager = $exclusionManager;
+        $this->metadataFactory = $metadataFactory;
     }
+
     /**
-     * @param  object               $object
-     * @param  SerializationContext $context
      * @return Embedded[]
      */
-    public function create($object, SerializationContext $context)
+    public function create(object $object, SerializationContext $context): array
     {
-        $embeddeds = array();
-        foreach ($this->relationsRepository->getRelations($object) as $relation) {
-            if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
-                continue;
+        $embeddeds = [];
+
+        if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
+            $langugeData = ['object' => $object, 'context' => $context];
+            foreach ($classMetadata->getRelations() as $relation) {
+                if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
+                    continue;
+                }
+
+                $rel = $relation->getName();
+                $data = $this->checkExpression($relation->getEmbedded()->getContent(), $langugeData);
+                $xmlElementName = $this->checkExpression($relation->getEmbedded()->getXmlElementName(), $langugeData);
+
+                $propertyMetadata = new RelationPropertyMetadata($relation->getEmbedded()->getExclusion(), $relation);
+
+                $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName);
             }
-
-            $rel  = $this->expressionEvaluator->evaluate($relation->getName(), $object);
-            $data = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getContent(), $object);
-            $xmlElementName = $this->expressionEvaluator->evaluate($relation->getEmbedded()->getXmlElementName(), $object);
-
-            $propertyMetadata = new RelationPropertyMetadata($relation->getEmbedded()->getExclusion(), $relation);
-
-            $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName);
         }
-
         return $embeddeds;
+    }
+
+    /**
+     * @param mixed $exp
+     * @param array $data
+     *
+     * @return mixed
+     */
+    private function checkExpression($exp, array $data)
+    {
+        if ($exp instanceof Expression) {
+            return $this->expressionEvaluator->evaluate((string) $exp, $data);
+        } else {
+            return $exp;
+        }
     }
 }

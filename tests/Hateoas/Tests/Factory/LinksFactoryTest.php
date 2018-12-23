@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Factory;
 
+use Hateoas\Configuration\Metadata\ClassMetadata;
 use Hateoas\Configuration\Relation;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Model\Link;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
+use Metadata\MetadataFactoryInterface;
 
 class LinksFactoryTest extends TestCase
 {
@@ -15,38 +19,40 @@ class LinksFactoryTest extends TestCase
         $object = new \StdClass();
         $context = SerializationContext::create();
 
-        $relations = array(
+        $relations = [
             new Relation('self', '/users/1'),
             new Relation('manager', '/users/2'),
-        );
+        ];
         $link = new Link('', '');
 
-        $relationsRepositoryProphecy = $this->prophesize('Hateoas\Configuration\RelationsRepository');
-        $relationsRepositoryProphecy
-            ->getRelations($object)
+        $metadata = $this->prophesize(ClassMetadata::class);
+        $metadata
+            ->getRelations()
             ->willReturn($relations)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
+
+        $metadataFactory = $this->prophesize(MetadataFactoryInterface::class);
+        $metadataFactory
+            ->getMetadataForClass(get_class($object))
+            ->willReturn($metadata)
+            ->shouldBeCalledTimes(1);
         $linkFactoryProphecy = $this->prophesize('Hateoas\Factory\LinkFactory');
         $linkFactoryProphecy
-            ->createLink($object, $relations[1])
+            ->createLink($object, $relations[1], $context)
             ->willReturn($link)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
         $exclusionManagerProphecy = $this->prophesize('Hateoas\Serializer\ExclusionManager');
         $exclusionManagerProphecy
             ->shouldSkipLink($object, $relations[0], $context)
             ->willReturn(true)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
         $exclusionManagerProphecy
             ->shouldSkipLink($object, $relations[1], $context)
             ->willReturn(false)
-            ->shouldBeCalledTimes(1)
-        ;
+            ->shouldBeCalledTimes(1);
 
         $linksFactory = new LinksFactory(
-            $relationsRepositoryProphecy->reveal(),
+            $metadataFactory->reveal(),
             $linkFactoryProphecy->reveal(),
             $exclusionManagerProphecy->reveal()
         );

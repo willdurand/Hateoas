@@ -1,31 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer;
 
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Relation;
-use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
+use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\SerializationContext;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class ExclusionManager
 {
     /**
-     * @var ExpressionEvaluator
+     * @var ExpressionLanguageExclusionStrategy
      */
-    private $expressionEvaluator;
+    private $expressionExclusionStrategy;
 
-    public function __construct(ExpressionEvaluator $expressionEvaluator)
+    public function __construct(ExpressionLanguageExclusionStrategy $expressionLanguageExclusionStrategy)
     {
-        $this->expressionEvaluator = $expressionEvaluator;
+        $this->expressionExclusionStrategy = $expressionLanguageExclusionStrategy;
     }
 
-    public function shouldSkipLink($object, Relation $relation, SerializationContext $context)
+    public function shouldSkipLink(object $object, Relation $relation, SerializationContext $context): bool
     {
-        if ($this->shouldSkipRelation($object, $relation, $context)) {
+        if ($this->shouldSkipRelation($relation, $context)) {
             return true;
         }
 
@@ -36,29 +35,28 @@ class ExclusionManager
         return false;
     }
 
-    public function shouldSkipEmbedded($object, Relation $relation, SerializationContext $context)
+    public function shouldSkipEmbedded(object $object, Relation $relation, SerializationContext $context): bool
     {
         if (null === $relation->getEmbedded()) {
             return true;
         }
 
         if (null === $relation->getEmbedded()->getExclusion()) {
-            return $this->shouldSkipRelation($object, $relation, $context);
+            return $this->shouldSkipRelation($relation, $context);
         }
 
-        return $this->shouldSkip($object, $relation, $relation->getEmbedded()->getExclusion(), $context);
+        return $this->shouldSkip($relation, $relation->getEmbedded()->getExclusion(), $context);
     }
 
-    private function shouldSkipRelation($object, Relation $relation, SerializationContext $context)
+    private function shouldSkipRelation(Relation $relation, SerializationContext $context): bool
     {
-        return $this->shouldSkip($object, $relation, $relation->getExclusion(), $context);
+        return $this->shouldSkip($relation, $relation->getExclusion(), $context);
     }
 
-    private function shouldSkip($object, Relation $relation, Exclusion $exclusion = null, SerializationContext $context)
+    private function shouldSkip(Relation $relation, ?Exclusion $exclusion = null, SerializationContext $context): bool
     {
+        $propertyMetadata = new RelationPropertyMetadata($exclusion, $relation);
         if ($context->getExclusionStrategy()) {
-            $propertyMetadata = new RelationPropertyMetadata($exclusion, $relation);
-
             if ($context->getExclusionStrategy()->shouldSkipProperty($propertyMetadata, $context)) {
                 return true;
             }
@@ -66,7 +64,7 @@ class ExclusionManager
 
         if (null !== $exclusion
             && null !== $exclusion->getExcludeIf()
-            && $this->expressionEvaluator->evaluate($exclusion->getExcludeIf(), $object)
+            && $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $context)
         ) {
             return true;
         }

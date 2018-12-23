@@ -8,34 +8,14 @@ cache:
     - $HOME/.composer/cache
 
 php:
-  - 5.6
-  - 7.0
-  - 7.1
+  - 7.2
 
-matrix:
-    exclude:
-      - php: 5.6
-        env: SYMFONY_VERSION=4.0.*
-      - php: 7.0
-        env: SYMFONY_VERSION=4.0.*
-      - php: hhvm-3.9
-        env: SYMFONY_VERSION=4.0.*
-      - php: hhvm-3.12
-        env: SYMFONY_VERSION=4.0.*
-      - php: hhvm-3.15
-        env: SYMFONY_VERSION=4.0.*
-      - php: hhvm-3.18
-        env: SYMFONY_VERSION=4.0.*
-    fast_finish: true
 env:
-  - SYMFONY_VERSION=2.4.*
-  - SYMFONY_VERSION=2.5.*
-  - SYMFONY_VERSION=2.6.*
-  - SYMFONY_VERSION=2.7.*
-  - SYMFONY_VERSION=2.8.*
   - SYMFONY_VERSION=3.0.*
   - SYMFONY_VERSION=3.2.*
+  - SYMFONY_VERSION=3.4.*
   - SYMFONY_VERSION=4.0.*
+  - SYMFONY_VERSION=4.1.*
 
 before_install:
   - composer self-update
@@ -46,6 +26,7 @@ before_install:
 
 install:
     - composer install --no-interaction --prefer-dist
+    - bin/phpcs
 
 script:
     - ./bin/phpunit --coverage-text

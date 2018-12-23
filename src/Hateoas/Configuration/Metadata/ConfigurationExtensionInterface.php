@@ -1,11 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 interface ConfigurationExtensionInterface
 {
-    public function decorate(ClassMetadataInterface $classMetadata);
+    public function decorate(ClassMetadataInterface $classMetadata): void;
 }

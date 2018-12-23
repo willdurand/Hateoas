@@ -1,31 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata;
 
 use Hateoas\Configuration\Relation;
-use Hateoas\Configuration\RelationProvider;
 use Metadata\MergeableClassMetadata;
 use Metadata\MergeableInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInterface
 {
     /**
      * @var Relation[]
      */
-    private $relations = array();
+    private $relations = [];
 
-    /**
-     * @var RelationProvider[]
-     */
-    private $relationProviders = array();
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -33,7 +23,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     /**
      * {@inheritDoc}
      */
-    public function getRelations()
+    public function getRelations(): array
     {
         return $this->relations;
     }
@@ -41,15 +31,7 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     /**
      * {@inheritDoc}
      */
-    public function getRelationProviders()
-    {
-        return $this->relationProviders;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addRelation(Relation $relation)
+    public function addRelation(Relation $relation): void
     {
         $this->relations[] = $relation;
     }
@@ -57,24 +39,15 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     /**
      * {@inheritDoc}
      */
-    public function addRelationProvider(RelationProvider $relationProvider)
-    {
-        $this->relationProviders[] = $relationProvider;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function merge(MergeableInterface $object)
+    public function merge(MergeableInterface $object): void
     {
         if (!$object instanceof self) {
-            throw new \InvalidArgumentException(sprintf('Object must be an instance of %s.', __CLASS__));
+            throw new \InvalidArgumentException(sprintf('Object must be an instance of %s.', self::class));
         }
 
         parent::merge($object);
 
-        $this->relations         = array_merge($this->relations, $object->getRelations());
-        $this->relationProviders = array_merge($this->relationProviders, $object->getRelationProviders());
+        $this->relations = array_merge($this->relations, $object->getRelations());
     }
 
     /**
@@ -82,11 +55,10 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->relations,
-            $this->relationProviders,
             parent::serialize(),
-        ));
+        ]);
     }
 
     /**
@@ -94,11 +66,10 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
      */
     public function unserialize($str)
     {
-        list(
+        [
             $this->relations,
-            $this->relationProviders,
-            $parentStr
-        ) = unserialize($str);
+            $parentStr,
+        ] = unserialize($str);
 
         parent::unserialize($parentStr);
     }

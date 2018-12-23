@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
 if (!($loader = include __DIR__ . '/../vendor/autoload.php')) {
     die(<<<EOT
 You need to install the project dependencies using Composer:
@@ -14,4 +18,4 @@ EOT
 
 $loader->add('Hateoas\Tests', __DIR__);
 
-\Doctrine\Common\Annotations\AnnotationRegistry::registerLoader('class_exists');
+AnnotationRegistry::registerLoader('class_exists');

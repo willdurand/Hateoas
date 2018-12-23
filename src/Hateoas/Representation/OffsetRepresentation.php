@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Representation;
 
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -51,16 +53,14 @@ use JMS\Serializer\Annotation as Serializer;
  *          excludeIf = "expr(! object.getOffset())"
  *      )
  * )
- *
- * @author Premi Giorgio <giosh94mhz@gmail.com>
  */
 class OffsetRepresentation extends AbstractSegmentedRepresentation
 {
     /**
-     * @var int
-     *
      * @Serializer\Expose
      * @Serializer\XmlAttribute
+     *
+     * @var int
      */
     private $offset;
 
@@ -69,23 +69,16 @@ class OffsetRepresentation extends AbstractSegmentedRepresentation
      */
     private $offsetParameterName;
 
-    /**
-     * @param CollectionRepresentation $inline
-     * @param string $route
-     * @param integer|null $offset
-     * @param integer $limit
-     * @param integer $total
-     */
     public function __construct(
-        $inline,
-        $route,
-        array $parameters        = array(),
-        $offset,
-        $limit,
-        $total                   = null,
-        $offsetParameterName     = null,
-        $limitParameterName      = null,
-        $absolute                = false
+        CollectionRepresentation $inline,
+        string $route,
+        array $parameters = [],
+        ?int $offset,
+        ?int $limit,
+        ?int $total = null,
+        ?string $offsetParameterName = null,
+        ?string $limitParameterName = null,
+        bool $absolute = false
     ) {
         parent::__construct($inline, $route, $parameters, $limit, $total, $limitParameterName, $absolute);
 
@@ -93,10 +86,7 @@ class OffsetRepresentation extends AbstractSegmentedRepresentation
         $this->offsetParameterName = $offsetParameterName  ?: 'offset';
     }
 
-    /**
-     * @return int
-     */
-    public function getOffset()
+    public function getOffset(): ?int
     {
         return $this->offset;
     }
@@ -104,9 +94,10 @@ class OffsetRepresentation extends AbstractSegmentedRepresentation
     /**
      * @param  null  $offset
      * @param  null  $limit
+     *
      * @return array
      */
-    public function getParameters($offset = null, $limit = null)
+    public function getParameters(?int $offset = null, ?int $limit = null): array
     {
         $parameters = parent::getParameters($limit);
 
@@ -124,10 +115,7 @@ class OffsetRepresentation extends AbstractSegmentedRepresentation
         return $parameters;
     }
 
-    /**
-     * @return string
-     */
-    public function getOffsetParameterName()
+    public function getOffsetParameterName(): string
     {
         return $this->offsetParameterName;
     }

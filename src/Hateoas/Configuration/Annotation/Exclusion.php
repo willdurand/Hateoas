@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Annotation;
 
 /**
  * @Annotation
  * @Target("ANNOTATION")
- *
- * @author Adrien Brault <adrien.brault@gmail.com>
  */
 final class Exclusion
 {
@@ -16,12 +16,12 @@ final class Exclusion
     public $groups = null;
 
     /**
-     * @var mixed float/integer
+     * @var string
      */
     public $sinceVersion = null;
 
     /**
-     * @var mixed float/integer
+     * @var string
      */
     public $untilVersion = null;
 

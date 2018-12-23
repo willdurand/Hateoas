@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Provider;
 
-/**
- * @author Vyacheslav Salakhutdinov <megazoll@gmail.com>
- */
+use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\RelationProvider;
+
 interface RelationProviderInterface
 {
     /**
-     * @param  object                            $object
-     * @return \Hateoas\Configuration\Relation[] Returns array of Relations for specified object.
+     * @return Relation[] Returns array of Relations for specified object.
      */
-    public function getRelations($object);
+    public function getRelations(RelationProvider $relationProvider, string $class): array;
 }

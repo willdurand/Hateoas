@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Representation;
 
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -51,26 +53,24 @@ use JMS\Serializer\Annotation as Serializer;
  *          excludeIf = "expr((object.getPage() - 1) < 1)"
  *      )
  * )
- *
- * @author Adrien Brault <adrien.brault@gmail.com>
  */
 class PaginatedRepresentation extends AbstractSegmentedRepresentation
 {
     /**
-     * @var int
-     *
      * @Serializer\Expose
      * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
+     *
+     * @var int
      */
     private $page;
 
     /**
-     * @var int
-     *
      * @Serializer\Expose
      * @Serializer\Type("integer")
      * @Serializer\XmlAttribute
+     *
+     * @var int
      */
     private $pages;
 
@@ -79,17 +79,20 @@ class PaginatedRepresentation extends AbstractSegmentedRepresentation
      */
     private $pageParameterName;
 
+    /**
+     * @param mixed $inline
+     */
     public function __construct(
         $inline,
-        $route,
-        array $parameters        = array(),
-        $page,
-        $limit,
-        $pages,
-        $pageParameterName       = null,
-        $limitParameterName      = null,
-        $absolute                = false,
-        $total                   = null
+        string $route,
+        array $parameters = [],
+        ?int $page,
+        ?int $limit,
+        ?int $pages,
+        ?string $pageParameterName = null,
+        ?string $limitParameterName = null,
+        bool $absolute = false,
+        ?int $total = null
     ) {
         parent::__construct($inline, $route, $parameters, $limit, $total, $limitParameterName, $absolute);
 
@@ -98,10 +101,7 @@ class PaginatedRepresentation extends AbstractSegmentedRepresentation
         $this->pageParameterName  = $pageParameterName  ?: 'page';
     }
 
-    /**
-     * @return int
-     */
-    public function getPage()
+    public function getPage(): int
     {
         return $this->page;
     }
@@ -109,32 +109,27 @@ class PaginatedRepresentation extends AbstractSegmentedRepresentation
     /**
      * @param  null  $page
      * @param  null  $limit
+     *
      * @return array
      */
-    public function getParameters($page = null, $limit = null)
+    public function getParameters($page = null, $limit = null): array
     {
         $parameters = parent::getParameters($limit);
 
         unset($parameters[$this->pageParameterName]);
-        $parameters[$this->pageParameterName] = null === $page ? $this->getPage() : $page;
+        $parameters[$this->pageParameterName] = $page ?? $this->getPage();
 
         $this->moveParameterToEnd($parameters, $this->getLimitParameterName());
 
         return $parameters;
     }
 
-    /**
-     * @return int
-     */
-    public function getPages()
+    public function getPages(): int
     {
         return $this->pages;
     }
 
-    /**
-     * @return string
-     */
-    public function getPageParameterName()
+    public function getPageParameterName(): string
     {
         return $this->pageParameterName;
     }

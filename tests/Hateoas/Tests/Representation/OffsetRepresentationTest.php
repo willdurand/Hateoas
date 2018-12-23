@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\CollectionRepresentation;
@@ -12,17 +14,13 @@ class OffsetRepresentationTest extends RepresentationTestCase
     {
         $collection = new OffsetRepresentation(
             new CollectionRepresentation(
-                array(
+                [
                     'Adrien',
                     'William',
-                ),
-                'authors',
-                'users'
+                ]
             ),
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            ),
+            ['query' => 'willdurand/Hateoas'],
             44,
             20,
             95,
@@ -35,10 +33,10 @@ class OffsetRepresentationTest extends RepresentationTestCase
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="44" limit="20" total="95">
-  <users rel="authors">
+  <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
-  </users>
+  </entry>
   <link rel="self" href="/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20"/>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;offset=80&amp;limit=20"/>
@@ -55,8 +53,8 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="44" limit="20" total="95" href="/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20">
-  <resource rel="authors"><![CDATA[Adrien]]></resource>
-  <resource rel="authors"><![CDATA[William]]></resource>
+  <resource rel="items"><![CDATA[Adrien]]></resource>
+  <resource rel="items"><![CDATA[William]]></resource>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;offset=80&amp;limit=20"/>
   <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;offset=64&amp;limit=20"/>
@@ -71,10 +69,10 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <users offset="44" limit="20" total="95">
-  <users rel="authors">
+  <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
-  </users>
+  </entry>
   <link rel="self" href="/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20"/>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;offset=80&amp;limit=20"/>
@@ -91,8 +89,8 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <users offset="44" limit="20" total="95" href="/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20">
-  <resource rel="authors"><![CDATA[Adrien]]></resource>
-  <resource rel="authors"><![CDATA[William]]></resource>
+  <resource rel="items"><![CDATA[Adrien]]></resource>
+  <resource rel="items"><![CDATA[William]]></resource>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;offset=80&amp;limit=20"/>
   <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;offset=64&amp;limit=20"/>
@@ -106,33 +104,33 @@ XML
 
         $this->assertSame(
             '{'
-                .'"offset":44,'
-                .'"limit":20,'
-                .'"total":95,'
-                .'"_links":{'
-                    .'"self":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&offset=44&limit=20"'
-                    .'},'
-                    .'"first":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&limit=20"'
-                    .'},'
-                    .'"last":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&offset=80&limit=20"'
-                    .'},'
-                    .'"next":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&offset=64&limit=20"'
-                    .'},'
-                    .'"previous":{'
-                        .'"href":"\/authors?query=willdurand%2FHateoas&offset=24&limit=20"'
-                    .'}'
-                .'},'
-                .'"_embedded":{'
-                    .'"authors":['
-                        .'"Adrien",'
-                        .'"William"'
-                    .']'
-                .'}'
-            .'}',
+                . '"offset":44,'
+                . '"limit":20,'
+                . '"total":95,'
+                . '"_links":{'
+                    . '"self":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&offset=44&limit=20"'
+                    . '},'
+                    . '"first":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&limit=20"'
+                    . '},'
+                    . '"last":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&offset=80&limit=20"'
+                    . '},'
+                    . '"next":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&offset=64&limit=20"'
+                    . '},'
+                    . '"previous":{'
+                        . '"href":"\/authors?query=willdurand%2FHateoas&offset=24&limit=20"'
+                    . '}'
+                . '},'
+                . '"_embedded":{'
+                    . '"items":['
+                        . '"Adrien",'
+                        . '"William"'
+                    . ']'
+                . '}'
+            . '}',
             $this->halHateoas->serialize($collection, 'json')
         );
     }
@@ -141,17 +139,13 @@ XML
     {
         $collection = new OffsetRepresentation(
             new CollectionRepresentation(
-                array(
+                [
                     'Adrien',
                     'William',
-                ),
-                'authors',
-                'users'
+                ]
             ),
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            ),
+            ['query' => 'willdurand/Hateoas'],
             44,
             20,
             95,
@@ -164,10 +158,10 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="44" limit="20" total="95">
-  <users rel="authors">
+  <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
-  </users>
+  </entry>
   <link rel="self" href="http://example.com/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20"/>
   <link rel="first" href="http://example.com/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="last" href="http://example.com/authors?query=willdurand%2FHateoas&amp;offset=80&amp;limit=20"/>
@@ -183,8 +177,8 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="44" limit="20" total="95" href="http://example.com/authors?query=willdurand%2FHateoas&amp;offset=44&amp;limit=20">
-  <resource rel="authors"><![CDATA[Adrien]]></resource>
-  <resource rel="authors"><![CDATA[William]]></resource>
+  <resource rel="items"><![CDATA[Adrien]]></resource>
+  <resource rel="items"><![CDATA[William]]></resource>
   <link rel="first" href="http://example.com/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="last" href="http://example.com/authors?query=willdurand%2FHateoas&amp;offset=80&amp;limit=20"/>
   <link rel="next" href="http://example.com/authors?query=willdurand%2FHateoas&amp;offset=64&amp;limit=20"/>
@@ -197,33 +191,33 @@ XML
         );
         $this->assertSame(
             '{'
-                .'"offset":44,'
-                .'"limit":20,'
-                .'"total":95,'
-                .'"_links":{'
-                    .'"self":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=44&limit=20"'
-                    .'},'
-                    .'"first":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&limit=20"'
-                    .'},'
-                    .'"last":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=80&limit=20"'
-                    .'},'
-                    .'"next":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=64&limit=20"'
-                    .'},'
-                    .'"previous":{'
-                        .'"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=24&limit=20"'
-                    .'}'
-                .'},'
-                .'"_embedded":{'
-                    .'"authors":['
-                        .'"Adrien",'
-                        .'"William"'
-                    .']'
-                .'}'
-            .'}',
+                . '"offset":44,'
+                . '"limit":20,'
+                . '"total":95,'
+                . '"_links":{'
+                    . '"self":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=44&limit=20"'
+                    . '},'
+                    . '"first":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&limit=20"'
+                    . '},'
+                    . '"last":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=80&limit=20"'
+                    . '},'
+                    . '"next":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=64&limit=20"'
+                    . '},'
+                    . '"previous":{'
+                        . '"href":"http:\/\/example.com\/authors?query=willdurand%2FHateoas&offset=24&limit=20"'
+                    . '}'
+                . '},'
+                . '"_embedded":{'
+                    . '"items":['
+                        . '"Adrien",'
+                        . '"William"'
+                    . ']'
+                . '}'
+            . '}',
             $this->halHateoas->serialize($collection, 'json')
         );
     }
@@ -231,10 +225,10 @@ XML
     public function testExclusion()
     {
         $inline = new CollectionRepresentation(
-            array(
+            [
                 'Adrien',
                 'William',
-            ),
+            ],
             'authors',
             'users'
         );
@@ -246,9 +240,7 @@ XML
         $collection = new OffsetRepresentation(
             $inline,
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            ),
+            ['query' => 'willdurand/Hateoas'],
             null,
             20
         );
@@ -257,10 +249,10 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection limit="20">
-  <users rel="authors">
+  <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
-  </users>
+  </entry>
   <link rel="self" href="/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;offset=20&amp;limit=20"/>
@@ -277,9 +269,7 @@ XML
         $collection = new OffsetRepresentation(
             $inline,
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            ),
+            ['query' => 'willdurand/Hateoas'],
             80,
             20,
             100
@@ -289,10 +279,10 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection offset="80" limit="20" total="100">
-  <users rel="authors">
+  <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
-  </users>
+  </entry>
   <link rel="self" href="/authors?query=willdurand%2FHateoas&amp;offset=80&amp;limit=20"/>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;offset=80&amp;limit=20"/>

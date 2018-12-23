@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Serializer;
 
 use Hateoas\HateoasBuilder;
@@ -13,6 +15,7 @@ use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
+use Prophecy\Argument;
 
 class XmlSerializerTest extends TestCase
 {
@@ -23,10 +26,10 @@ class XmlSerializerTest extends TestCase
         $xmlSerializer = new XmlSerializer();
         $xmlSerializationVisitor = $this->createXmlSerializationVisitor();
 
-        $links = array(
+        $links = [
             new Link('self', '/users/42'),
-            new Link('foo', '/bar', array('type' => 'magic')),
-        );
+            new Link('foo', '/bar', ['type' => 'magic']),
+        ];
 
         $xmlSerializer->serializeLinks(
             $links,
@@ -44,17 +47,25 @@ class XmlSerializerTest extends TestCase
 
 XML
             ,
-            $xmlSerializationVisitor->getResult()
+            $xmlSerializationVisitor->getResult($xmlSerializationVisitor->getDocument())
         );
     }
 
     public function testSerializeEmbeddeds()
     {
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');
+        $navigatorProphecy = $this->prophesize('JMS\Serializer\GraphNavigatorInterface');
 
-        $embeddeds = array(
-            new Embedded('friend', array('name' => 'John'), new RelationPropertyMetadata(), 'person'),
-        );
+        $contextProphecy
+            ->getNavigator()
+            ->willReturn($navigatorProphecy);
+
+        $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
+        $contextProphecy->popPropertyMetadata()->shouldBeCalled();
+
+        $embeddeds = [
+            new Embedded('friend', ['name' => 'John'], new RelationPropertyMetadata(), 'person'),
+        ];
 
         $xmlSerializationVisitor = $this->createXmlSerializationVisitor();
 
@@ -76,7 +87,7 @@ XML
 
 XML
             ,
-            $xmlSerializationVisitor->getResult()
+            $xmlSerializationVisitor->getResult($xmlSerializationVisitor->getCurrentNode())
         );
     }
 
@@ -147,17 +158,13 @@ XML
 
     private function createXmlSerializationVisitor()
     {
-        $xmlSerializationVisitor = new XmlSerializationVisitor(
-            $this->prophesize('JMS\Serializer\Naming\PropertyNamingStrategyInterface')->reveal()
-        );
+        $xmlSerializationVisitor = new XmlSerializationVisitor();
         $xmlSerializationVisitorClass = new \ReflectionClass('JMS\Serializer\XmlSerializationVisitor');
         $stackProperty = $xmlSerializationVisitorClass->getProperty('stack');
-        $stackProperty->setAccessible('true');
+        $stackProperty->setAccessible(true);
         $stackProperty->setValue($xmlSerializationVisitor, new \SplStack());
 
-        $xmlSerializationVisitor->document = $xmlSerializationVisitor->createDocument(null, null, false);
-        $xmlRootNode = $xmlSerializationVisitor->document->createElement('root');
-        $xmlSerializationVisitor->document->appendChild($xmlRootNode);
+        $xmlRootNode = $document = $xmlSerializationVisitor->createRoot(null, 'root');
         $xmlSerializationVisitor->setCurrentNode($xmlRootNode);
 
         return $xmlSerializationVisitor;

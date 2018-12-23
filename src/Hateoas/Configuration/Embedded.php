@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
+use JMS\Serializer\Expression\Expression;
+
 class Embedded
 {
     /**
@@ -13,7 +14,7 @@ class Embedded
     private $content;
 
     /**
-     * @var string|null
+     * @var string|Expression|null
      */
     private $xmlElementName;
 
@@ -24,10 +25,9 @@ class Embedded
 
     /**
      * @param string|mixed $content
-     * @param string|null  $xmlElementName
-     * @param Exclusion    $exclusion
+     * @param string|Expression|null  $xmlElementName
      */
-    public function __construct($content, $xmlElementName = null, Exclusion $exclusion = null)
+    public function __construct($content, $xmlElementName = null, ?Exclusion $exclusion = null)
     {
         $this->content        = $content;
         $this->xmlElementName = $xmlElementName;
@@ -43,17 +43,14 @@ class Embedded
     }
 
     /**
-     * @return null|string
+     * @return Expression|string|null
      */
     public function getXmlElementName()
     {
         return $this->xmlElementName;
     }
 
-    /**
-     * @return Exclusion|null
-     */
-    public function getExclusion()
+    public function getExclusion(): ?Exclusion
     {
         return $this->exclusion;
     }

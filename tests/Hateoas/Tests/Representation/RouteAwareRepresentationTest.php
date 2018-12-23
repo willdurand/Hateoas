@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\CollectionRepresentation;
@@ -11,27 +13,23 @@ class RouteAwareRepresentationTest extends RepresentationTestCase
     {
         $collection = new RouteAwareRepresentation(
             new CollectionRepresentation(
-                array(
+                [
                     'Adrien',
                     'William',
-                ),
-                'authors',
-                'users'
+                ]
             ),
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            )
+            ['query' => 'willdurand/Hateoas']
         );
 
         $this->assertSame(
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
-  <users rel="authors">
+  <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
-  </users>
+  </entry>
   <link rel="self" href="/authors?query=willdurand%2FHateoas"/>
 </result>
 
@@ -43,8 +41,8 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="/authors?query=willdurand%2FHateoas">
-  <resource rel="authors"><![CDATA[Adrien]]></resource>
-  <resource rel="authors"><![CDATA[William]]></resource>
+  <resource rel="items"><![CDATA[Adrien]]></resource>
+  <resource rel="items"><![CDATA[William]]></resource>
 </result>
 
 XML
@@ -61,7 +59,7 @@ XML
         }
     },
     "_embedded": {
-        "authors": [
+        "items": [
             "Adrien",
             "William"
         ]
@@ -77,17 +75,15 @@ JSON
     {
         $collection = new RouteAwareRepresentation(
             new CollectionRepresentation(
-                array(
+                [
                     'Adrien',
                     'William',
-                ),
+                ],
                 'authors',
                 'users'
             ),
             '/authors',
-            array(
-                'query' => 'willdurand/Hateoas',
-            ),
+            ['query' => 'willdurand/Hateoas'],
             true // absolute
         );
 
@@ -95,10 +91,10 @@ JSON
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
-  <users rel="authors">
+  <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
-  </users>
+  </entry>
   <link rel="self" href="http://example.com/authors?query=willdurand%2FHateoas"/>
 </result>
 
@@ -110,8 +106,8 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result href="http://example.com/authors?query=willdurand%2FHateoas">
-  <resource rel="authors"><![CDATA[Adrien]]></resource>
-  <resource rel="authors"><![CDATA[William]]></resource>
+  <resource rel="items"><![CDATA[Adrien]]></resource>
+  <resource rel="items"><![CDATA[William]]></resource>
 </result>
 
 XML
@@ -128,7 +124,7 @@ XML
         }
     },
     "_embedded": {
-        "authors": [
+        "items": [
             "Adrien",
             "William"
         ]

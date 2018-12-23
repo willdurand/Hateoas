@@ -1,10 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\UrlGenerator;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class CallableUrlGenerator implements UrlGeneratorInterface
 {
     /**
@@ -12,16 +11,15 @@ class CallableUrlGenerator implements UrlGeneratorInterface
      */
     private $callable;
 
-    public function __construct($callable)
+    public function __construct(callable $callable)
     {
         $this->callable = $callable;
     }
-
     /**
-     * {@inheritdoc}
+     * @param bool|int $absolute
      */
-    public function generate($name, array $parameters, $absolute = false)
+    public function generate(string $name, array $parameters, $absolute = false): string
     {
-        return call_user_func_array($this->callable, array($name, $parameters, $absolute));
+        return call_user_func_array($this->callable, [$name, $parameters, $absolute]);
     }
 }

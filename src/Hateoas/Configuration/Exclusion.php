@@ -1,85 +1,80 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
+use JMS\Serializer\Expression\ExpressionEvaluator;
+
 class Exclusion
 {
     /**
-     * @var null|array
+     * @var array|null
      */
     private $groups;
 
     /**
-     * @var null|float
+     * @var string|null
      */
     private $sinceVersion;
 
     /**
-     * @var null|float
+     * @var string|null
      */
     private $untilVersion;
 
     /**
-     * @var null|integer
+     * @var int|null
      */
     private $maxDepth;
 
     /**
-     * @var null|string
+     * @var string|ExpressionEvaluator|null
      */
     private $excludeIf;
 
+    /**
+     * @param mixed $excludeIf
+     */
     public function __construct(
-        array $groups = null,
-        $sinceVersion = null,
-        $untilVersion = null,
-        $maxDepth = null,
+        ?array $groups = null,
+        ?string $sinceVersion = null,
+        ?string $untilVersion = null,
+        ?int $maxDepth = null,
         $excludeIf = null
     ) {
         $this->groups = $groups;
-        $this->sinceVersion = null !== $sinceVersion ? (float) $sinceVersion : null;
-        $this->untilVersion = null !== $untilVersion ? (float) $untilVersion : null;
-        $this->maxDepth = null !== $maxDepth ? (int) $maxDepth : null;
+        $this->sinceVersion = $sinceVersion ?? null;
+        $this->untilVersion = $untilVersion ?? null;
+        $this->maxDepth = $maxDepth ?? null;
         $this->excludeIf = $excludeIf;
     }
 
     /**
-     * @return null|array
+     * @return array|null
      */
-    public function getGroups()
+    public function getGroups(): ?array
     {
         return $this->groups;
     }
 
-    /**
-     * @return null|float
-     */
-    public function getSinceVersion()
+    public function getSinceVersion(): ?string
     {
         return $this->sinceVersion;
     }
 
-    /**
-     * @return null|float
-     */
-    public function getUntilVersion()
+    public function getUntilVersion(): ?string
     {
         return $this->untilVersion;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getMaxDepth()
+    public function getMaxDepth(): ?int
     {
         return $this->maxDepth;
     }
 
     /**
-     * @return null|string
+     * @return ExpressionEvaluator|mixed|string|null
      */
     public function getExcludeIf()
     {

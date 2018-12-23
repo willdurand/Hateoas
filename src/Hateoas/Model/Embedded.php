@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Model;
 
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class Embedded
 {
     /**
@@ -30,12 +29,10 @@ class Embedded
     private $metadata;
 
     /**
-     * @param string $rel
      * @param mixed $data
      * @param string|null $xmlElementName
-     * @param RelationPropertyMetadata $metadata
      */
-    public function __construct($rel, $data, RelationPropertyMetadata $metadata, $xmlElementName = null)
+    public function __construct(string $rel, $data, RelationPropertyMetadata $metadata, $xmlElementName = null)
     {
         $this->rel            = $rel;
         $this->data           = $data;
@@ -43,10 +40,7 @@ class Embedded
         $this->xmlElementName = $xmlElementName;
     }
 
-    /**
-     * @return RelationPropertyMetadata
-     */
-    public function getMetadata()
+    public function getMetadata(): RelationPropertyMetadata
     {
         return $this->metadata;
     }
@@ -59,18 +53,12 @@ class Embedded
         return $this->data;
     }
 
-    /**
-     * @return string
-     */
-    public function getRel()
+    public function getRel(): string
     {
         return $this->rel;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getXmlElementName()
+    public function getXmlElementName(): ?string
     {
         return $this->xmlElementName;
     }

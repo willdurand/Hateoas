@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests;
 
 use Hateoas\HateoasBuilder;
-use Hateoas\UrlGenerator\CallableUrlGenerator;
 use Hateoas\Tests\Fixtures\Will;
+use Hateoas\UrlGenerator\CallableUrlGenerator;
 
-class HateoasTest extends \PHPUnit_Framework_TestCase
+class HateoasTest extends TestCase
 {
     private $hateoas;
 
@@ -14,7 +16,7 @@ class HateoasTest extends \PHPUnit_Framework_TestCase
     {
         $this->hateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, new CallableUrlGenerator(function ($name, $parameters, $absolute) {
-                if ($name === 'user_get') {
+                if ('user_get' === $name) {
                     return sprintf(
                         '%s%s',
                         $absolute ? 'http://example.com' : '',
@@ -22,7 +24,7 @@ class HateoasTest extends \PHPUnit_Framework_TestCase
                     );
                 }
 
-                if ($name === 'post_get') {
+                if ('post_get' === $name) {
                     return sprintf(
                         '%s%s',
                         $absolute ? 'http://example.com' : '',
@@ -35,7 +37,11 @@ class HateoasTest extends \PHPUnit_Framework_TestCase
             ->build();
     }
 
-    public function testGetLinkHrefUrlWithUnknownRelShouldReturnNull()
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Can not find the relation "unknown-rel" for the "Hateoas\Tests\Fixtures\Will" class
+     */
+    public function testGetLinkHrefUrlWithUnknownRelThrowsException()
     {
         $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'unknown-rel'));
         $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'unknown-rel', true));

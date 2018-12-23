@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Tests\Configuration\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -9,6 +11,6 @@ class AnnotationDriverTest extends AbstractDriverTest
 {
     public function createDriver()
     {
-        return new AnnotationDriver(new AnnotationReader());
+        return new AnnotationDriver(new AnnotationReader(), $this->getExpressionEvaluator(), $this->createProvider());
     }
 }

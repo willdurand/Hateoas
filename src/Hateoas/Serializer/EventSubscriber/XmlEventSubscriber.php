@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\EmbeddedsFactory;
@@ -9,9 +11,6 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class XmlEventSubscriber implements EventSubscriberInterface
 {
     /**
@@ -19,13 +18,13 @@ class XmlEventSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            array(
+        return [
+            [
                 'event'  => Events::POST_SERIALIZE,
                 'format' => 'xml',
                 'method' => 'onPostSerialize',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -43,11 +42,6 @@ class XmlEventSubscriber implements EventSubscriberInterface
      */
     private $embeddedsFactory;
 
-    /**
-     * @param XmlSerializerInterface $xmlSerializer
-     * @param LinksFactory           $linksFactory
-     * @param EmbeddedsFactory       $embeddedsFactory
-     */
     public function __construct(XmlSerializerInterface $xmlSerializer, LinksFactory $linksFactory, EmbeddedsFactory $embeddedsFactory)
     {
         $this->xmlSerializer    = $xmlSerializer;
@@ -55,13 +49,13 @@ class XmlEventSubscriber implements EventSubscriberInterface
         $this->embeddedsFactory = $embeddedsFactory;
     }
 
-    public function onPostSerialize(ObjectEvent $event)
+    public function onPostSerialize(ObjectEvent $event): void
     {
         $object  = $event->getObject();
         $context = $event->getContext();
 
         $context->startVisiting($object);
-        
+
         $embeddeds = $this->embeddedsFactory->create($object, $context);
         $links     = $this->linksFactory->create($object, $context);
 

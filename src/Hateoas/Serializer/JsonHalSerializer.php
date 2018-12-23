@@ -1,67 +1,66 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Serializer;
 
-use JMS\Serializer\JsonSerializationVisitor;
+use JMS\Serializer\Exception\NotAcceptableException;
+use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-/**
- * @author Adrien Brault <adrien.brault@gmail.com>
- */
 class JsonHalSerializer implements JsonSerializerInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeLinks(array $links, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
-        $serializedLinks = array();
+        $serializedLinks = [];
         foreach ($links as $link) {
-            $serializedLink = array_merge(array(
+            $serializedLink = array_merge([
                 'href' => $link->getHref(),
-            ), $link->getAttributes());
+            ], $link->getAttributes());
 
             if (!isset($serializedLinks[$link->getRel()]) && 'curies' !== $link->getRel()) {
                 $serializedLinks[$link->getRel()] = $serializedLink;
             } elseif (isset($serializedLinks[$link->getRel()]['href'])) {
-                $serializedLinks[$link->getRel()] = array(
+                $serializedLinks[$link->getRel()] = [
                     $serializedLinks[$link->getRel()],
-                    $serializedLink
-                );
+                    $serializedLink,
+                ];
             } else {
                 $serializedLinks[$link->getRel()][] = $serializedLink;
             }
         }
 
-        $visitor->addData('_links', $serializedLinks);
+        $visitor->visitProperty(new StaticPropertyMetadata(self::class, '_links', $serializedLinks), $serializedLinks);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function serializeEmbeddeds(array $embeddeds, JsonSerializationVisitor $visitor, SerializationContext $context)
+    public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
-        $serializedEmbeddeds = array();
-        $multiple = array();
+        $serializedEmbeddeds = [];
+        $multiple = [];
+        $navigator = $context->getNavigator();
+
         foreach ($embeddeds as $embedded) {
             $context->pushPropertyMetadata($embedded->getMetadata());
+            try {
+                if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
+                    $serializedEmbeddeds[$embedded->getRel()] = $navigator->accept($embedded->getData(), null, $context);
+                } elseif (!isset($multiple[$embedded->getRel()])) {
+                    $multiple[$embedded->getRel()] = true;
 
-            if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
-                $serializedEmbeddeds[$embedded->getRel()] = $context->accept($embedded->getData());
-            } elseif (!isset($multiple[$embedded->getRel()])) {
-                $multiple[$embedded->getRel()] = true;
-
-                $serializedEmbeddeds[$embedded->getRel()] = array(
-                    $serializedEmbeddeds[$embedded->getRel()],
-                    $context->accept($embedded->getData()),
-                );
-            } else {
-                $serializedEmbeddeds[$embedded->getRel()][] = $context->accept($embedded->getData());
+                    $serializedEmbeddeds[$embedded->getRel()] = [
+                        $serializedEmbeddeds[$embedded->getRel()],
+                        $navigator->accept($embedded->getData(), null, $context),
+                    ];
+                } else {
+                    $serializedEmbeddeds[$embedded->getRel()][] = $navigator->accept($embedded->getData(), null, $context);
+                }
+            } catch (NotAcceptableException $e) {
             }
 
             $context->popPropertyMetadata();
         }
 
-        $visitor->addData('_embedded', $serializedEmbeddeds);
+        $visitor->visitProperty(new StaticPropertyMetadata(self::class, '_embedded', $serializedEmbeddeds), $serializedEmbeddeds);
     }
 }
