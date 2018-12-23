@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hateoas\Serializer;
 
+use Hateoas\Model\Embedded;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
@@ -34,6 +35,9 @@ class JsonHalSerializer implements JsonSerializerInterface
         $visitor->visitProperty(new StaticPropertyMetadata(self::class, '_links', $serializedLinks), $serializedLinks);
     }
 
+    /**
+     * @param Embedded [] $embeddeds
+     */
     public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         $serializedEmbeddeds = [];
@@ -44,7 +48,7 @@ class JsonHalSerializer implements JsonSerializerInterface
             $context->pushPropertyMetadata($embedded->getMetadata());
             try {
                 if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
-                    $serializedEmbeddeds[$embedded->getRel()] = $navigator->accept($embedded->getData(), null, $context);
+                    $serializedEmbeddeds[$embedded->getRel()] = $navigator->accept($embedded->getData(), $embedded->getType(), $context);
                 } elseif (!isset($multiple[$embedded->getRel()])) {
                     $multiple[$embedded->getRel()] = true;
 
@@ -53,7 +57,8 @@ class JsonHalSerializer implements JsonSerializerInterface
                         $navigator->accept($embedded->getData(), null, $context),
                     ];
                 } else {
-                    $serializedEmbeddeds[$embedded->getRel()][] = $navigator->accept($embedded->getData(), null, $context);
+
+                    $serializedEmbeddeds[$embedded->getRel()][] = $navigator->accept($embedded->getData(), $embedded->getType(), $context);
                 }
             } catch (NotAcceptableException $e) {
             }

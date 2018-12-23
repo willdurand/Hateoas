@@ -46,6 +46,8 @@
             <element name="exclusion" type="h:exclusion" minOccurs="0" maxOccurs="unbounded"/>
         </sequence>
         <attribute name="xml-element-name" type="token" use="optional"/>
+        <attribute name="type" type="string" use="optional"/>
+
     </complexType>
 
     <complexType name="exclusion">

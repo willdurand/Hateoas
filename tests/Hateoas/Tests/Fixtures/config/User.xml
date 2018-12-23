@@ -42,7 +42,7 @@
 
         <h:relation rel="hello">
             <h:href uri="/hello"/>
-            <h:embedded>
+            <h:embedded type="string">
                 <h:content>hello</h:content>
                 <h:exclusion groups="group3,group4" since-version="1.1" until-version="2.3" max-depth="43" exclude-if="bar"/>
             </h:embedded>

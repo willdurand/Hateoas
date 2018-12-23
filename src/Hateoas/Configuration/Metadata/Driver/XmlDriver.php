@@ -13,6 +13,7 @@ use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use JMS\Serializer\Exception\XmlErrorException;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\ClassMetadata as JMSClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
@@ -28,11 +29,21 @@ class XmlDriver extends AbstractFileDriver
      */
     private $relationProvider;
 
-    public function __construct(FileLocatorInterface $locator, CompilableExpressionEvaluatorInterface $expressionLanguage, RelationProviderInterface $relationProvider)
-    {
+    /**
+     * @var ParserInterface
+     */
+    private $typeParser;
+
+    public function __construct(
+        FileLocatorInterface $locator,
+        CompilableExpressionEvaluatorInterface $expressionLanguage,
+        RelationProviderInterface $relationProvider,
+        ParserInterface $typeParser
+    ) {
         parent::__construct($locator);
         $this->relationProvider = $relationProvider;
         $this->expressionLanguage = $expressionLanguage;
+        $this->typeParser = $typeParser;
     }
 
     /**
@@ -154,7 +165,7 @@ class XmlDriver extends AbstractFileDriver
                 }
             }
 
-            $href = new Route(
+            return new Route(
                 $this->checkExpression((string) $href->attributes('')->route),
                 $parameters,
                 $absolute,
@@ -172,11 +183,13 @@ class XmlDriver extends AbstractFileDriver
     {
         $embeddedExclusion = isset($embedded->exclusion) ? $this->parseExclusion($embedded->exclusion) : null;
         $xmlElementName = isset($embedded->attributes('')->{'xml-element-name'}) ? $this->checkExpression((string) $embedded->attributes('')->{'xml-element-name'}) : null;
+        $type = isset($embedded->attributes('')->{'type'}) ? $this->typeParser->parse((string) $embedded->attributes('')->{'type'}) : null;
 
         return new Embedded(
             $this->checkExpression((string) $embedded->content),
             $xmlElementName,
-            $embeddedExclusion
+            $embeddedExclusion,
+            $type
         );
     }
 }

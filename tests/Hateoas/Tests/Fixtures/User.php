@@ -26,6 +26,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *      embedded = @Hateoas\Embedded(
  *          "hello",
  *          xmlElementName = "barTag",
+ *          type="string",
  *          exclusion = @Hateoas\Exclusion(
  *              groups = {"group3", "group4"},
  *              sinceVersion = "1.1",

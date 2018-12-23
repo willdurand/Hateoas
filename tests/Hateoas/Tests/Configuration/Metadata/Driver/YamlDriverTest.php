@@ -13,6 +13,6 @@ class YamlDriverTest extends AbstractDriverTest
     {
         return new YamlDriver(new FileLocator([
             'Hateoas\Tests\Fixtures' => $this->rootPath() . '/Fixtures/config',
-        ]), $this->getExpressionEvaluator(), $this->createProvider());
+        ]), $this->getExpressionEvaluator(), $this->createProvider(), $this->createTypeParser());
     }
 }

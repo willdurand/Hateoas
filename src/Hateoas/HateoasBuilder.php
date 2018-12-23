@@ -34,6 +34,7 @@ use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Type\Parser;
 use Metadata\Cache\FileCache;
 use Metadata\Driver\DriverChain;
 use Metadata\Driver\FileLocator;
@@ -394,15 +395,17 @@ class HateoasBuilder
 
         $expressionEvaluator =  $this->getExpressionEvaluator();
 
+        $typeParser = new Parser();
+
         if (!empty($this->metadataDirs)) {
             $fileLocator    = new FileLocator($this->metadataDirs);
             $metadataDriver = new DriverChain([
-                new YamlDriver($fileLocator, $expressionEvaluator, $this->chainProvider),
-                new XmlDriver($fileLocator, $expressionEvaluator, $this->chainProvider),
-                new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider),
+                new YamlDriver($fileLocator, $expressionEvaluator, $this->chainProvider, $typeParser),
+                new XmlDriver($fileLocator, $expressionEvaluator, $this->chainProvider, $typeParser),
+                new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider, $typeParser),
             ]);
         } else {
-            $metadataDriver = new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider);
+            $metadataDriver = new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider, $typeParser);
         }
 
         $metadataDriver  = new ExtensionDriver($metadataDriver, $this->configurationExtensions);

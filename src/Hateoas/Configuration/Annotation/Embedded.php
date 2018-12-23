@@ -19,6 +19,11 @@ class Embedded
     /**
      * @var string
      */
+    public $type;
+
+    /**
+     * @var string
+     */
     public $xmlElementName;
 
     /**

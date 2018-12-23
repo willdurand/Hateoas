@@ -43,6 +43,7 @@ Hateoas\Tests\Fixtures\User:
                 exclude_if: foo
             embedded:
                 content: hello
+                type: string
                 exclusion:
                     groups: [group3, group4]
                     since_version: 1.1

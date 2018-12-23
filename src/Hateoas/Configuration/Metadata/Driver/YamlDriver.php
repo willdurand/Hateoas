@@ -13,6 +13,7 @@ use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Expression\Expression;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\ClassMetadata as JMSClassMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
@@ -27,11 +28,21 @@ class YamlDriver extends AbstractFileDriver
      */
     private $relationProvider;
 
-    public function __construct(FileLocatorInterface $locator, CompilableExpressionEvaluatorInterface $expressionLanguage, RelationProviderInterface $relationProvider)
-    {
+    /**
+     * @var ParserInterface
+     */
+    private $typeParser;
+
+    public function __construct(
+        FileLocatorInterface $locator,
+        CompilableExpressionEvaluatorInterface $expressionLanguage,
+        RelationProviderInterface $relationProvider,
+        ParserInterface $typeParser
+    ) {
         parent::__construct($locator);
         $this->relationProvider = $relationProvider;
         $this->expressionLanguage = $expressionLanguage;
+        $this->typeParser = $typeParser;
     }
 
     /**
@@ -109,12 +120,14 @@ class YamlDriver extends AbstractFileDriver
                 $absolute = isset($href['absolute']) ? $this->checkExpression($href['absolute']) : false;
             }
 
-            $href = new Route(
+            return new Route(
                 $this->checkExpression($href['route']),
                 isset($href['parameters']) ? (is_array($href['parameters']) ? $this->checkExpressionArray($href['parameters']) : $this->checkExpression($href['parameters'])) : [],
                 $absolute,
                 $href['generator'] ?? null
             );
+        } elseif (isset($relation['href']) && is_string($relation['href'])) {
+            $href = $relation['href'];
         }
 
         return $this->checkExpression($href);
@@ -138,7 +151,12 @@ class YamlDriver extends AbstractFileDriver
                 }
 
                 $xmlElementName = isset($embedded['xmlElementName']) ? $this->checkExpression((string) $embedded['xmlElementName']) : null;
-                $embedded = new Embedded($this->checkExpression($embedded['content']), $xmlElementName, $embeddedExclusion);
+                return new Embedded(
+                    $this->checkExpression($embedded['content']),
+                    $xmlElementName,
+                    $embeddedExclusion,
+                    isset($embedded['type']) ? $this->typeParser->parse($embedded['type']) : null
+                );
             }
         }
 
