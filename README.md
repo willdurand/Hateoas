@@ -57,6 +57,7 @@ services.
     - [@Exclusion](#exclusion)
     - [@RelationProvider](#relationprovider)
 * [Internals](#internals)
+* [Versioning](#versioning)
 
 
 Installation
@@ -1309,15 +1310,12 @@ Version `2.x` is the current major stable version.
 
 ### Next version
 
-The upcoming `3.x` version is available in the [develop](https://github.com/willdurand/Hateoas/tree/develop) branch.
-It is still a "work in progress" and is not recommended to use it in production.
+The upcoming version is `3.x`, it is still a "work in progress" and is not recommended to use it in production.
 
-`willdurand/hateoas`  `3.x` will be compatible with `jms/serializer` `2.x.` 
+`willdurand/hateoas`  `3.x` will be compatible with `jms/serializer` `^2.1` 
 
 By following the [3.0](https://github.com/willdurand/Hateoas/milestone/3) milestone it is possible 
 to have more info about the development status.
-
-Before the release will be provided a UPGRADE document.
 
 Contributing
 ------------
