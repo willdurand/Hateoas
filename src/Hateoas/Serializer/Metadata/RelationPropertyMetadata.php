@@ -36,7 +36,7 @@ class RelationPropertyMetadata extends VirtualPropertyMetadata
         $this->maxDepth = $exclusion->getMaxDepth();
 
         if ($exclusion->getExcludeIf() instanceof Expression) {
-            $this->excludeIf = (string) $exclusion->getExcludeIf();
+            $this->excludeIf = $exclusion->getExcludeIf();
         } elseif (null !== $exclusion->getExcludeIf()) {
             $this->excludeIf = $exclusion->getExcludeIf();
         }
