@@ -47,18 +47,16 @@ class JsonHalSerializer implements JsonSerializerInterface
         foreach ($embeddeds as $embedded) {
             $context->pushPropertyMetadata($embedded->getMetadata());
             try {
+                $data = $navigator->accept($embedded->getData(), $embedded->getType(), $context);
+
                 if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
-                    $serializedEmbeddeds[$embedded->getRel()] = $navigator->accept($embedded->getData(), $embedded->getType(), $context);
+                    $serializedEmbeddeds[$embedded->getRel()] = $data;
                 } elseif (!isset($multiple[$embedded->getRel()])) {
                     $multiple[$embedded->getRel()] = true;
 
-                    $serializedEmbeddeds[$embedded->getRel()] = [
-                        $serializedEmbeddeds[$embedded->getRel()],
-                        $navigator->accept($embedded->getData(), null, $context),
-                    ];
+                    $serializedEmbeddeds[$embedded->getRel()] = [$serializedEmbeddeds[$embedded->getRel()], $data];
                 } else {
-
-                    $serializedEmbeddeds[$embedded->getRel()][] = $navigator->accept($embedded->getData(), $embedded->getType(), $context);
+                    $serializedEmbeddeds[$embedded->getRel()][] = $data;
                 }
             } catch (NotAcceptableException $e) {
             }
