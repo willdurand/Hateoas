@@ -2,36 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Hateoas\Serializer\EventSubscriber;
+namespace Hateoas\Serializer;
 
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinksFactory;
-use Hateoas\Serializer\SerializerInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
-use JMS\Serializer\EventDispatcher\Events;
-use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 
-class JsonEventSubscriber implements EventSubscriberInterface
+class AddRelationsListener
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            [
-                'event'  => Events::POST_SERIALIZE,
-                'format' => 'json',
-                'method' => 'onPostSerialize',
-            ],
-        ];
-    }
-
     /**
      * @var SerializerInterface
      */
-    private $jsonSerializer;
+    private $serializer;
 
     /**
      * @var LinksFactory
@@ -54,13 +37,13 @@ class JsonEventSubscriber implements EventSubscriberInterface
     private $linksInlineDeferrer;
 
     public function __construct(
-        SerializerInterface $jsonSerializer,
+        SerializerInterface $serializer,
         LinksFactory $linksFactory,
         EmbeddedsFactory $embeddedsFactory,
         InlineDeferrer $embeddedsInlineDeferrer,
         InlineDeferrer $linksInleDeferrer
     ) {
-        $this->jsonSerializer          = $jsonSerializer;
+        $this->serializer          = $serializer;
         $this->linksFactory            = $linksFactory;
         $this->embeddedsFactory        = $embeddedsFactory;
         $this->embeddedsInlineDeferrer = $embeddedsInlineDeferrer;
@@ -81,11 +64,11 @@ class JsonEventSubscriber implements EventSubscriberInterface
         $links  = $this->linksInlineDeferrer->handleItems($object, $links, $context);
 
         if (count($links) > 0) {
-            $this->jsonSerializer->serializeLinks($links, $event->getVisitor(), $context);
+            $this->serializer->serializeLinks($links, $event->getVisitor(), $context);
         }
 
         if (count($embeddeds) > 0) {
-            $this->jsonSerializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
+            $this->serializer->serializeEmbeddeds($embeddeds, $event->getVisitor(), $context);
         }
 
         $context->stopVisiting($object);

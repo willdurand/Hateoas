@@ -2,13 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Hateoas\Tests\Serializer\EventSubscriber;
+namespace Hateoas\Tests\Serializer;
 
+use Hateoas\Serializer\AddRelationsListener;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use Prophecy\Argument;
 
-abstract class AbstractEventSubscriberTest extends TestCase
+class AddRelationsListenerTest extends TestCase
 {
+    protected function createEventSubscriber($serializer, $linksFactory, $embedsFactory)
+    {
+        $inlineDeferrerProphecy = $this->prophesize('Hateoas\Serializer\Metadata\InlineDeferrer');
+        $inlineDeferrerProphecy
+            ->handleItems(Argument::cetera())
+            ->will(function ($args) {
+                return $args[1];
+            });
+
+        return new AddRelationsListener(
+            $serializer,
+            $linksFactory,
+            $embedsFactory,
+            $inlineDeferrerProphecy->reveal(),
+            $inlineDeferrerProphecy->reveal()
+        );
+    }
+
+    protected function prophesizeSerializer()
+    {
+        return $this->prophesize('Hateoas\Serializer\SerializerInterface');
+    }
+
     public function testOnPostSerialize()
     {
         $embeddeds = [
@@ -90,10 +115,6 @@ abstract class AbstractEventSubscriberTest extends TestCase
         );
         $embeddedEventSubscriber->onPostSerialize($eventProphecy->reveal());
     }
-
-    abstract protected function createEventSubscriber($serializer, $linksFactory, $embeddedsFactory);
-
-    abstract protected function prophesizeSerializer();
 
     private function mockSerializationVisitor()
     {

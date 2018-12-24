@@ -81,14 +81,14 @@ class PagerfantaFactoryTest extends RepresentationTestCase
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1" total="3">
+  <link rel="self" href="my_route?page=1&amp;limit=10"/>
+  <link rel="first" href="my_route?page=1&amp;limit=10"/>
+  <link rel="last" href="my_route?page=1&amp;limit=10"/>
   <entry rel="items">
     <entry><![CDATA[bim]]></entry>
     <entry><![CDATA[bam]]></entry>
     <entry><![CDATA[boom]]></entry>
   </entry>
-  <link rel="self" href="my_route?page=1&amp;limit=10"/>
-  <link rel="first" href="my_route?page=1&amp;limit=10"/>
-  <link rel="last" href="my_route?page=1&amp;limit=10"/>
 </collection>
 
 XML
@@ -149,14 +149,14 @@ JSON
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1" total="3">
+  <link rel="self" href="http://example.com/my_route?page=1&amp;limit=10"/>
+  <link rel="first" href="http://example.com/my_route?page=1&amp;limit=10"/>
+  <link rel="last" href="http://example.com/my_route?page=1&amp;limit=10"/>
   <entry rel="items">
     <entry><![CDATA[bim]]></entry>
     <entry><![CDATA[bam]]></entry>
     <entry><![CDATA[boom]]></entry>
   </entry>
-  <link rel="self" href="http://example.com/my_route?page=1&amp;limit=10"/>
-  <link rel="first" href="http://example.com/my_route?page=1&amp;limit=10"/>
-  <link rel="last" href="http://example.com/my_route?page=1&amp;limit=10"/>
 </collection>
 
 XML

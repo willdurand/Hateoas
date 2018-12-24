@@ -20,8 +20,7 @@ use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinkFactory;
 use Hateoas\Factory\LinksFactory;
 use Hateoas\Helper\LinkHelper;
-use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
-use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
+use Hateoas\Serializer\AddRelationsListener;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\SerializerInterface;
@@ -30,6 +29,7 @@ use Hateoas\Serializer\XmlSerializer;
 use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
+use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\Exclusion\ExpressionLanguageExclusionStrategy;
 use JMS\Serializer\Expression\ExpressionEvaluator;
 use JMS\Serializer\SerializerBuilder;
@@ -167,9 +167,15 @@ class HateoasBuilder
             $this->setDefaultJsonSerializer();
         }
 
-        $eventSubscribers = [
-            new XmlEventSubscriber($this->xmlSerializer, $linksFactory, $embeddedsFactory),
-            new JsonEventSubscriber(
+        $eventListeners = [
+            'xml' => new AddRelationsListener(
+                $this->xmlSerializer,
+                $linksFactory,
+                $embeddedsFactory,
+                new InlineDeferrer(),
+                new InlineDeferrer()
+            ),
+            'json' => new AddRelationsListener(
                 $this->jsonSerializer,
                 $linksFactory,
                 $embeddedsFactory,
@@ -180,9 +186,9 @@ class HateoasBuilder
 
         $this->serializerBuilder
             ->addDefaultListeners()
-            ->configureListeners(static function (EventDispatcherInterface $dispatcher) use ($eventSubscribers): void {
-                foreach ($eventSubscribers as $eventSubscriber) {
-                    $dispatcher->addSubscriber($eventSubscriber);
+            ->configureListeners(static function (EventDispatcherInterface $dispatcher) use ($eventListeners): void {
+                foreach ($eventListeners as $format => $listener){
+                    $dispatcher->addListener(Events::POST_SERIALIZE, [$listener, 'onPostSerialize'], null, $format);
                 }
             });
 
