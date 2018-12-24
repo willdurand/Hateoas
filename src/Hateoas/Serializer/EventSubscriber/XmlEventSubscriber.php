@@ -6,7 +6,7 @@ namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinksFactory;
-use Hateoas\Serializer\XmlSerializerInterface;
+use Hateoas\Serializer\SerializerInterface;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -28,7 +28,7 @@ class XmlEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @var XmlSerializerInterface
+     * @var SerializerInterface
      */
     private $xmlSerializer;
 
@@ -42,7 +42,7 @@ class XmlEventSubscriber implements EventSubscriberInterface
      */
     private $embeddedsFactory;
 
-    public function __construct(XmlSerializerInterface $xmlSerializer, LinksFactory $linksFactory, EmbeddedsFactory $embeddedsFactory)
+    public function __construct(SerializerInterface $xmlSerializer, LinksFactory $linksFactory, EmbeddedsFactory $embeddedsFactory)
     {
         $this->xmlSerializer    = $xmlSerializer;
         $this->linksFactory     = $linksFactory;

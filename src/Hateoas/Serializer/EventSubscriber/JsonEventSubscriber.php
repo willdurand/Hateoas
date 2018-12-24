@@ -6,7 +6,7 @@ namespace Hateoas\Serializer\EventSubscriber;
 
 use Hateoas\Factory\EmbeddedsFactory;
 use Hateoas\Factory\LinksFactory;
-use Hateoas\Serializer\JsonSerializerInterface;
+use Hateoas\Serializer\SerializerInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
@@ -29,7 +29,7 @@ class JsonEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @var JsonSerializerInterface
+     * @var SerializerInterface
      */
     private $jsonSerializer;
 
@@ -54,7 +54,7 @@ class JsonEventSubscriber implements EventSubscriberInterface
     private $linksInlineDeferrer;
 
     public function __construct(
-        JsonSerializerInterface $jsonSerializer,
+        SerializerInterface $jsonSerializer,
         LinksFactory $linksFactory,
         EmbeddedsFactory $embeddedsFactory,
         InlineDeferrer $embeddedsInlineDeferrer,

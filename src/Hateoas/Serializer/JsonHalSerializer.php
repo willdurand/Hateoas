@@ -10,7 +10,7 @@ use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-class JsonHalSerializer implements JsonSerializerInterface
+class JsonHalSerializer implements SerializerInterface
 {
     public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {

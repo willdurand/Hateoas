@@ -24,10 +24,9 @@ use Hateoas\Serializer\EventSubscriber\JsonEventSubscriber;
 use Hateoas\Serializer\EventSubscriber\XmlEventSubscriber;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\JsonHalSerializer;
-use Hateoas\Serializer\JsonSerializerInterface;
+use Hateoas\Serializer\SerializerInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
 use Hateoas\Serializer\XmlSerializer;
-use Hateoas\Serializer\XmlSerializerInterface;
 use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
 use JMS\Serializer\EventDispatcher\EventDispatcherInterface;
@@ -65,12 +64,12 @@ class HateoasBuilder
     private $contextVariables = [];
 
     /**
-     * @var XmlSerializerInterface
+     * @var SerializerInterface
      */
     private $xmlSerializer;
 
     /**
-     * @var JsonSerializerInterface
+     * @var SerializerInterface
      */
     private $jsonSerializer;
 
@@ -192,7 +191,7 @@ class HateoasBuilder
         return new Hateoas($jmsSerializer, $linkHelper);
     }
 
-    public function setXmlSerializer(XmlSerializerInterface $xmlSerializer): HateoasBuilder
+    public function setXmlSerializer(SerializerInterface $xmlSerializer): HateoasBuilder
     {
         $this->xmlSerializer = $xmlSerializer;
 
@@ -207,7 +206,7 @@ class HateoasBuilder
         return $this->setXmlSerializer(new XmlSerializer());
     }
 
-    public function setJsonSerializer(JsonSerializerInterface $jsonSerializer): HateoasBuilder
+    public function setJsonSerializer(SerializerInterface $jsonSerializer): HateoasBuilder
     {
         $this->jsonSerializer = $jsonSerializer;
 
