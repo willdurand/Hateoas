@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hateoas\Serializer;
 
+use Hateoas\Model\Embedded;
 use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
@@ -34,6 +35,9 @@ class JsonHalSerializer implements JsonSerializerInterface
         $visitor->visitProperty(new StaticPropertyMetadata(self::class, '_links', $serializedLinks), $serializedLinks);
     }
 
+    /**
+     * @param Embedded [] $embeddeds
+     */
     public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         $serializedEmbeddeds = [];
@@ -43,17 +47,16 @@ class JsonHalSerializer implements JsonSerializerInterface
         foreach ($embeddeds as $embedded) {
             $context->pushPropertyMetadata($embedded->getMetadata());
             try {
+                $data = $navigator->accept($embedded->getData(), $embedded->getType(), $context);
+
                 if (!isset($serializedEmbeddeds[$embedded->getRel()])) {
-                    $serializedEmbeddeds[$embedded->getRel()] = $navigator->accept($embedded->getData(), null, $context);
+                    $serializedEmbeddeds[$embedded->getRel()] = $data;
                 } elseif (!isset($multiple[$embedded->getRel()])) {
                     $multiple[$embedded->getRel()] = true;
 
-                    $serializedEmbeddeds[$embedded->getRel()] = [
-                        $serializedEmbeddeds[$embedded->getRel()],
-                        $navigator->accept($embedded->getData(), null, $context),
-                    ];
+                    $serializedEmbeddeds[$embedded->getRel()] = [$serializedEmbeddeds[$embedded->getRel()], $data];
                 } else {
-                    $serializedEmbeddeds[$embedded->getRel()][] = $navigator->accept($embedded->getData(), null, $context);
+                    $serializedEmbeddeds[$embedded->getRel()][] = $data;
                 }
             } catch (NotAcceptableException $e) {
             }

@@ -29,15 +29,26 @@ class Embedded
     private $metadata;
 
     /**
+     * @var array
+     */
+    private $type;
+
+    /**
      * @param mixed $data
      * @param string|null $xmlElementName
      */
-    public function __construct(string $rel, $data, RelationPropertyMetadata $metadata, $xmlElementName = null)
+    public function __construct(string $rel, $data, RelationPropertyMetadata $metadata, $xmlElementName = null, ?array $type = null)
     {
         $this->rel            = $rel;
         $this->data           = $data;
         $this->metadata       = $metadata;
         $this->xmlElementName = $xmlElementName;
+        $this->type = $type;
+    }
+
+    public function getType(): ?array
+    {
+        return $this->type;
     }
 
     public function getMetadata(): RelationPropertyMetadata

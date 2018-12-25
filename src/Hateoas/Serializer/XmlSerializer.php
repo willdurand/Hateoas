@@ -51,12 +51,12 @@ class XmlSerializer implements XmlSerializerInterface
                     $visitor->getCurrentNode()->appendChild($entryNode);
                     $visitor->setCurrentNode($entryNode);
 
-                    $this->acceptDataAndAppend($embedded, $entry, $visitor, $context);
+                    $this->acceptDataAndAppend($embedded, $entry, $visitor, $context, null);
 
                     $visitor->revertCurrentNode();
                 }
             } else {
-                $this->acceptDataAndAppend($embedded, $embedded->getData(), $visitor, $context);
+                $this->acceptDataAndAppend($embedded, $embedded->getData(), $visitor, $context, $embedded->getType());
             }
 
             $visitor->revertCurrentNode();
@@ -85,12 +85,12 @@ class XmlSerializer implements XmlSerializerInterface
     /**
      * @param mixed $data
      */
-    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context): void
+    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context, ?array $type): void
     {
         $context->pushPropertyMetadata($embedded->getMetadata());
         $navigator = $context->getNavigator();
         try {
-            if (null !== $node = $navigator->accept($data, null)) {
+            if (null !== $node = $navigator->accept($data, $type)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
         } catch (NotAcceptableException $e) {

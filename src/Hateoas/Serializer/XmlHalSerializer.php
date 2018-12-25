@@ -37,6 +37,9 @@ class XmlHalSerializer implements XmlSerializerInterface
         }
     }
 
+    /**
+     * @param Embedded[] $embeddeds
+     */
     public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {
         foreach ($embeddeds as $embedded) {
@@ -48,7 +51,7 @@ class XmlHalSerializer implements XmlSerializerInterface
                     $visitor->setCurrentNode($entryNode);
                     $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
-                    $this->acceptDataAndAppend($embedded, $data, $visitor, $context);
+                    $this->acceptDataAndAppend($embedded, $data, $visitor, $context, null);
 
                     $visitor->revertCurrentNode();
                 }
@@ -62,7 +65,7 @@ class XmlHalSerializer implements XmlSerializerInterface
             $visitor->setCurrentNode($entryNode);
             $visitor->getCurrentNode()->setAttribute('rel', $embedded->getRel());
 
-            $this->acceptDataAndAppend($embedded, $embedded->getData(), $visitor, $context);
+            $this->acceptDataAndAppend($embedded, $embedded->getData(), $visitor, $context, $embedded->getType());
 
             $visitor->revertCurrentNode();
         }
@@ -71,12 +74,12 @@ class XmlHalSerializer implements XmlSerializerInterface
     /**
      * @param mixed $data
      */
-    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context): void
+    private function acceptDataAndAppend(Embedded $embedded, $data, XmlSerializationVisitor $visitor, SerializationContext $context, ?array $type): void
     {
         $context->pushPropertyMetadata($embedded->getMetadata());
         $navigator = $context->getNavigator();
         try {
-            if (null !== $node = $navigator->accept($data, null, $context)) {
+            if (null !== $node = $navigator->accept($data, $type, $context)) {
                 $visitor->getCurrentNode()->appendChild($node);
             }
         } catch (NotAcceptableException $e) {

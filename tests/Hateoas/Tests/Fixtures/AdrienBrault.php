@@ -23,11 +23,13 @@ use JMS\Serializer\Annotation as Serializer;
  *      exclusion = @Hateoas\Exclusion(groups = {"Default", "simple"}),
  *      embedded = @Hateoas\Embedded(
  *          "expr(object.getMacbookPro())",
+ *          type="Hateoas\Tests\Fixtures\Computer",
  *          exclusion = @Hateoas\Exclusion(groups = {"Default"})
  *      )
  * )
  * @Hateoas\Relation(
  *      "broken-computer",
+ *
  *      embedded = "expr(object.getWindowsComputer())"
  * )
  * @Hateoas\Relation(

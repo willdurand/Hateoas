@@ -15,6 +15,7 @@ use Hateoas\Configuration\RelationProvider;
 use Hateoas\Configuration\Route;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Expression\Expression;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\ClassMetadata as JMSClassMetadata;
 use Metadata\Driver\DriverInterface;
 
@@ -32,11 +33,21 @@ class AnnotationDriver implements DriverInterface
      */
     private $relationProvider;
 
-    public function __construct(AnnotationsReader $reader, CompilableExpressionEvaluatorInterface $expressionLanguage, RelationProviderInterface $relationProvider)
-    {
+    /**
+     * @var ParserInterface
+     */
+    private $typeParser;
+
+    public function __construct(
+        AnnotationsReader $reader,
+        CompilableExpressionEvaluatorInterface $expressionLanguage,
+        RelationProviderInterface $relationProvider,
+        ParserInterface $typeParser
+    ) {
         $this->reader = $reader;
         $this->relationProvider = $relationProvider;
         $this->expressionLanguage = $expressionLanguage;
+        $this->typeParser = $typeParser;
     }
 
     /**
@@ -96,7 +107,7 @@ class AnnotationDriver implements DriverInterface
     private function createHref($href)
     {
         if ($href instanceof Annotation\Route) {
-            $href = new Route(
+            return new Route(
                 $this->checkExpression($href->name),
                 is_array($href->parameters) ? $this->checkExpressionArray($href->parameters) : $this->checkExpression($href->parameters),
                 $this->checkExpression($href->absolute),
@@ -121,7 +132,12 @@ class AnnotationDriver implements DriverInterface
                 $embeddedExclusion = $this->parseExclusion($embeddedExclusion);
             }
 
-            $embedded = new Embedded($this->checkExpression($embedded->content), $this->checkExpression($embedded->xmlElementName), $embeddedExclusion);
+            return new Embedded(
+                $this->checkExpression($embedded->content),
+                $this->checkExpression($embedded->xmlElementName),
+                $embeddedExclusion,
+                null !== $embedded->type ? $this->typeParser->parse($embedded->type) : null
+            );
         }
 
         return $this->checkExpression($embedded);

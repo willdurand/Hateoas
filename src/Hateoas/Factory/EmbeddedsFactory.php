@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hateoas\Factory;
 
+use Hateoas\Configuration\Relation;
 use Hateoas\Model\Embedded;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
@@ -48,6 +49,9 @@ class EmbeddedsFactory
 
         if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
             $langugeData = ['object' => $object, 'context' => $context];
+            /**
+             * @var $relation Relation
+             */
             foreach ($classMetadata->getRelations() as $relation) {
                 if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
                     continue;
@@ -59,7 +63,7 @@ class EmbeddedsFactory
 
                 $propertyMetadata = new RelationPropertyMetadata($relation->getEmbedded()->getExclusion(), $relation);
 
-                $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName);
+                $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName, $relation->getEmbedded()->getType());
             }
         }
         return $embeddeds;

@@ -24,14 +24,25 @@ class Embedded
     private $exclusion;
 
     /**
+     * @var array
+     */
+    private $type;
+
+    /**
      * @param string|mixed $content
      * @param string|Expression|null  $xmlElementName
      */
-    public function __construct($content, $xmlElementName = null, ?Exclusion $exclusion = null)
+    public function __construct($content, $xmlElementName = null, ?Exclusion $exclusion = null, ?array $type = null)
     {
         $this->content        = $content;
         $this->xmlElementName = $xmlElementName;
         $this->exclusion      = $exclusion;
+        $this->type = $type;
+    }
+
+    public function getType(): ?array
+    {
+        return $this->type;
     }
 
     /**

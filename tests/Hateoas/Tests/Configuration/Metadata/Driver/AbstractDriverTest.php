@@ -13,6 +13,8 @@ use Hateoas\Configuration\RelationProvider;
 use Hateoas\Expression\LinkExpressionFunction;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\Expression\ExpressionEvaluator;
+use JMS\Serializer\Type\Parser;
+use JMS\Serializer\Type\ParserInterface;
 use Metadata\Driver\DriverInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
@@ -32,6 +34,11 @@ abstract class AbstractDriverTest extends TestCase
             new FunctionProvider(),
             new StaticMethodProvider(),
         ]);
+    }
+
+    protected function createTypeParser(): ParserInterface
+    {
+        return new Parser();
     }
 
     /**
@@ -119,6 +126,7 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertSame('foo', $relation->getExclusion()->getExcludeIf());
         $this->assertInstanceOf('Hateoas\Configuration\Embedded', $relation->getEmbedded());
         $this->assertSame('hello', $relation->getEmbedded()->getContent());
+        $this->assertSame(['name' => 'string', 'params' => []], $relation->getEmbedded()->getType());
         $this->assertInstanceOf('Hateoas\Configuration\Exclusion', $relation->getEmbedded()->getExclusion());
         $this->assertSame(['group3', 'group4'], $relation->getEmbedded()->getExclusion()->getGroups());
         $this->assertSame('1.1', $relation->getEmbedded()->getExclusion()->getSinceVersion());
