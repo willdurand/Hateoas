@@ -26,11 +26,11 @@ class RouteAwareRepresentationTest extends RepresentationTestCase
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
+  <link rel="self" href="/authors?query=willdurand%2FHateoas"/>
   <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
   </entry>
-  <link rel="self" href="/authors?query=willdurand%2FHateoas"/>
 </result>
 
 XML
@@ -91,11 +91,11 @@ JSON
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <result>
+  <link rel="self" href="http://example.com/authors?query=willdurand%2FHateoas"/>
   <entry rel="items">
     <entry><![CDATA[Adrien]]></entry>
     <entry><![CDATA[William]]></entry>
   </entry>
-  <link rel="self" href="http://example.com/authors?query=willdurand%2FHateoas"/>
 </result>
 
 XML

@@ -34,15 +34,15 @@ class PaginatedRepresentationTest extends RepresentationTestCase
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="3" limit="20" pages="17" total="100">
-  <entry rel="items">
-    <entry><![CDATA[Adrien]]></entry>
-    <entry><![CDATA[William]]></entry>
-  </entry>
   <link rel="self" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20"/>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;page=17&amp;limit=20"/>
   <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
   <link rel="previous" href="/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
+  <entry rel="items">
+    <entry><![CDATA[Adrien]]></entry>
+    <entry><![CDATA[William]]></entry>
+  </entry>
 </collection>
 
 XML
@@ -53,12 +53,12 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="3" limit="20" pages="17" total="100" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20">
-  <resource rel="items"><![CDATA[Adrien]]></resource>
-  <resource rel="items"><![CDATA[William]]></resource>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;page=17&amp;limit=20"/>
   <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
   <link rel="previous" href="/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
+  <resource rel="items"><![CDATA[Adrien]]></resource>
+  <resource rel="items"><![CDATA[William]]></resource>
 </collection>
 
 XML
@@ -69,15 +69,15 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <users page="3" limit="20" pages="17" total="100">
-  <entry rel="items">
-    <entry><![CDATA[Adrien]]></entry>
-    <entry><![CDATA[William]]></entry>
-  </entry>
   <link rel="self" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20"/>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;page=17&amp;limit=20"/>
   <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
   <link rel="previous" href="/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
+  <entry rel="items">
+    <entry><![CDATA[Adrien]]></entry>
+    <entry><![CDATA[William]]></entry>
+  </entry>
 </users>
 
 XML
@@ -88,12 +88,12 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <users page="3" limit="20" pages="17" total="100" href="/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20">
-  <resource rel="items"><![CDATA[Adrien]]></resource>
-  <resource rel="items"><![CDATA[William]]></resource>
   <link rel="first" href="/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
   <link rel="last" href="/authors?query=willdurand%2FHateoas&amp;page=17&amp;limit=20"/>
   <link rel="next" href="/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
   <link rel="previous" href="/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
+  <resource rel="items"><![CDATA[Adrien]]></resource>
+  <resource rel="items"><![CDATA[William]]></resource>
 </users>
 
 XML
@@ -157,15 +157,15 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="3" limit="20" pages="17">
-  <entry rel="items">
-    <entry><![CDATA[Adrien]]></entry>
-    <entry><![CDATA[William]]></entry>
-  </entry>
   <link rel="self" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20"/>
   <link rel="first" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
   <link rel="last" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=17&amp;limit=20"/>
   <link rel="next" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
   <link rel="previous" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
+  <entry rel="items">
+    <entry><![CDATA[Adrien]]></entry>
+    <entry><![CDATA[William]]></entry>
+  </entry>
 </collection>
 
 XML
@@ -176,12 +176,12 @@ XML
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="3" limit="20" pages="17" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=3&amp;limit=20">
-  <resource rel="items"><![CDATA[Adrien]]></resource>
-  <resource rel="items"><![CDATA[William]]></resource>
   <link rel="first" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=1&amp;limit=20"/>
   <link rel="last" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=17&amp;limit=20"/>
   <link rel="next" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=4&amp;limit=20"/>
   <link rel="previous" href="http://example.com/authors?query=willdurand%2FHateoas&amp;page=2&amp;limit=20"/>
+  <resource rel="items"><![CDATA[Adrien]]></resource>
+  <resource rel="items"><![CDATA[William]]></resource>
 </collection>
 
 XML

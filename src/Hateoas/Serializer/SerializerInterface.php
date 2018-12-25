@@ -9,15 +9,15 @@ use Hateoas\Model\Link;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
-interface XmlSerializerInterface
+interface SerializerInterface
 {
     /**
-     * @param Link[]                  $links
+     * @param Link[]                   $links
      */
     public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context): void;
 
     /**
-     * @param Embedded[]              $embeddeds
+     * @param Embedded[]               $embeddeds
      */
     public function serializeEmbeddeds(array $embeddeds, SerializationVisitorInterface $visitor, SerializationContext $context): void;
 }

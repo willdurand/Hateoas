@@ -879,9 +879,7 @@ tags.
 
 #### Adding New Serializers
 
-For JSON related formats, you must implement the `JsonSerializerInterface`
-interface, and for XML related formats, you must implement the
-`XmlSerializerInterface`. Both interfaces describe two methods to serialize
+You must implement the `SerializerInterface` that describes two methods to serialize
 **links** and **embedded** relations.
 
 ### The HateoasBuilder
@@ -904,14 +902,14 @@ All the methods below return the current builder, so that you can chain them.
 
 #### XML Serializer
 
-* `setXmlSerializer(XmlSerializerInterface $xmlSerializer)`: sets the XML
+* `setXmlSerializer(SerializerInterface $xmlSerializer)`: sets the XML
   serializer to use. Default is: `XmlSerializer`;
 * `setDefaultXmlSerializer()`: sets the default XML serializer
   (`XmlSerializer`).
 
 #### JSON Serializer
 
-* `setJsonSerializer(JsonSerializerInterface $jsonSerializer)`: sets the JSON
+* `setJsonSerializer(SerializerInterface $jsonSerializer)`: sets the JSON
   serializer to use. Default is: `JsonHalSerializer`;
 * `setDefaultJsonSerializer()`: sets the default JSON serializer
   (`JsonHalSerializer`).

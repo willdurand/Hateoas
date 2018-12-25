@@ -10,7 +10,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 
-class XmlHalSerializer implements XmlSerializerInterface
+class XmlHalSerializer implements SerializerInterface
 {
     public function serializeLinks(array $links, SerializationVisitorInterface $visitor, SerializationContext $context): void
     {

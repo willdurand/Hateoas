@@ -12,7 +12,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
 
-class XmlSerializer implements XmlSerializerInterface
+class XmlSerializer implements SerializerInterface
 {
     /**
      * @param Link[]                  $links
