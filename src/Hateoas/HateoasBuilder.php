@@ -23,8 +23,8 @@ use Hateoas\Helper\LinkHelper;
 use Hateoas\Serializer\AddRelationsListener;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\JsonHalSerializer;
-use Hateoas\Serializer\SerializerInterface;
 use Hateoas\Serializer\Metadata\InlineDeferrer;
+use Hateoas\Serializer\SerializerInterface;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\UrlGenerator\UrlGeneratorInterface;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
@@ -187,7 +187,7 @@ class HateoasBuilder
         $this->serializerBuilder
             ->addDefaultListeners()
             ->configureListeners(static function (EventDispatcherInterface $dispatcher) use ($eventListeners): void {
-                foreach ($eventListeners as $format => $listener){
+                foreach ($eventListeners as $format => $listener) {
                     $dispatcher->addListener(Events::POST_SERIALIZE, [$listener, 'onPostSerialize'], null, $format);
                 }
             });
