@@ -90,6 +90,7 @@ XML
         );
     }
 
+
     public function testCyclicalReferences()
     {
         $hateoas = HateoasBuilder::create()->build();
@@ -117,15 +118,46 @@ XML
 
         $this->assertSame(
             '{'
-                . '"name":"reference1",'
-                . '"_embedded":{'
-                    . '"reference2":{'
-                        . '"name":"reference2",'
-                        . '"_embedded":[]'
-                    . '}'
-                . '}'
+            . '"name":"reference1",'
+            . '"_embedded":{'
+            . '"reference2":{'
+            . '"name":"reference2",'
+            . '"_embedded":{}'
+            . '}'
+            . '}'
             . '}',
             $hateoas->serialize($reference1, 'json')
+        );
+    }
+
+
+    public function testWithNullInEmbedded()
+    {
+        $hateoas = HateoasBuilder::create()->build();
+
+        $reference1 = new CircularReference1();
+
+        $this->assertSame(
+            <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name><![CDATA[reference1]]></name>
+  <entry rel="reference2" xsi:nil="true"/>
+</result>
+
+XML
+            ,
+            $hateoas->serialize($reference1, 'xml', SerializationContext::create()->setSerializeNull(true))
+        );
+
+        $this->assertSame(
+            '{'
+            . '"name":"reference1",'
+            . '"_embedded":{'
+            . '"reference2":null'
+            . '}'
+            . '}',
+            $hateoas->serialize($reference1, 'json', SerializationContext::create()->setSerializeNull(true))
         );
     }
 }
