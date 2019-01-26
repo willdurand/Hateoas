@@ -1330,16 +1330,9 @@ As of October 2013, versions `1.x` and `0.x` are officially not supported anymor
 
 ### Stable Version
 
-Version `2.x` is the current major stable version.
+Version `3.x` is the current major stable version.
 
-### Next version
-
-The upcoming version is `3.x`, it is still a "work in progress" and is not recommended to use it in production.
-
-`willdurand/hateoas`  `3.x` will be compatible with `jms/serializer` `^2.1` 
-
-By following the [3.0](https://github.com/willdurand/Hateoas/milestone/3) milestone it is possible 
-to have more info about the development status.
+Version `2.x` is maintained only for security bug fixes and for major issues that might occur.
 
 Contributing
 ------------
