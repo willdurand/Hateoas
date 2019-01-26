@@ -39,7 +39,7 @@
         "twig/twig": "To use the Twig extensions."
     },
     "autoload": {
-        "psr-0": { "Hateoas": "src/" }
+        "psr-4": { "Hateoas\\": "src/" }
     },
     "config": {
         "bin-dir": "bin"
