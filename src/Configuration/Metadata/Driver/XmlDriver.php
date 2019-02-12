@@ -72,7 +72,7 @@ class XmlDriver extends AbstractFileDriver
             $providers = preg_split('/\s*,\s*/', (string) $exists[0]->attributes(self::NAMESPACE_URI)->providers);
 
             foreach ($providers as $relationProvider) {
-                $relations = $this->relationProvider->getRelations(new RelationProvider($this->checkExpression($relationProvider)), $class->getName());
+                $relations = $this->relationProvider->getRelations(new RelationProvider((string) $this->checkExpression($relationProvider)), $class->getName());
                 foreach ($relations as $relation) {
                     $classMetadata->addRelation($relation);
                 }
