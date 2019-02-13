@@ -1249,7 +1249,7 @@ It can be "name":
 Here and example using the expression language:
 
 ```php
-use Hateoas\Configuration as Hateoas;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @Hateoas\RelationProvider("expr(service('user.rel_provider').getExtraRelations())")
