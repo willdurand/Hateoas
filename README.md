@@ -1037,11 +1037,11 @@ Reference
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <serializer>
-<class name="Acme\Demo\Representation\User" h:providers="Class::getRelations, getRelations" xmlns:h="https://github.com/willdurand/Hateoas">
+<class name="Acme\Demo\Representation\User" h:providers="Class::getRelations expr(sevice('foo').getMyAdditionalRelations())" xmlns:h="https://github.com/willdurand/Hateoas">
         <h:relation rel="self">
             <h:href uri="http://acme.com/foo/1" />
         </h:relation>
-        <h:relation rel="expr(object.getFriendsDynamicRel())">
+        <h:relation rel="friends">
             <h:href route="user_friends" generator="my_custom_generator">
                 <h:parameter name="id" value="expr(object.getId())" />
                 <h:parameter name="page" value="1" />
@@ -1068,7 +1068,7 @@ Acme\Demo\Representation\User:
             rel: self
             href: http://acme.com/foo/1
         -
-            rel: expr(object.getFriendsDynamicRel())
+            rel: friends
             href:
                 route: user_friends
                 parameters:
