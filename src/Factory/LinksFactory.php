@@ -48,7 +48,7 @@ class LinksFactory
                     continue;
                 }
 
-                $links[] = $this->linkFactory->createLink($object, $relation, $context);
+                $links[$relation->getName()] = $this->linkFactory->createLink($object, $relation, $context);
             }
         }
 

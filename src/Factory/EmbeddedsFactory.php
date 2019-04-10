@@ -63,7 +63,7 @@ class EmbeddedsFactory
 
                 $propertyMetadata = new RelationPropertyMetadata($relation->getEmbedded()->getExclusion(), $relation);
 
-                $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName, $relation->getEmbedded()->getType());
+                $embeddeds[$rel] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName, $relation->getEmbedded()->getType());
             }
         }
         return $embeddeds;
