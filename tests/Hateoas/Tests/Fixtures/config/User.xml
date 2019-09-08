@@ -48,5 +48,10 @@
             </h:embedded>
             <h:exclusion groups="group1, group2" since-version="1" until-version="2.2" max-depth="42" exclude-if="foo"/>
         </h:relation>
+
+        <h:relation rel="attribute_with_expression">
+            <h:href uri="baz"/>
+            <h:attribute name="baz" value="expr(object.getId())"/>
+        </h:relation>
     </class>
 </serializer>

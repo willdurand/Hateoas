@@ -36,6 +36,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *          )
  *      )
  * )
+ * @Hateoas\Relation("attribute_with_expression", href = "baz", attributes = {"baz" = "expr(object.getId())"})
  * @Hateoas\RelationProvider("Hateoas\Tests\Fixtures\User::getRelations")
  */
 class User
