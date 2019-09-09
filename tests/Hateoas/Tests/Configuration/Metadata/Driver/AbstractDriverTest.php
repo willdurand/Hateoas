@@ -134,10 +134,14 @@ abstract class AbstractDriverTest extends TestCase
         $this->assertSame(43, $relation->getEmbedded()->getExclusion()->getMaxDepth());
         $this->assertSame('bar', $relation->getEmbedded()->getExclusion()->getExcludeIf());
 
+        $relation = $relations[$i++];
+        $this->assertSame('attribute_with_expression', $relation->getName());
+        $this->assertEquals(['baz' => $exp->parse('object.getId()', ['object'])], $relation->getAttributes());
+
         /** @var RelationProvider[] $relations */
         $relations = $classMetadata->getRelations();
         $this->assertInternalType('array', $relations);
-        $this->assertCount(7, $relations);
+        $this->assertCount(8, $relations);
 
 //        $relation = current($relations);
 //        $this->assertSame('getRelations', $relation->getName());

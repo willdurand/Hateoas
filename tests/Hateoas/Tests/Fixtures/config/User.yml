@@ -50,4 +50,10 @@ Hateoas\Tests\Fixtures\User:
                     until_version: 2.3
                     max_depth: 43
                     exclude_if: bar
+        -
+            rel: attribute_with_expression
+            href: baz
+            attributes:
+                baz: expr(object.getId())
+
     relation_providers: [ Hateoas\Tests\Fixtures\User::getRelations ]

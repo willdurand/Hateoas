@@ -67,7 +67,7 @@ class YamlDriver extends AbstractFileDriver
                     $relation['rel'],
                     $this->createHref($relation),
                     $this->createEmbedded($relation),
-                    $relation['attributes'] ?? [],
+                    isset($relation['attributes']) ? $this->checkExpressionArray($relation['attributes']): [],
                     $this->createExclusion($relation)
                 ));
             }
