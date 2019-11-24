@@ -24,7 +24,6 @@ before_install:
   - composer require --no-update symfony/expression-language "$SYMFONY_VERSION"
   - composer require --no-update --dev symfony/yaml "$SYMFONY_VERSION"
   - composer require --no-update --dev symfony/routing "$SYMFONY_VERSION"
-  - composer require --no-update --dev symfony/dependency-injection "$SYMFONY_VERSION"
 
 install:
     - composer install --no-interaction --prefer-dist
