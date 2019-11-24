@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Hateoas\Twig\Extension;
 
 use Hateoas\Helper\LinkHelper;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class LinkExtension extends \Twig_Extension
+class LinkExtension extends AbstractExtension
 {
     /**
      * @var LinkHelper
@@ -24,7 +26,7 @@ class LinkExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('link_href', [$this->linkHelper, 'getLinkHref']),
+            new TwigFunction('link_href', [$this->linkHelper, 'getLinkHref']),
         ];
     }
 
