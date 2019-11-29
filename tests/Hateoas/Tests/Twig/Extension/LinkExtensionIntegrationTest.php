@@ -7,8 +7,9 @@ namespace Hateoas\Tests\Twig\Extension;
 use Hateoas\HateoasBuilder;
 use Hateoas\Twig\Extension\LinkExtension;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
+use Twig\Test\IntegrationTestCase;
 
-class LinkExtensionIntegrationTest extends \Twig_Test_IntegrationTestCase
+class LinkExtensionIntegrationTest extends IntegrationTestCase
 {
     public function getExtensions()
     {
