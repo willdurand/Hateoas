@@ -8,6 +8,7 @@ cache:
 php:
   - '7.2'
   - '7.3'
+  - '7.4snapshot'
 
 env:
   - SYMFONY_VERSION=^3.4 JMS_VERSION=^2.1
