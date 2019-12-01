@@ -11,17 +11,12 @@ php:
   - '7.4snapshot'
 
 env:
-  - SYMFONY_VERSION=^3.4 JMS_VERSION=^2.1
-  - SYMFONY_VERSION=^4.0 JMS_VERSION=^2.1
-  - SYMFONY_VERSION=^5.0 JMS_VERSION=^2.1
-
-  - SYMFONY_VERSION=^3.4 JMS_VERSION=^3.0
-  - SYMFONY_VERSION=^4.0 JMS_VERSION=^3.0
-  - SYMFONY_VERSION=^5.0 JMS_VERSION=^3.0
+  - SYMFONY_VERSION=^3.4
+  - SYMFONY_VERSION=^4.0
+  - SYMFONY_VERSION=^5.0
 
 
 before_install:
-  - composer require --no-update jms/serializer "$JMS_VERSION"
   - composer require --no-update symfony/expression-language "$SYMFONY_VERSION"
   - composer require --no-update --dev symfony/yaml "$SYMFONY_VERSION"
   - composer require --no-update --dev symfony/routing "$SYMFONY_VERSION"
