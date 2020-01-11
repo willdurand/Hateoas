@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Hateoas\Util;
 
-use Doctrine\Common\Persistence\Proxy;
+use Doctrine\Persistence\Proxy;
 
 class ClassUtils
 {
