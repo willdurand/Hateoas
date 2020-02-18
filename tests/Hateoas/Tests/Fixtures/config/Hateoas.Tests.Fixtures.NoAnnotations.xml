@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="Hateoas\Tests\Fixtures\NoAnnotations" xmlns:h="https://github.com/willdurand/Hateoas" xml-root-name="resource">
+        <h:relation rel="self">
+            <h:href uri="https://github.com/willdurand/Hateoas/issues/303" />
+        </h:relation>
+        <property name="unused" exclude="true" />
+        <property name="id" exclude="true" />
+        <virtual-property name="id" expression="'id-' ~ object.id()" />
+    </class>
+</serializer>

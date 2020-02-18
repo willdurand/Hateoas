@@ -8,6 +8,7 @@ use Hateoas\HateoasBuilder;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\CircularReference1;
 use Hateoas\Tests\Fixtures\CircularReference2;
+use Hateoas\Tests\Fixtures\NoAnnotations;
 use Hateoas\Tests\Fixtures\WithAlternativeRouter;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use JMS\Serializer\SerializationContext;
@@ -158,6 +159,29 @@ XML
             . '}'
             . '}',
             $hateoas->serialize($reference1, 'json', SerializationContext::create()->setSerializeNull(true))
+        );
+    }
+
+    public function testWithXmlRootNameFromXmlConfiguration()
+    {
+        $hateoas = HateoasBuilder::create()
+            ->addMetadataDir(self::rootPath() . '/Fixtures/config')
+            ->build();
+
+        $resource = new NoAnnotations('#303', 303);
+
+        $this->assertSame(
+            <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+  <id><![CDATA[id-#303]]></id>
+  <number>303</number>
+  <link rel="self" href="https://github.com/willdurand/Hateoas/issues/303"/>
+</resource>
+
+XML
+            ,
+            $hateoas->serialize($resource, 'xml')
         );
     }
 }
