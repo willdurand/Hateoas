@@ -192,6 +192,9 @@ class HateoasBuilder
                 }
             });
 
+        $this->serializerBuilder->addMetadataDirs($this->metadataDirs);
+        $this->serializerBuilder->setExpressionEvaluator($this->expressionEvaluator);
+
         $jmsSerializer = $this->serializerBuilder->build();
 
         return new Hateoas($jmsSerializer, $linkHelper);
