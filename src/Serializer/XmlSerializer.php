@@ -99,6 +99,10 @@ class XmlSerializer implements SerializerInterface
         $context->popPropertyMetadata();
     }
 
+    /**
+     * @param mixed $attributeValue
+     * @return string
+     */
     private function formatValue($attributeValue): string
     {
         if (is_bool($attributeValue)) {
