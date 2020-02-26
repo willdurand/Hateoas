@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="Hateoas\Tests\Fixtures\LinkAttributes" xmlns:h="https://github.com/willdurand/Hateoas">
+        <h:relation rel="self">
+            <h:href uri="https://github.com/willdurand/Hateoas/issues/305" />
+            <h:attribute name="templated" value="expr(false)" />
+        </h:relation>
+        <h:relation rel="foo">
+            <h:href uri="http://foo{?bar}" />
+            <h:attribute name="templated" value="expr(true)" />
+        </h:relation>
+        <h:relation rel="bar">
+            <h:href uri="http://foo/bar" />
+            <h:attribute name="templated" value="expr(false)" />
+            <h:attribute name="number" value="expr(2)" />
+        </h:relation>
+    </class>
+</serializer>

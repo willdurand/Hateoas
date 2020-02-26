@@ -12,6 +12,7 @@ use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use Hateoas\Serializer\XmlSerializer;
 use Hateoas\Tests\Fixtures\AdrienBrault;
 use Hateoas\Tests\Fixtures\Gh236Foo;
+use Hateoas\Tests\Fixtures\LinkAttributes;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
@@ -168,5 +169,29 @@ XML
         $xmlSerializationVisitor->setCurrentNode($xmlRootNode);
 
         return $xmlSerializationVisitor;
+    }
+
+    public function testTemplateLink()
+    {
+        $data = new LinkAttributes();
+
+        $hateoas = HateoasBuilder::create()
+            ->setXmlSerializer(new XmlSerializer())
+            ->addMetadataDir(__DIR__ . '/../Fixtures/config/')
+            ->build();
+
+        $this->assertSame(
+            <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+  <link rel="self" href="https://github.com/willdurand/Hateoas/issues/305" templated="false"/>
+  <link rel="foo" href="http://foo{?bar}" templated="true"/>
+  <link rel="bar" href="http://foo/bar" templated="false" number="2"/>
+</result>
+
+XML
+            ,
+            $hateoas->serialize($data, 'xml')
+        );
     }
 }
