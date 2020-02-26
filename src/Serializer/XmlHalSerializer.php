@@ -90,7 +90,6 @@ class XmlHalSerializer implements SerializerInterface
 
     /**
      * @param mixed $attributeValue
-     * @return string
      */
     private function formatValue($attributeValue): string
     {

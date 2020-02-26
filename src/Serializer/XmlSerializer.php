@@ -101,7 +101,6 @@ class XmlSerializer implements SerializerInterface
 
     /**
      * @param mixed $attributeValue
-     * @return string
      */
     private function formatValue($attributeValue): string
     {
