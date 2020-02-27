@@ -15,6 +15,7 @@ use Hateoas\Tests\Fixtures\Foo1;
 use Hateoas\Tests\Fixtures\Foo2;
 use Hateoas\Tests\Fixtures\Foo3;
 use Hateoas\Tests\Fixtures\Gh236Foo;
+use Hateoas\Tests\Fixtures\LinkAttributes;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
@@ -305,6 +306,41 @@ JSON
             ,
             $this->json(
                 $hateoas->serialize($data, 'json', SerializationContext::create()->enableMaxDepthChecks())
+            )
+        );
+    }
+
+    public function testTemplateLink()
+    {
+        $data = new LinkAttributes();
+
+        $hateoas = HateoasBuilder::create()
+            ->addMetadataDir(__DIR__ . '/../Fixtures/config/')
+            ->build();
+
+        $this->assertSame(
+            <<<JSON
+{
+    "_links": {
+        "self": {
+            "href": "https:\/\/github.com\/willdurand\/Hateoas\/issues\/305",
+            "templated": false
+        },
+        "foo": {
+            "href": "http:\/\/foo{?bar}",
+            "templated": true
+        },
+        "bar": {
+            "href": "http:\/\/foo\/bar",
+            "templated": false,
+            "number": 2
+        }
+    }
+}
+JSON
+            ,
+            $this->json(
+                $hateoas->serialize($data, 'json')
             )
         );
     }

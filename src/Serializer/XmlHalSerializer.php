@@ -9,6 +9,7 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
+use function is_bool;
 
 class XmlHalSerializer implements SerializerInterface
 {
@@ -17,7 +18,7 @@ class XmlHalSerializer implements SerializerInterface
         foreach ($links as $link) {
             if ('self' === $link->getRel()) {
                 foreach ($link->getAttributes() as $key => $value) {
-                    $visitor->getCurrentNode()->setAttribute($key, $value);
+                    $visitor->getCurrentNode()->setAttribute($key, $this->formatValue($value));
                 }
 
                 $visitor->getCurrentNode()->setAttribute('href', $link->getHref());
@@ -32,7 +33,7 @@ class XmlHalSerializer implements SerializerInterface
             $linkNode->setAttribute('href', $link->getHref());
 
             foreach ($link->getAttributes() as $attributeName => $attributeValue) {
-                $linkNode->setAttribute($attributeName, $attributeValue);
+                $linkNode->setAttribute($attributeName, $this->formatValue($attributeValue));
             }
         }
     }
@@ -85,5 +86,16 @@ class XmlHalSerializer implements SerializerInterface
         } catch (NotAcceptableException $e) {
         }
         $context->popPropertyMetadata();
+    }
+
+    /**
+     * @param mixed $attributeValue
+     */
+    private function formatValue($attributeValue): string
+    {
+        if (is_bool($attributeValue)) {
+            return $attributeValue ? 'true' : 'false';
+        }
+        return (string) $attributeValue;
     }
 }
