@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hateoas\Factory;
 
-use Hateoas\Configuration\Relation;
 use Hateoas\Model\Embedded;
 use Hateoas\Serializer\ExclusionManager;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
@@ -66,6 +65,7 @@ class EmbeddedsFactory
                 $embeddeds[] = new Embedded($rel, $data, $propertyMetadata, $xmlElementName, $relation->getEmbedded()->getType());
             }
         }
+
         return $embeddeds;
     }
 

@@ -260,7 +260,6 @@ class HateoasBuilder
         return $this;
     }
 
-
     public function addConfigurationExtension(ConfigurationExtensionInterface $configurationExtension): HateoasBuilder
     {
         $this->configurationExtensions[] = $configurationExtension;

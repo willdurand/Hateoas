@@ -49,11 +49,13 @@ class InlineDeferrer
         if (count($visitingStack) > 0) {
             $parentObject = $visitingStack[0];
         }
+
         if ($parentObject === $object && count($visitingStack) > 1) {
             $parentObject = $visitingStack[1]; // $object is inlined inside $parentObject
         }
 
-        if ($metadataStack->count() > 0 && isset($metadataStack[0]->inline) && $metadataStack[0]->inline
+        if (
+            $metadataStack->count() > 0 && isset($metadataStack[0]->inline) && $metadataStack[0]->inline
             && $context->getMetadataFactory()->getMetadataForClass(get_class($parentObject)) === $metadataStack[1]
         ) {
             return $parentObject;

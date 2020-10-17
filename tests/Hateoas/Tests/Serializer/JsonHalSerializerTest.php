@@ -92,6 +92,7 @@ class JsonHalSerializerTest extends TestCase
                 ->accept($arg, null, $contextProphecy)
                 ->willReturnArgument();
         }
+
         $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
         $contextProphecy->popPropertyMetadata()->shouldBeCalled();
         $embeddeds = [

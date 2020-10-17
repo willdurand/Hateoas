@@ -46,9 +46,6 @@ class XmlDriver extends AbstractFileDriver
         $this->typeParser = $typeParser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function loadMetadataFromFile(\ReflectionClass $class, string $file): ?JMSClassMetadata
     {
         $previous = libxml_use_internal_errors(true);
@@ -115,9 +112,6 @@ class XmlDriver extends AbstractFileDriver
         return $classMetadata;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getExtension(): string
     {
         return 'xml';
