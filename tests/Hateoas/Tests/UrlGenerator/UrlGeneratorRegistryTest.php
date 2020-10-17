@@ -6,9 +6,12 @@ namespace Hateoas\Tests\UrlGenerator;
 
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class UrlGeneratorRegistryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function test()
     {
         $defaultUrlGenerator = $this->mockUrlGenerator();
@@ -23,6 +26,7 @@ class UrlGeneratorRegistryTest extends TestCase
         } catch (\Throwable $e) {
             $exception = $e;
         }
+
         $this->assertInstanceOf('InvalidArgumentException', $exception);
         $this->assertSame(
             'The "foo" url generator is not set. Available url generators are: default.',

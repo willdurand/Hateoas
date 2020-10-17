@@ -14,10 +14,13 @@ use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class EmbeddedsFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     protected function expr($expr)
     {
         $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());

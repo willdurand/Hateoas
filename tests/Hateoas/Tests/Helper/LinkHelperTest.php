@@ -20,7 +20,7 @@ class LinkHelperTest extends TestCase
 {
     private $hateoas;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->hateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, new CallableUrlGenerator(function ($name, $parameters, $absolute) {
@@ -55,13 +55,12 @@ class LinkHelperTest extends TestCase
         );
     }
 
-    /**
-     * @expectedExceptionMessage  Can not find the relation "unknown-rel" for the "Hateoas\Tests\Fixtures\Will" class
-     * @expectedException \RuntimeException
-     */
     public function testGetLinkHrefReturnsNullIfRelNotFound()
     {
         $linkHelper = new LinkHelper($this->getLinkFactoryMock($this->never()), $this->getMetadataFactoryMock());
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Can not find the relation "unknown-rel" for the "Hateoas\Tests\Fixtures\Will" class');
 
         $linkHelper->getLinkHref(new Will(123), 'unknown-rel');
     }

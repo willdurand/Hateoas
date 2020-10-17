@@ -16,10 +16,13 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class ExclusionManagerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testDoesNotSkipNonNullEmbedded()
     {
         $exclusionManager = new ExclusionManager(new ExpressionLanguageExclusionStrategy(new ExpressionEvaluator(new ExpressionLanguage())));
