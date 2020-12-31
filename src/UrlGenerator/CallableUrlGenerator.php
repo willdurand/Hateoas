@@ -15,6 +15,7 @@ class CallableUrlGenerator implements UrlGeneratorInterface
     {
         $this->callable = $callable;
     }
+
     /**
      * @param bool|int $absolute
      */

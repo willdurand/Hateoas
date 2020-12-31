@@ -37,12 +37,10 @@ class HateoasTest extends TestCase
             ->build();
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Can not find the relation "unknown-rel" for the "Hateoas\Tests\Fixtures\Will" class
-     */
     public function testGetLinkHrefUrlWithUnknownRelThrowsException()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Can not find the relation "unknown-rel" for the "Hateoas\Tests\Fixtures\Will" class');
         $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'unknown-rel'));
         $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'unknown-rel', true));
     }

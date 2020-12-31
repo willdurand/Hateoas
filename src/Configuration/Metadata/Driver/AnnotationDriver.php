@@ -50,9 +50,6 @@ class AnnotationDriver implements DriverInterface
         $this->typeParser = $typeParser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadMetadataForClass(\ReflectionClass $class): ?JMSClassMetadata
     {
         $annotations = $this->reader->getClassAnnotations($class);

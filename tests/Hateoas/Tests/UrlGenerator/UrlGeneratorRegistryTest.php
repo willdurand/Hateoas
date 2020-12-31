@@ -26,6 +26,7 @@ class UrlGeneratorRegistryTest extends TestCase
         } catch (\Throwable $e) {
             $exception = $e;
         }
+
         $this->assertInstanceOf('InvalidArgumentException', $exception);
         $this->assertSame(
             'The "foo" url generator is not set. Available url generators are: default.',

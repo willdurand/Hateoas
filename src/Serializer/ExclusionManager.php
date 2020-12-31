@@ -28,11 +28,7 @@ class ExclusionManager
             return true;
         }
 
-        if (null === $relation->getHref()) {
-            return true;
-        }
-
-        return false;
+        return null === $relation->getHref();
     }
 
     public function shouldSkipEmbedded(object $object, Relation $relation, SerializationContext $context): bool
@@ -62,13 +58,8 @@ class ExclusionManager
             }
         }
 
-        if (null !== $exclusion
+        return null !== $exclusion
             && null !== $exclusion->getExcludeIf()
-            && $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $context)
-        ) {
-            return true;
-        }
-
-        return false;
+            && $this->expressionExclusionStrategy->shouldSkipProperty($propertyMetadata, $context);
     }
 }

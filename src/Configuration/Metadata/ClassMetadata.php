@@ -28,17 +28,11 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         return $this->relations;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function addRelation(Relation $relation): void
     {
         $this->relations[] = $relation;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function merge(MergeableInterface $object): void
     {
         if (!$object instanceof self) {

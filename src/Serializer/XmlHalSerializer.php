@@ -9,6 +9,7 @@ use JMS\Serializer\Exception\NotAcceptableException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlSerializationVisitor;
+
 use function is_bool;
 
 class XmlHalSerializer implements SerializerInterface
@@ -85,6 +86,7 @@ class XmlHalSerializer implements SerializerInterface
             }
         } catch (NotAcceptableException $e) {
         }
+
         $context->popPropertyMetadata();
     }
 
@@ -96,6 +98,7 @@ class XmlHalSerializer implements SerializerInterface
         if (is_bool($attributeValue)) {
             return $attributeValue ? 'true' : 'false';
         }
+
         return (string) $attributeValue;
     }
 }
