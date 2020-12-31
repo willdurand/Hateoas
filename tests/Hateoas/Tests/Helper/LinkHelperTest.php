@@ -20,7 +20,7 @@ class LinkHelperTest extends TestCase
 {
     private $hateoas;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->hateoas = HateoasBuilder::create()
             ->setUrlGenerator(null, new CallableUrlGenerator(function ($name, $parameters, $absolute) {

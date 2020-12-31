@@ -8,9 +8,12 @@ use Hateoas\Serializer\AddRelationsListener;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class AddRelationsListenerTest extends TestCase
 {
+    use ProphecyTrait;
+
     protected function createEventSubscriber($serializer, $linksFactory, $embedsFactory)
     {
         $inlineDeferrerProphecy = $this->prophesize('Hateoas\Serializer\Metadata\InlineDeferrer');

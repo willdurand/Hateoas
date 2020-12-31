@@ -8,7 +8,8 @@ cache:
 php:
   - '7.2'
   - '7.3'
-  - '7.4snapshot'
+  - '7.4'
+  - '8.0'
 
 env:
   - SYMFONY_VERSION=^3.4

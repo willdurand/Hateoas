@@ -17,9 +17,12 @@ use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\XmlSerializationVisitor;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class XmlSerializerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testSerializeLinks()
     {
         $contextProphecy = $this->prophesize('JMS\Serializer\SerializationContext');

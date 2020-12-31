@@ -6,9 +6,12 @@ namespace Hateoas\Tests\UrlGenerator;
 
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\UrlGeneratorRegistry;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class UrlGeneratorRegistryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function test()
     {
         $defaultUrlGenerator = $this->mockUrlGenerator();
