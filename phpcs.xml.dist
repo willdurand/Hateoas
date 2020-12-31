@@ -33,9 +33,9 @@
 
         <exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/>
 
-        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableParameterTypeHintSpecification"/>
-        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification"/>
-        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversablePropertyTypeHintSpecification"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableParameterTypeHintSpecification"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableReturnTypeHintSpecification"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversablePropertyTypeHintSpecification"/>
     </rule>
 
     <rule ref="SlevomatCodingStandard.ControlStructures.RequireYodaComparison"/>
@@ -54,7 +54,7 @@
         </properties>
     </rule>
 
-     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">
+     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
         <properties>
             <property name="spacesCountBeforeColon" value="0"/>
         </properties>
@@ -72,7 +72,7 @@
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
-    <rule ref="SlevomatCodingStandard.TypeHints.TypeHintDeclaration">
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint">
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
     <rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements">
