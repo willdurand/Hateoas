@@ -8,9 +8,12 @@ use Hateoas\Configuration\Provider\ExpressionEvaluatorProvider;
 use Hateoas\Configuration\RelationProvider as RelationProviderConfiguration;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\Expression\ExpressionEvaluatorInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ExpressionEvaluatorProviderTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function test()
     {
         $service = new \StdClass();

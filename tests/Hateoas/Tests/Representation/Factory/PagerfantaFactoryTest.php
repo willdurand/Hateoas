@@ -10,9 +10,12 @@ use Hateoas\Representation\Factory\PagerfantaFactory;
 use Hateoas\Tests\Representation\RepresentationTestCase;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class PagerfantaFactoryTest extends RepresentationTestCase
 {
+    use ProphecyTrait;
+
     public function test()
     {
         $results = [

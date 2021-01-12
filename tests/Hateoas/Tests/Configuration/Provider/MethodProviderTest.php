@@ -30,6 +30,7 @@ class MethodProviderTest extends TestCase
         return [new Relation('abcdef')];
     }
 }
+
 function abc()
 {
     return [new Relation('abcde')];

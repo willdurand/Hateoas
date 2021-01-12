@@ -40,7 +40,7 @@ abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
     public function __construct(
         $inline,
         string $route,
-        array $parameters = [],
+        array $parameters,
         int $limit,
         ?int $total = null,
         ?string $limitParameterName = null,

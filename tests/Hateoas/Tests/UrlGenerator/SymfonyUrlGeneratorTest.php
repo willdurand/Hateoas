@@ -6,10 +6,13 @@ namespace Hateoas\Tests\UrlGenerator;
 
 use Hateoas\Tests\TestCase;
 use Hateoas\UrlGenerator\SymfonyUrlGenerator;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SymfonyUrlGeneratorTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function test()
     {
         $name           = 'user_get';

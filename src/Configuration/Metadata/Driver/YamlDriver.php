@@ -45,9 +45,6 @@ class YamlDriver extends AbstractFileDriver
         $this->typeParser = $typeParser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function loadMetadataFromFile(\ReflectionClass $class, string $file): ?JMSClassMetadata
     {
         $config = Yaml::parse(file_get_contents($file));
@@ -67,7 +64,7 @@ class YamlDriver extends AbstractFileDriver
                     $relation['rel'],
                     $this->createHref($relation),
                     $this->createEmbedded($relation),
-                    isset($relation['attributes']) ? $this->checkExpressionArray($relation['attributes']): [],
+                    isset($relation['attributes']) ? $this->checkExpressionArray($relation['attributes']) : [],
                     $this->createExclusion($relation)
                 ));
             }
@@ -85,9 +82,6 @@ class YamlDriver extends AbstractFileDriver
         return $classMetadata;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getExtension(): string
     {
         return 'yml';
@@ -151,6 +145,7 @@ class YamlDriver extends AbstractFileDriver
                 }
 
                 $xmlElementName = isset($embedded['xmlElementName']) ? $this->checkExpression((string) $embedded['xmlElementName']) : null;
+
                 return new Embedded(
                     $this->checkExpression($embedded['content']),
                     $xmlElementName,

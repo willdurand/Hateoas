@@ -59,7 +59,7 @@ abstract class AbstractDriverTest extends TestCase
         /** @var Relation[] $relations */
         $relations = $classMetadata->getRelations();
 
-        $this->assertInternalType('array', $relations);
+        $this->assertIsArray($relations);
         foreach ($relations as $relation) {
             $this->assertInstanceOf('Hateoas\Configuration\Relation', $relation);
         }
@@ -140,7 +140,7 @@ abstract class AbstractDriverTest extends TestCase
 
         /** @var RelationProvider[] $relations */
         $relations = $classMetadata->getRelations();
-        $this->assertInternalType('array', $relations);
+        $this->assertIsArray($relations);
         $this->assertCount(8, $relations);
 
 //        $relation = current($relations);

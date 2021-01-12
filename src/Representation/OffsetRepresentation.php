@@ -72,7 +72,7 @@ class OffsetRepresentation extends AbstractSegmentedRepresentation
     public function __construct(
         CollectionRepresentation $inline,
         string $route,
-        array $parameters = [],
+        array $parameters,
         ?int $offset,
         ?int $limit,
         ?int $total = null,

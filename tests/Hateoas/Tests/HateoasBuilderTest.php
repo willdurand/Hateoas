@@ -91,7 +91,6 @@ XML
         );
     }
 
-
     public function testCyclicalReferences()
     {
         $hateoas = HateoasBuilder::create()->build();
@@ -130,7 +129,6 @@ XML
             $hateoas->serialize($reference1, 'json')
         );
     }
-
 
     public function testWithNullInEmbedded()
     {

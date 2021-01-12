@@ -27,9 +27,6 @@ class ExtensionDriver implements DriverInterface
         $this->extensions = $extensions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadMetadataForClass(\ReflectionClass $class): ?JMSClassMetadata
     {
         $metadata    = $this->delegate->loadMetadataForClass($class);

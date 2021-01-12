@@ -21,9 +21,12 @@ use JMS\Serializer\Metadata\StaticPropertyMetadata;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class JsonHalSerializerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testSerializeLinks()
     {
         $links = [
@@ -89,6 +92,7 @@ class JsonHalSerializerTest extends TestCase
                 ->accept($arg, null, $contextProphecy)
                 ->willReturnArgument();
         }
+
         $contextProphecy->pushPropertyMetadata(Argument::type('Hateoas\Serializer\Metadata\RelationPropertyMetadata'))->shouldBeCalled();
         $contextProphecy->popPropertyMetadata()->shouldBeCalled();
         $embeddeds = [

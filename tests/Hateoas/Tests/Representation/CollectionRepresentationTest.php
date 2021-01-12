@@ -67,10 +67,11 @@ JSON
                     'William',
                 ],
             ],
-            [new \ArrayIterator([
-                'Adrien',
-                'William',
-            ]),
+            [
+                new \ArrayIterator([
+                    'Adrien',
+                    'William',
+                ]),
             ],
         ];
     }

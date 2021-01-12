@@ -85,7 +85,7 @@ class PaginatedRepresentation extends AbstractSegmentedRepresentation
     public function __construct(
         $inline,
         string $route,
-        array $parameters = [],
+        array $parameters,
         ?int $page,
         ?int $limit,
         ?int $pages,

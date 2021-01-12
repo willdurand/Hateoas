@@ -9,9 +9,12 @@ use Hateoas\Configuration\Metadata\Driver\ExtensionDriver;
 use Hateoas\Configuration\Relation;
 use Hateoas\Tests\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ExtensionDriverTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testDoesNothingIfNoExtension()
     {
         $reflectionClass = new \ReflectionClass(static::class);

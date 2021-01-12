@@ -11,9 +11,12 @@ use Hateoas\Model\Link;
 use Hateoas\Tests\TestCase;
 use JMS\Serializer\SerializationContext;
 use Metadata\MetadataFactoryInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class LinksFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function test()
     {
         $object = new \StdClass();
