@@ -383,7 +383,7 @@ in both the `PaginatedRepresentation` and the `RouteAwareRepresentation`.
 
 The Hateoas library also provides a `PagerfantaFactory` to easily build
 `PaginatedRepresentation` from a
-[Pagerfanta](https://github.com/whiteoctober/Pagerfanta) instance. If you use
+[Pagerfanta](https://github.com/BabDev/Pagerfanta) instance. If you use
 the Pagerfanta library, this is an easier way to create the collection
 representations:
 
