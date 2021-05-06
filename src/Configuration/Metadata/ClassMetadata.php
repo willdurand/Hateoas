@@ -49,10 +49,9 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
      */
     public function serialize()
     {
-        return serialize([
-            $this->relations,
-            parent::serialize(),
-        ]);
+        $serialized = [$this->relations, parent::serialize(true)];
+
+        return $this->doSerialize($serialized, \func_num_args() ? \func_get_arg(0) : null);
     }
 
     /**
@@ -63,7 +62,8 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         [
             $this->relations,
             $parentStr,
-        ] = unserialize($str);
+        ] = \is_array($str) ? $str : unserialize($str);
+
 
         parent::unserialize($parentStr);
     }
