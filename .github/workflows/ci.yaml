@@ -3,10 +3,10 @@ name: CI
 on:
   pull_request:
     branches:
-      - "*.x"
+      - master
   push:
     branches:
-      - "*.x"
+      - master
 
 jobs:
   phpunit:
