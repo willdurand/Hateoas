@@ -12,69 +12,48 @@ jobs:
   phpunit:
     name: "PHPUnit"
     runs-on: "ubuntu-20.04"
+    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
+      fail-fast: false
       matrix:
+        experimental: [false]
+        composer-options: ["--prefer-stable"]
+        php-version:
+          - "7.3"
+          - "7.4"
+          - "8.0"
+        dependencies:
+          - "highest"
+          - "lowest"
+        symfony-require:
+          - "^3.0"
+          - "^4.0"
+          - "^5.0"
         include:
-          - php-version: 7.3
-            symfony-require: "^3.4"
-          - php-version: 7.3
-            symfony-require: "^4.0"
-          - php-version: 7.3
-            symfony-require: "^5.0"
-          - php-version: 7.4
-            symfony-require: "^3.4"
-          - php-version: 7.4
-            symfony-require: "^4.0"
-          - php-version: 7.4
-            symfony-require: "^5.0"
-            coverage: yes
-          - php-version: 8.0
-            symfony-require: "^3.4"
-          - php-version: 8.0
-            symfony-require: "^4.0"
-          - php-version: 8.0
-            symfony-require: "^5.0"
           - php-version: 8.0
             symfony-require: "6.0.*@dev"
+            experimental: true
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: "Install PHP with XDebug"
+      - name: "Install PHP"
         uses: "shivammathur/setup-php@v2"
-        if: "${{ matrix.coverage != '' }}"
         with:
           php-version: "${{ matrix.php-version }}"
-          coverage: "xdebug"
-          tools: "composer:v2,flex"
+          coverage: "pcov"
+          ini-values: "zend.assertions=1"
+          tools: "flex"
 
-      - name: "Install PHP without coverage"
-        uses: "shivammathur/setup-php@v2"
-        if: "${{ matrix.coverage == '' }}"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          coverage: "none"
-          tools: "composer:v2,flex"
-
-      - name: "Cache dependencies installed with composer"
-        uses: "actions/cache@v2"
-        with:
-          path: "~/.composer/cache"
-          key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
-          restore-keys: "php-${{ matrix.php-version }}-composer-locked-"
-
-      - name: "Install dependencies with composer"
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v1"
         env:
           SYMFONY_REQUIRE: "${{ matrix.symfony-require }}"
-        run: |
-          composer update --no-interaction --no-progress
-
-      - name: "Run PHPUnit with coverage"
-        if: "${{ matrix.coverage != '' }}"
-        run: "bin/phpunit --coverage-text"
+        with:
+          dependency-versions: "${{ matrix.dependencies }}"
+          composer-options: "${{ matrix.composer-options }}"
 
       - name: "Run PHPUnit"
-        if: "${{ matrix.coverage == '' }}"
-        run: "bin/phpunit"
+        run: "bin/phpunit --coverage-text"
