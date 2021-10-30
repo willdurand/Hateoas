@@ -1,13 +1,11 @@
 Hateoas
 =======
 
-[![Build
-Status](https://secure.travis-ci.org/willdurand/Hateoas.png)](http://travis-ci.org/willdurand/Hateoas)
-[![Scrutinizer Quality
-Score](https://scrutinizer-ci.com/g/willdurand/Hateoas/badges/quality-score.png?s=45b5a825f99de4d29c98b5103f59e060139cf354)](https://scrutinizer-ci.com/g/willdurand/Hateoas/)
+[![GitHub Actions](https://github.com/willdurand/hateoas/workflows/CI/badge.svg)](https://github.com/willdurand/hateoas/actions?query=workflow%3A%22CI%22+branch%3Amaster)
+[![GitHub Actions](https://github.com/willdurand/hateoas/workflows/Coding%20Standards/badge.svg)](https://github.com/willdurand/hateoas/actions?query=workflow%3A%22Coding%20Standards%22+branch%3Amaster)
 [![Latest Stable
 Version](https://poser.pugx.org/willdurand/hateoas/v/stable.png)](https://packagist.org/packages/willdurand/hateoas)
-![PHP7 ready](https://img.shields.io/badge/PHP7-ready-green.svg)
+[![PHP Version Require](https://poser.pugx.org/willdurand/hateoas/require/php)](https://packagist.org/packages/willdurand/hateoas)
 
 A PHP library to support implementing representations for HATEOAS REST web
 services.
