@@ -1,0 +1,8 @@
+title: Hateoas
+description: A PHP library to support implementing representations for HATEOAS REST web services.
+google_analytics: UA-46469869-1
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
