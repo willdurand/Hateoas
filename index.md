@@ -1,20 +1,18 @@
 Hateoas
 =======
 
-[![Build
-Status](https://secure.travis-ci.org/willdurand/Hateoas.png)](http://travis-ci.org/willdurand/Hateoas)
-[![Scrutinizer Quality
-Score](https://scrutinizer-ci.com/g/willdurand/Hateoas/badges/quality-score.png?s=45b5a825f99de4d29c98b5103f59e060139cf354)](https://scrutinizer-ci.com/g/willdurand/Hateoas/)
+[![GitHub Actions](https://github.com/willdurand/hateoas/workflows/CI/badge.svg)](https://github.com/willdurand/hateoas/actions?query=workflow%3A%22CI%22+branch%3Amaster)
+[![GitHub Actions](https://github.com/willdurand/hateoas/workflows/Coding%20Standards/badge.svg)](https://github.com/willdurand/hateoas/actions?query=workflow%3A%22Coding%20Standards%22+branch%3Amaster)
 [![Latest Stable
 Version](https://poser.pugx.org/willdurand/hateoas/v/stable.png)](https://packagist.org/packages/willdurand/hateoas)
-![PHP7 ready](https://img.shields.io/badge/PHP7-ready-green.svg)
+[![PHP Version Require](https://poser.pugx.org/willdurand/hateoas/require/php)](https://packagist.org/packages/willdurand/hateoas)
 
 A PHP library to support implementing representations for HATEOAS REST web
 services.
 
 
 * [Installation](#installation)
-  - [Working With Symfony2](#working-with-symfony2)
+  - [Working With Symfony](#working-with-symfony)
 * [Usage](#usage)
   - [Introduction](#introduction)
   - [Configuring Links](#configuring-links)
@@ -41,7 +39,7 @@ services.
     - [JSON Serializer](#json-serializer)
     - [URL Generator](#url-generator)
     - [Expression Evaluator/Expression Language](#expression-evaluatorexpression-language)
-    - [Relation Provider](#relation-provider)
+    - [Relation Provider](#relationprovider)
     - [(JMS) Serializer Specific](#jms-serializer-specific)
     - [Others](#others)
   - [Configuring a Cache Directory](#configuring-a-cache-directory)
@@ -57,6 +55,7 @@ services.
     - [@Exclusion](#exclusion)
     - [@RelationProvider](#relationprovider)
 * [Internals](#internals)
+* [Versioning](#versioning)
 
 
 Installation
@@ -74,7 +73,7 @@ This will resolve the latest stable version.
 
 Otherwise, install the library and setup the autoloader yourself.
 
-### Working With Symfony2
+### Working With Symfony
 
 There is a bundle for that! Install the
 [BazingaHateoasBundle](https://github.com/willdurand/BazingaHateoasBundle), and
@@ -84,10 +83,15 @@ enjoy!
 Usage
 -----
 
-> **Important:** For those who use the `1.0` version, you can [jump to this
-> documentation
-> page](https://github.com/willdurand/Hateoas/blob/1.0/README.md#readme) as the
-> following documentation has been written for **Hateoas 2.0** and above.
+> **Important:** 
+>
+> For those who use the `1.0` version, you can 
+> [jump to this documentation page](https://github.com/willdurand/Hateoas/blob/1.0/README.md#readme).
+> 
+>For those who use the `2.0` version, you can 
+> [jump to this documentation page](https://github.com/willdurand/Hateoas/blob/2.0/README.md#readme).
+>
+> The following documentation has been written for **Hateoas 3.0** and above.
 
 ### Introduction
 
@@ -346,11 +350,7 @@ use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Representation\CollectionRepresentation;
 
 $paginatedCollection = new PaginatedRepresentation(
-    new CollectionRepresentation(
-        array($user1, $user2, ...),
-        'users', // embedded rel
-        'users'  // xml element name
-    ),
+    new CollectionRepresentation(array($user1, $user2, ...)),
     'user_list', // route
     array(), // route parameters
     1,       // page number
@@ -366,8 +366,7 @@ $json = $hateoas->serialize($paginatedCollection, 'json');
 $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 ```
 
-The `CollectionRepresentation` class allows you to dynamically configure the
-collection resources rel, and the xml root element name.
+The `CollectionRepresentation` offers a basic representation of an embedded collection.
 
 The `PaginatedRepresentation` is designed to add `self`, `first`, and when
 possible `last`, `next`, and `previous` links.
@@ -382,7 +381,7 @@ in both the `PaginatedRepresentation` and the `RouteAwareRepresentation`.
 
 The Hateoas library also provides a `PagerfantaFactory` to easily build
 `PaginatedRepresentation` from a
-[Pagerfanta](https://github.com/whiteoctober/Pagerfanta) instance. If you use
+[Pagerfanta](https://github.com/BabDev/Pagerfanta) instance. If you use
 the Pagerfanta library, this is an easier way to create the collection
 representations:
 
@@ -433,8 +432,8 @@ And the following XML content:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <collection page="1" limit="10" pages="1">
-    <user id="123"></user>
-    <user id="456"></user>
+    <entry id="123"></entry>
+    <entry id="456"></entry>
     <link rel="self" href="/api/users?page=1&amp;limit=10" />
     <link rel="first" href="/api/users?page=1&amp;limit=10" />
     <link rel="last" href="/api/users?page=1&amp;limit=10" />
@@ -451,12 +450,7 @@ $pagerfantaFactory   = new PagerfantaFactory(); // you can pass the page and lim
 $paginatedCollection = $pagerfantaFactory->createRepresentation(
     $pager,
     new Route('user_list', array()),
-    new CollectionRepresentation(
-        $pager->getCurrentPageResults(),
-        'users',
-        'users',
-        new Exclusion(...)
-    )
+    new CollectionRepresentation($pager->getCurrentPageResults())
 );
 
 $json = $hateoas->serialize($paginatedCollection, 'json');
@@ -505,8 +499,8 @@ the [`vnd.error` specification](https://github.com/blongden/vnd.error).
 $error = new VndErrorRepresentation(
     'Validation failed',
     42,
-    new Relation('help', 'http://.../', null, array('title' => 'Error Information')),
-    new Relation('describes', 'http://.../', null, array('title' => 'Error Description'))
+    'http://.../',
+    'http://.../'
 );
 ```
 
@@ -517,8 +511,8 @@ outputs:
 <?xml version="1.0" encoding="UTF-8"?>
     <resource logref="42">
     <message><![CDATA[Validation failed]]></message>
-    <link rel="help" href="http://.../" title="Error Information"/>
-    <link rel="describes" href="http://.../" title="Error Description"/>
+    <link rel="help" href="http://.../"/>
+    <link rel="describes" href="http://.../"/>
 </resource>
 ```
 
@@ -528,12 +522,10 @@ outputs:
     "logref": 42,
     "_links": {
         "help": {
-            "href": "http://.../",
-            "title": "Error Information"
+            "href": "http://.../"
         },
         "describes": {
-            "href": "http://.../",
-            "title": "Error Description"
+            "href": "http://.../"
         }
     }
 }
@@ -574,7 +566,7 @@ expr(object.getId())
 We call such a variable a **context variable**.
 
 You can add your own context variables to the Expression Language context by
-adding them to the `ExpressionEvaluator`.
+adding them to the expression evaluator.
 
 ##### Adding Your Own Context Variables
 
@@ -597,18 +589,8 @@ expr(foo !== null)
 
 ##### Expression Functions
 
-**Expression Functions** are custom functions used to extend the [Expression
-Language](#the-expression-language) as explained in the [Extending the
-ExpressionLanguage](http://symfony.com/doc/current/components/expression_language/extending.html),
-part of the Symfony documentation.
-
-Hateoas provides core expression functions such as the `LinkExpressionFunction`
-described in [LinkHelper - The `link` Function](#the-link-function), but you can
-also write your own function.
-The `ExpressionFunctionInterface` is designed to represent an expression
-function. Adding a new expression function is a matter of implementing this
-interface and registering by calling the `registerExpressionFunction()` method
-on the [HateoasBuilder](#the-hateoasbuilder).
+For more info on how to add functions to the expression language, please refer to 
+[https://symfony.com/doc/current/components/expression_language/extending.html](https://symfony.com/doc/current/components/expression_language/extending.html)
 
 ### URL Generators
 
@@ -850,7 +832,7 @@ that rather than being links, the values are resource objects.
 }
 ```
 
-#### The XmlSerializer
+#### The XmlSerializer
 
 The `XmlSerializer` allows you to generate [Atom
 Links](http://tools.ietf.org/search/rfc4287#section-4.2.7) into your XML
@@ -895,9 +877,7 @@ tags.
 
 #### Adding New Serializers
 
-For JSON related formats, you must implement the `JsonSerializerInterface`
-interface, and for XML related formats, you must implement the
-`XmlSerializerInterface`. Both interfaces describe two methods to serialize
+You must implement the `SerializerInterface` that describes two methods to serialize
 **links** and **embedded** relations.
 
 ### The HateoasBuilder
@@ -920,14 +900,14 @@ All the methods below return the current builder, so that you can chain them.
 
 #### XML Serializer
 
-* `setXmlSerializer(XmlSerializerInterface $xmlSerializer)`: sets the XML
+* `setXmlSerializer(SerializerInterface $xmlSerializer)`: sets the XML
   serializer to use. Default is: `XmlSerializer`;
 * `setDefaultXmlSerializer()`: sets the default XML serializer
   (`XmlSerializer`).
 
 #### JSON Serializer
 
-* `setJsonSerializer(JsonSerializerInterface $jsonSerializer)`: sets the JSON
+* `setJsonSerializer(SerializerInterface $jsonSerializer)`: sets the JSON
   serializer to use. Default is: `JsonHalSerializer`;
 * `setDefaultJsonSerializer()`: sets the default JSON serializer
   (`JsonHalSerializer`).
@@ -943,13 +923,6 @@ All the methods below return the current builder, so that you can chain them.
 * `setExpressionContextVariable($name, $value)`: adds a new expression context
   variable;
 * `setExpressionLanguage(ExpressionLanguage $expressionLanguage)`;
-* `registerExpressionFunction(ExpressionFunctionInterface
-   $expressionFunction)`: adds a new expression function.
-
-#### Relation Provider
-
-* `addRelationProviderResolver(RelationProviderResolverInterface $resolver)`:
-  adds a new relation provider resolver.
 
 #### (JMS) Serializer Specific
 
@@ -1027,7 +1000,7 @@ class AcmeFooConfigurationExtension implements ConfigurationExtensionInterface
     /**
      * {@inheritDoc}
      */
-    public function decorate(ClassMetadataInterface $classMetadata)
+    public function decorate(ClassMetadataInterface $classMetadata): void
     {
         if (0 === strpos('Acme\Foo\Model', $classMetadata->getName())) {
             // Add a "root" relation to all classes in the `Acme\Foo\Model` namespace
@@ -1062,11 +1035,11 @@ Reference
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <serializer>
-<class name="Acme\Demo\Representation\User" h:providers="Class::getRelations, getRelations" xmlns:h="https://github.com/willdurand/Hateoas">
+<class name="Acme\Demo\Representation\User" h:providers="Class::getRelations expr(sevice('foo').getMyAdditionalRelations())" xmlns:h="https://github.com/willdurand/Hateoas">
         <h:relation rel="self">
             <h:href uri="http://acme.com/foo/1" />
         </h:relation>
-        <h:relation rel="expr(object.getFriendsDynamicRel())">
+        <h:relation rel="friends">
             <h:href route="user_friends" generator="my_custom_generator">
                 <h:parameter name="id" value="expr(object.getId())" />
                 <h:parameter name="page" value="1" />
@@ -1093,7 +1066,7 @@ Acme\Demo\Representation\User:
             rel: self
             href: http://acme.com/foo/1
         -
-            rel: expr(object.getFriendsDynamicRel())
+            rel: friends
             href:
                 route: user_friends
                 parameters:
@@ -1111,7 +1084,7 @@ Acme\Demo\Representation\User:
                 until_version: 2.2
                 exclude_if: expr(object.getFriends() === null)
 
-    relation_providers: [ 'Class::getRelations', 'getRelations' ]
+    relation_providers: [ "Class::getRelations", "expr(sevice('foo').getMyAdditionalRelations())" ]
 ```
 
 ### Annotations
@@ -1136,10 +1109,10 @@ use Hateoas\Configuration\Annotation as Hateoas;
 
 | Property   | Required               | Content                         | Expression language   |
 |------------|------------------------|---------------------------------|-----------------------|
-| name       | Yes                    | string                          | Yes                   |
+| name       | Yes                    | string                          | No                    |
 | href       | If embedded is not set | string / [@Route](#route)       | Yes                   |
 | embedded   | If href is not set     | string / [@Embedded](#embedded) | Yes                   |
-| attributes | No                     | array                           | Yes on key and values |
+| attributes | No                     | array                           | Yes on values         |
 | exclusion  | No                     | [@Exclusion](#exclusion)        | N/A                   |
 
 **Important:** `attributes` are only used on **link relations** (i.e. combined
@@ -1169,8 +1142,8 @@ if you have configured one.
 
 | Property   | Required            | Content          | Expression language             |
 |------------|---------------------|------------------|---------------------------------|
-| name       | Yes                 | string           | Yes                             |
-| parameters | Defaults to array() | array / string   | Yes (string + array key/values) |
+| name       | Yes                 | string           | No                              |
+| parameters | Defaults to array() | array / string   | Yes (string + array values)     |
 | absolute   | Defaults to false   | boolean / string | Yes                             |
 | generator  | No                  | string / null    | No                              |
 
@@ -1199,7 +1172,7 @@ This annotation can be defined in the **embedded** property of the
 |----------------|---------------------|--------------------------|------------------------|
 | content        | Yes                 | string / array           | Yes (string)           |
 | exclusion      | Defaults to array() | [@Exclusion](#exclusion) | N/A                    |
-| xmlElementName | Defaults to array() | string                   | Yes                    |
+| xmlElementName | Defaults to array() | string                   | No                     |
 
 #### @Exclusion
 
@@ -1209,8 +1182,8 @@ This annotation can be defined in the **exclusion** property of both the
 | Property     | Required | Content          | Expression language    |
 |--------------|----------|------------------|------------------------|
 | groups       | No       | array            | No                     |
-| sinceVersion | No       | float / integer  | No                     |
-| untilVersion | No       | float / integer  | No                     |
+| sinceVersion | No       | string           | No                     |
+| untilVersion | No       | string           | No                     |
 | maxDepth     | No       | integer          | No                     |
 | excludeIf    | No       | string / boolean | Yes                    |
 
@@ -1263,32 +1236,55 @@ As an example:
 
 | Property | Required | Content | Expression language |
 |----------|----------|---------|---------------------|
-| name     | Yes      | string  | No                  |
+| name     | Yes      | string  | Yes                 |
 
-The property "name" should take the relations-returning method which you have defined in your class ("addRelations" in the following example).
+It can be "name":
 
-The can be:
+- A function: `my_func`
+- A static method: `MyClass::getExtraRelations`
+- An expression: `expr(service('user.rel_provider').getExtraRelations())`
 
-- A method: `addRelations`
-- A static method: `Class::addRelations`
-- A Symfony2 service method: `acme_foo.service:addRelations`
+Here and example using the expression language:
 
 ```php
-use Hateoas\Configuration\Metadata\ClassMetadataInterface;
-use Hateoas\Configuration as Hateoas;
+use Hateoas\Configuration\Annotation as Hateoas;
 
-class MyRelationProvider
+/**
+ * @Hateoas\RelationProvider("expr(service('user.rel_provider').getExtraRelations())")
+ */
+class User
 {
-    public function addRelations($object, ClassMetadataInterface $classMetadata)
+    ...
+}
+```
+
+Here the `UserRelPrvider` class:
+
+```php
+use Hateoas\Configuration\Relation;
+use Hateoas\Configuration\Route;
+
+class UserRelPrvider
+{
+    private $evaluator;
+    
+    public function __construct(CompilableExpressionEvaluatorInterface $evaluator)
+    {
+        $this->evaluator = $evaluator;
+    }
+
+    /**
+     * @return Relation[]
+     */
+    public function getExtraRelations(): array
     {
         // You need to return the relations
-        // Adding the relations to the $classMetadata won't work
         return array(
-            new Hateoas\Relation(
+            new Relation(
                 'self',
-                new Hateoas\Route(
+                new Route(
                     'foo_get',
-                    array('id' => 'expr(object.getId())')
+                    ['id' => $this->evaluator->parse('object.getId()', ['object'])]
                 )
             )
         );
@@ -1296,6 +1292,21 @@ class MyRelationProvider
 }
 ```
 
+`$this->evaluator` implementing `CompilableExpressionEvaluatorInterface` is used to parse the expression language
+ in a form that can be cached and saved for later use. 
+ If you do not need the expression language in your relations, then this service is not needed.
+
+
+The `user.rel_provider` service is defined as:
+
+```yaml
+user.rel_provider:
+    class: UserRelPrvider
+    arguments:
+      - '@jms_serializer.expression_evaluator'
+```
+
+In this case `jms_serializer.expression_evaluator` is a service implementing `CompilableExpressionEvaluatorInterface`.
 
 Internals
 ---------
@@ -1305,6 +1316,21 @@ hidden parts of this library. This is not always relevant for end users, but
 interesting for developers or people interested in learning how things work
 under the hood.
 
+Versioning
+----------
+
+`willdurand/hateoas` follows [Semantic Versioning](http://semver.org/).
+
+### End Of Life
+
+As of October 2013, versions `1.x` and `0.x` are officially not supported anymore 
+(note that `1.x` was never released).
+
+### Stable Version
+
+Version `3.x` is the current major stable version.
+
+Version `2.x` is maintained only for security bug fixes and for major issues that might occur.
 
 Contributing
 ------------
