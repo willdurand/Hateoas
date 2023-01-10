@@ -14,6 +14,13 @@ use PHPUnit\Framework\TestCase;
 
 class AttributeReaderTest extends TestCase
 {
+    public function setUp(): void
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Attributes are available only on php 8 or higher');
+        }
+    }
+
     public function testGetClassAnnotations()
     {
         $delegate = $this->createMock(Reader::class);
