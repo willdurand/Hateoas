@@ -12,12 +12,10 @@ jobs:
   phpunit:
     name: "PHPUnit"
     runs-on: "ubuntu-20.04"
-    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       fail-fast: false
       matrix:
-        experimental: [false]
         composer-options: ["--prefer-stable"]
         php-version:
           - "7.3"
@@ -32,7 +30,13 @@ jobs:
           - "^3.0"
           - "^4.0"
           - "^5.0"
-          - "^6.0"
+        include:
+          - php-version: 8.0
+            symfony-require: "^6.0"
+          - php-version: 8.1
+            symfony-require: "^6.0"
+          - php-version: 8.2
+            symfony-require: "^6.0"
 
     steps:
       - name: Checkout code
