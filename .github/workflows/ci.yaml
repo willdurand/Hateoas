@@ -23,6 +23,8 @@ jobs:
           - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
+          - "8.2"
         dependencies:
           - "highest"
           - "lowest"
@@ -30,10 +32,7 @@ jobs:
           - "^3.0"
           - "^4.0"
           - "^5.0"
-        include:
-          - php-version: 8.0
-            symfony-require: "6.0.*@dev"
-            experimental: true
+          - "^6.0"
 
     steps:
       - name: Checkout code
