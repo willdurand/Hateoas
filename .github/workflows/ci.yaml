@@ -12,17 +12,16 @@ jobs:
   phpunit:
     name: "PHPUnit"
     runs-on: "ubuntu-20.04"
-    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       fail-fast: false
       matrix:
-        experimental: [false]
-        composer-options: ["--prefer-stable"]
         php-version:
           - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
+          - "8.2"
         dependencies:
           - "highest"
           - "lowest"
@@ -32,8 +31,11 @@ jobs:
           - "^5.0"
         include:
           - php-version: 8.0
-            symfony-require: "6.0.*@dev"
-            experimental: true
+            symfony-require: "^6.0"
+          - php-version: 8.1
+            symfony-require: "^6.0"
+          - php-version: 8.2
+            symfony-require: "^6.0"
 
     steps:
       - name: Checkout code
@@ -48,7 +50,7 @@ jobs:
           tools: "flex"
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v2"
         env:
           SYMFONY_REQUIRE: "${{ matrix.symfony-require }}"
         with:
