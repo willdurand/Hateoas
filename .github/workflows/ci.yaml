@@ -16,7 +16,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        composer-options: ["--prefer-stable"]
         php-version:
           - "7.3"
           - "7.4"
@@ -51,7 +50,7 @@ jobs:
           tools: "flex"
 
       - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v1"
+        uses: "ramsey/composer-install@v2"
         env:
           SYMFONY_REQUIRE: "${{ matrix.symfony-require }}"
         with:
