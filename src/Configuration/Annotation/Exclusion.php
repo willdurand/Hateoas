@@ -44,7 +44,7 @@ final class Exclusion
      */
     public $excludeIf = null;
 
-    public function __construct($values = [], ?array $groups = null, ?string $sinceVersion = null, ?string $untilVersion = null, ?int $maxDepth = null, ?string $excludeIf = null)
+    public function __construct(array $values = [], ?array $groups = null, ?string $sinceVersion = null, ?string $untilVersion = null, ?int $maxDepth = null, ?string $excludeIf = null)
     {
         $this->loadAnnotationParameters(get_defined_vars());
     }

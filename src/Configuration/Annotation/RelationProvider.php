@@ -20,7 +20,7 @@ class RelationProvider
      */
     public $name;
 
-    public function __construct($values = [], ?string $name = null)
+    public function __construct(array $values = [], ?string $name = null)
     {
         $this->loadAnnotationParameters(get_defined_vars());
     }

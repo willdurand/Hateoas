@@ -24,6 +24,9 @@ class AttributeReader implements Reader
         $this->reader = $reader;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getClassAnnotations(ReflectionClass $class): array
     {
         $attributes = $class->getAttributes();
@@ -31,6 +34,9 @@ class AttributeReader implements Reader
         return array_merge($this->reader->getClassAnnotations($class), $this->buildAnnotations($attributes));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getClassAnnotation(ReflectionClass $class, $annotationName): ?object
     {
         $attributes = $class->getAttributes($annotationName);
@@ -38,6 +44,9 @@ class AttributeReader implements Reader
         return $this->reader->getClassAnnotation($class, $annotationName) ?? $this->buildAnnotation($attributes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getMethodAnnotations(ReflectionMethod $method): array
     {
         $attributes = $method->getAttributes();
@@ -45,6 +54,9 @@ class AttributeReader implements Reader
         return array_merge($this->reader->getMethodAnnotations($method), $this->buildAnnotations($attributes));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getMethodAnnotation(ReflectionMethod $method, $annotationName): ?object
     {
         $attributes = $method->getAttributes($annotationName);
@@ -52,6 +64,9 @@ class AttributeReader implements Reader
         return $this->reader->getMethodAnnotation($method, $annotationName) ?? $this->buildAnnotation($attributes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getPropertyAnnotations(ReflectionProperty $property): array
     {
         $attributes = $property->getAttributes();
@@ -59,6 +74,9 @@ class AttributeReader implements Reader
         return array_merge($this->reader->getPropertyAnnotations($property), $this->buildAnnotations($attributes));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getPropertyAnnotation(ReflectionProperty $property, $annotationName): ?object
     {
         $attributes = $property->getAttributes($annotationName);

@@ -31,8 +31,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getClassAnnotations')
             ->with($refl)
-            ->willReturn([])
-        ;
+            ->willReturn([]);
 
         $result = $reader->getClassAnnotations($refl);
 
@@ -50,8 +49,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getClassAnnotations')
             ->with($refl)
-            ->willReturn([$annotation])
-        ;
+            ->willReturn([$annotation]);
 
         $result = $reader->getClassAnnotations($refl);
 
@@ -68,8 +66,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getClassAnnotation')
             ->with($refl, Annotation\RelationProvider::class)
-            ->willReturn(null)
-        ;
+            ->willReturn(null);
 
         $result = $reader->getClassAnnotation($refl, Annotation\RelationProvider::class);
 
@@ -87,8 +84,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getClassAnnotation')
             ->with($refl, Annotation\RelationProvider::class)
-            ->willReturn($annotation)
-        ;
+            ->willReturn($annotation);
 
         $result = $reader->getClassAnnotation($refl, Annotation\RelationProvider::class);
 
@@ -105,8 +101,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getMethodAnnotations')
             ->with($refl)
-            ->willReturn([])
-        ;
+            ->willReturn([]);
 
         $result = $reader->getMethodAnnotations($refl);
 
@@ -124,8 +119,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getMethodAnnotations')
             ->with($refl)
-            ->willReturn([$annotation])
-        ;
+            ->willReturn([$annotation]);
 
         $result = $reader->getMethodAnnotations($refl);
 
@@ -142,8 +136,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getMethodAnnotation')
             ->with($refl, Annotation\RelationProvider::class)
-            ->willReturn(null)
-        ;
+            ->willReturn(null);
 
         $result = $reader->getMethodAnnotation($refl, Annotation\RelationProvider::class);
 
@@ -161,8 +154,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getMethodAnnotation')
             ->with($refl, Annotation\RelationProvider::class)
-            ->willReturn($annotation)
-        ;
+            ->willReturn($annotation);
 
         $result = $reader->getMethodAnnotation($refl, Annotation\RelationProvider::class);
 
@@ -179,8 +171,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getPropertyAnnotations')
             ->with($refl)
-            ->willReturn([])
-        ;
+            ->willReturn([]);
 
         $result = $reader->getPropertyAnnotations($refl);
 
@@ -198,8 +189,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getPropertyAnnotations')
             ->with($refl)
-            ->willReturn([$annotation])
-        ;
+            ->willReturn([$annotation]);
 
         $result = $reader->getPropertyAnnotations($refl);
 
@@ -216,8 +206,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getPropertyAnnotation')
             ->with($refl, Annotation\RelationProvider::class)
-            ->willReturn(null)
-        ;
+            ->willReturn(null);
 
         $result = $reader->getPropertyAnnotation($refl, Annotation\RelationProvider::class);
 
@@ -235,8 +224,7 @@ class AttributeReaderTest extends TestCase
             ->expects($this->once())
             ->method('getPropertyAnnotation')
             ->with($refl, Annotation\RelationProvider::class)
-            ->willReturn($annotation)
-        ;
+            ->willReturn($annotation);
 
         $result = $reader->getPropertyAnnotation($refl, Annotation\RelationProvider::class);
 

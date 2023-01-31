@@ -45,7 +45,11 @@ final class Relation
      */
     public $exclusion = null;
 
-    public function __construct($values = [], ?string $name = null, $href = null, $embedded = null, array $attributes = [], ?Exclusion $exclusion = null)
+    /**
+     * @param string|Route $href
+     * @param string|Embedded $embedded
+     */
+    public function __construct(array $values = [], ?string $name = null, $href = null, $embedded = null, array $attributes = [], ?Exclusion $exclusion = null)
     {
         $this->loadAnnotationParameters(get_defined_vars());
     }

@@ -23,8 +23,7 @@ class AttributeDriverTest extends AbstractDriverTest
         $driver
             ->expects($this->once())
             ->method('getClassAnnotations')
-            ->willReturn([])
-        ;
+            ->willReturn([]);
 
         return new AnnotationDriver(
             new AttributeReader($driver),
