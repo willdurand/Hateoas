@@ -36,6 +36,8 @@ jobs:
             symfony-require: "^6.0"
           - php-version: 8.2
             symfony-require: "^6.0"
+          - php-version: 8.2
+            symfony-require: "^7.0"
 
     steps:
       - name: Checkout code
