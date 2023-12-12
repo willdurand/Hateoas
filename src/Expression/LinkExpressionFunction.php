@@ -14,7 +14,7 @@ class LinkExpressionFunction implements ExpressionFunctionProviderInterface
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new ExpressionFunction('link', static function ($object, $rel, $absolute = false) {
