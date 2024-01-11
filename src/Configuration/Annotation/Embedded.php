@@ -42,7 +42,7 @@ class Embedded
      * @param string|array $content
      * @param Exclusion|null $exclusion
      */
-    public function __construct(array $values = [], $content = null, ?string $type = null, ?string $xmlElementName = null, $exclusion = null)
+    public function __construct(array $values = [], $content = null, ?string $type = null, ?string $xmlElementName = null, ?Exclusion $exclusion = null)
     {
         $this->loadAnnotationParameters(get_defined_vars());
     }
