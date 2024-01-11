@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hateoas\Configuration\Metadata\Driver;
 
 class AttributeDriver extends AnnotationOrAttributeDriver
