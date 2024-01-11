@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hateoas\Configuration\Annotation;
 
 use JMS\Serializer\Annotation\AnnotationUtilsTrait;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @Annotation
@@ -20,7 +19,6 @@ final class Relation
      * @Required
      * @var string
      */
-    #[Required]
     public $name;
 
     /**

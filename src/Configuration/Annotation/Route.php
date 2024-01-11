@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hateoas\Configuration\Annotation;
 
 use JMS\Serializer\Annotation\AnnotationUtilsTrait;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @Annotation
@@ -20,14 +19,12 @@ class Route
      * @Required
      * @var string
      */
-    #[Required]
     public $name;
 
     /**
      * @Required
      * @var mixed
      */
-    #[Required]
     public $parameters = [];
 
     /**
