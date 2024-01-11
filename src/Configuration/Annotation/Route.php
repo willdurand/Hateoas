@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation\AnnotationUtilsTrait;
  * @Annotation
  * @Target("ANNOTATION")
  */
-#[\Attribute(0)]
+#[\Attribute]
 class Route
 {
     use AnnotationUtilsTrait;
