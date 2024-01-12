@@ -86,9 +86,9 @@ abstract class AnnotationOrAttributeDriver implements DriverInterface
     {
         return new Exclusion(
             $exclusion->groups,
-            null !== $exclusion->sinceVersion ? (string)$exclusion->sinceVersion : null,
-            null !== $exclusion->untilVersion ? (string)$exclusion->untilVersion : null,
-            null !== $exclusion->maxDepth ? (int)$exclusion->maxDepth : null,
+            null !== $exclusion->sinceVersion ? (string) $exclusion->sinceVersion : null,
+            null !== $exclusion->untilVersion ? (string) $exclusion->untilVersion : null,
+            null !== $exclusion->maxDepth ? (int) $exclusion->maxDepth : null,
             $this->checkExpression($exclusion->excludeIf)
         );
     }

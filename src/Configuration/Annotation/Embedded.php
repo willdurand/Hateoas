@@ -40,7 +40,6 @@ class Embedded
 
     /**
      * @param string|array $content
-     * @param Exclusion|null $exclusion
      */
     public function __construct(array $values = [], $content = null, ?string $type = null, ?string $xmlElementName = null, ?Exclusion $exclusion = null)
     {

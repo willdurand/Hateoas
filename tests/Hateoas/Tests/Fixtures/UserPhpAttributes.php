@@ -36,7 +36,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
             sinceVersion: '1.1',
             untilVersion: '2.3',
             maxDepth: 43,
-            excludeIf: 'bar')
+            excludeIf: 'bar'
+        )
     ),
     exclusion: new Hateoas\Exclusion(
         groups: ['group1', 'group2'],

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Hateoas\Configuration\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader as AnnotationsReader;
-
 use Hateoas\Configuration\Provider\RelationProviderInterface;
 use JMS\Serializer\Expression\CompilableExpressionEvaluatorInterface;
 use JMS\Serializer\Type\ParserInterface;
