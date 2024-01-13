@@ -41,6 +41,11 @@ abstract class AbstractDriverTest extends TestCase
         return new Parser();
     }
 
+    protected function getUserClass(): string
+    {
+        return 'Hateoas\Tests\Fixtures\User';
+    }
+
     /**
      * @return DriverInterface
      */
@@ -49,7 +54,7 @@ abstract class AbstractDriverTest extends TestCase
     public function testUser()
     {
         $driver = $this->createDriver();
-        $class = new \ReflectionClass('Hateoas\Tests\Fixtures\User');
+        $class = new \ReflectionClass($this->getUserClass());
         $classMetadata = $driver->loadMetadataForClass($class);
 
         $exp = $this->getExpressionEvaluator();

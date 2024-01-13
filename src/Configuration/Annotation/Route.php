@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Hateoas\Configuration\Annotation;
 
+use JMS\Serializer\Annotation\AnnotationUtilsTrait;
+
 /**
  * @Annotation
  * @Target("ANNOTATION")
  */
+#[\Attribute]
 class Route
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @Required
      * @var string
@@ -31,4 +36,13 @@ class Route
      * @var string
      */
     public $generator = null;
+
+    /**
+     * @param array|string $parameters
+     * @param bool|string $absolute
+     */
+    public function __construct(array $values = [], ?string $name = null, $parameters = null, $absolute = false, ?string $generator = null)
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }
