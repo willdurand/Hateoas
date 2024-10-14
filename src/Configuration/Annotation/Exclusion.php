@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Hateoas\Configuration\Annotation;
 
+use JMS\Serializer\Annotation\AnnotationUtilsTrait;
+
 /**
  * @Annotation
  * @Target("ANNOTATION")
  */
+#[\Attribute]
 final class Exclusion
 {
+    use AnnotationUtilsTrait;
+
     /**
      * @var array
      */
@@ -38,4 +43,9 @@ final class Exclusion
      * @var string
      */
     public $excludeIf = null;
+
+    public function __construct(array $values = [], ?array $groups = null, ?string $sinceVersion = null, ?string $untilVersion = null, ?int $maxDepth = null, ?string $excludeIf = null)
+    {
+        $this->loadAnnotationParameters(get_defined_vars());
+    }
 }
