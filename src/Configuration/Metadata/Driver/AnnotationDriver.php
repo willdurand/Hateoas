@@ -28,7 +28,7 @@ class AnnotationDriver extends AnnotationOrAttributeDriver
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function getClassAnnotations(\ReflectionClass $class): array
     {

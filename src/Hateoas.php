@@ -28,7 +28,7 @@ class Hateoas implements SerializerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function serialize($data, string $format, ?SerializationContext $context = null, ?string $type = null): string
     {
@@ -36,7 +36,7 @@ class Hateoas implements SerializerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function deserialize(string $data, string $type, string $format, ?DeserializationContext $context = null)
     {

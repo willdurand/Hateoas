@@ -7,7 +7,7 @@ namespace Hateoas\Configuration\Metadata\Driver;
 class AttributeDriver extends AnnotationOrAttributeDriver
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function getClassAnnotations(\ReflectionClass $class): array
     {
