@@ -46,7 +46,6 @@ class RouteAwareRepresentation
 
     /**
      * @param mixed $inline
-     * @param array $parameters
      */
     public function __construct($inline, string $route, array $parameters = [], bool $absolute = false)
     {
@@ -69,9 +68,6 @@ class RouteAwareRepresentation
         return $this->route;
     }
 
-    /**
-     * @return array
-     */
     public function getParameters(): array
     {
         return $this->parameters;

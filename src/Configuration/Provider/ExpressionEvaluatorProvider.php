@@ -20,7 +20,7 @@ class ExpressionEvaluatorProvider implements RelationProviderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getRelations(RelationProvider $configuration, string $class): array
     {

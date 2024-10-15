@@ -60,8 +60,6 @@ abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
 
     /**
      * @param  null  $limit
-     *
-     * @return array
      */
     public function getParameters(?int $limit = null): array
     {

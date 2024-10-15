@@ -40,6 +40,7 @@ class YamlDriver extends AbstractFileDriver
         ParserInterface $typeParser
     ) {
         parent::__construct($locator);
+
         $this->relationProvider = $relationProvider;
         $this->expressionLanguage = $expressionLanguage;
         $this->typeParser = $typeParser;

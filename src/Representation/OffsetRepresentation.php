@@ -94,8 +94,6 @@ class OffsetRepresentation extends AbstractSegmentedRepresentation
     /**
      * @param  null  $offset
      * @param  null  $limit
-     *
-     * @return array
      */
     public function getParameters(?int $offset = null, ?int $limit = null): array
     {

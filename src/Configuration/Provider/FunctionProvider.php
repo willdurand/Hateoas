@@ -9,7 +9,7 @@ use Hateoas\Configuration\RelationProvider;
 class FunctionProvider implements RelationProviderInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getRelations(RelationProvider $configuration, string $class): array
     {

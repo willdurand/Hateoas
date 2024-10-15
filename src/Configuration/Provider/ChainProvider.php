@@ -24,7 +24,7 @@ class ChainProvider implements RelationProviderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getRelations(RelationProvider $configuration, string $class): array
     {

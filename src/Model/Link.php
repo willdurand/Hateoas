@@ -21,9 +21,6 @@ class Link
      */
     private $attributes;
 
-    /**
-     * @param array  $attributes
-     */
     public function __construct(string $rel, string $href, array $attributes = [])
     {
         $this->rel        = $rel;
@@ -31,9 +28,6 @@ class Link
         $this->attributes = $attributes;
     }
 
-    /**
-     * @return array
-     */
     public function getAttributes(): array
     {
         return $this->attributes;

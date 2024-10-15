@@ -75,7 +75,6 @@ class LinkFactory
 
     /**
      * @param mixed $exp
-     * @param array $data
      *
      * @return mixed
      */
@@ -88,12 +87,6 @@ class LinkFactory
         }
     }
 
-    /**
-     * @param array $array
-     * @param array $data
-     *
-     * @return array
-     */
     private function evaluateArray(array $array, array $data): array
     {
         $newArray = [];

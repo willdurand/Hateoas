@@ -16,7 +16,6 @@ trait CheckExpressionTrait
 
     /**
      * @param mixed $exp
-     * @param array $names
      *
      * @return Expression|mixed
      */
