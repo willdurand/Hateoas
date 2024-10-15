@@ -48,9 +48,6 @@ class EmbeddedsFactory
 
         if (null !== ($classMetadata = $this->metadataFactory->getMetadataForClass(get_class($object)))) {
             $langugeData = ['object' => $object, 'context' => $context];
-            /**
-             * @var $relation Relation
-             */
             foreach ($classMetadata->getRelations() as $relation) {
                 if ($this->exclusionManager->shouldSkipEmbedded($object, $relation, $context)) {
                     continue;
@@ -71,7 +68,6 @@ class EmbeddedsFactory
 
     /**
      * @param mixed $exp
-     * @param array $data
      *
      * @return mixed
      */

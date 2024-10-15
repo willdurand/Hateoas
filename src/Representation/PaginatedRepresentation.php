@@ -109,8 +109,6 @@ class PaginatedRepresentation extends AbstractSegmentedRepresentation
     /**
      * @param  null  $page
      * @param  null  $limit
-     *
-     * @return array
      */
     public function getParameters($page = null, $limit = null): array
     {

@@ -39,7 +39,6 @@ class Relation
      * @param string|Expression $name
      * @param string|Route          $href
      * @param Embedded|string|mixed $embedded
-     * @param array                 $attributes
      */
     public function __construct(string $name, $href = null, $embedded = null, array $attributes = [], ?Exclusion $exclusion = null)
     {
@@ -71,9 +70,6 @@ class Relation
         return $this->href;
     }
 
-    /**
-     * @return array
-     */
     public function getAttributes(): array
     {
         return $this->attributes;

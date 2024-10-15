@@ -303,8 +303,6 @@ class HateoasBuilder
      * Set a map of namespace prefixes to directories.
      *
      * This method overrides any previously defined directories.
-     *
-     * @param array $namespacePrefixToDirMap
      */
     public function setMetadataDirs(array $namespacePrefixToDirMap): HateoasBuilder
     {
@@ -357,8 +355,6 @@ class HateoasBuilder
 
     /**
      * Add a map of namespace prefixes to directories.
-     *
-     * @param array $namespacePrefixToDirMap
      */
     public function addMetadataDirs(array $namespacePrefixToDirMap): HateoasBuilder
     {
