@@ -48,7 +48,7 @@ services.
 * [Reference](#reference)
   - [XML](#xml)
   - [YAML](#yaml)
-  - [Annotations](#annotations)
+  - [Annotations/Attributes](#annotations)
     - [@Relation](#relation)
     - [@Route](#route)
     - [@Embedded](#embedded)
@@ -145,15 +145,19 @@ Resources](#embedding-resources) section.
 A link is a relation which is identified by a `name` (e.g. `self`) and that
 has an `href` parameter:
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
- * @Serializer\XmlRoot("user")
- *
- * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")
- */
+* @Serializer\XmlRoot("user")
+*
+* @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")
+*/
 class User
 {
     /** @Serializer\XmlAttribute */
@@ -165,12 +169,38 @@ class User
 }
 ```
 
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Serializer\XmlRoot('user')]
+#[Hateoas\Relation('self', href: "expr('/api/users/' ~ object.getId())")]
+class User
+{
+    #[Serializer\XmlAttribute]
+    private $id;
+    private $firstName;
+    private $lastName;
+
+    public function getId() {}
+}
+```
+
+</details>
+
+
 In the example above, we configure a `self` relation that is a link because of
 the `href` parameter. Its value, which may look weird at first glance, will be
 extensively covered in [The Expression Language](#the-expression-language)
 section. This special value is used to generate a URI.
 
-In this section, [**annotations**](#annotations) are used to configure Hateoas.
+In this section, [**annotations/attributes**](#annotations) are used to configure Hateoas.
 [**XML**](#xml) and [**YAML**](#yaml) formats are also supported. If you wish,
 you can use plain PHP too.
 
@@ -241,6 +271,10 @@ fetch those resources.
 An **embedded resource** is a named **relation** that contains data, represented
 by the `embedded` parameter.
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -263,6 +297,33 @@ class User
     private $manager;
 }
 ```
+
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Hateoas\Relation(
+     'manager',
+     href: "expr('/api/users/' ~ object.getManager().getId())",
+     embedded: "expr(object.getManager())",
+     exclusion: new Hateoas\Exclusion(excludeif: "expr(object.getManager() === null)"),
+ )]
+class User
+{
+    ...
+
+    #[Serializer\Exclude]
+    private $manager;
+}
+```
+
+</details>
 
 **Note:** You will need to exclude the manager property from the serialization,
 otherwise both the serializer and Hateoas will serialize it.
@@ -460,6 +521,10 @@ $xml  = $hateoas->serialize($paginatedCollection, 'xml');
 If you want to change the xml root name of the collection, create a new
 class with the xml root configured and use the inline mechanism:
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
 use JMS\Serializer\Annotation as Serializer;
 
@@ -482,6 +547,33 @@ class UsersRepresentation
 $paginatedCollection = ...;
 $paginatedCollection = new UsersRepresentation($paginatedCollection);
 ```
+
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use JMS\Serializer\Annotation as Serializer;
+
+#[Serializer\XmlRoot('users')]
+class UsersRepresentation
+{
+    #[Serializer\Inline]
+    private $inline;
+
+    public function __construct($inline)
+    {
+        $this->inline = $inline;
+    }
+}
+
+$paginatedCollection = ...;
+$paginatedCollection = new UsersRepresentation($paginatedCollection);
+```
+
+</details>
 
 ### Representations
 
@@ -544,11 +636,31 @@ Each time you fill in a value (e.g. a Relation `href` in annotations or YAML),
 you can either pass a **hardcoded value** or an **expression**.
 In order to use the Expression Language, you have to use the `expr()` notation:
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
 /**
  * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")
  */
 ```
+
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Hateoas\Relation('self', href: "expr('/api/users/' ~ object.getId())")]
+```
+
+</details>
 
 You can learn more about the Expression Syntax by reading the official
 documentation: [The Expression
@@ -619,6 +731,10 @@ $hateoas = HateoasBuilder::create()
 
 You will then be able to use the [@Route](#route) annotation:
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
 use Hateoas\Configuration\Annotation as Hateoas;
 
@@ -635,6 +751,29 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 class User
 ```
+
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Hateoas\Relation(
+    'self',
+    href: new Hateoas\Route(
+        'user_get',
+        parameters: [
+            'id' => 'expr(object.getId())',
+        ],
+    )
+)]
+class User
+```
+
+</details>
 
 ```json
 {
@@ -688,6 +827,10 @@ The feature above is also available in your expressions (cf. [The Expression
 Language](#the-expression-language)) through the `link(object, rel, absolute)`
 **function**:
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
 /**
  * @Hateoas\Relation(
@@ -726,6 +869,59 @@ class User
     }
 }
 ```
+
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+#[Hateoas\Relation(
+    'self',
+    href: new Hateoas\Route(
+        'post_get',
+        parameters: [
+            'id' => 'expr(object.getId())',
+        ],
+    ),
+)]
+class Post {}
+
+#[Hateoas\Relation(
+    'self',
+    href: new Hateoas\Route(
+        'user_get',
+        parameters: [
+            'id' => 'expr(object.getId())',
+        ],
+    ),
+)]
+#[Hateoas\Relation(
+    'post',
+    href: "expr(link(object.getPost(), 'self', true))",
+)]
+#[Hateoas\Relation(
+    'relative',
+    href: "expr(link(object.getRelativePost(), 'self'))",
+)]
+class User
+{
+    ...
+
+    public function getPost()
+    {
+        return new Post(456);
+    }
+
+    public function getRelativePost()
+    {
+        return new Post(789);
+    }
+}
+```
+
+</details>
 
 Pay attention to the `href` expressions for the `post` and `relative` relations,
 as well as their corresponding values in the following JSON content:
@@ -965,9 +1161,9 @@ $hateoas = $builder
 ### Configuring Metadata Locations
 
 Hateoas supports several metadata sources. By default, it uses Doctrine
-annotations, but you may also store metadata in XML, or YAML files. For the
-latter, it is necessary to configure a metadata directory where those files are
-located:
+annotations (PHP < 8.1) or native PHP attributes (PHP >= 8.1), but you may also
+store metadata in XML, or YAML files. For the latter, it is necessary to
+configure a metadata directory where those files are located:
 
 ```php
 $hateoas = \Hateoas\HateoasBuilder::create()
@@ -1093,6 +1289,10 @@ Acme\Demo\Representation\User:
 
 This annotation can be defined on a class.
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
 use Hateoas\Configuration\Annotation as Hateoas;
 
@@ -1107,6 +1307,26 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 ```
 
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Hateoas\Relation(
+    name: 'self',
+    href: 'http://hello',
+    embedded: 'expr(object.getHello())',
+    attributes: ['foo' => 'bar'],
+    exclusion: '...',
+)]
+```
+
+</details>
+
 | Property   | Required               | Content                         | Expression language   |
 |------------|------------------------|---------------------------------|-----------------------|
 | name       | Yes                    | string                          | No                    |
@@ -1119,6 +1339,10 @@ use Hateoas\Configuration\Annotation as Hateoas;
 with the `href` property, not with the `embedded` one).
 
 #### @Route
+
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
 
 ```php
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -1136,6 +1360,28 @@ use Hateoas\Configuration\Annotation as Hateoas;
  */
 ```
 
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Hateoas\Relation(
+    name: 'self',
+    href: new Hateoas\Route(
+        'user_get',
+        parameters: ['id' = 'expr(object.getId())'],
+        absolute: true,
+        generator: 'my_custom_generator',
+    ),
+)]
+```
+
+</details>
+
 This annotation can be defined in the **href** property of the
 [@Relation](#relation) annotation. This is allows you to your URL generator,
 if you have configured one.
@@ -1148,6 +1394,10 @@ if you have configured one.
 | generator  | No                  | string / null    | No                              |
 
 #### @Embedded
+
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
 
 ```php
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -1163,6 +1413,27 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * )
  */
 ```
+
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Hateoas\Relation(
+    name: 'friends',
+    embedded: new Hateoas\Embedded(
+        'expr(object.getFriends())',
+        exclusion: '...',
+        xmlElementName: 'users',
+    ),
+)]
+```
+
+</details>
 
 This annotation can be defined in the **embedded** property of the
 [@Relation](#relation) annotation. It is useful if you need configure the
@@ -1194,7 +1465,13 @@ on the regular properties with the serializer.
 under some circumstances. In this example, if the `getManager` method is `null`,
 you should exclude it to prevent the URL generation from failing:
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
 /**
  * @Hateoas\Relation(
  *     "manager",
@@ -1215,6 +1492,33 @@ class User
     public function getManager() {}
 }
 ```
+
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Hateoas\Relation(
+    name: 'manager',
+    href: new Hateoas\Route(
+        'user_get',
+        parameters: ['id' => 'expr(object.getManager().getId())'],
+    ),
+    exclusion: new Hateoas\Exclusion(excludeIf: 'expr(null === object.getManager())')
+)]
+class User
+{
+    public function getId() {}
+
+    public function getManager(): ?User {}
+}
+```
+
+</details>
 
 #### @RelationProvider
 
@@ -1246,6 +1550,10 @@ It can be "name":
 
 Here and example using the expression language:
 
+<details open>
+
+<summary>Annotation (PHP < 8.1)</summary>
+
 ```php
 use Hateoas\Configuration\Annotation as Hateoas;
 
@@ -1257,6 +1565,24 @@ class User
     ...
 }
 ```
+
+</details>
+
+<details open>
+
+<summary>Attribute (PHP 8.1 and greater)</summary>
+
+```php
+use Hateoas\Configuration\Annotation as Hateoas;
+
+#[Hateoas\RelationProvider("expr(service('user.rel_provider').getExtraRelations())")]
+class User
+{
+    ...
+}
+```
+
+</details>
 
 Here the `UserRelPrvider` class:
 
