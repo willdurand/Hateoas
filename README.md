@@ -73,6 +73,17 @@ This will resolve the latest stable version.
 
 Otherwise, install the library and setup the autoloader yourself.
 
+If you want to use [**annotations**](#annotations) for configuration you need
+to install the `doctrine/annotations` package:
+
+```sh
+composer require doctrine/annotations
+```
+
+If your app uses PHP 8.1 or higher it is recommended to use native PHP
+attributes.
+In this case you don't need to install the Doctrine package.
+
 ### Working With Symfony
 
 There is a bundle for that! Install the
