@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hateoas\Tests\Configuration\Metadata\Driver;
 
 use Hateoas\Configuration\Metadata\Driver\AttributeDriver;
-use Hateoas\Tests\Fixtures\UserPhpAttributes;
+use Hateoas\Tests\Fixtures\Attribute\User;
 
 class AttributeDriverTest extends AbstractDriverTest
 {
@@ -27,6 +27,6 @@ class AttributeDriverTest extends AbstractDriverTest
 
     protected function getUserClass(): string
     {
-        return UserPhpAttributes::class;
+        return User::class;
     }
 }
