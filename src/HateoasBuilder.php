@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Hateoas\Configuration\Metadata\ConfigurationExtensionInterface;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
+use Hateoas\Configuration\Metadata\Driver\AttributeDriver;
 use Hateoas\Configuration\Metadata\Driver\ExtensionDriver;
 use Hateoas\Configuration\Metadata\Driver\XmlDriver;
 use Hateoas\Configuration\Metadata\Driver\YamlDriver;
@@ -385,33 +386,35 @@ class HateoasBuilder
 
     private function buildMetadataFactory(): MetadataFactoryInterface
     {
-        $annotationReader = $this->annotationReader;
+        $expressionEvaluator =  $this->getExpressionEvaluator();
 
-        if (null === $annotationReader) {
+        $typeParser = new Parser();
+
+        $annotationReader = $this->annotationReader;
+        $drivers = [];
+
+        if (null === $annotationReader && class_exists(AnnotationReader::class)) {
             $annotationReader = new AnnotationReader();
 
             if (null !== $this->cacheDir) {
                 $this->createDir($this->cacheDir . '/annotations');
                 $annotationReader = new FileCacheReader($annotationReader, $this->cacheDir . '/annotations', $this->debug);
             }
+
+            $drivers[] = new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider, $typeParser);
         }
 
-        $expressionEvaluator =  $this->getExpressionEvaluator();
-
-        $typeParser = new Parser();
+        if (PHP_VERSION_ID >= 80100) {
+            $drivers[] = new AttributeDriver($expressionEvaluator, $this->chainProvider, $typeParser);
+        }
 
         if (!empty($this->metadataDirs)) {
-            $fileLocator    = new FileLocator($this->metadataDirs);
-            $metadataDriver = new DriverChain([
-                new YamlDriver($fileLocator, $expressionEvaluator, $this->chainProvider, $typeParser),
-                new XmlDriver($fileLocator, $expressionEvaluator, $this->chainProvider, $typeParser),
-                new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider, $typeParser),
-            ]);
-        } else {
-            $metadataDriver = new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider, $typeParser);
+            $fileLocator = new FileLocator($this->metadataDirs);
+            $drivers[] = new YamlDriver($fileLocator, $expressionEvaluator, $this->chainProvider, $typeParser);
+            $drivers[] = new XmlDriver($fileLocator, $expressionEvaluator, $this->chainProvider, $typeParser);
         }
 
-        $metadataDriver  = new ExtensionDriver($metadataDriver, $this->configurationExtensions);
+        $metadataDriver  = new ExtensionDriver(new DriverChain($drivers), $this->configurationExtensions);
         $metadataFactory = new MetadataFactory($metadataDriver, null, $this->debug);
         $metadataFactory->setIncludeInterfaces($this->includeInterfaceMetadata);
 
