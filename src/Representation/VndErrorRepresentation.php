@@ -33,6 +33,11 @@ use JMS\Serializer\Annotation as Serializer;
  *      )
  * )
  */
+#[Serializer\ExclusionPolicy('all')]
+#[Serializer\XmlRoot('resource')]
+#[Hateoas\Relation(name: 'help', href: 'expr(object.getHelp())', exclusion: new Hateoas\Exclusion(excludeIf: 'expr(object.getHelp() === null)'))]
+#[Hateoas\Relation(name: 'describes', href: 'expr(object.getDescribes())', exclusion: new Hateoas\Exclusion(excludeIf: 'expr(object.getDescribes() === null)'))]
+#[Hateoas\Relation(name: 'about', href: 'expr(object.getAbout())', exclusion: new Hateoas\Exclusion(excludeIf: 'expr(object.getAbout() === null)'))]
 class VndErrorRepresentation
 {
     /**
@@ -41,6 +46,8 @@ class VndErrorRepresentation
      *
      * @var string
      */
+    #[Serializer\Expose]
+    #[Serializer\Type('string')]
     private $message;
 
     /**
@@ -50,6 +57,9 @@ class VndErrorRepresentation
      *
      * @var int
      */
+    #[Serializer\Expose]
+    #[Serializer\XmlAttribute]
+    #[Serializer\Type('integer')]
     private $logref;
 
     /**

@@ -19,6 +19,8 @@ use JMS\Serializer\Annotation as Serializer;
  *      )
  * )
  */
+#[Serializer\ExclusionPolicy('all')]
+#[Hateoas\Relation(name: 'self', href: new Hateoas\Route(name: 'expr(object.getRoute())', parameters: 'expr(object.getParameters())', absolute: 'expr(object.isAbsolute())'))]
 class RouteAwareRepresentation
 {
     /**
@@ -27,6 +29,8 @@ class RouteAwareRepresentation
      *
      * @var mixed
      */
+    #[Serializer\Inline]
+    #[Serializer\Expose]
     private $inline;
 
     /**

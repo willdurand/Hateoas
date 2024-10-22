@@ -9,6 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * @Serializer\ExclusionPolicy("all")
  */
+#[Serializer\ExclusionPolicy('all')]
 abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
 {
     /**
@@ -18,6 +19,9 @@ abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
      *
      * @var int
      */
+    #[Serializer\Expose]
+    #[Serializer\Type('integer')]
+    #[Serializer\XmlAttribute]
     private $limit;
 
     /**
@@ -27,6 +31,9 @@ abstract class AbstractSegmentedRepresentation extends RouteAwareRepresentation
      *
      * @var int
      */
+    #[Serializer\Expose]
+    #[Serializer\Type('integer')]
+    #[Serializer\XmlAttribute]
     private $total;
 
     /**
