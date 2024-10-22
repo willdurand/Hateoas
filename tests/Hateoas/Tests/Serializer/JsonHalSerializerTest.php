@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hateoas\Tests\Serializer;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Hateoas\HateoasBuilder;
 use Hateoas\Model\Embedded;
 use Hateoas\Model\Link;
@@ -11,6 +12,7 @@ use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Serializer\JsonHalSerializer;
 use Hateoas\Serializer\Metadata\RelationPropertyMetadata;
 use Hateoas\Tests\Fixtures\AdrienBrault;
+use Hateoas\Tests\Fixtures\Attribute;
 use Hateoas\Tests\Fixtures\Foo1;
 use Hateoas\Tests\Fixtures\Foo2;
 use Hateoas\Tests\Fixtures\Foo3;
@@ -202,7 +204,11 @@ class JsonHalSerializerTest extends TestCase
     public function testSerializeAdrienBrault()
     {
         $hateoas      = HateoasBuilder::buildHateoas();
-        $adrienBrault = new AdrienBrault();
+        if (class_exists(AnnotationReader::class)) {
+            $adrienBrault = new AdrienBrault();
+        } else {
+            $adrienBrault = new Attribute\AdrienBrault();
+        }
 
         $this->assertSame(
             <<<JSON
@@ -248,9 +254,16 @@ JSON
 
     public function testSerializeInlineJson()
     {
-        $foo1 = new Foo1();
-        $foo2 = new Foo2();
-        $foo3 = new Foo3();
+        if (class_exists(AnnotationReader::class)) {
+            $foo1 = new Foo1();
+            $foo2 = new Foo2();
+            $foo3 = new Foo3();
+        } else {
+            $foo1 = new Attribute\Foo1();
+            $foo2 = new Attribute\Foo2();
+            $foo3 = new Attribute\Foo3();
+        }
+
         $foo1->inline = $foo2;
         $foo2->inline = $foo3;
 
@@ -284,7 +297,11 @@ JSON
 
     public function testGh236()
     {
-        $data = new CollectionRepresentation([new Gh236Foo()]);
+        if (class_exists(AnnotationReader::class)) {
+            $data = new CollectionRepresentation([new Gh236Foo()]);
+        } else {
+            $data = new CollectionRepresentation([new Attribute\Gh236Foo()]);
+        }
 
         $hateoas = HateoasBuilder::buildHateoas();
 

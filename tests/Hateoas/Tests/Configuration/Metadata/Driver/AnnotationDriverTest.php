@@ -9,6 +9,13 @@ use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 
 class AnnotationDriverTest extends AbstractDriverTest
 {
+    public function setUp(): void
+    {
+        if (!class_exists(AnnotationReader::class)) {
+            $this->markTestSkipped('AnnotationReader is not available');
+        }
+    }
+
     public function createDriver()
     {
         return new AnnotationDriver(

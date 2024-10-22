@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Hateoas\Tests\Serializer;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Hateoas\HateoasBuilder;
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Serializer\XmlHalSerializer;
 use Hateoas\Tests\Fixtures\AdrienBrault;
+use Hateoas\Tests\Fixtures\Attribute;
 use Hateoas\Tests\Fixtures\Gh236Foo;
 use Hateoas\Tests\Fixtures\LinkAttributes;
 use Hateoas\Tests\TestCase;
@@ -20,7 +22,11 @@ class XmlHalSerializerTest extends TestCase
         $hateoas = HateoasBuilder::create()
             ->setXmlSerializer(new XmlHalSerializer())
             ->build();
-        $adrienBrault = new AdrienBrault();
+        if (class_exists(AnnotationReader::class)) {
+            $adrienBrault = new AdrienBrault();
+        } else {
+            $adrienBrault = new Attribute\AdrienBrault();
+        }
 
         $this->assertSame(
             <<<XML
@@ -53,7 +59,11 @@ XML
 
     public function testGh236()
     {
-        $data = new CollectionRepresentation([new Gh236Foo()]);
+        if (class_exists(AnnotationReader::class)) {
+            $data = new CollectionRepresentation([new Gh236Foo()]);
+        } else {
+            $data = new CollectionRepresentation([new Attribute\Gh236Foo()]);
+        }
 
         $hateoas = HateoasBuilder::create()
             ->setXmlSerializer(new XmlHalSerializer())
