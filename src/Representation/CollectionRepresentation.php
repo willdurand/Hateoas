@@ -18,7 +18,12 @@ use JMS\Serializer\Annotation as Serializer;
  */
 #[Serializer\ExclusionPolicy('all')]
 #[Serializer\XmlRoot('collection')]
-#[Hateoas\Relation(name: 'items', embedded: new Hateoas\Embedded(content: 'expr(object.getResources())'))]
+#[Hateoas\Relation(
+    'items',
+    embedded: new Hateoas\Embedded(
+        content: 'expr(object.getResources())',
+    ),
+)]
 class CollectionRepresentation
 {
     /**

@@ -391,7 +391,7 @@ class HateoasBuilder
         $typeParser = new Parser();
 
         $annotationReader = $this->annotationReader;
-        $drivers = [];
+        $drivers = [new AttributeDriver($expressionEvaluator, $this->chainProvider, $typeParser)];
 
         if (null === $annotationReader && class_exists(AnnotationReader::class)) {
             $annotationReader = new AnnotationReader();
@@ -402,10 +402,6 @@ class HateoasBuilder
             }
 
             $drivers[] = new AnnotationDriver($annotationReader, $expressionEvaluator, $this->chainProvider, $typeParser);
-        }
-
-        if (PHP_VERSION_ID >= 80100) {
-            $drivers[] = new AttributeDriver($expressionEvaluator, $this->chainProvider, $typeParser);
         }
 
         if (!empty($this->metadataDirs)) {

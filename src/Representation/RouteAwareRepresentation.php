@@ -20,7 +20,14 @@ use JMS\Serializer\Annotation as Serializer;
  * )
  */
 #[Serializer\ExclusionPolicy('all')]
-#[Hateoas\Relation(name: 'self', href: new Hateoas\Route(name: 'expr(object.getRoute())', parameters: 'expr(object.getParameters())', absolute: 'expr(object.isAbsolute())'))]
+#[Hateoas\Relation(
+    'self',
+    href: new Hateoas\Route(
+        'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters())',
+        absolute: 'expr(object.isAbsolute())',
+    ),
+)]
 class RouteAwareRepresentation
 {
     /**
