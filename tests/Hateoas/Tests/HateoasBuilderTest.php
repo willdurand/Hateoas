@@ -29,17 +29,12 @@ class HateoasBuilderTest extends TestCase
         $this->assertInstanceOf(SerializerInterface::class, $hateoas);
     }
 
-    public function testSerializeAdrienBraultWithExclusion()
+    /**
+     * @dataProvider getTestSerializeAdrienBraultWithExclusionData
+     */
+    public function testSerializeAdrienBraultWithExclusion($adrienBrault, $fakeAdrienBrault)
     {
         $hateoas = HateoasBuilder::buildHateoas();
-
-        if (class_exists(AnnotationReader::class)) {
-            $adrienBrault     = new AdrienBrault();
-            $fakeAdrienBrault = new AdrienBrault();
-        } else {
-            $adrienBrault     = new Attribute\AdrienBrault();
-            $fakeAdrienBrault = new Attribute\AdrienBrault();
-        }
 
         $fakeAdrienBrault->firstName = 'John';
         $fakeAdrienBrault->lastName = 'Smith';
@@ -74,6 +69,26 @@ XML
             ,
             $hateoas->serialize($fakeAdrienBrault, 'xml', $context2)
         );
+    }
+
+    private static function getTestSerializeAdrienBraultWithExclusionData(): iterable
+    {
+        yield [
+            new Attribute\AdrienBrault(),
+            new Attribute\AdrienBrault(),
+        ];
+
+        if (class_exists(AnnotationReader::class)) {
+            yield [
+                new AdrienBrault(),
+                new AdrienBrault(),
+            ];
+
+            yield [
+                new Attribute\AdrienBraultAttributesAndAnnotations(),
+                new Attribute\AdrienBraultAttributesAndAnnotations(),
+            ];
+        }
     }
 
     public function testAlternativeUrlGenerator()
