@@ -15,6 +15,7 @@ use Hateoas\Tests\Fixtures\WithAlternativeRouter;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Contains functional tests
@@ -29,9 +30,7 @@ class HateoasBuilderTest extends TestCase
         $this->assertInstanceOf(SerializerInterface::class, $hateoas);
     }
 
-    /**
-     * @dataProvider getTestSerializeAdrienBraultWithExclusionData
-     */
+    #[DataProvider('getTestSerializeAdrienBraultWithExclusionData')]
     public function testSerializeAdrienBraultWithExclusion($adrienBrault, $fakeAdrienBrault)
     {
         $hateoas = HateoasBuilder::buildHateoas();
@@ -71,7 +70,7 @@ XML
         );
     }
 
-    private static function getTestSerializeAdrienBraultWithExclusionData(): iterable
+    public static function getTestSerializeAdrienBraultWithExclusionData(): iterable
     {
         yield [
             new Attribute\AdrienBrault(),

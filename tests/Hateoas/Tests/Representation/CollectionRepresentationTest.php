@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Hateoas\Tests\Representation;
 
 use Hateoas\Representation\CollectionRepresentation;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class CollectionRepresentationTest extends RepresentationTestCase
 {
-    /**
-     * @dataProvider getTestSerializeData
-     */
+    #[DataProvider('getTestSerializeData')]
     public function testSerialize($resources)
     {
         $collection = new CollectionRepresentation($resources);
@@ -58,21 +57,20 @@ JSON
         );
     }
 
-    public function getTestSerializeData()
+    public static function getTestSerializeData(): iterable
     {
-        return [
+        yield [
             [
-                [
-                    'Adrien',
-                    'William',
-                ],
+                'Adrien',
+                'William',
             ],
-            [
-                new \ArrayIterator([
-                    'Adrien',
-                    'William',
-                ]),
-            ],
+        ];
+
+        yield [
+            new \ArrayIterator([
+                'Adrien',
+                'William',
+            ]),
         ];
     }
 }
