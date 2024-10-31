@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hateoas\Tests\Twig\Extension;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Hateoas\HateoasBuilder;
 use Hateoas\Twig\Extension\LinkExtension;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
@@ -31,6 +32,10 @@ class LinkExtensionIntegrationTest extends IntegrationTestCase
 
     public function getFixturesDir()
     {
-        return __DIR__ . '/../Fixtures/';
+        if (class_exists(AnnotationReader::class)) {
+            return __DIR__ . '/../Fixtures/';
+        } else {
+            return __DIR__ . '/../FixturesAttribute/';
+        }
     }
 }

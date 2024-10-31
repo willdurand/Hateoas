@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Hateoas\Tests;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Hateoas\HateoasBuilder;
+use Hateoas\Tests\Fixtures\Attribute;
 use Hateoas\Tests\Fixtures\Will;
 use Hateoas\UrlGenerator\CallableUrlGenerator;
 
@@ -39,20 +41,38 @@ class HateoasTest extends TestCase
 
     public function testGetLinkHrefUrlWithUnknownRelThrowsException()
     {
+        if (class_exists(AnnotationReader::class)) {
+            $className = Will::class;
+        } else {
+            $className = Attribute\Will::class;
+        }
+
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Can not find the relation "unknown-rel" for the "Hateoas\Tests\Fixtures\Will" class');
-        $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'unknown-rel'));
-        $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'unknown-rel', true));
+        $this->expectExceptionMessage(sprintf('Can not find the relation "unknown-rel" for the "%s" class', $className));
+        $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new $className(123), 'unknown-rel'));
+        $this->assertNull($this->hateoas->getLinkHelper()->getLinkHref(new $className(123), 'unknown-rel', true));
     }
 
     public function testGetLinkHrefUrl()
     {
-        $this->assertEquals('/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'self'));
-        $this->assertEquals('/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'self', false));
+        if (class_exists(AnnotationReader::class)) {
+            $className = Will::class;
+        } else {
+            $className = Attribute\Will::class;
+        }
+
+        $this->assertEquals('/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new $className(123), 'self'));
+        $this->assertEquals('/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new $className(123), 'self', false));
     }
 
     public function testGetLinkHrefUrlWithAbsoluteTrue()
     {
-        $this->assertEquals('http://example.com/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new Will(123), 'self', true));
+        if (class_exists(AnnotationReader::class)) {
+            $className = Will::class;
+        } else {
+            $className = Attribute\Will::class;
+        }
+
+        $this->assertEquals('http://example.com/users/123', $this->hateoas->getLinkHelper()->getLinkHref(new $className(123), 'self', true));
     }
 }

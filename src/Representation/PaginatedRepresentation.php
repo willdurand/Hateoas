@@ -54,6 +54,50 @@ use JMS\Serializer\Annotation as Serializer;
  *      )
  * )
  */
+#[Serializer\ExclusionPolicy('all')]
+#[Serializer\XmlRoot('collection')]
+#[Serializer\AccessorOrder(order: 'custom', custom: ['page', 'limit', 'pages', 'total'])]
+#[Hateoas\Relation(
+    'first',
+    href: new Hateoas\Route(
+        'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters(1))',
+        absolute: 'expr(object.isAbsolute())',
+    ),
+)]
+#[Hateoas\Relation(
+    'last',
+    href: new Hateoas\Route(
+        'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters(object.getPages()))',
+        absolute: 'expr(object.isAbsolute())'
+    ),
+    exclusion: new Hateoas\Exclusion(
+        excludeIf: 'expr(object.getPages() === null)',
+    ),
+)]
+#[Hateoas\Relation(
+    'next',
+    href: new Hateoas\Route(
+        'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters(object.getPage() + 1))',
+        absolute: 'expr(object.isAbsolute())',
+    ),
+    exclusion: new Hateoas\Exclusion(
+        excludeIf: 'expr(object.getPages() !== null && (object.getPage() + 1) > object.getPages())',
+    ),
+)]
+#[Hateoas\Relation(
+    'previous',
+    href: new Hateoas\Route(
+        'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters(object.getPage() - 1))',
+        absolute: 'expr(object.isAbsolute())',
+    ),
+    exclusion: new Hateoas\Exclusion(
+        excludeIf: 'expr((object.getPage() - 1) < 1)',
+    ),
+)]
 class PaginatedRepresentation extends AbstractSegmentedRepresentation
 {
     /**
@@ -63,6 +107,9 @@ class PaginatedRepresentation extends AbstractSegmentedRepresentation
      *
      * @var int
      */
+    #[Serializer\Expose]
+    #[Serializer\Type('integer')]
+    #[Serializer\XmlAttribute]
     private $page;
 
     /**
@@ -72,6 +119,9 @@ class PaginatedRepresentation extends AbstractSegmentedRepresentation
      *
      * @var int
      */
+    #[Serializer\Expose]
+    #[Serializer\Type('integer')]
+    #[Serializer\XmlAttribute]
     private $pages;
 
     /**

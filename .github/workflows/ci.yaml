@@ -17,38 +17,37 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - "7.3"
-          - "7.4"
-          - "8.0"
           - "8.1"
           - "8.2"
           - "8.3"
         dependencies:
           - "highest"
           - "lowest"
+        remove-annotations:
+          - "yes"
+          - "no"
         symfony-require:
           - "^3.0"
           - "^4.0"
           - "^5.0"
+          - "^6.0"
         include:
           - php-version: 8.4
             symfony-require: "^5.0"
             composer-options: "--ignore-platform-req=php+" # TODO remove once phpspec/prophecy supports PHP 8.4
-          - php-version: 8.0
-            symfony-require: "^6.0"
-          - php-version: 8.1
-            symfony-require: "^6.0"
-          - php-version: 8.2
-            symfony-require: "^6.0"
-          - php-version: 8.3
-            symfony-require: "^6.0"
           - php-version: 8.4
             symfony-require: "^6.0"
             composer-options: "--ignore-platform-req=php+" # TODO remove once phpspec/prophecy supports PHP 8.4
           - php-version: 8.2
             symfony-require: "^7.0"
+          - php-version: 8.2
+            symfony-require: "^7.0"
+            remove-annotations: "yes"
           - php-version: 8.3
             symfony-require: "^7.0"
+          - php-version: 8.3
+            symfony-require: "^7.0"
+            remove-annotations: "yes"
           - php-version: 8.4
             symfony-require: "^7.0"
             composer-options: "--ignore-platform-req=php+" # TODO remove once phpspec/prophecy supports PHP 8.4
@@ -64,6 +63,13 @@ jobs:
           coverage: "pcov"
           ini-values: "zend.assertions=1"
           tools: "flex"
+
+      - name: "Remove remove-annotations if required"
+        if: "${{ matrix.remove-annotations == 'yes' }}"
+        env:
+          SYMFONY_REQUIRE: "${{ matrix.symfony-require }}"
+        run: |
+          composer remove --no-update --dev doctrine/annotations
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"

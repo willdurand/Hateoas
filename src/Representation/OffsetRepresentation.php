@@ -54,6 +54,50 @@ use JMS\Serializer\Annotation as Serializer;
  *      )
  * )
  */
+#[Serializer\ExclusionPolicy('all')]
+#[Serializer\XmlRoot('collection')]
+#[Serializer\AccessorOrder(order: 'custom', custom: ['offset', 'limit', 'total'])]
+#[Hateoas\Relation(
+    'first',
+    href: new Hateoas\Route(
+        'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters(0))',
+        absolute: 'expr(object.isAbsolute())',
+    ),
+)]
+#[Hateoas\Relation(
+    'last',
+    href: new Hateoas\Route(
+        'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters((object.getTotal() - 1) - (object.getTotal() - 1) % object.getLimit()))',
+        absolute: 'expr(object.isAbsolute())',
+    ),
+    exclusion: new Hateoas\Exclusion(
+        excludeIf: 'expr(object.getTotal() === null)',
+    )
+)]
+#[Hateoas\Relation(
+    'next',
+    href: new Hateoas\Route(
+        name: 'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters(object.getOffset() + object.getLimit()))',
+        absolute: 'expr(object.isAbsolute())'
+    ),
+    exclusion: new Hateoas\Exclusion(
+        excludeIf: 'expr(object.getTotal() !== null && (object.getOffset() + object.getLimit()) >= object.getTotal())',
+    ),
+)]
+#[Hateoas\Relation(
+    'previous',
+    href: new Hateoas\Route(
+        'expr(object.getRoute())',
+        parameters: 'expr(object.getParameters((object.getOffset() > object.getLimit()) ? object.getOffset() - object.getLimit() : 0))',
+        absolute: 'expr(object.isAbsolute())',
+    ),
+    exclusion: new Hateoas\Exclusion(
+        excludeIf: 'expr(! object.getOffset())',
+    ),
+)]
 class OffsetRepresentation extends AbstractSegmentedRepresentation
 {
     /**
@@ -62,6 +106,8 @@ class OffsetRepresentation extends AbstractSegmentedRepresentation
      *
      * @var int
      */
+    #[Serializer\Expose]
+    #[Serializer\XmlAttribute]
     private $offset;
 
     /**

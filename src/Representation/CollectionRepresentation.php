@@ -16,6 +16,14 @@ use JMS\Serializer\Annotation as Serializer;
  *     embedded = @Hateoas\Embedded("expr(object.getResources())")
  * )
  */
+#[Serializer\ExclusionPolicy('all')]
+#[Serializer\XmlRoot('collection')]
+#[Hateoas\Relation(
+    'items',
+    embedded: new Hateoas\Embedded(
+        content: 'expr(object.getResources())',
+    ),
+)]
 class CollectionRepresentation
 {
     /**

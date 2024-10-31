@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Hateoas\Tests;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Hateoas\HateoasBuilder;
 use Hateoas\Tests\Fixtures\AdrienBrault;
+use Hateoas\Tests\Fixtures\Attribute;
 use Hateoas\Tests\Fixtures\CircularReference1;
 use Hateoas\Tests\Fixtures\CircularReference2;
 use Hateoas\Tests\Fixtures\NoAnnotations;
@@ -27,12 +29,13 @@ class HateoasBuilderTest extends TestCase
         $this->assertInstanceOf(SerializerInterface::class, $hateoas);
     }
 
-    public function testSerializeAdrienBraultWithExclusion()
+    /**
+     * @dataProvider getTestSerializeAdrienBraultWithExclusionData
+     */
+    public function testSerializeAdrienBraultWithExclusion($adrienBrault, $fakeAdrienBrault)
     {
         $hateoas = HateoasBuilder::buildHateoas();
 
-        $adrienBrault     = new AdrienBrault();
-        $fakeAdrienBrault = new AdrienBrault();
         $fakeAdrienBrault->firstName = 'John';
         $fakeAdrienBrault->lastName = 'Smith';
 
@@ -68,6 +71,26 @@ XML
         );
     }
 
+    private static function getTestSerializeAdrienBraultWithExclusionData(): iterable
+    {
+        yield [
+            new Attribute\AdrienBrault(),
+            new Attribute\AdrienBrault(),
+        ];
+
+        if (class_exists(AnnotationReader::class)) {
+            yield [
+                new AdrienBrault(),
+                new AdrienBrault(),
+            ];
+
+            yield [
+                new Attribute\AdrienBraultAttributesAndAnnotations(),
+                new Attribute\AdrienBraultAttributesAndAnnotations(),
+            ];
+        }
+    }
+
     public function testAlternativeUrlGenerator()
     {
         $brokenUrlGenerator = new CallableUrlGenerator(function ($name, $parameters) {
@@ -78,6 +101,12 @@ XML
             ->setUrlGenerator('my_generator', $brokenUrlGenerator)
             ->build();
 
+        if (class_exists(AnnotationReader::class)) {
+            $withAlternativeRouter = new WithAlternativeRouter();
+        } else {
+            $withAlternativeRouter = new Attribute\WithAlternativeRouter();
+        }
+
         $this->assertSame(
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -87,7 +116,7 @@ XML
 
 XML
             ,
-            $hateoas->serialize(new WithAlternativeRouter(), 'xml')
+            $hateoas->serialize($withAlternativeRouter, 'xml')
         );
     }
 
@@ -95,8 +124,14 @@ XML
     {
         $hateoas = HateoasBuilder::create()->build();
 
-        $reference1 = new CircularReference1();
-        $reference2 = new CircularReference2();
+        if (class_exists(AnnotationReader::class)) {
+            $reference1 = new CircularReference1();
+            $reference2 = new CircularReference2();
+        } else {
+            $reference1 = new Attribute\CircularReference1();
+            $reference2 = new Attribute\CircularReference2();
+        }
+
         $reference1->setReference2($reference2);
         $reference2->setReference1($reference1);
 
@@ -134,7 +169,11 @@ XML
     {
         $hateoas = HateoasBuilder::create()->build();
 
-        $reference1 = new CircularReference1();
+        if (class_exists(AnnotationReader::class)) {
+            $reference1 = new CircularReference1();
+        } else {
+            $reference1 = new Attribute\CircularReference1();
+        }
 
         $this->assertSame(
             <<<XML

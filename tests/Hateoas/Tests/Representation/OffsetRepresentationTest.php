@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Hateoas\Tests\Representation;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Hateoas\Representation\CollectionRepresentation;
 use Hateoas\Representation\OffsetRepresentation;
+use Hateoas\Tests\Fixtures\Attribute;
 use Hateoas\Tests\Fixtures\UsersRepresentation;
 
 class OffsetRepresentationTest extends RepresentationTestCase
@@ -65,6 +67,13 @@ XML
             ,
             $this->halHateoas->serialize($collection, 'xml')
         );
+
+        if (class_exists(AnnotationReader::class)) {
+            $usersRepresentation = new UsersRepresentation($collection);
+        } else {
+            $usersRepresentation = new Attribute\UsersRepresentation($collection);
+        }
+
         $this->assertSame(
             <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -82,7 +91,7 @@ XML
 
 XML
             ,
-            $this->hateoas->serialize(new UsersRepresentation($collection), 'xml')
+            $this->hateoas->serialize($usersRepresentation, 'xml')
         );
 
         $this->assertSame(
@@ -99,7 +108,7 @@ XML
 
 XML
             ,
-            $this->halHateoas->serialize(new UsersRepresentation($collection), 'xml')
+            $this->halHateoas->serialize($usersRepresentation, 'xml')
         );
 
         $this->assertSame(
