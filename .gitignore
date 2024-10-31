@@ -3,4 +3,5 @@
 /composer.phar
 /bin
 /.phpcs-cache
+/.phpunit.result.cache
 /.idea
