@@ -7,7 +7,7 @@ namespace Hateoas\Tests\Configuration\Metadata\Driver;
 use Hateoas\Configuration\Metadata\Driver\XmlDriver;
 use Metadata\Driver\FileLocator;
 
-class XmlDriverTest extends AbstractDriverTest
+class XmlDriverTest extends AbstractDriverTestCase
 {
     public function createDriver()
     {

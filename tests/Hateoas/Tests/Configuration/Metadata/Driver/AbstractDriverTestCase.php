@@ -18,7 +18,7 @@ use JMS\Serializer\Type\ParserInterface;
 use Metadata\Driver\DriverInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
-abstract class AbstractDriverTest extends TestCase
+abstract class AbstractDriverTestCase extends TestCase
 {
     protected function getExpressionEvaluator()
     {
