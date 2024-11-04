@@ -7,7 +7,7 @@ namespace Hateoas\Tests\Configuration\Metadata\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Hateoas\Configuration\Metadata\Driver\AnnotationDriver;
 
-class AnnotationDriverTest extends AbstractDriverTest
+class AnnotationDriverTest extends AbstractDriverTestCase
 {
     public function setUp(): void
     {

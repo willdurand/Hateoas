@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Hateoas\Tests\Expression;
 
-use Hateoas\Expression\ExpressionEvaluator;
 use Hateoas\Expression\LinkExpressionFunction;
 use Hateoas\Helper\LinkHelper;
 use Hateoas\Tests\TestCase;
+use JMS\Serializer\Expression\ExpressionEvaluator;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class LinkExpressionFunctionTest extends TestCase
@@ -18,12 +18,14 @@ class LinkExpressionFunctionTest extends TestCase
 
         $linkHelperMock = $this->mockHelper('/foo', $object, 'self', false);
 
-        $expressionEvaluator = new ExpressionEvaluator(new ExpressionLanguage());
-        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelperMock));
+        $expressionLanguage = new ExpressionLanguage();
+        $expressionLanguage->registerProvider(new LinkExpressionFunction());
+
+        $expressionEvaluator = new ExpressionEvaluator($expressionLanguage, ['link_helper' => $linkHelperMock]);
 
         $this->assertEquals(
             '/foo',
-            $expressionEvaluator->evaluate('expr(link(object, "self", false))', $object)
+            $expressionEvaluator->evaluate('link(object, "self", false)', ['object' => $object])
         );
     }
 
@@ -34,37 +36,29 @@ class LinkExpressionFunctionTest extends TestCase
         $linkHelperMock = $this->mockHelper('/foo', $object, 'self', false);
 
         $expressionLanguage = new ExpressionLanguage();
-        $expressionEvaluator = new ExpressionEvaluator($expressionLanguage);
-        $expressionEvaluator->registerFunction(new LinkExpressionFunction($linkHelperMock));
+        $expressionLanguage->registerProvider(new LinkExpressionFunction());
 
-        $compiledExpression = $expressionLanguage->compile('link(object, "self", false)', ['object', 'link_helper']);
+        $expressionEvaluator = new ExpressionEvaluator($expressionLanguage);
+
+        $compiledExpression = $expressionLanguage->compile('link(object, "self", false)', ['object']);
 
         // setup variables for expression eval
-        $object = $object;
         $link_helper = $linkHelperMock;
 
         $this->assertEquals('/foo', eval(sprintf('return %s;', $compiledExpression)));
     }
 
-    /**
-     * @param string $result
-     * @param \stdClass $expectedObject
-     * @param string $expectedRel
-     * @param bool $expectedAbsolute
-     *
-     * @return LinkHelper
-     */
-    private function mockHelper($result, $expectedObject, $expectedRel, $expectedAbsolute)
+    private function mockHelper(string $result, \stdClass $expectedObject, string $expectedRel, bool $expectedAbsolute): LinkHelper
     {
         $linkHelperMock = $this
-            ->getMockBuilder('Hateoas\Helper\LinkHelper')
+            ->getMockBuilder(LinkHelper::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $linkHelperMock
             ->expects($this->once())
             ->method('getLinkHref')
-            ->will($this->returnValue('/foo'))
+            ->will($this->returnValue($result))
             ->with($expectedObject, $expectedRel, $expectedAbsolute);
 
         return $linkHelperMock;

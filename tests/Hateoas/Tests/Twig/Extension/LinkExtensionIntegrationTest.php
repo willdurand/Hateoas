@@ -30,12 +30,20 @@ class LinkExtensionIntegrationTest extends IntegrationTestCase
         ];
     }
 
-    public function getFixturesDir()
+    protected static function getFixturesDirectory(): string
     {
         if (class_exists(AnnotationReader::class)) {
             return __DIR__ . '/../Fixtures/';
         } else {
             return __DIR__ . '/../FixturesAttribute/';
         }
+    }
+
+    /**
+     * for compatibility with Twig < 3.13
+     */
+    public function getFixturesDir()
+    {
+        return self::getFixturesDirectory();
     }
 }

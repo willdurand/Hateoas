@@ -7,7 +7,7 @@ namespace Hateoas\Tests\Configuration\Metadata\Driver;
 use Hateoas\Configuration\Metadata\Driver\AttributeDriver;
 use Hateoas\Tests\Fixtures\Attribute\User;
 
-class AttributeDriverTest extends AbstractDriverTest
+class AttributeDriverTest extends AbstractDriverTestCase
 {
     public function createDriver()
     {

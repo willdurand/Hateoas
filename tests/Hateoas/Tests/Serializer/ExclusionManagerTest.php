@@ -15,6 +15,7 @@ use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Metadata\MetadataFactoryInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -107,9 +108,7 @@ class ExclusionManagerTest extends TestCase
         $this->assertTrue($exclusionManager->shouldSkipEmbedded($object, $relation, $context));
     }
 
-    /**
-     * @dataProvider getTestSkipExcludeIfData
-     */
+    #[DataProvider('getTestSkipExcludeIfData')]
     public function testSkipExcludeIf($exclude)
     {
         $object = (object) ['name' => 'adrien'];
@@ -136,12 +135,10 @@ class ExclusionManagerTest extends TestCase
         $this->assertSame($exclude, $exclusionManager->shouldSkipEmbedded($object, $relation, $context));
     }
 
-    public function getTestSkipExcludeIfData()
+    public static function getTestSkipExcludeIfData(): iterable
     {
-        return [
-            [true],
-            [false],
-        ];
+        yield [true];
+        yield [false];
     }
 
     /**
