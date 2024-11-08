@@ -42,7 +42,7 @@ class Route
      * @param array|string $parameters
      * @param bool|string $absolute
      */
-    public function __construct($values = [], ?string $name = null, $parameters = null, $absolute = false, ?string $generator = null)
+    public function __construct($values = [], ?string $name = null, $parameters = [], $absolute = false, ?string $generator = null)
     {
         $this->loadAnnotationParameters(get_defined_vars());
     }
