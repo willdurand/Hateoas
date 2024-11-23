@@ -20,6 +20,7 @@ jobs:
           - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
         dependencies:
           - "highest"
           - "lowest"
@@ -31,26 +32,14 @@ jobs:
           - "^4.0"
           - "^5.0"
           - "^6.0"
-        include:
-          - php-version: 8.4
-            symfony-require: "^5.0"
-            composer-options: "--ignore-platform-req=php+" # TODO remove once phpspec/prophecy supports PHP 8.4
-          - php-version: 8.4
-            symfony-require: "^6.0"
-            composer-options: "--ignore-platform-req=php+" # TODO remove once phpspec/prophecy supports PHP 8.4
-          - php-version: 8.2
+          - "^7.0"
+        exclude:
+          - php-version: "8.1"
             symfony-require: "^7.0"
-          - php-version: 8.2
-            symfony-require: "^7.0"
-            remove-annotations: "yes"
-          - php-version: 8.3
-            symfony-require: "^7.0"
-          - php-version: 8.3
-            symfony-require: "^7.0"
-            remove-annotations: "yes"
-          - php-version: 8.4
-            symfony-require: "^7.0"
-            composer-options: "--ignore-platform-req=php+" # TODO remove once phpspec/prophecy supports PHP 8.4
+          - php-version: "8.4"
+            symfony-require: "^3.0"
+          - php-version: "8.4"
+            symfony-require: "^4.0"
 
     steps:
       - name: Checkout code
