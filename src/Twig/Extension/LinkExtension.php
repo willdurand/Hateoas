@@ -23,7 +23,7 @@ class LinkExtension extends AbstractExtension
     /**
      * {@inheritDoc}
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('link_href', [$this->linkHelper, 'getLinkHref']),
@@ -33,7 +33,7 @@ class LinkExtension extends AbstractExtension
     /**
      * {@inheritDoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'hateoas_link';
     }
