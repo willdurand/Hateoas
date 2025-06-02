@@ -51,10 +51,9 @@
 
         <!-- TODO Apply sniffs if possible -->
         <exclude name="SlevomatCodingStandard.Classes.RequireConstructorPropertyPromotion.RequiredConstructorPropertyPromotion"/>
-        <exclude name="SlevomatCodingStandard.TypeHints.UnionTypeHintFormat.DisallowedShortNullable"/>
+        <exclude name="SlevomatCodingStandard.TypeHints.DNFTypeHintFormat.DisallowedShortNullable"/>
         <exclude name="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration.MissingTrailingComma"/>
         <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint"/>
-        <exclude name="SlevomatCodingStandard.TypeHints.UnionTypeHintFormat.DisallowedShortNullable"/>
         <exclude name="SlevomatCodingStandard.Classes.ModernClassNameReference.ClassNameReferencedViaFunctionCall"/>
         <exclude name="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch.NonCapturingCatchRequired"/>
     </rule>
