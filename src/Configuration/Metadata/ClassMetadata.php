@@ -44,9 +44,6 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
         $this->relations = array_merge($this->relations, $object->getRelations());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function serialize(): string
     {
         return serialize([
