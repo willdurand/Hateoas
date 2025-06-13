@@ -30,9 +30,6 @@ class LinkExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getName(): string
     {
         return 'hateoas_link';
