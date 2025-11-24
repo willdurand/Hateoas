@@ -24,6 +24,11 @@ class YamlDriver extends AbstractFileDriver
     use CheckExpressionTrait;
 
     /**
+     * @var FileLocatorInterface
+     */
+    private $locator;
+
+    /**
      * @var RelationProviderInterface
      */
     private $relationProvider;
@@ -39,12 +44,23 @@ class YamlDriver extends AbstractFileDriver
         RelationProviderInterface $relationProvider,
         ParserInterface $typeParser
     ) {
-        parent::__construct($locator);
-
+        $this->locator = $locator;
         $this->relationProvider = $relationProvider;
         $this->expressionLanguage = $expressionLanguage;
         $this->typeParser = $typeParser;
     }
+
+    public function loadMetadataForClass(\ReflectionClass $class): ?JMSClassMetadata
+    {
+        foreach ($this->getExtensions() as $extension) {
+            if (null !== $path = $this->locator->findFileForClass($class, $extension)) {
+                return $this->loadMetadataFromFile($class, $path);
+            }
+        }
+
+        return null;
+    }
+
 
     protected function loadMetadataFromFile(\ReflectionClass $class, string $file): ?JMSClassMetadata
     {
@@ -83,6 +99,17 @@ class YamlDriver extends AbstractFileDriver
         return $classMetadata;
     }
 
+    /**
+     * @return string[]
+     */
+    protected function getExtensions(): array
+    {
+        return array_unique([$this->getExtension(), 'yaml', 'yml']);
+    }
+
+    /**
+     * @deprecated use getExtensions instead.
+     */
     protected function getExtension(): string
     {
         return 'yml';
