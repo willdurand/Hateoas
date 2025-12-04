@@ -58,11 +58,6 @@ jobs:
         run: |
           composer remove --no-update --dev doctrine/annotations
 
-      # until Symfony 8 is released
-      - name: Configure Composer minimum stability
-        if: matrix.symfony-require == '^8.0'
-        run: composer config minimum-stability dev
-
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
         env:
