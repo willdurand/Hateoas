@@ -20,9 +20,9 @@ class InlineDeferrer
 
     public function handleItems(object $object, array $items, SerializationContext $context): array
     {
-        if ($this->deferredData->contains($object)) {
+        if ($this->deferredData->offsetExists($object)) {
             $items = array_merge($this->deferredData->offsetGet($object), $items);
-            $this->deferredData->detach($object);
+            $this->deferredData->offsetUnset($object);
         }
 
         $parentObjectInlining = $this->getParentObjectInlining($object, $context);
@@ -30,12 +30,12 @@ class InlineDeferrer
             return $items;
         }
 
-        if ($this->deferredData->contains($parentObjectInlining)) {
+        if ($this->deferredData->offsetExists($parentObjectInlining)) {
             $items = array_merge($items, $this->deferredData->offsetGet($parentObjectInlining));
         }
 
         // We need to defer the links serialization to the $parentObject
-        $this->deferredData->attach($parentObjectInlining, $items);
+        $this->deferredData->offsetSet($parentObjectInlining, $items);
 
         return [];
     }
